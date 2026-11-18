@@ -1,0 +1,24 @@
+name: PanelReply demo regression tests
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - main
+      - 'audit/**'
+  schedule:
+    - cron: '15 13 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  demo-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify demo behavior and CSP
+        run: node --test tests/demo.test.cjs
