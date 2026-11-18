@@ -39,7 +39,7 @@ function fixture() {
     sandbox,
     { timeout: 1000 }
   );
-  const node = id => elements.get(id);
+  const node = id => document.getElementById(id);
   const messages = () => node('events').children.map(e => e.textContent);
   return { node, messages, ...sandbox.__testApi };
 }
