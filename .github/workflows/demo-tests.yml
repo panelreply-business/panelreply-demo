@@ -21,4 +21,4 @@ jobs:
         with:
           node-version: '22'
       - name: Verify demo behavior and CSP
-        run: node --test tests/demo.test.cjs
+        run: node --test tests/*.test.cjs
