@@ -6,23 +6,23 @@ A contractor intake workspace for turning sample customer messages into a callba
 
 ## Release status
 
-Status recorded November 18, 2026, America/Detroit:
+The contractor workspace was published on November 18, 2026 at 8:24 PM America/Detroit. The canonical website was then checked through its controls.
 
 | Area | Status |
 | --- | --- |
-| Tested workspace candidate | PASS — revision `b52105a8a5a69c259b4392d224ea785c255615b1` completed 149 automated checks, with zero failures or skips |
-| Visual review | Desktop and mobile screenshots from CI were inspected. One mobile navigation label wrapped within a word. A CSS correction is prepared, with its final recheck pending |
-| Published website | At inspection, Render served application commit `100030c7976f60dba483510a233cdc8ce95d5097`. This is a recorded deployment snapshot, not evidence that the redesign is published |
-| Front-end release verification | NOT TESTED — final candidate and release verification are pending. Verify published behavior before marking website defects resolved |
+| Final tested source | PASS — revision `23e2c38746c13e096dc74221c94ab6ca6e733173` completed 149 automated checks, with zero failures or skips |
+| Desktop and mobile visual review | PASS — final screenshots were inspected. The mobile `Connections` label no longer splits within the word |
+| Published website | PASS — Render deployed merge commit `4db01f6ae2e02620487e297f87d28f0c4ca2fe8a` in deployment `dep-dbv4veek1f9s73bfb85g` |
+| Live front-end behavior | PASS — bundled intake, corrections, clipboard copying, opt-out, safety holds, reset and the sample booking disclosure were exercised on the published page |
 | Live AI | BLOCKED — AI remains disabled pending API configuration and approved spending |
 | Customer messaging, calendar booking and durable customer records | NOT IMPLEMENTED |
 | Customer pilot | NO-GO — production integrations and operational controls remain incomplete |
 
-[Verified 149-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44435263388) · [Workspace redesign and test evidence](docs/WORKSPACE_REDESIGN.md)
+[Final 149-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44436345651) · [Main-branch CI](https://github.com/panelreply-business/panelreply-demo/actions/runs/44436556064) · [Release evidence and live checks](docs/WORKSPACE_REDESIGN.md)
 
-The earlier safety corrections in [PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1) were merged at `184ec8d6214747966b687d126dc6619afeea2ca8`. Their [49-check baseline](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) remains historical evidence. Merging source is separate from publishing and verifying the website.
+PR #2 is merged. The tested source and deployed merge commit have the same tree, `f443598d481d099b08cb116caf34f06be9754542`. The published workspace and content security policy matched the expected application, and `data-ai-enabled="false"` remained in place. This is a front-end demo release. It does not activate the model or customer integrations.
 
-The live GET checks establish availability and static disclosures. They do not establish that a branch's behavior has reached the website. Release evidence must identify the deployed revision and the checks performed against it.
+The earlier [49-check baseline](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) and the earlier 149-check candidate run remain historical evidence in the audit records.
 
 ## What the workspace does
 
@@ -60,7 +60,7 @@ Real booking needs a connected calendar, working hours, timezone and job-duratio
 ## Try the website
 
 1. Open [panelreply-demo.onrender.com](https://panelreply-demo.onrender.com/).
-2. Check the release status above before assuming that the published version contains the workspace changes.
+2. The workspace heading should read `Customer requests`.
 3. Select `Run the sample request`, or enter a sample job, ZIP and callback preference.
 4. Review the request details and confirmed-field progress.
 5. Try a correction, STOP/START or `Copy request summary`.
@@ -77,12 +77,7 @@ git clone https://github.com/panelreply-business/panelreply-demo.git
 cd panelreply-demo
 ```
 
-While PR #2 remains under review, use its branch to inspect the candidate:
-
-```sh
-git fetch origin
-git switch feature/ai-assisted-intake-20261118
-```
+The released workspace source and its tests are on `main`.
 
 The checked-in static page needs no API key or application dependency installation. Serve it with Python:
 
@@ -165,7 +160,7 @@ Physical devices, Safari, other browser engines and assistive-technology testing
 
 ## Automated checks
 
-The workflow runs the logic, fake-provider server, live GET and three Chromium suites for supported pull requests and pushes to `main`. It also defines manual dispatch and a daily schedule at 13:15 UTC. GitHub activates that schedule when the workflow is on the default branch. The separate ChatGPT audit schedule is independent.
+The workflow on `main` runs the logic, fake-provider server, live GET and three Chromium suites for supported pull requests and pushes to `main`. It also defines manual dispatch and a daily schedule at 13:15 UTC. The separate ChatGPT audit schedule is independent. A configured schedule is not evidence that a particular future run completed.
 
 Live model calls are not part of scheduled tests. The audit distinguishes verified branch fixes from published behavior and uses PASS, FAIL, BLOCKED, NOT IMPLEMENTED or NOT TESTED according to evidence.
 
@@ -193,7 +188,7 @@ mkdir -p public-demo && cp index.html robots.txt public-demo/
 
 Publish directory: `public-demo`. Only those two application files are published. Repository documentation, tests and server code are not served by this command.
 
-Automatic deployment was disabled at inspection. A front-end release must verify the final source revision and then retest the published page. The static page keeps `data-ai-enabled="false"`.
+Automatic deployment was disabled at inspection. The November 18 front-end release was deployed and checked on the canonical website. Future releases must verify the final source revision and retest the published page. The static page keeps `data-ai-enabled="false"`.
 
 The static service cannot execute `server.cjs`. Live AI requires an approved web-service deployment, server environment variables and a selected model with an approved spending limit. This front-end redesign does not activate those services.
 

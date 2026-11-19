@@ -1,8 +1,8 @@
 # Contractor workspace redesign
 
-Prepared November 18, 2026, America/Detroit.
+Released and verified November 18, 2026, America/Detroit.
 
-The user requested more testing and a more professional, realistic website. This update builds on the AI intake work in [PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2), previously verified at `1cd08e89928e881e11261239067f84ae5143e3d6`.
+The user requested more testing and a more professional, realistic website. This update builds on the AI intake work in [PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2), which is now merged. The earlier AI-only revision `1cd08e89928e881e11261239067f84ae5143e3d6` remains historical evidence for that stage.
 
 ## Interface changes
 
@@ -32,9 +32,11 @@ The scheduled audit also added polite unsubscribe and opt-out wording while this
 
 The conversation now has a bounded scrolling area. Sending a message follows the latest reply, while incoming content preserves an earlier reading position unless the user was already near the bottom. A Chromium regression sends enough messages to overflow the list, then verifies that the newest reply remains visible within the conversation and the list ends within two pixels of the bottom.
 
-## Verified candidate evidence
+## Final automated evidence
 
-[CI run 44435263388](https://github.com/panelreply-business/panelreply-demo/actions/runs/44435263388) completed successfully for revision [`b52105a8a5a69c259b4392d224ea785c255615b1`](https://github.com/panelreply-business/panelreply-demo/commit/b52105a8a5a69c259b4392d224ea785c255615b1). Job: `135262413779`.
+[CI run 44436345651](https://github.com/panelreply-business/panelreply-demo/actions/runs/44436345651) passed for final source revision [`23e2c38746c13e096dc74221c94ab6ca6e733173`](https://github.com/panelreply-business/panelreply-demo/commit/23e2c38746c13e096dc74221c94ab6ca6e733173), including the navigation correction.
+
+PR #2 merged as `4db01f6ae2e02620487e297f87d28f0c4ca2fe8a`. The tested source and merge commit have identical tree `f443598d481d099b08cb116caf34f06be9754542`. The [main-branch workflow](https://github.com/panelreply-business/panelreply-demo/actions/runs/44436556064), job `135266767594`, also completed 149 cases after the merge, with zero failures or skips. Both runs verified the same application tree. The table below shows the per-run breakdown, not a combined count.
 
 | Suite | Result | Passing cases |
 | --- | --- | ---: |
@@ -50,11 +52,13 @@ All AI responses used by these tests are fixtures. The tests make no paid model 
 
 ## Visual review
 
-Desktop and mobile screenshots from the successful CI run were viewed and inspected. They show synthetic request data in the rendered workspace.
+The exact desktop and mobile screenshots from the final CI revision were viewed and inspected. They show synthetic request data in the rendered workspace.
 
-The review found a mobile navigation label wrapping between `Connection` and its final `s`. The prepared CSS correction keeps navigation words intact while allowing navigation items to wrap as needed. That correction is later than the revision listed above, so its final CI and visual recheck remain PENDING in this record. Do not treat the earlier passing run as verification of an untested later edit.
+An earlier screenshot review found the mobile `Connections` label wrapping before its final `s`. The CSS correction keeps navigation words intact while allowing navigation items to wrap as needed. The final mobile screenshot confirms that the word no longer splits. The corrected revision also passed all automated suites.
 
 The visual review covered the workspace structure, conversation and request cards, readability, control spacing and mobile stacking. It does not establish physical-device or Safari behavior.
+
+[Published workspace screenshot](evidence/workspace-live-2026-11-18.jpg)
 
 ## Reproduce the UI checks
 
@@ -90,27 +94,49 @@ PANELREPLY_CAPTURE_DIR=/tmp/panelreply-previews python tests/ui_browser_test.py
 
 Automated browser checks use Chromium. Keyboard, labels and contrast coverage do not establish complete accessibility conformance. Physical devices, Safari, other browser engines and assistive-technology testing remain NOT TESTED.
 
-## Current acceptance and release status
+## Published release and live verification
+
+Render deployment `dep-dbv4veek1f9s73bfb85g` became LIVE at `2026-11-19T01:24:16Z`, which is November 18 at 8:24 PM America/Detroit. It deployed merge commit `4db01f6ae2e02620487e297f87d28f0c4ca2fe8a` to [panelreply-demo.onrender.com](https://panelreply-demo.onrender.com/).
+
+The first reload after deployment returned an older cached page. A version query showed the new release, and the canonical root URL was then verified to serve the new workspace. The workspace heading read `Customer requests`. The delivered script and style CSP hashes matched the expected source, and the page retained `data-ai-enabled="false"`.
+
+The following paths were exercised through the actual published page using sample messages:
+
+| Live check | Result | Observed behavior |
+| --- | --- | --- |
+| Bundled job, ZIP and callback timing | PASS | The page collected all three fields from one message |
+| ZIP correction | PASS | The corrected ZIP replaced the earlier ZIP while preserving the job and timing |
+| Copy request summary | PASS | The clipboard contained the exact corrected summary |
+| `Please don’t send me any more texts` | PASS | Intake entered the STOP state |
+| `Please unsubscribe me` | PASS | Intake entered the STOP state |
+| Street address containing `12 Main Street` | PASS | The address did not become callback timing |
+| `Not Friday, Monday after 4` | PASS | The timing preference retained its negation |
+| `ZIP 48315–1234` | PASS | The page requested clarification and reduced confirmed progress to 2 of 3 |
+| Sparking outlet, then START | PASS | The safety hold activated and START did not clear it |
+| Reload and reset | PASS | The page cleared its sample state |
+| Sample request button | PASS | The sample flow completed |
+| START after an ordinary STOP | PASS | Normal intake could resume when no safety hold existed |
+| `Booked by contractor` label | PASS | The page explicitly stated that no calendar event was created |
+
+These live checks establish the listed behavior for the published demo. They do not establish AI accuracy, emergency triage completeness, durable opt-out enforcement or customer booking.
+
+## Current acceptance status
 
 | Area | Status | Limit |
 | --- | --- | --- |
-| Tested candidate at `b52105a8a5a69c259b4392d224ea785c255615b1` | PASS | 149 automated cases, zero failures or skips |
-| Desktop and mobile screenshot capture and inspection | PASS | Both rendered screenshots were viewed and inspected |
-| Mobile navigation word wrapping in the inspected revision | FAIL | A word split across lines. The CSS correction is prepared and awaits its final recheck |
-| Final candidate after the navigation correction | NOT TESTED | New CI and visual evidence must be recorded |
-| Published redesign and live behavioral verification | NOT TESTED | No deployment is claimed by this preparation record |
+| Final source at `23e2c38746c13e096dc74221c94ab6ca6e733173` | PASS | 149 automated cases, zero failures or skips |
+| Desktop and mobile screenshot inspection | PASS | Final rendered screenshots inspected, including the navigation correction |
+| Published front-end and listed live browser paths | PASS | Deployed merge commit and canonical website verified |
 | Live model quality | BLOCKED | Separate API configuration and spending approval required |
 | Customer calls/SMS, calendar booking and durable customer data | NOT IMPLEMENTED | No customer integrations activated by the redesign |
 | Customer pilot | NO-GO | Production integrations and operational controls remain incomplete |
 
-At inspection, [the Render website](https://panelreply-demo.onrender.com/) served application commit `100030c7976f60dba483510a233cdc8ce95d5097`. This snapshot must be replaced or supplemented with the actual release revision and live evidence after publication. It is not a claim that the current website contains these changes.
+## Release scope and history
 
-## Release scope
+The release used the existing Render static service. Its build publishes only `index.html` and `robots.txt`. The page retains `data-ai-enabled="false"`. No new account, paid AI call, hosting service, billing change or customer contact was needed for this front-end release.
 
-The earlier safety corrections in PR #1 were merged at `184ec8d6214747966b687d126dc6619afeea2ca8`. PR #2 now targets `main`. The [earlier 49-check baseline](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) remains historical evidence for that stage. No live deployment is claimed by the merge status.
+The earlier safety corrections in PR #1 merged at `184ec8d6214747966b687d126dc6619afeea2ca8`. Their [49-check baseline](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) is historical evidence. The [earlier workspace run 44435263388](https://github.com/panelreply-business/panelreply-demo/actions/runs/44435263388) passed 149 cases for `b52105a8a5a69c259b4392d224ea785c255615b1` before the navigation correction. The final run above supersedes it for release verification.
 
-The planned front-end release targets the existing Render static service. Its build publishes only `index.html` and `robots.txt`. The page retains `data-ai-enabled="false"`. This update requires no new account, paid AI call, hosting service, billing change or customer contact.
+Before this release, the inspected live application was `100030c7976f60dba483510a233cdc8ce95d5097`. That prior deployment snapshot is historical. It no longer describes the verified published workspace.
 
-Before publication, verify the final candidate and its screenshots. After publication, verify the delivered HTML and CSP, then exercise intake, corrections, copy and STOP/safety paths on the live site. Source fixes are not marked resolved on the website until that verification completes.
-
-The release must not activate the server-side AI endpoint or represent callback preferences as appointments. `Booked by contractor` remains a sample status label. Calendar availability checks, event creation, customer confirmations and durable records remain separate work.
+The release did not activate the server-side AI endpoint or turn callback preferences into appointments. `Booked by contractor` remains a sample status label. Calendar availability checks, event creation, customer confirmations and durable records remain separate work.
