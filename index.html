@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-FL405vefxguZ0/TawZ4WbRqRImrWleZRGL7FkcswER4='; style-src 'sha256-N6RCSH9SMXpRtZnEcWkfbzOvOEjg7mSvxeDmx03haK4='; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-FhaKyOLX6TL9GKNbgTAzxg3SOw961ipxqVlwd8zuD9Q='; style-src 'sha256-N6RCSH9SMXpRtZnEcWkfbzOvOEjg7mSvxeDmx03haK4='; connect-src 'self'; form-action 'none'; base-uri 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow">
@@ -40,9 +40,9 @@
       <div id="call-status" class="status call-status" role="status"></div>
       <div class="workspace-grid grid">
         <section class="card conversation-card" aria-labelledby="title">
-          <div class="card-head"><div class="card-label"><span class="step" id="step">01 / MISSED CALL</span><span class="sample-label">Intake preview</span></div><h2 id="title">Save the call.</h2><p class="supporting" id="explain">Add the electrical work, job ZIP and callback time in one message. You can correct a detail as you go.</p></div>
-          <div class="conversation-area"><h3 class="section-label" id="message-list">Conversation</h3><div id="conversation-empty" class="conversation-empty"><div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 3v-3a2 2 0 0 1-2-2V7a3 3 0 0 1 3-3Z"/><path d="M7 9h10M7 13h6"/></svg></div><h3>Start with the customer's message.</h3><p>Tell us what they need, where the job is and when to call. The request details will fill in alongside the conversation.</p></div><div id="events" class="events" role="log" aria-labelledby="message-list" aria-live="polite" aria-relevant="additions text"></div></div>
-          <div class="composer"><form id="form"><div class="composer-top"><label for="reply">Customer message</label><span id="reply-count" class="reply-count">0 / 500</span></div><textarea id="reply" rows="4" placeholder="Install an EV charger in my garage. ZIP 48315. Call Friday after 4 pm." maxlength="500" aria-describedby="reply-hint reply-count" required></textarea><p id="reply-hint" class="helper">Include several details at once. We’ll ask for anything missing.</p><div class="composer-actions"><button id="send" class="button-primary" type="submit">Send sample reply</button><div class="session-controls" aria-label="Conversation controls"><button class="button-stop" id="stop" type="button">STOP</button><button class="button-quiet" id="restart" type="button">START</button><button class="button-quiet" id="reset" type="button">Reset tour</button></div></div></form><p class="helper">STOP pauses replies. START resumes only when there is no safety hold.</p><p id="ai-mode" class="mode-status status" role="status"></p><div id="ai-controls" class="ai-access-box" hidden><label for="ai-access">AI test access code</label><input id="ai-access" type="password" maxlength="256" autocomplete="off" spellcheck="false"><p>Use sample data. With an access code, the message and collected details go to the AI service. Reset clears the code from this page.</p></div></div>
+          <div class="card-head"><div class="card-label"><span class="step" id="step">01 / MISSED CALL</span><span class="sample-label">Intake preview</span></div><h2 id="title">Save the call.</h2><p class="supporting" id="explain">Ask a question or share the electrical work, job ZIP and callback time. You can correct a detail as you go.</p></div>
+          <div class="conversation-area"><h3 class="section-label" id="message-list">Conversation</h3><div id="conversation-empty" class="conversation-empty"><div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 3v-3a2 2 0 0 1-2-2V7a3 3 0 0 1 3-3Z"/><path d="M7 9h10M7 13h6"/></svg></div><h3>Start with a question or request.</h3><p>Ask about the service or share what needs doing. Request details will fill in alongside the conversation.</p></div><div id="events" class="events" role="log" aria-labelledby="message-list" aria-live="polite" aria-relevant="additions text"></div></div>
+          <div class="composer"><form id="form"><div class="composer-top"><label for="reply">Customer message</label><span id="reply-count" class="reply-count">0 / 500</span></div><textarea id="reply" rows="4" placeholder="Install an EV charger in my garage. ZIP 48315. Call Friday after 4 pm." maxlength="500" aria-describedby="reply-hint reply-count" required></textarea><p id="reply-hint" class="helper">Ask a question or send several details at once. We’ll ask for anything missing.</p><div class="composer-actions"><button id="send" class="button-primary" type="submit">Send sample reply</button><div class="session-controls" aria-label="Conversation controls"><button class="button-stop" id="stop" type="button">STOP</button><button class="button-quiet" id="restart" type="button">START</button><button class="button-quiet" id="reset" type="button">Reset tour</button></div></div></form><p class="helper">STOP pauses replies. START resumes only when there is no safety hold.</p><p id="ai-mode" class="mode-status status" role="status"></p><div id="ai-controls" class="ai-access-box" hidden><label for="ai-access">AI test access code</label><input id="ai-access" type="password" maxlength="256" autocomplete="off" spellcheck="false"><p>Use sample data. With an access code, the message and collected details go to the AI service. Reset clears the code from this page.</p></div></div>
         </section>
         <section class="card request-card" aria-labelledby="request-heading">
           <div class="card-head request-head"><div><h2 id="request-heading">Request details</h2><p>Review before following up.</p></div><span id="request-state" class="state-badge" data-state="idle">Not started</span></div>
@@ -54,7 +54,7 @@
         </section>
       </div>
     </section>
-    <section class="support-section" id="workflow" aria-labelledby="workflow-heading"><div class="support-heading"><h2 id="workflow-heading">A request, ready to review</h2><p>Three steps in this preview</p></div><div class="workflow-grid"><article class="workflow-item"><div class="workflow-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v13H9l-5 4V4Z"/><path d="M8 9h8M8 13h5"/></svg></div><h3>Enter a sample message</h3><p>Describe the electrical work, job ZIP and callback preference in your own words.</p></article><article class="workflow-item"><div class="workflow-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 6h11M9 12h11M9 18h11M3 6l1.5 1.5L7 4M3 12l1.5 1.5L7 10M3 18l1.5 1.5L7 16"/></svg></div><h3>Check the details</h3><p>Fill any gaps and correct anything the intake misunderstood before moving on.</p></article><article class="workflow-item"><div class="workflow-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div><h3>Review the callback</h3><p>Read or copy the sample summary. No customer notification or appointment is created.</p></article></div></section>
+    <section class="support-section" id="workflow" aria-labelledby="workflow-heading"><div class="support-heading"><h2 id="workflow-heading">A request, ready to review</h2><p>Three steps in this preview</p></div><div class="workflow-grid"><article class="workflow-item"><div class="workflow-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v13H9l-5 4V4Z"/><path d="M8 9h8M8 13h5"/></svg></div><h3>Enter a sample message</h3><p>Ask a question, or describe the electrical work, job ZIP and callback preference in your own words.</p></article><article class="workflow-item"><div class="workflow-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 6h11M9 12h11M9 18h11M3 6l1.5 1.5L7 4M3 12l1.5 1.5L7 10M3 18l1.5 1.5L7 16"/></svg></div><h3>Check the details</h3><p>Fill any gaps and correct anything the intake misunderstood before moving on.</p></article><article class="workflow-item"><div class="workflow-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div><h3>Review the callback</h3><p>Read or copy the sample summary. No customer notification or appointment is created.</p></article></div></section>
     <section class="support-section" id="connections" aria-labelledby="connections-heading"><div class="support-heading"><h2 id="connections-heading">Connection status</h2><p>What this workspace can do today</p></div><div class="connections"><article class="connection-item"><div><h3>AI-assisted intake</h3><p id="ai-connection-detail">This preview uses local parsing. Live AI has not been activated.</p></div><span class="connection-badge" id="ai-connection-status">Not connected</span></article><article class="connection-item"><div><h3>Calls and text messages</h3><p>Messages stay on this page. The missed-call control is a simulation.</p></div><span class="connection-badge">Not connected</span></article><article class="connection-item"><div><h3>Calendar booking</h3><p>No calendar is connected. Changing the sample status does not reserve a time.</p></div><span class="connection-badge">Not connected</span></article></div><div class="faq-grid"><details class="faq-item"><summary>Does this book an appointment?</summary><p>Not yet. This walkthrough records a callback preference and shows a sample status. A booking system must check availability and create the appointment before a time can be confirmed.</p></details><details class="faq-item"><summary>Can I send every detail together?</summary><p>Yes. Include the electrical work, five-digit ZIP and callback preference in a single message of up to 500 characters. You can add or correct details in a later message.</p></details></div></section>
     <footer class="workspace-footer"><p><span>PanelReply product preview.</span><br>This walkthrough does not save requests to a customer database or book appointments. Sample details reset when you reload the page.</p><a href="#workspace">Back to requests</a></footer>
   </main>
@@ -190,7 +190,7 @@
     if (!cue) return { job: clause, timing: null };
     let start = cue.index;
     const prefix = clause.slice(0, start);
-    const lead = prefix.match(/\b(?:(?:please\s+)?(?:(?:can|could|would|will)\s+you\s+)?(?:call(?:\s+me|\s+us)?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit)|(?:my\s+)?(?:timing|availability|callback(?:\s+time)?)(?:\s+is)?\s*[:=]?|(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+available)\s*(?:on\s+)?$/i);
+    const lead = prefix.match(/\b(?:(?:please\s+)?(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:be\s+able\s+to\s+)?)?(?:call(?:\s+me|\s+us)?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit)|(?:my\s+)?(?:timing|availability|callback(?:\s+time)?)(?:\s+is)?\s*[:=]?|(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+available)\s*(?:on\s+)?$/i);
     const negative = prefix.match(/\b(?:but\s+)?(?:not|except|excluding|other\s+than|anything\s+but)(?:\s+(?:on|until|before|after))?\s*$/i);
     const unavailable = /^(?:(?:please|but|and|i|we|am|are|i['’]m|we['’]re)\s+)*(?:not|never|except|excluding|other\s+than|anything\s+but|unavailable|busy|can't|can’t|cannot|can\s+not|don't|don’t|do\s+not|won't|won’t|will\s+not)\b/i;
     if (unavailable.test(prefix) && !JOB_CUE.test(prefix)) start = 0;
@@ -217,16 +217,122 @@
     return true;
   }
 
+  function questionText(text) {
+    return normalize(text).replace(/^["“”'‘’([{\s]+/, '')
+      .replace(/^(?:(?:hi|hello|hey|please|actually|also|and|but)\b[\s,:-]*)+/i, '');
+  }
+
+  function informationalStart(text) {
+    const value = questionText(text);
+    return /^(?:what|which|why|how|when|where|who|whose|is|are|was|were)\b/i.test(value)
+      || /^(?:do|does|did|can|could|would|will|should|may|might|has|have)\s+(?:you|i|we|they|he|she|it|this|that|these|those|there|the|my|your|our|a|an|anyone|someone)\b/i.test(value)
+      || /^(?:(?:tell|show)\s+me|let\s+me\s+know|explain|describe|help\s+me\s+understand|i(?:'d|\s+would)\s+like\s+to\s+(?:know|ask)|i\s+(?:want|wanted|need)\s+to\s+(?:know|ask)|i(?:'m|\s+am|\s+was)\s+(?:just\s+)?wondering)\b/i.test(value);
+  }
+
+  function callbackRequest(text) {
+    const value = questionText(text);
+    const request = value.match(/^(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:be\s+able\s+to\s+)?)?(?:call(?:\s+(?:me|us))?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit(?:\s+(?:me|us))?)\b/i);
+    if (!request || !timingCue(value)) return false;
+    // Bare "call" is a request only when its next words identify the time.
+    // A question about calling customers must not become callback availability.
+    if (/\bcall$/i.test(request[0])) {
+      const remaining = value.slice(request[0].length).trim().replace(/^on\s+/i, '');
+      const cue = timingCue(remaining);
+      return Boolean(cue && cue.index === 0);
+    }
+    return true;
+  }
+
+  function explicitDetailStart(text) {
+    const value = questionText(text);
+    if (callbackRequest(value)) return true;
+    if (informationalStart(value)) return false;
+    return /^(?:i|we)\s+(?:need|want|require)\b/i.test(value)
+      || /^(?:(?:my|our|the|job|correct|new)\s+)*(?:zip(?:\s*code)?|postal\s*code)\b/i.test(value)
+      || /^(?:job|work|request|timing|availability|callback(?:\s+time)?|preferred(?:\s+callback)?\s+time)\s*[:=]/i.test(value)
+      || /^(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+(?:in|at|available|unavailable|not\s+available)\b/i.test(value)
+      || /\bworks?\s+for\s+(?:me|us)\b/i.test(value);
+  }
+
+  function splitQuestionJoiners(text) {
+    const parts = [];
+    let start = 0;
+    for (const joiner of text.matchAll(/\s+(?:and|but|also)\s+/gi)) {
+      const before = text.slice(start, joiner.index);
+      const after = text.slice(joiner.index + joiner[0].length);
+      if (informationalStart(after) || (informationalStart(before) && explicitDetailStart(after))) {
+        parts.push(before);
+        start = joiner.index + joiner[0].length;
+      }
+    }
+    parts.push(text.slice(start));
+    return parts;
+  }
+
+  function partitionMessage(message) {
+    if (typeof message !== 'string' || !message.trim()) return { details: '', questions: [] };
+    const details = [];
+    const questions = [];
+    // Keep delimiters so a question mark can distinguish "Friday?" from a
+    // supplied Friday preference. Periods inside prices and p.m. stay intact.
+    const clauses = message.split(/([!?]+|\.+(?=\s|$)|[\n\r;,]+)/);
+    let questionContinues = false;
+    let detailRunStart = 0;
+    let previousWasDetail = false;
+    for (let index = 0; index < clauses.length; index += 2) {
+      const parts = splitQuestionJoiners(clauses[index]);
+      const delimiter = clauses[index + 1] || '';
+      for (let partIndex = 0; partIndex < parts.length; partIndex++) {
+        const clause = parts[partIndex].trim();
+        if (!clause) continue;
+        const last = partIndex === parts.length - 1;
+        const ending = last ? delimiter : '';
+        let text = clause + ending;
+        const startsQuestion = informationalStart(clause);
+        const continuation = questionContinues && !explicitDetailStart(clause);
+        const question = !callbackRequest(clause) && (startsQuestion || ending.includes('?') || continuation);
+        if (question) {
+          // "48084, do you serve there?" supplies a question topic, not a job
+          // location. Preserve explicit facts, but fold adjacent topic fragments
+          // into their question until a sentence boundary or supplied fact.
+          while (previousWasDetail && details.length > detailRunStart) {
+            const previous = details[details.length - 1];
+            const explicit = explicitDetailStart(previous.text)
+              || /^(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move)\b/i.test(questionText(previous.text));
+            if (!previous.joinable || explicit) break;
+            text = details.pop().text + ' ' + text;
+          }
+          if (continuation && !startsQuestion && questions.length) questions[questions.length - 1] += ' ' + text;
+          else questions.push(text);
+          previousWasDetail = false;
+        } else {
+          if (!previousWasDetail) detailRunStart = details.length;
+          details.push({ text, joinable: !last || /[,;\n\r]/.test(ending) });
+          previousWasDetail = true;
+        }
+        questionContinues = question && (!last || /[,;\n\r]/.test(ending));
+      }
+    }
+    if (!questions.length) return { details: message, questions: [] };
+    const neutral = /^(?:(?:hi|hello|hey|thanks|thank\s+you|ok|okay|yes|no|please|actually|correction|and|also|but)[\s.!?,;]*)+$/i;
+    return {
+      details: details.map(part => part.text).filter(part => !neutral.test(part)).join('\n').trim(),
+      questions: questions.map(part => part.replace(/[,;\s]+$/g, '').trim())
+    };
+  }
+
   function extractFields(message, currentFields) {
     const result = { job: null, zip: null, timing: null, ambiguous: false };
     if (typeof message !== 'string' || !message.trim()) return result;
     if (message.length > MAX_MESSAGE_LENGTH) return { ...result, ambiguous: true };
     if (isOptOut(message) || isStart(message) || isUrgent(message)) return result;
+    const details = partitionMessage(message).details;
+    if (!details.trim()) return result;
     const current = mergeFields({}, currentFields);
-    const zip = findZip(message);
+    const zip = findZip(details);
     result.zip = zip.value;
     result.ambiguous = zip.ambiguous;
-    const remaining = maskRanges(message, zip.ranges);
+    const remaining = maskRanges(details, zip.ranges);
     const jobParts = [];
     const timingParts = [];
     let correction = false;
@@ -264,12 +370,224 @@
     return FIELD_NAMES.filter(key => !validated[key]);
   }
 
-  return Object.freeze({ normalize, isOptOut, isStart, isUrgent, extractFields, mergeFields, missingFields });
+  return Object.freeze({ normalize, isOptOut, isStart, isUrgent, partitionMessage, extractFields, mergeFields, missingFields });
+});
+
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.PanelReplyBusinessInfo = factory();
+})(globalThis, function () {
+  'use strict';
+
+  // Only add verified, public business information here. This file is included
+  // in the public page. Never put credentials or customer information in it.
+  // Each answer must be approved before verified is changed to true. Empty or
+  // unverified answers stay unknown. These facts do not enable booking or calls.
+  const unknown = () => Object.freeze({ verified: false, answer: '' });
+  return Object.freeze({
+    services: unknown(),
+    pricing: unknown(),
+    estimates: unknown(),
+    hours: unknown(),
+    serviceArea: unknown(),
+    contact: unknown(),
+    qualifications: unknown(),
+    emergencyAvailability: unknown(),
+    permits: unknown(),
+    warranty: unknown(),
+    financing: unknown()
+  });
+});
+
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory(require('./business-info.js'));
+  else root.PanelReplyQuestions = factory(root.PanelReplyBusinessInfo);
+})(globalThis, function (defaultFacts) {
+  'use strict';
+
+  // Saved answers only. This module does not call a model or change the request.
+  // Question text selects a topic, never a fact or an instruction to execute.
+  const FIELD_NAMES = ['job', 'zip', 'timing'];
+  const UNKNOWN = 'I do not have a verified answer to that question yet. I can help with this request, how this chat works, and business details once they are confirmed.';
+  const FALLBACKS = Object.freeze({
+    services: 'I do not have a verified list of the contractor\'s services yet. I can collect an electrical-work enquiry for the contractor to review.',
+    pricing: 'I do not have verified pricing for this work yet. The contractor needs to review the job before confirming a quote.',
+    estimates: 'I do not have verified estimate terms yet, including whether an estimate is free. The contractor needs to confirm them.',
+    hours: 'I do not have verified business hours yet. You can leave a callback preference for the contractor to confirm.',
+    serviceArea: 'I do not have a verified service area yet. The contractor needs to confirm whether they cover the job location.',
+    contact: 'I do not have verified contact details for the contractor yet. This preview does not contact anyone.',
+    qualifications: 'I do not have verified licensing, insurance or qualification details yet. Ask the contractor to provide them before agreeing to work.',
+    emergencyAvailability: 'I do not have verified emergency or after-hours availability yet.',
+    permits: 'I do not have verified permit arrangements for this job yet. The contractor needs to confirm them.',
+    warranty: 'I do not have verified warranty or guarantee terms yet. The contractor needs to confirm them.',
+    financing: 'I do not have verified financing or payment terms yet. The contractor needs to confirm them.'
+  });
+
+  function normalize(value) {
+    return typeof value === 'string' ? value.replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim() : '';
+  }
+
+  function fact(topic, approvedFacts) {
+    if (!approvedFacts || typeof approvedFacts !== 'object' || Array.isArray(approvedFacts)
+      || !Object.hasOwn(approvedFacts, topic)) return FALLBACKS[topic];
+    const entry = approvedFacts[topic];
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)
+      || !Object.hasOwn(entry, 'verified') || entry.verified !== true
+      || !Object.hasOwn(entry, 'answer') || typeof entry.answer !== 'string') return FALLBACKS[topic];
+    const value = entry.answer.trim();
+    return value && value.length <= 1000 && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value)
+      ? value : FALLBACKS[topic];
+  }
+
+  function requestState(fields) {
+    const result = { job: '', zip: '', timing: '', needsConfirmation: [] };
+    if (!fields || typeof fields !== 'object' || Array.isArray(fields)) return result;
+    for (const key of FIELD_NAMES) {
+      if (!Object.hasOwn(fields, key) || typeof fields[key] !== 'string') continue;
+      const value = fields[key].trim();
+      if (!value || value.length > 500) continue;
+      if (key === 'zip' ? /^\d{5}$/.test(value) : /[a-z0-9]/i.test(value)) result[key] = value;
+    }
+    if (Object.hasOwn(fields, 'needsConfirmation') && Array.isArray(fields.needsConfirmation)) {
+      result.needsConfirmation = FIELD_NAMES.filter(key => fields.needsConfirmation.includes(key));
+    }
+    return result;
+  }
+
+  function fieldAnswer(key, state) {
+    const label = { job: 'electrical work', zip: 'job ZIP', timing: 'callback preference' }[key];
+    const value = state[key];
+    if (state.needsConfirmation.includes(key)) {
+      return value
+        ? 'The request currently shows ' + label + ': ' + value + '. This still needs confirmation.'
+        : 'The ' + label + ' still needs confirmation. I do not have a confirmed value yet.';
+    }
+    if (!value) return 'You have not provided the ' + label + ' yet.';
+    return 'Your recorded ' + label + ' is ' + value + '.' + (key === 'timing' ? ' No appointment is booked.' : '');
+  }
+
+  function summaryAnswer(state) {
+    const lines = FIELD_NAMES.map(key => {
+      const label = { job: 'Electrical work', zip: 'Job ZIP', timing: 'Callback preference' }[key];
+      const value = state[key] || 'Not provided';
+      return label + ': ' + value + (state.needsConfirmation.includes(key) ? ' (needs confirmation)' : '');
+    });
+    return 'Here is the request so far.\n' + lines.join('\n') + '\nNo appointment is booked.';
+  }
+
+  function topicsFor(question) {
+    const text = normalize(question).toLowerCase();
+    const topics = [];
+    const add = topic => { if (!topics.includes(topic)) topics.push(topic); };
+    const recall = /\b(?:did|have|do)\s+i\s+(?:give|tell|say|provide|enter|choose|request|pick|supply|ask)\b/.test(text)
+      || /\b(?:i\s+(?:gave|told|said|provided|entered|chose|requested|picked|supplied)|you\s+(?:recorded|collected|noted))\b/.test(text)
+      || /\b(?:what|which|when)\b.*\b(?:my|our|recorded|current)\b/.test(text);
+    if (recall) {
+      if (/\b(?:zip|postal\s*code)\b/.test(text)) add('requestZip');
+      if (/\b(?:timing|callback|time|day|date|when|call)\b/.test(text)) add('requestTiming');
+      if (/\b(?:job|work|repair|installation)\b/.test(text)) add('requestJob');
+      if (!topics.length && /\b(?:give|gave|tell|told|say|said|provide|provided|enter|entered|ask|asked|request|requested|pick|picked|choose|chose|supply|supplied|recorded|collected|noted)\b/.test(text)) add('requestSummary');
+    }
+    if (/\b(?:summary|summari[sz]e|recap|so far)\b/.test(text)
+      || /\bwhat\b.*\b(?:details|information)\b.*\b(?:have|got|collected|recorded)\b/.test(text)) add('requestSummary');
+
+    if (/\b(?:book(?:ing|ed)?|appointments?|calendar|reserv(?:e|ed|ation)|reschedul(?:e|ing))\b/.test(text)) add('booking');
+    if (/\b(?:privacy|private|database|reload|refresh|retention|persist)\b/.test(text)
+      || /\b(?:sav(?:e|ed|ing)|stor(?:e|ed|ing)|keep|kept|retain)\b.*\b(?:my|our|request|details|data|information|messages?|conversation)\b/.test(text)
+      || /\b(?:my|our|request|details|data|information|messages?|conversation)\b.*\b(?:sav(?:e|ed)|stor(?:e|ed)|kept|retained)\b/.test(text)) add('privacy');
+    if (/\b(?:reset|start over|clear (?:this|the|my) (?:page|request|conversation))\b/.test(text)) add('reset');
+    if (/\b(?:stop|start|unsubscribe|opt[ -]?out|pause)\b/.test(text)
+      && /\b(?:mean|means|do|does|work|works|reply|replies|text|texts|message|messages|button|command|resume)\b/.test(text)) add('controls');
+    if (/\b(?:all|every|several|multiple|together|at once|one message|same message|everything)\b/.test(text)
+      && /\b(?:details|information|info|message|send|give|tell|enter|include)\b/.test(text)) add('bundled');
+    if (/\b(?:correct|correction|change|update|edit|wrong|mistake)\b/.test(text)
+      && /\b(?:zip|job|work|timing|callback|detail|details|request|summary|you)\b/.test(text)) add('corrections');
+    if (/\bhow\s+(?:does|do|can)\s+(?:this|it|the chat|the app|panelreply|i use this)\b.*\b(?:work|use|help)\b/.test(text)
+      || /\bwhat\b.*\b(?:details|information|info)\b.*\b(?:need|include|provide|send|enter)\b/.test(text)
+      || /\bhow\s+(?:do|can)\s+i\s+(?:get started|use (?:this|the chat|the app))\b/.test(text)) add('howItWorks');
+    if (/\b(?:are|is)\s+(?:you|this|the chat)\s+(?:an?\s+)?(?:ai|human|chatbot|robot)\b/.test(text)
+      || /\b(?:use|using)\b.*\b(?:ai|artificial intelligence)\b/.test(text)) add('answerMode');
+    if (/\b(?:can|could|do|will)\s+you\s+answer\b/.test(text)) add('questionHelp');
+
+    const asksContact = /\b(?:phone|telephone|number|email|e-mail|contact details|contact information|website|address)\b/.test(text)
+      || /\b(?:how (?:do|can) i (?:contact|reach|get in touch)|where are you (?:located|based))\b/.test(text);
+    if (asksContact) add('contact');
+    else if (/\b(?:notify|notified|notifications?|dispatch|dispatched)\b/.test(text)
+      || /\b(?:did|will|can|could|do|does|have|has)\s+(?:you|this|it|the chat|the app)\b.*\b(?:send|sent|call|called|text|texted|message|messaged|contact|contacted|reach|reached)\b/.test(text)
+      || /\b(?:send|sent)\b.*\b(?:customer|contractor|electrician|someone|anyone|notifications?|emails?|texts?)\b/.test(text)) add('messaging');
+
+    const estimate = /\bestimates?\b/.test(text);
+    if (estimate) add('estimates');
+    else if (/\b(?:cost|costs|price|prices|pricing|charge|charges|rates?|fees?|quotes?|expensive)\b/.test(text) || /\bhow much\b/.test(text)) add('pricing');
+    const emergency = /\b(?:emergenc(?:y|ies)|after[ -]hours|out.of.hours)\b/.test(text) || /\b24\s*(?:\/|[- ]?\s*)7\b/.test(text);
+    const hoursText = text.replace(/\b(?:after[ -]hours|out.of.hours)\b/g, '');
+    if (/\bhours\b|\b(?:opening|closing)\s+(?:time|times)\b/.test(hoursText)
+      || /\b(?:are|is|will)\b.*\b(?:open|closed)\b/.test(text)
+      || /\b(?:do|does)\s+(?:you|the office|the business)\s+(?:open|close)\b/.test(text)
+      || /\b(?:when|what time)\b.*\b(?:open|close)\b/.test(text)) add('hours');
+    if (emergency) add('emergencyAvailability');
+    else if (/\b(?:available|availability|slots?|fit me in)\b/.test(text)
+      || /\b(?:an?|any|the next)\s+openings?\b/.test(text)
+      || /\b(?:can|could|will|when)\b.*\b(?:come (?:out|by|over)|visit)\b/.test(text)) add('availability');
+    const area = /\b(?:service area|coverage|cover|serve|serving)\b/.test(text)
+      || /\bservic(?:e|ing)\b.*\b(?:\d{5}|area|location|city|town|zip)\b/.test(text)
+      || /\b(?:work in|travel to|come to)\b/.test(text);
+    if (area) add('serviceArea');
+    else if (/\b(?:what|which)\b.*\bservices?\b/.test(text)
+      || /\bwhat\s+(?:work\s+)?do\s+you\s+(?:do|offer|provide)\b/.test(text)
+      || (!emergency && /\b(?:do|can|will)\s+you\b.*\b(?:offer|provide)\b.*\b(?:electrical work|services?)\b/.test(text))
+      || /\b(?:can|could|would|will|do)\s+you\b.*\b(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move|service|work on)\b/.test(text)) add('services');
+    if (/\b(?:licen[cs](?:e|ed|ing)|insured|insurance|bonded|qualifications?|certifi(?:ed|cation))\b/.test(text)) add('qualifications');
+    if (/\b(?:permits?|code compliance)\b/.test(text)) add('permits');
+    if (/\b(?:warrant(?:y|ies)|guarantee|guaranteed)\b/.test(text)) add('warranty');
+    if (/\b(?:financ(?:e|ing)|payment plans?|payments?|pay in|pay by|instalments?|installments?|credit cards?)\b/.test(text)
+      || /\baccept\b.*\b(?:cash|cards?|checks?|cheques?)\b/.test(text)) add('financing');
+    return topics.length ? topics : ['unknown'];
+  }
+
+  function topicAnswer(topic, state, approvedFacts) {
+    if (Object.hasOwn(FALLBACKS, topic)) {
+      return fact(topic, approvedFacts) + (topic === 'emergencyAvailability'
+        ? ' This chat does not dispatch an electrician or contact emergency services.' : '');
+    }
+    switch (topic) {
+      case 'requestJob': return fieldAnswer('job', state);
+      case 'requestZip': return fieldAnswer('zip', state);
+      case 'requestTiming': return fieldAnswer('timing', state);
+      case 'requestSummary': return summaryAnswer(state);
+      case 'booking': return 'This preview does not book appointments or check a calendar. It collects callback preferences. A contractor still needs to confirm availability and arrange the appointment. Changing the sample booking status does not reserve a time.';
+      case 'availability': return 'I cannot check live availability. I can record a callback preference, but the contractor must confirm it. No appointment is booked.';
+      case 'messaging': return 'This preview does not send calls, texts, emails or notifications, and it does not dispatch an electrician. Messages and the missed-call control demonstrate the workflow on this page.';
+      case 'privacy': return 'This preview does not save requests to a customer database. Reloading or resetting clears the page state. If the optional AI connection is used, the current message and request details are sent to its provider.';
+      case 'reset': return 'Use Reset tour to clear this conversation, the sample request and the entered test access code. Reloading also clears the page state.';
+      case 'controls': return 'STOP pauses automated replies in this preview. START resumes them unless there is a safety hold. Reset tour clears the page. This preview does not keep opt-out status after a reload.';
+      case 'bundled': return 'Yes. You can put the electrical work, five-digit job ZIP and callback preference in one message, or send them separately. Each message can contain up to 500 characters.';
+      case 'corrections': return 'State the field and its correction, for example: "Actually the job ZIP is 48084" or "Call me Monday after 5 pm instead". Review the request details afterward. If details conflict, confirm the field the chat asks about.';
+      case 'howItWorks': return 'Describe the electrical work, give the five-digit job ZIP and add a callback preference. This preview collects those details into a request summary and asks about missing or conflicting information. It does not contact anyone or book an appointment.';
+      case 'answerMode': return 'These question answers use saved information and the details in this request. They are not live AI responses.';
+      case 'questionHelp': return 'I can answer common questions about this request, how the chat works, and verified business details. I will say when I do not have an answer.';
+      default: return UNKNOWN;
+    }
+  }
+
+  function answer(questions, fields, approvedFacts = defaultFacts) {
+    if (!Array.isArray(questions)) return '';
+    const state = requestState(fields);
+    const topics = [];
+    for (const question of questions.slice(0, 32)) {
+      if (typeof question !== 'string' || !question.trim() || question.length > 2000) continue;
+      for (const topic of topicsFor(question)) if (!topics.includes(topic)) topics.push(topic);
+    }
+    return [...new Set(topics.map(topic => topicAnswer(topic, state, approvedFacts)))].join('\n\n');
+  }
+
+  return Object.freeze({ answer });
 });
 
 'use strict';
 
 const intake = globalThis.PanelReplyIntake;
+const questions = globalThis.PanelReplyQuestions;
 const $ = id => document.getElementById(id);
 const aiEnabled = document.body.dataset.aiEnabled === 'true';
 let stage = 0, stopped = false, hold = false, job = '', zip = '', timing = '';
@@ -279,6 +597,10 @@ let clarificationFields = [];
 let viewRevision = 0;
 
 function fields() { return { job, zip, timing }; }
+
+function savedAnswer(questionClauses) {
+  return questions.answer(questionClauses, { ...fields(), needsConfirmation: clarificationFields.slice() });
+}
 
 function event(text, type = '') {
   const list = $('events');
@@ -418,7 +740,7 @@ function safetyHold() {
   update();
 }
 
-function applyExtraction(extracted, fromAI = false) {
+function applyExtraction(extracted, fromAI = false, questionClauses = []) {
   const merged = intake.mergeFields(fields(), extracted);
   job = merged.job;
   zip = merged.zip;
@@ -433,6 +755,7 @@ function applyExtraction(extracted, fromAI = false) {
   }
   clarificationPending = clarificationFields.length > 0;
   update();
+  if (questionClauses.length) event(savedAnswer(questionClauses));
   event(nextQuestion());
   if (stage === 3 && !clarificationPending) event('Sample request ready for contractor review. No notification sent.', 'system');
 }
@@ -493,10 +816,20 @@ async function send(body) {
     return;
   }
 
+  const parts = intake.partitionMessage(body);
+  const detailMessage = parts.details.trim();
+  if (parts.questions.length && !detailMessage) {
+    mode(aiEnabled
+      ? 'Saved answer from the information available here. No AI request was made.'
+      : 'Saved answer. Live AI is not connected on this page.');
+    event(savedAnswer(parts.questions));
+    return;
+  }
+
   const accessCode = $('ai-access').value.trim();
   if (!aiEnabled || !accessCode) {
-    mode();
-    applyExtraction(intake.extractFields(body, fields()));
+    mode(parts.questions.length ? 'Saved answers and demo parsing handled this message.' : undefined);
+    applyExtraction(intake.extractFields(detailMessage, fields()), false, parts.questions);
     return;
   }
 
@@ -510,26 +843,28 @@ async function send(body) {
     const response = await fetch('/api/intake', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessCode },
-      body: JSON.stringify({ message: body, fields: fields() }),
+      body: JSON.stringify({ message: detailMessage, fields: fields() }),
       signal: controller.signal,
       credentials: 'omit',
       cache: 'no-store',
     });
     if (!response.ok) throw new Error('AI unavailable');
     const payload = await response.json();
-    if (!validExtraction(payload, body)) throw new Error('Invalid AI response');
+    if (!validExtraction(payload, detailMessage)) throw new Error('Invalid AI response');
     if (version !== requestVersion || stopped || hold) return;
     if (payload.flags.optOut) pauseReplies();
     if (payload.flags.hazard) safetyHold();
     if (payload.flags.optOut || payload.flags.hazard) return;
     mode(payload.mode === 'ai'
-      ? 'AI extracted these details. Check the summary and correct anything it misunderstood.'
-      : 'Demo parsing handled this message.');
-    applyExtraction({ ...payload.fields, ambiguous: payload.flags.ambiguous }, payload.mode === 'ai');
+      ? 'AI extracted these details. ' + (parts.questions.length ? 'Questions used saved answers. ' : '') +
+        'Check the summary and correct anything it misunderstood.'
+      : (parts.questions.length ? 'Saved answers and demo parsing handled this message.' : 'Demo parsing handled this message.'));
+    applyExtraction({ ...payload.fields, ambiguous: payload.flags.ambiguous }, payload.mode === 'ai', parts.questions);
   } catch (_error) {
     if (version !== requestVersion || stopped || hold) return;
-    mode('AI is unavailable. This message used demo parsing. Check the summary before continuing.');
-    applyExtraction(intake.extractFields(body, fields()));
+    mode('AI is unavailable. This message used demo parsing' + (parts.questions.length ? ' and saved answers' : '') +
+      '. Check the summary before continuing.');
+    applyExtraction(intake.extractFields(detailMessage, fields()), false, parts.questions);
   } finally {
     clearTimeout(timeout);
     if (version === requestVersion) {

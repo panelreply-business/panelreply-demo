@@ -1,6 +1,7 @@
 'use strict';
 
 const intake = globalThis.PanelReplyIntake;
+const questions = globalThis.PanelReplyQuestions;
 const $ = id => document.getElementById(id);
 const aiEnabled = document.body.dataset.aiEnabled === 'true';
 let stage = 0, stopped = false, hold = false, job = '', zip = '', timing = '';
@@ -10,6 +11,10 @@ let clarificationFields = [];
 let viewRevision = 0;
 
 function fields() { return { job, zip, timing }; }
+
+function savedAnswer(questionClauses) {
+  return questions.answer(questionClauses, { ...fields(), needsConfirmation: clarificationFields.slice() });
+}
 
 function event(text, type = '') {
   const list = $('events');
@@ -149,7 +154,7 @@ function safetyHold() {
   update();
 }
 
-function applyExtraction(extracted, fromAI = false) {
+function applyExtraction(extracted, fromAI = false, questionClauses = []) {
   const merged = intake.mergeFields(fields(), extracted);
   job = merged.job;
   zip = merged.zip;
@@ -164,6 +169,7 @@ function applyExtraction(extracted, fromAI = false) {
   }
   clarificationPending = clarificationFields.length > 0;
   update();
+  if (questionClauses.length) event(savedAnswer(questionClauses));
   event(nextQuestion());
   if (stage === 3 && !clarificationPending) event('Sample request ready for contractor review. No notification sent.', 'system');
 }
@@ -224,10 +230,20 @@ async function send(body) {
     return;
   }
 
+  const parts = intake.partitionMessage(body);
+  const detailMessage = parts.details.trim();
+  if (parts.questions.length && !detailMessage) {
+    mode(aiEnabled
+      ? 'Saved answer from the information available here. No AI request was made.'
+      : 'Saved answer. Live AI is not connected on this page.');
+    event(savedAnswer(parts.questions));
+    return;
+  }
+
   const accessCode = $('ai-access').value.trim();
   if (!aiEnabled || !accessCode) {
-    mode();
-    applyExtraction(intake.extractFields(body, fields()));
+    mode(parts.questions.length ? 'Saved answers and demo parsing handled this message.' : undefined);
+    applyExtraction(intake.extractFields(detailMessage, fields()), false, parts.questions);
     return;
   }
 
@@ -241,26 +257,28 @@ async function send(body) {
     const response = await fetch('/api/intake', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessCode },
-      body: JSON.stringify({ message: body, fields: fields() }),
+      body: JSON.stringify({ message: detailMessage, fields: fields() }),
       signal: controller.signal,
       credentials: 'omit',
       cache: 'no-store',
     });
     if (!response.ok) throw new Error('AI unavailable');
     const payload = await response.json();
-    if (!validExtraction(payload, body)) throw new Error('Invalid AI response');
+    if (!validExtraction(payload, detailMessage)) throw new Error('Invalid AI response');
     if (version !== requestVersion || stopped || hold) return;
     if (payload.flags.optOut) pauseReplies();
     if (payload.flags.hazard) safetyHold();
     if (payload.flags.optOut || payload.flags.hazard) return;
     mode(payload.mode === 'ai'
-      ? 'AI extracted these details. Check the summary and correct anything it misunderstood.'
-      : 'Demo parsing handled this message.');
-    applyExtraction({ ...payload.fields, ambiguous: payload.flags.ambiguous }, payload.mode === 'ai');
+      ? 'AI extracted these details. ' + (parts.questions.length ? 'Questions used saved answers. ' : '') +
+        'Check the summary and correct anything it misunderstood.'
+      : (parts.questions.length ? 'Saved answers and demo parsing handled this message.' : 'Demo parsing handled this message.'));
+    applyExtraction({ ...payload.fields, ambiguous: payload.flags.ambiguous }, payload.mode === 'ai', parts.questions);
   } catch (_error) {
     if (version !== requestVersion || stopped || hold) return;
-    mode('AI is unavailable. This message used demo parsing. Check the summary before continuing.');
-    applyExtraction(intake.extractFields(body, fields()));
+    mode('AI is unavailable. This message used demo parsing' + (parts.questions.length ? ' and saved answers' : '') +
+      '. Check the summary before continuing.');
+    applyExtraction(intake.extractFields(detailMessage, fields()), false, parts.questions);
   } finally {
     clearTimeout(timeout);
     if (version === requestVersion) {

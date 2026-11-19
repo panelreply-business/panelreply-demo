@@ -34,6 +34,8 @@ The earlier [49-check baseline](https://github.com/panelreply-business/panelrepl
 
 ## What the workspace does
 
+- Answers common questions using saved information and the current request details.
+- Keeps business-hours, pricing and coverage questions from changing the job, ZIP or callback preference.
 - Presents a conversation panel and a request detail card with a consistent desktop and mobile layout.
 - Accepts the job, ZIP and timing in one message or in a different order.
 - Shows confirmed-field progress and asks for missing information.
@@ -53,11 +55,33 @@ Then try `Actually the job ZIP is 48084`. The ZIP changes without replacing the 
 
 The website is a sample workspace. It does not receive real calls or SMS, send messages or alerts, dispatch electricians, save customer requests to a database, create customer accounts, book appointments or process payments. Page state resets on reload. Use sample information when trying it.
 
+## Questions and request details
+
+The chat can answer questions without starting over or changing the information already supplied. It can also collect details and answer a question from the same message.
+
+Try:
+
+```text
+What details do you need?
+I need an EV charger installed. How much does it cost?
+My ZIP is 48315. Do you serve that area?
+What ZIP did I give you?
+Does this book an appointment?
+```
+
+Question replies use saved information and are labelled `Saved answer`. They do not call an AI provider. Unknown topics get an explicit limitation. These replies are not unrestricted AI chat.
+
+No contractor services, hours, prices, service area, contact details or qualifications have been supplied and verified. The app states that those facts need confirmation. It does not invent them. Approved public business answers belong in `src/business-info.js`; each entry stays unavailable until it has both a nonempty answer and `verified: true`. Never put credentials or customer information in that public file.
+
+Pure questions preserve field progress and unresolved clarification. Mixed messages keep explicitly stated details while excluding information mentioned only in a question. STOP and safety holds take precedence. A polite callback request such as `Can you call me Friday after 4 pm?` still records a preference.
+
+[Question handling, defects and verification](docs/QUESTION_ANSWERS.md)
+
 ## AI and appointment boundaries
 
 Static mode uses a local parser and labels itself `Demo parsing`. It makes no AI requests.
 
-The optional Node server can connect `POST /api/intake` to OpenAI after configuration and cost approval. The server keeps the API key out of the browser. The model extracts source text into fields, while application code controls replies, opt-out handling and safety holds. Invalid or unavailable AI responses visibly fall back to local parsing. STOP, safety holds and reset take precedence over late AI responses.
+The optional Node server can connect `POST /api/intake` to OpenAI after configuration and cost approval. The server keeps the API key out of the browser. The model extracts source text into fields, while application code controls replies, saved question answers, opt-out handling and safety holds. Informational question clauses are excluded from model extraction. Invalid or unavailable AI responses visibly fall back to local parsing. STOP, safety holds and reset take precedence over late AI responses. Enabling this extraction adapter does not provide unrestricted AI-generated answers.
 
 Appointment booking is NOT IMPLEMENTED. Callback timing is a customer preference, not a calendar slot. `Booked by contractor` changes a sample label only. It does not create an event, reserve a time, check availability or notify anyone.
 
@@ -117,7 +141,7 @@ node scripts/build-demo.cjs --check
 Requires Node.js 22 or later. No Node package installation is required. These tests inject fake provider responses and do not call OpenAI:
 
 ```sh
-node --test tests/demo.test.cjs tests/intake.test.cjs tests/server.test.cjs
+node --test tests/demo.test.cjs tests/intake.test.cjs tests/questions.test.cjs tests/server.test.cjs
 ```
 
 ### Full Node, HTTP and live GET checks
@@ -144,6 +168,7 @@ python tests/ui_browser_test.py
 The suites serve copied application files over localhost and exercise the real controls, styles, script and content security policy. They cover:
 
 - Manual and bundled intake, corrections, invalid input and native form validation.
+- Saved answers, current-request recall, mixed questions and details, and preservation of fields and clarification state.
 - Address, electrical-rating and extended-ZIP edge cases.
 - Opt-out phrases, STOP/START, safety holds and reset.
 - Simulated AI success, malformed output, failures and late-response cancellation.
@@ -178,6 +203,8 @@ Live model calls are not part of scheduled tests. The audit distinguishes verifi
 | --- | --- |
 | `index.html` | Workspace markup, styles and generated inline bundle |
 | `src/` | Shared intake parser and browser controller |
+| `src/business-info.js` | Approved public business answers, empty and unverified by default |
+| `src/questions.js` | Saved question answers and request recall, without provider calls |
 | `scripts/build-demo.cjs` | Bundle generation and CSP integrity check |
 | `server.cjs` | Optional gated AI adapter and restricted file server |
 | `.env.example` | Disabled configuration example without credentials |
@@ -203,6 +230,7 @@ The static service cannot execute `server.cjs`. A separate free-plan Node web se
 ## Audit records
 
 - [Workspace redesign and 149-check evidence](docs/WORKSPACE_REDESIGN.md)
+- [Question answers and intake-integrity correction](docs/QUESTION_ANSWERS.md)
 - [Live AI activation setup and verification](docs/LIVE_AI_SETUP.md)
 - [AI intake design and earlier test evidence](docs/AI_INTAKE.md)
 - [Release audit](docs/RELEASE_AUDIT.md)

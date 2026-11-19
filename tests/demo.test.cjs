@@ -461,6 +461,84 @@ test('ZIP ambiguity stays unresolved when unrelated timing changes', async () =>
   assert.equal(f.node('title').textContent, 'Ready for callback.');
 });
 
+test('saved question answers preserve completed intake and make no provider request', async () => {
+  let calls = 0;
+  const f = fixture({ aiEnabled: true, fetch: async () => { calls++; throw new Error('Questions must stay local'); } });
+  await f.send(bundled);
+  f.node('ai-access').value = 'test-access-code';
+  const before = f.state();
+  const readyCount = f.messages().filter(text => /Sample request ready for contractor review/.test(text)).length;
+  for (const question of ['Are you open Friday?', 'Do you service 48084?', 'How much does it cost to install an EV charger?', 'Who won the football game?']) {
+    await f.send(question);
+    assert.deepEqual(f.state(), before, question);
+    assert.match(f.node('ai-mode').textContent, /Saved answer/);
+    assert.doesNotMatch(f.messages().at(-1), /Your request is ready for a callback/);
+  }
+  assert.equal(calls, 0);
+  assert.equal(f.messages().filter(text => /Sample request ready for contractor review/.test(text)).length, readyCount);
+});
+
+test('mixed details and questions use the new facts without promoting question text to fields', async () => {
+  const f = fixture();
+  await f.send('I need an EV charger installed. How much does it cost?');
+  assert.equal(f.state().job, 'I need an EV charger installed');
+  assert.equal(f.state().zip, '');
+  assert.equal(f.state().timing, '');
+  assert.match(f.messages().join(' '), /(?:price|pricing|quote)/i);
+  await f.send('My ZIP is 48315. What ZIP did I give you?');
+  assert.equal(f.state().zip, '48315');
+  assert.match(f.messages().at(-2), /48315/);
+  assert.match(f.messages().at(-1), /When do you need/);
+});
+
+test('a question cannot clear an unresolved ZIP conflict or create a confirmed preference', async () => {
+  const f = fixture();
+  await f.send(bundled);
+  await f.send('The ZIP is 48315 or 48084');
+  const before = f.state();
+  await f.send('Do you service 48084? Are you open Monday?');
+  assert.deepEqual(f.state(), before);
+  assert.equal(f.state().clarificationPending, true);
+  assert.equal(f.node('field-count').textContent, '2 of 3');
+});
+
+test('mixed AI intake sends only supplied details and keeps question answers local', async () => {
+  let sent;
+  const f = fixture({ aiEnabled: true, fetch: async (_url, options) => {
+    sent = JSON.parse(options.body);
+    return okResponse(aiAnswer({ job: 'EV charger installed', zip: null, timing: null }));
+  } });
+  f.node('ai-access').value = 'test-access-code';
+  await f.send('I need an EV charger installed. Are you open Friday?');
+  assert.match(sent.message, /I need an EV charger installed/);
+  assert.doesNotMatch(sent.message, /Are you open|Friday/);
+  assert.equal(f.state().job, 'EV charger installed');
+  assert.equal(f.state().timing, '');
+  assert.match(f.messages().join(' '), /hours/i);
+  assert.match(f.node('ai-mode').textContent, /Questions used saved answers/);
+});
+
+test('question-derived model output falls back without changing the callback preference', async () => {
+  const f = fixture({ aiEnabled: true, fetch: async () => okResponse(aiAnswer({ job: 'Install lights', zip: null, timing: 'Friday' })) });
+  f.node('ai-access').value = 'test-access-code';
+  await f.send('Install lights. Are you open Friday?');
+  assert.equal(f.state().job, 'Install lights');
+  assert.equal(f.state().timing, '');
+  assert.match(f.node('ai-mode').textContent, /AI is unavailable.*demo parsing.*saved answers/);
+});
+
+test('reset cancels both a late extraction and its accompanying saved question answer', async () => {
+  let finish;
+  const f = fixture({ aiEnabled: true, fetch: () => new Promise(resolve => { finish = resolve; }) });
+  f.node('ai-access').value = 'test-access-code';
+  const pendingReply = f.send('Install lights. What are your hours?');
+  f.reset();
+  finish(okResponse(aiAnswer({ job: 'Install lights', zip: null, timing: null })));
+  await pendingReply;
+  assert.equal(f.state().stage, 0);
+  assert.equal(f.messages().length, 0);
+});
+
 test('bundled STOP and danger keep opt-out and safety protections together', async () => {
   const f = fixture();
   await f.send('STOP. My breaker is melting.');

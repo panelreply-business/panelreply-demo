@@ -128,7 +128,7 @@
     if (!cue) return { job: clause, timing: null };
     let start = cue.index;
     const prefix = clause.slice(0, start);
-    const lead = prefix.match(/\b(?:(?:please\s+)?(?:(?:can|could|would|will)\s+you\s+)?(?:call(?:\s+me|\s+us)?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit)|(?:my\s+)?(?:timing|availability|callback(?:\s+time)?)(?:\s+is)?\s*[:=]?|(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+available)\s*(?:on\s+)?$/i);
+    const lead = prefix.match(/\b(?:(?:please\s+)?(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:be\s+able\s+to\s+)?)?(?:call(?:\s+me|\s+us)?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit)|(?:my\s+)?(?:timing|availability|callback(?:\s+time)?)(?:\s+is)?\s*[:=]?|(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+available)\s*(?:on\s+)?$/i);
     const negative = prefix.match(/\b(?:but\s+)?(?:not|except|excluding|other\s+than|anything\s+but)(?:\s+(?:on|until|before|after))?\s*$/i);
     const unavailable = /^(?:(?:please|but|and|i|we|am|are|i['’]m|we['’]re)\s+)*(?:not|never|except|excluding|other\s+than|anything\s+but|unavailable|busy|can't|can’t|cannot|can\s+not|don't|don’t|do\s+not|won't|won’t|will\s+not)\b/i;
     if (unavailable.test(prefix) && !JOB_CUE.test(prefix)) start = 0;
@@ -155,16 +155,122 @@
     return true;
   }
 
+  function questionText(text) {
+    return normalize(text).replace(/^["“”'‘’([{\s]+/, '')
+      .replace(/^(?:(?:hi|hello|hey|please|actually|also|and|but)\b[\s,:-]*)+/i, '');
+  }
+
+  function informationalStart(text) {
+    const value = questionText(text);
+    return /^(?:what|which|why|how|when|where|who|whose|is|are|was|were)\b/i.test(value)
+      || /^(?:do|does|did|can|could|would|will|should|may|might|has|have)\s+(?:you|i|we|they|he|she|it|this|that|these|those|there|the|my|your|our|a|an|anyone|someone)\b/i.test(value)
+      || /^(?:(?:tell|show)\s+me|let\s+me\s+know|explain|describe|help\s+me\s+understand|i(?:'d|\s+would)\s+like\s+to\s+(?:know|ask)|i\s+(?:want|wanted|need)\s+to\s+(?:know|ask)|i(?:'m|\s+am|\s+was)\s+(?:just\s+)?wondering)\b/i.test(value);
+  }
+
+  function callbackRequest(text) {
+    const value = questionText(text);
+    const request = value.match(/^(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:be\s+able\s+to\s+)?)?(?:call(?:\s+(?:me|us))?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit(?:\s+(?:me|us))?)\b/i);
+    if (!request || !timingCue(value)) return false;
+    // Bare "call" is a request only when its next words identify the time.
+    // A question about calling customers must not become callback availability.
+    if (/\bcall$/i.test(request[0])) {
+      const remaining = value.slice(request[0].length).trim().replace(/^on\s+/i, '');
+      const cue = timingCue(remaining);
+      return Boolean(cue && cue.index === 0);
+    }
+    return true;
+  }
+
+  function explicitDetailStart(text) {
+    const value = questionText(text);
+    if (callbackRequest(value)) return true;
+    if (informationalStart(value)) return false;
+    return /^(?:i|we)\s+(?:need|want|require)\b/i.test(value)
+      || /^(?:(?:my|our|the|job|correct|new)\s+)*(?:zip(?:\s*code)?|postal\s*code)\b/i.test(value)
+      || /^(?:job|work|request|timing|availability|callback(?:\s+time)?|preferred(?:\s+callback)?\s+time)\s*[:=]/i.test(value)
+      || /^(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+(?:in|at|available|unavailable|not\s+available)\b/i.test(value)
+      || /\bworks?\s+for\s+(?:me|us)\b/i.test(value);
+  }
+
+  function splitQuestionJoiners(text) {
+    const parts = [];
+    let start = 0;
+    for (const joiner of text.matchAll(/\s+(?:and|but|also)\s+/gi)) {
+      const before = text.slice(start, joiner.index);
+      const after = text.slice(joiner.index + joiner[0].length);
+      if (informationalStart(after) || (informationalStart(before) && explicitDetailStart(after))) {
+        parts.push(before);
+        start = joiner.index + joiner[0].length;
+      }
+    }
+    parts.push(text.slice(start));
+    return parts;
+  }
+
+  function partitionMessage(message) {
+    if (typeof message !== 'string' || !message.trim()) return { details: '', questions: [] };
+    const details = [];
+    const questions = [];
+    // Keep delimiters so a question mark can distinguish "Friday?" from a
+    // supplied Friday preference. Periods inside prices and p.m. stay intact.
+    const clauses = message.split(/([!?]+|\.+(?=\s|$)|[\n\r;,]+)/);
+    let questionContinues = false;
+    let detailRunStart = 0;
+    let previousWasDetail = false;
+    for (let index = 0; index < clauses.length; index += 2) {
+      const parts = splitQuestionJoiners(clauses[index]);
+      const delimiter = clauses[index + 1] || '';
+      for (let partIndex = 0; partIndex < parts.length; partIndex++) {
+        const clause = parts[partIndex].trim();
+        if (!clause) continue;
+        const last = partIndex === parts.length - 1;
+        const ending = last ? delimiter : '';
+        let text = clause + ending;
+        const startsQuestion = informationalStart(clause);
+        const continuation = questionContinues && !explicitDetailStart(clause);
+        const question = !callbackRequest(clause) && (startsQuestion || ending.includes('?') || continuation);
+        if (question) {
+          // "48084, do you serve there?" supplies a question topic, not a job
+          // location. Preserve explicit facts, but fold adjacent topic fragments
+          // into their question until a sentence boundary or supplied fact.
+          while (previousWasDetail && details.length > detailRunStart) {
+            const previous = details[details.length - 1];
+            const explicit = explicitDetailStart(previous.text)
+              || /^(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move)\b/i.test(questionText(previous.text));
+            if (!previous.joinable || explicit) break;
+            text = details.pop().text + ' ' + text;
+          }
+          if (continuation && !startsQuestion && questions.length) questions[questions.length - 1] += ' ' + text;
+          else questions.push(text);
+          previousWasDetail = false;
+        } else {
+          if (!previousWasDetail) detailRunStart = details.length;
+          details.push({ text, joinable: !last || /[,;\n\r]/.test(ending) });
+          previousWasDetail = true;
+        }
+        questionContinues = question && (!last || /[,;\n\r]/.test(ending));
+      }
+    }
+    if (!questions.length) return { details: message, questions: [] };
+    const neutral = /^(?:(?:hi|hello|hey|thanks|thank\s+you|ok|okay|yes|no|please|actually|correction|and|also|but)[\s.!?,;]*)+$/i;
+    return {
+      details: details.map(part => part.text).filter(part => !neutral.test(part)).join('\n').trim(),
+      questions: questions.map(part => part.replace(/[,;\s]+$/g, '').trim())
+    };
+  }
+
   function extractFields(message, currentFields) {
     const result = { job: null, zip: null, timing: null, ambiguous: false };
     if (typeof message !== 'string' || !message.trim()) return result;
     if (message.length > MAX_MESSAGE_LENGTH) return { ...result, ambiguous: true };
     if (isOptOut(message) || isStart(message) || isUrgent(message)) return result;
+    const details = partitionMessage(message).details;
+    if (!details.trim()) return result;
     const current = mergeFields({}, currentFields);
-    const zip = findZip(message);
+    const zip = findZip(details);
     result.zip = zip.value;
     result.ambiguous = zip.ambiguous;
-    const remaining = maskRanges(message, zip.ranges);
+    const remaining = maskRanges(details, zip.ranges);
     const jobParts = [];
     const timingParts = [];
     let correction = false;
@@ -202,5 +308,5 @@
     return FIELD_NAMES.filter(key => !validated[key]);
   }
 
-  return Object.freeze({ normalize, isOptOut, isStart, isUrgent, extractFields, mergeFields, missingFields });
+  return Object.freeze({ normalize, isOptOut, isStart, isUrgent, partitionMessage, extractFields, mergeFields, missingFields });
 });
