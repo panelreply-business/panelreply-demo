@@ -87,7 +87,7 @@ class XlsxBrowserTests(PanelWorkspaceBrowserTests):
         self.page.on("download", lambda download: downloads.append(download))
         route_url = self.origin + "/api/panel-projects/" + saved["id"] + "/export.xlsx"
         for mime, body in [("application/json", '{}'), ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "")]:
-            self.page.route(route_url, lambda route, mime=mime, body=body: route.fulfill(status=200, content_type=mime, body=body))
+            self.page.route(route_url, lambda route, _request, mime=mime, body=body: route.fulfill(status=200, content_type=mime, body=body))
             self.page.locator("#export-project-xlsx").click()
             expect(self.page.locator("#panel-export-error")).to_contain_text("did not return a XLSX file")
             expect(self.page.locator("#panel-export-status")).to_be_empty()
