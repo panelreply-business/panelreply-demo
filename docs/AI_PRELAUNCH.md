@@ -137,11 +137,16 @@ The conversation-composition and field-grounding issues were found and fixed bef
 | --- | --- |
 | Default deterministic workspace | Implemented, existing tests retained |
 | Strict orchestration, context and fake-provider failure handling | Component and in-process API evidence above |
-| Actual HTTP and browser flow for the new adapter | Reported separately in the current release verification record |
+| Actual HTTP and browser flow for the new adapter | PASS in run66: four synthetic-provider scenarios in each of Chromium, Firefox and WebKit against the real private HTTP/SQLite server |
 | Concrete Responses transport | Implemented and verified through 31 mock HTTP cases, not activated |
 | Real-provider/model selection and credentials | Not activated, approval required |
-| Actual model response quality and representative 300–500-scenario evaluation | BLOCKED by real-provider authorization |
+| Actual model response quality | BLOCKED by real-provider authorization |
+| Expanded 300–500 meaningful scenario target | Not complete; the current corpus has 49 curated scenarios and must not be inflated through trivial variants |
 | Durable per-business cost limits and hosted provider operations | NOT IMPLEMENTED |
 | Live messaging, calendar booking and real human handoff delivery | NOT IMPLEMENTED, separate approval and integrations required |
 
 The current assistant can record a request for human review in the draft. It does not contact a person. Free-text generation and provider-suggested actions are intentionally excluded from the trusted output path. This is a prepared conversational integration boundary, not a live-AI launch claim.
+
+## Final integration checkpoint
+
+[Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) verified source 17223d6. The final in-process assistant API suite has ten passing cases, including a connection already aborted before handler setup. All four synthetic conversation browser scenarios pass in each engine. These counts overlap the full regression record. Actual provider calls remain zero.

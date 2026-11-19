@@ -89,3 +89,7 @@ The benchmark CLI reports `MEASURED` separately from `accuracyGate`. Nonexact ex
 Representative, authorized noncustomer photographs remain unavailable. Real-photo accuracy is NOT TESTED. Physical-device camera artifacts, glare, wear, perspective, multilingual labels and handwriting require a controlled image set before launch claims. This set includes simple affine skew, not a substitute for all perspective effects.
 
 The current product remains a review-and-correction workflow. It supports zero or one candidate per image and does not identify part compatibility, substitute manufacturer guesses, or certify electrical specifications. A crop/orientation control and a representative-photo benchmark should be considered before improving extraction through heuristics. Hosted process isolation, version patch policy and retention/deletion remain separate release gates.
+
+## CI replay checkpoint
+
+[Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683), source 17223d6, independently regenerated 310 unique images and repeated the measurement using Tesseract 5.3.4 in CI. The result remained 253 exact cases, 57 nonexact, zero native execution errors and zero review-contract violations. Median/p95/max processing observations were 113/173/295 ms on that runner. The job completed, but accuracyGate remained FAIL. These timings are not controlled hardware comparisons or a hosting SLA. See the [current machine-readable report](evidence/prelaunch-verification.json).

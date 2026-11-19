@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "17223d6b972cc4bd3e58e9412964d237cbc0eeb9",
+  "workflowRun": 44634698683,
+  "runUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683",
+  "jobId": 135950082066,
+  "browser": "Chromium 151.0.7922.34",
+  "source": "Unmodified JPEG bytes emitted by actual platform_visual_browser_test.py runs against loopback HTTP and synthetic SQLite records. Decoded from CI log markers.",
+  "captures": [
+    {
+      "file": "prelaunch-panels-desktop.jpg",
+      "viewportWidth": 1440,
+      "fullPage": true,
+      "sha256": "4460273d31a7ab681024d5224dc4c191b91b68af253bff4e0caee0297ef3e79c",
+      "bytes": 151483,
+      "inspected": true
+    },
+    {
+      "file": "prelaunch-panels-mobile.jpg",
+      "viewportWidth": 360,
+      "fullPage": true,
+      "sha256": "d1cee0ca1b107d999b3d4ff5af9ca6b7e1f5e04f6a85d565e2f9cc69b17513a7",
+      "bytes": 105561,
+      "inspected": true
+    }
+  ],
+  "limits": "Captured states only. Timestamps use the CI browser timezone. No real customer information."
+}

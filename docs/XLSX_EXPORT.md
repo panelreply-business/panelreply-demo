@@ -94,7 +94,7 @@ in XLSX.
 
 ## Verification performed on 2026-11-19
 
-These are local, synthetic-data results for this implementation. They are not
+These are synthetic-data results from local checks and isolated CI. They are not
 claims about Microsoft Excel, live customer data or a public deployment.
 
 | Check | Result | Evidence |
@@ -102,8 +102,8 @@ claims about Microsoft Excel, live customer data or a public deployment.
 | Runtime writer component tests | PASS, 13 tests | `node --test tests/panel-xlsx.test.cjs` |
 | Independent ZIP, XML and openpyxl readback of the original files | PASS, 9 fixtures | `python scripts/test-xlsx-reader.py`, openpyxl 3.1.5 |
 | Existing client-state tests after export UI changes | PASS, 6 tests | `node --test tests/platform-client-state.test.cjs` |
-| Browser tests for XLSX interactions | Implemented, local execution BLOCKED | Seven tests in `tests/xlsx_browser_test.py`; CI must supply execution evidence |
-| Real HTTP session and tenant boundary | Integration suite required | Route is owned by the existing private API; use the current CI run for actual results |
+| Browser tests for XLSX interactions | PASS, seven cases in each of three engines | [Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683), source 17223d6; Chromium 151.0.7922.34, Firefox 153.0, WebKit 26.5 |
+| Session, tenant and actual browser/HTTP boundary | PASS for executed cases | Two focused in-process export cases and the real private-server browser suites in run66 |
 | Microsoft Excel desktop/web opening and saving | NOT TESTED | No Excel instance was used |
 
 The nine workbook fixtures cover an empty project, leading-zero and number-like
@@ -117,9 +117,10 @@ text formats, CRCs and the absence of formulas and external links.
 The seven browser cases exercise saved corrected values after reopening, unsaved
 draft exclusion, interrupted binary responses and retry, MIME/empty-body errors,
 account changes during download, object URL cleanup after an anchor failure, and
-the explicit XML-character error with a working CSV fallback. A test file being
-present is not evidence that its browser cases passed. See the current workflow
-run and verification report for that result.
+the explicit XML-character error with a working CSV fallback. Run66 executed and passed all seven cases in Chromium, Firefox and WebKit.
+Earlier runs exposed callback errors in the test harness before some assertions
+ran. Those errors were corrected without removing assertions. See the
+[progress record](DEVELOPMENT_PROGRESS.md) for exact source and CI provenance.
 
 ## Additional spreadsheet engine observations
 

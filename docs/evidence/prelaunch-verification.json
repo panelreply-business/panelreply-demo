@@ -1,0 +1,560 @@
+{
+  "date": "2026-11-19",
+  "userTimezone": "America/New_York",
+  "repository": "panelreply-business/panelreply-demo",
+  "branch": "feature/interactive-dual-product-site",
+  "draftPullRequest": 8,
+  "testedCommit": "17223d6b972cc4bd3e58e9412964d237cbc0eeb9",
+  "testedTree": "f2b36ddf779e25be6de7cd496867afa53e3c6ca4",
+  "ciMergeCommit": "05a4a99ee38c6ac01c865787f734115ed2afa712",
+  "mainCommit": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+  "run": {
+    "number": 66,
+    "id": 44634698683,
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683",
+    "overallConclusion": "failure",
+    "reason": "Both required public-suspension guards fail. Application jobs pass."
+  },
+  "application": {
+    "passed": 1096,
+    "failed": 0,
+    "counts": {
+      "nodeAndHttp": 645,
+      "chromium": 186,
+      "firefox": 121,
+      "webkit": 121,
+      "nativeOcrAndResource": 14,
+      "independentWorkbookReader": 9
+    },
+    "browserVersions": {
+      "chromium": "151.0.7922.34",
+      "firefox": "153.0",
+      "webkit": "26.5"
+    },
+    "browserMethodCounts": {
+      "chromium": [
+        11,
+        42,
+        12,
+        31,
+        9,
+        27,
+        24,
+        19,
+        4,
+        7
+      ],
+      "firefox": [
+        27,
+        31,
+        24,
+        9,
+        19,
+        4,
+        7
+      ],
+      "webkit": [
+        27,
+        31,
+        24,
+        9,
+        19,
+        4,
+        7
+      ]
+    },
+    "widths": [
+      360,
+      390,
+      430,
+      768,
+      1024,
+      1440
+    ],
+    "limits": "Counts are executed cases, including repeated workflows in different engines. They are not 1096 independent product requirements. No actual Safari, phone hardware or complete accessibility audit."
+  },
+  "publicPolicy": {
+    "failedGuards": 2,
+    "blockedApplicationChecks": 3,
+    "observedHttpStatus": {
+      "static": 200,
+      "server": 200
+    },
+    "requiredHttpStatus": 503,
+    "config": {
+      "server": "not_suspended",
+      "static": "not_suspended",
+      "autoDeploy": "off",
+      "previews": "off"
+    },
+    "stateChangedByThisSession": false
+  },
+  "benchmarks": {
+    "ocr": {
+      "accuracyGate": "FAIL",
+      "overall": {
+        "cases": 310,
+        "exactCases": 253,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 219,
+            "exact": 177,
+            "missed": 13,
+            "wrong": 29,
+            "expectedBlank": 91,
+            "preservedBlank": 91,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 219,
+            "exact": 190,
+            "missed": 19,
+            "wrong": 10,
+            "expectedBlank": 91,
+            "preservedBlank": 91,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 229,
+            "exact": 210,
+            "missed": 15,
+            "wrong": 4,
+            "expectedBlank": 81,
+            "preservedBlank": 81,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 113,
+          "p95": 173,
+          "max": 295
+        }
+      },
+      "scope": "Synthetic stress conditions only. Not a real-world accuracy estimate. Measurement completion is not a passing accuracy claim."
+    },
+    "assistant": {
+      "kind": "synthetic-orchestration-evaluation",
+      "corpusVersion": 1,
+      "scenarios": 49,
+      "passed": 49,
+      "failed": 0,
+      "turns": 52,
+      "validatedFieldChecks": 312,
+      "contextChecks": 47,
+      "clarificationCases": 6,
+      "invalidOutputRecoveries": 6,
+      "fakeProviderCalls": 47,
+      "realProviderCalls": 0,
+      "elapsedMs": 42.078231,
+      "failures": [],
+      "limitation": "Predefined fake outputs test orchestration and deterministic guards. This does not measure language-model extraction accuracy, relevance or production reliability."
+    }
+  },
+  "native": [
+    {
+      "status": "PASS",
+      "engine": "tesseract",
+      "version": "5.3.4",
+      "language": "eng",
+      "cases": 9,
+      "fixtureCases": 6,
+      "nativeFailureCases": 3,
+      "failures": 0,
+      "knownFields": 10,
+      "matchedFields": 10,
+      "emptyFields": 2,
+      "preservedEmptyFields": 2,
+      "results": [
+        {
+          "file": "complete.png",
+          "status": "PASS",
+          "durationMs": 121,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "complete.jpg",
+          "status": "PASS",
+          "durationMs": 124,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "missing-manufacturer.png",
+          "status": "PASS",
+          "durationMs": 104,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "conflicting-parts.png",
+          "status": "PASS",
+          "durationMs": 132,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "unlabelled.png",
+          "status": "PASS",
+          "durationMs": 100,
+          "candidates": 0,
+          "fieldMatches": {}
+        },
+        {
+          "file": "blank.png",
+          "status": "PASS",
+          "durationMs": 77,
+          "candidates": 0,
+          "fieldMatches": {}
+        }
+      ],
+      "failurePathResults": [
+        {
+          "test": "timeout reaps the native OCR child",
+          "status": "PASS",
+          "code": "OCR_TIMEOUT",
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "cancel reaps the native OCR child",
+          "status": "PASS",
+          "code": "OCR_CANCELLED",
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "structurally valid but undecodable pixels return a generic error",
+          "status": "PASS",
+          "code": "OCR_FAILED"
+        }
+      ],
+      "scope": "Synthetic printed text only. These measurements do not establish accuracy on real panel photographs or electrical specifications."
+    },
+    {
+      "status": "PASS",
+      "cases": 5,
+      "failures": 0,
+      "engine": {
+        "available": true,
+        "engine": "tesseract",
+        "version": "5.3.4",
+        "language": "eng"
+      },
+      "results": [
+        {
+          "test": "exact production resource ceilings and address-space allocation failure",
+          "status": "PASS",
+          "addressSpaceBytes": 1073741824,
+          "cpuSeconds": 10,
+          "openFiles": 64,
+          "coreBytes": 0,
+          "fileBytes": 0,
+          "allocationBeyondCeiling": "REJECTED",
+          "fileWrite": "REJECTED"
+        },
+        {
+          "test": "kernel CPU ceiling terminates and reaps an isolated one-second test workload",
+          "status": "PASS",
+          "testCpuSeconds": 1,
+          "productionCpuSeconds": 10,
+          "signal": "SIGKILL",
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "native crash returns a generic error and leaves no process",
+          "status": "PASS",
+          "processAliveAfterReturn": false,
+          "coreFileAllowed": false
+        },
+        {
+          "test": "service shutdown kills and reaps actual Tesseract before resolving",
+          "status": "PASS",
+          "processAliveAfterShutdown": false,
+          "laterRecognition": "REJECTED"
+        },
+        {
+          "test": "concurrent actual recognition is rejected without a second native engine",
+          "status": "PASS",
+          "nativeRecognitions": 1,
+          "concurrentRequest": "REJECTED"
+        }
+      ],
+      "scope": "Local Linux process limits and lifecycle. Resource ceilings are not an OS security sandbox or a production hosting approval."
+    }
+  ],
+  "stress": {
+    "status": "PASS",
+    "date": "2026-11-19T23:07:09.876Z",
+    "scope": "One local synthetic storage/recovery drill. Not HTTP load, user concurrency, hardware sizing or production capacity.",
+    "sourceSha256": {
+      "harness": "5c1e44bfd7cae592d497ea1f5bbb8355c9a196c8318295b5af2bc2203ca583b7",
+      "store": "0b1f3a493564a2a7ed1e2d21afed11f41ce3285f0444b736f332acab488ad262",
+      "backup": "5252b67201aa6e3a4e4e94250424fe691399691068d86375e44c63d0c87f4e2c"
+    },
+    "workload": {
+      "businesses": 2,
+      "projects": 204,
+      "requests": 301,
+      "maximumRowsInProject": 200,
+      "sourceImages": 5,
+      "repeatedSaves": 100,
+      "repeatedCsvExports": 100,
+      "listPasses": 20,
+      "reopenCycles": 5,
+      "sessionsBeforeBackup": 5
+    },
+    "unexpectedErrors": 0,
+    "expectedRejections": [
+      "project_limit",
+      "source_limit",
+      "invalid_input"
+    ],
+    "checks": [
+      {
+        "check": "project/row/image capacity boundaries",
+        "status": "PASS"
+      },
+      {
+        "check": "repeated saves, exports, listing and reopen preserve saved values",
+        "status": "PASS"
+      },
+      {
+        "check": "encrypted restore retains canonical records, private image bytes, flags and exports",
+        "status": "PASS"
+      },
+      {
+        "check": "restored sessions removed, old credentials rejected and operator reset restores one owner",
+        "status": "PASS"
+      },
+      {
+        "check": "tenant boundaries remain after recovery",
+        "status": "PASS"
+      }
+    ],
+    "latency": {
+      "createProject": {
+        "operations": 204,
+        "p50Ms": 0.456,
+        "p95Ms": 0.936,
+        "maxMs": 6.955
+      },
+      "createRequest": {
+        "operations": 300,
+        "p50Ms": 0.289,
+        "p95Ms": 1.203,
+        "maxMs": 19.342
+      },
+      "attachImage": {
+        "operations": 5,
+        "p50Ms": 1.153,
+        "p95Ms": 6.565,
+        "maxMs": 6.565
+      },
+      "save200RowProject": {
+        "operations": 100,
+        "p50Ms": 0.997,
+        "p95Ms": 1.815,
+        "maxMs": 5.11
+      },
+      "export200RowsCsv": {
+        "operations": 100,
+        "p50Ms": 0.297,
+        "p95Ms": 0.491,
+        "maxMs": 1.703
+      },
+      "list240Requests": {
+        "operations": 20,
+        "p50Ms": 6.515,
+        "p95Ms": 11.403,
+        "maxMs": 13.75
+      },
+      "list200Projects": {
+        "operations": 20,
+        "p50Ms": 0.913,
+        "p95Ms": 1.43,
+        "maxMs": 6.885
+      },
+      "reopenDatabase": {
+        "operations": 5,
+        "p50Ms": 1.243,
+        "p95Ms": 2.164,
+        "maxMs": 2.164
+      },
+      "encryptedBackup": {
+        "operations": 1,
+        "p50Ms": 201.181,
+        "p95Ms": 201.181,
+        "maxMs": 201.181
+      },
+      "authenticatedRestore": {
+        "operations": 1,
+        "p50Ms": 179.735,
+        "p95Ms": 179.735,
+        "maxMs": 179.735
+      }
+    },
+    "elapsedMs": 1792,
+    "process": {
+      "node": "v22.23.4",
+      "platform": "linux",
+      "cpuUserMs": 1451,
+      "cpuSystemMs": 201,
+      "rssBeforeBytes": 49164288,
+      "rssAfterBytes": 103768064,
+      "peakRssKiB": 134104
+    },
+    "storage": {
+      "initialDirectoryBytes": 168736,
+      "populatedDirectoryBytes": 1246320,
+      "restoredDirectoryBytes": 999424,
+      "encryptedArchiveBytes": 995408,
+      "counts": {
+        "businesses": 2,
+        "users": 2,
+        "leads": 301,
+        "messages": 301,
+        "audit": 615,
+        "optOuts": 1,
+        "panelProjects": 204,
+        "panelSources": 5
+      }
+    },
+    "integrity": {
+      "sourceUnchanged": true,
+      "businessA": {
+        "before": "756b15c016d4d72d16c368194ba09c65e9db74912115739f8091d798bb125969",
+        "after": "756b15c016d4d72d16c368194ba09c65e9db74912115739f8091d798bb125969",
+        "tables": {
+          "businesses": {
+            "rows": 1,
+            "sha256": "96ecd31b9d1a081ce1535cb7dea72ec993a44da67ce1940ef80f92f0cfb23b07"
+          },
+          "users": {
+            "rows": 1,
+            "sha256": "3a9a1c534fad3bd1680842a21476dfc027620dd0df42e1e694ed44ae9deb92dc"
+          },
+          "leads": {
+            "rows": 241,
+            "sha256": "b9aabb5fcee8e5ace7ea2925076d970e8cec9fd18dfd553fe0c9392cfd14731b"
+          },
+          "messages": {
+            "rows": 241,
+            "sha256": "e49cfcb3f5fed745abf27bd545c5ea263a38f4d8c52a9b087f1d037981c74dc7"
+          },
+          "audit": {
+            "rows": 551,
+            "sha256": "cfdecaff075701a817cc00fed483d1a0319e7b8476d9a16d8451480829d9028f"
+          },
+          "suppression": {
+            "rows": 1,
+            "sha256": "f08418484aff683b241f5320da3544e2e06d815613ec8f0e9387300804744092"
+          },
+          "panel_projects": {
+            "rows": 200,
+            "sha256": "5cb0c8761ebab9c85bf5783e2c3ea068d1b1b5c482d7f638f5b8abd1076ab53d"
+          },
+          "panel_sources": {
+            "rows": 5,
+            "sha256": "ab134ed2987254f34392d1e7a32d6857545e9c3f1fbb17ef9f71f7f18aff9fc5"
+          }
+        }
+      },
+      "businessB": {
+        "before": "7d4893e1c86eb9c7b1f4c6f4e75bab0ba7656312c3172575dc91a7b253325e56",
+        "after": "7d4893e1c86eb9c7b1f4c6f4e75bab0ba7656312c3172575dc91a7b253325e56",
+        "tables": {
+          "businesses": {
+            "rows": 1,
+            "sha256": "ab2c77c9380b10209d1e519a38827839f7d5ad515bc4087f81a9cd84c0ad1c01"
+          },
+          "users": {
+            "rows": 1,
+            "sha256": "559c873f75765e65724458ffcb7a583a8f12f6f0edd2d53e26521df14aa61c7b"
+          },
+          "leads": {
+            "rows": 60,
+            "sha256": "155df1d6ec24021c2a2a4fee04f35c81b8735e60a8978170046e701e434a4786"
+          },
+          "messages": {
+            "rows": 60,
+            "sha256": "1ccc8f06b18f4c558df34e40da2c282a73c6f788a76bba6bba469cceed9b4127"
+          },
+          "audit": {
+            "rows": 64,
+            "sha256": "61f44c729ce17979e174fac529ef4e39576e18cdd75254c254e9c39de655a4f1"
+          },
+          "suppression": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "panel_projects": {
+            "rows": 4,
+            "sha256": "6eabd891a0336eb793a8f67e418ba6e7aa9fb5cc4b32d8af605d631f66f62eb8"
+          },
+          "panel_sources": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        }
+      },
+      "csvSha256": "123b75618bee66555cbc1288a1e3fcdb67ea69b03f0e3b1ebfe4faf260450207",
+      "restoredSessions": 0,
+      "passwordsDisabledBeforeReset": 2
+    }
+  },
+  "sourceIntegrity": {
+    "startingBlobCount": 120,
+    "startingCommit": "41e31a8683bbf2e587b4dfcec8c5d2f2a65cffa8",
+    "matchedStartingBlobs": 120,
+    "matchedTestedBlobs": 156,
+    "ciTreeMatchedBranchTree": true
+  },
+  "priorRuns": [
+    {
+      "number": 64,
+      "id": 44631944024,
+      "source": "c5a47542d665a7d5ffb202e1cde4669c85512243",
+      "applicationPassed": 1082,
+      "applicationFailed": 14,
+      "publicFailed": 2,
+      "publicBlocked": 3,
+      "findings": "Validation activation interrupted in Firefox/WebKit, fractional geometry in Firefox, three builtin event callback errors in each engine."
+    },
+    {
+      "number": 65,
+      "id": 44633725632,
+      "source": "2866e05169a42a815fbd9053a0d307ef084f230a",
+      "findings": "Focus and geometry corrections verified. Route callback's positional Request replaced the intended MIME fixture. Corrected in17223d6.",
+      "classification": "fixture error; all assertions preserved"
+    }
+  ],
+  "releaseDecision": "NO-GO for a human pilot, live-provider activation or public release",
+  "remainingGates": [
+    "Required suspension is not satisfied and needs new explicit owner approval for state changes.",
+    "57 nonexact synthetic OCR cases remain; authorized representative photographs are not supplied.",
+    "Actual model quality remains unverified. The requested 300\u2013500 meaningful-scenario corpus target is unfinished at 49 curated cases. Fake scenarios are not model evaluation.",
+    "Hosted private access, offsite restore, retention/deletion, monitoring delivery, OS-level OCR sandbox and durable usage budgets remain incomplete.",
+    "Microsoft Excel, physical devices, actual Safari, full assistive-technology audit and production Core Web Vitals are not tested."
+  ],
+  "noPaidProviderCalls": true,
+  "noCustomerData": true,
+  "noDeployment": true,
+  "noMerge": true
+}

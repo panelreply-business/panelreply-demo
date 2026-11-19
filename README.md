@@ -8,12 +8,12 @@ PanelReply is a software platform for electrical contractors. It combines custom
 
 The required public state is suspended. The 2026-11-19 pre-launch audit found both Render services reporting active, contrary to that requirement. Auto-deploy and PR previews remain off. This configuration is a release blocker and needs owner-approved correction. No Render state was changed by this development session. Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
 
-Current pre-launch work and evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Operations and business proposal](docs/PRELAUNCH_OPERATIONS.md). Earlier verification below describes the previously passing milestone, not current-commit verification.
+Current pre-launch work and evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Operations and business proposal](docs/PRELAUNCH_OPERATIONS.md). The current application/test source at [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683): 645 Node/HTTP, 186 Chromium, 121 Firefox, 121 WebKit, 14 native OCR/resource and nine independent workbook-reader cases. The overall workflow remains FAIL because both suspension guards fail. The separate 310-image OCR benchmark has 57 nonexact cases. No real-model quality claim or release approval follows from these counts.
 
 - Public static URL: https://panelreply-demo.onrender.com/
 - Public server URL: https://panelreply-ai.onrender.com/
 - The new workspace runs locally at `http://127.0.0.1:10001` after setup. It has no public URL.
-- Live AI, calls, SMS and calendar booking remain disconnected.
+- The private workspace has no active AI, calling, SMS or calendar integration.
 - A customer pilot remains NO-GO until the remaining operational and integration gates are verified.
 
 [Offline instruction and suspension evidence](docs/OFFLINE_MODE.md)
@@ -35,7 +35,7 @@ The branch adds:
 - Independent spreadsheet readback, concurrent database workers and a bounded backup/restore workload. See the current pre-launch evidence for limits.
 - Browser checks at 360, 390, 430, 768, 1024 and 1440 px, plus failure, isolation and export regressions.
 
-The platform and redesign passed 590 checks with zero failures in [run 61](https://github.com/panelreply-business/panelreply-demo/actions/runs/44535177854): 406 Node/HTTP, 175 Chromium and 9 native OCR cases. Three public application checks remain intentionally BLOCKED. [Full verification, corrected defects and reviewed screenshots](docs/PLATFORM_VERIFICATION.md). This completes the first development milestone on the draft branch, not commercial readiness. [Design system and interaction decisions](docs/DESIGN_SYSTEM.md). [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
+The earlier platform and redesign milestone passed 590 checks with zero failures in [run 61](https://github.com/panelreply-business/panelreply-demo/actions/runs/44535177854): 406 Node/HTTP, 175 Chromium and 9 native OCR cases. Three public application checks remain intentionally BLOCKED. [Full verification, corrected defects and reviewed screenshots](docs/PLATFORM_VERIFICATION.md). This completes the first development milestone on the draft branch, not commercial readiness. [Design system and interaction decisions](docs/DESIGN_SYSTEM.md). [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
 
 ## Private workspace
 
@@ -54,11 +54,11 @@ The standalone workspace adds:
 - Encrypted local backups and restore into a new directory, with no active sessions or usable passwords restored.
 - Operator password reset for an existing owner, with session revocation and protection against in-flight sign-in races.
 
-[Current desktop inbox](docs/evidence/platform-intake-desktop.jpg) · [Current mobile inbox](docs/evidence/platform-intake-mobile.jpg) · [Panel workspace](docs/evidence/platform-panels-1440.jpg) · [Dashboard](docs/evidence/platform-dashboard-1440.jpg) · [Historical recovery evidence](docs/RECOVERY_VERIFICATION.md)
+[Current desktop inbox](docs/evidence/platform-intake-desktop.jpg) · [Current mobile inbox](docs/evidence/platform-intake-mobile.jpg) · [Panel workspace with CSV/XLSX](docs/evidence/prelaunch-panels-desktop.jpg) · [Dashboard](docs/evidence/platform-dashboard-1440.jpg) · [Historical recovery evidence](docs/RECOVERY_VERIFICATION.md)
 
 The callback window describes when a customer wants a call. The requested work date describes when they want the work done. Neither reserves an appointment. Contact permission is recorded separately. Saving a request sends no message.
 
-The preview uses explicit field parsing and saved answers. It does not call an AI provider. Questions about hours, coverage or pricing must not overwrite the supplied job details. Unknown business facts stay unknown.
+The default preview uses explicit field parsing and saved answers. The new provider-independent orchestrator and disabled Responses transport are tested with synthetic adapters. No real-provider call occurs in normal startup. See [AI boundary and quality limits](docs/AI_PRELAUNCH.md). Questions about hours, coverage or pricing must not overwrite the supplied job details. Unknown business facts stay unknown.
 
 [Setup, behavior, limits and failure handling](docs/PRIVATE_WORKSPACE.md)
 

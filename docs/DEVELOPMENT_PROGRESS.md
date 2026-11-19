@@ -1,41 +1,90 @@
 # PanelReply development progress
 
-Authoritative current progress record. Date: 2026-11-19. Continue the existing `feature/interactive-dual-product-site` branch and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Do not create duplicate work or merge/deploy without approval.
+Authoritative checkpoint: November 19, 2026, America/New_York. Continue the existing feature/interactive-dual-product-site branch and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Preserve the completed redesign, intake, recovery and panel work. Do not create a duplicate branch or implementation.
 
-## Baseline
+## Current decision
 
-- Starting commit: `41e31a8683bbf2e587b4dfcec8c5d2f2a65cffa8`, tree `aa173065035fbf8e2f8ff04334de9c4a6a48b0a5`.
-- All 120 local file blobs were independently matched to the recursive GitHub tree before edits.
-- Main remains `c6152b38ae2e3a824e6a81199aa0d757d47a19ae`.
-- Historical [CI62](https://github.com/panelreply-business/panelreply-demo/actions/runs/44536934974) is successful on the starting commit: 590 PASS / 0 FAIL / 3 intentionally blocked public checks. These are historical results, not new-commit evidence.
-- Fresh isolated baseline: 397 pure Node/SQLite/in-process API checks PASS, 0 FAIL, 0 SKIP. Generated-demo/CSP check PASS. Local listeners/Chromium remain unavailable, so actual HTTP/browser checks use CI.
+GO for code review and isolated synthetic evaluation. NO-GO for a human pilot, real-provider activation or public release.
 
-## Current workstream
+Application and test source [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 executed application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). The overall workflow is FAIL because the two required public-suspension guards fail. The separate OCR quality gate is also FAIL.
 
-Pre-launch reliability. Application commit [c5a4754](https://github.com/panelreply-business/panelreply-demo/commit/c5a47542d665a7d5ffb202e1cde4669c85512243) is saved on the existing branch. Its full 155-file GitHub tree matched the local candidate exactly. The latest browser correction is in progress. The updated full isolated run passed 638 Node/SQLite/in-process API tests with zero failures or skips. This includes the two transport defects found after the first 636-check pass. The focused transport/adversarial run passed 42 tests and the overlapping seven-suite run passed 323. Full updated CI [run64](https://github.com/panelreply-business/panelreply-demo/actions/runs/44631944024) passed 645 Node/HTTP checks, the existing 175 Chromium cases and four new assistant browser cases. Four XLSX browser cases passed and three stopped at a test callback error. Firefox found one validation-focus failure, three sub-0.001 px geometry assertion failures and the same three callback errors. The corrections preserve the assertions and require a new CI run. WebKit is still executing. Native OCR and resource checks passed 14 cases. Independent XLSX readback passed nine fixtures. This is not a release approval.
+This evidence checkpoint changes documentation and screenshots only. The runtime, tests and workflow remain the source verified above. No new application verification is inferred from a documentation commit.
 
-| Work | Current state | Evidence/next action |
-| --- | --- | --- |
-| Existing website, dashboard, intake and panel projects | Previously verified, preserved | [Historical platform record](PLATFORM_VERIFICATION.md); run full regression after changes |
-| Provider-independent conversation orchestration | Implemented; component, corpus and adversarial checks pass; browser CI pending | [AI boundary](AI_PRELAUNCH.md), assistant component/API/corpus tests |
-| New AI safety/grounding defects | Reproduced and corrected; regression checks pass | `tests/assistant-adversarial.test.cjs` |
-| XLSX export | Implemented with component and independent-reader checks; browser CI pending | [XLSX record](XLSX_EXPORT.md) |
-| OCR benchmark/resource limits | Implemented, native checks run, benchmark records nonexact cases | [OCR benchmark](OCR_BENCHMARK.md) |
-| Concurrent SQLite and recovery workload | Six parallel-worker tests and one bounded restore workload PASS | [Stress/recovery](STRESS_RECOVERY.md) |
-| Firefox/WebKit test coverage | Harness and CI prepared; execution pending | Existing suite assertions retained, explicit engine selection |
-| Production/business preparation | Review proposal prepared, no activation | [Operations and business](PRELAUNCH_OPERATIONS.md) |
+## Source and baseline
+
+- Starting commit: 41e31a8683bbf2e587b4dfcec8c5d2f2a65cffa8. All 120 local blobs matched its recursive GitHub tree before editing.
+- Main remains c6152b38ae2e3a824e6a81199aa0d757d47a19ae. PR8 remains draft and unmerged.
+- Pre-launch implementation: [c5a4754](https://github.com/panelreply-business/panelreply-demo/commit/c5a47542d665a7d5ffb202e1cde4669c85512243).
+- Browser activation and fixture corrections: [2866e05](https://github.com/panelreply-business/panelreply-demo/commit/2866e05169a42a815fbd9053a0d307ef084f230a), then [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9).
+- Tested tree: f2b36ddf779e25be6de7cd496867afa53e3c6ca4, with all 156 blobs matched to the candidate. GitHub's temporary CI merge tree is identical. This is not a merge into main.
+- Historical [run62](https://github.com/panelreply-business/panelreply-demo/actions/runs/44536934974) was fully green on the starting branch before the observed service-state discrepancy: 590 PASS and three intentional public blocks. Those results are historical, not new-code evidence.
+- Fresh local baseline: 397 Node/SQLite/in-process API tests PASS. Updated local suite: 638 PASS, zero failures or skips. Real HTTP and browser execution used CI because local listeners/browser launch were unavailable.
+
+## Verified run66 results
+
+| Layer | PASS | FAIL | Scope |
+| --- | ---: | ---: | --- |
+| Node, API, SQLite, recovery, security and real HTTP | 645 | 0 | Includes six independent concurrent-writer cases and the synthetic AI corpus |
+| Chromium 151.0.7922.34 | 186 | 0 | Existing 175 cases, four assistant cases and seven XLSX cases |
+| Firefox 153.0 | 121 | 0 | Marketing, private intake, panels, recovery, responsive platform, assistant and XLSX |
+| WebKit 26.5 | 121 | 0 | Same seven workflow suites; this is not an actual Safari test |
+| Actual native OCR and resource/lifecycle cases | 14 | 0 | Tesseract 5.3.4/English in CI, including shutdown, CPU/memory limits and reaping |
+| Independent ZIP/XML/openpyxl workbook reader | 9 | 0 | Exact original-file values/types and nonexecuting formula-like text |
+| Executed application checks | 1,096 | 0 | Browser-engine repetitions are executions, not distinct product requirements |
+| Required public-suspension guards | 0 | 2 | Both public URLs returned HTTP 200 instead of the required 503 |
+
+Three public application checks are BLOCKED by the suspension policy and were not executed. Their legacy skip text describes the policy, not the observed service state. Build/generated-demo/CSP validation passed. There were no actual model requests, customer communications or customer data.
+
+The standalone 49-scenario evaluation overlaps tests already counted above. The storage workload is one drill with five workflow groups. The 310 OCR measurements are separate quality measurements. None are added again to the 1,096 total.
+
+[Machine-readable results and source provenance](evidence/prelaunch-verification.json).
+
+## Completed and verified
+
+| Workstream | Implementation and evidence |
+| --- | --- |
+| Existing website and unified private workspace | Preserved. All existing intake, panel, recovery, consent, safety, authentication and tenant checks remain. The six requested widths and guided-dialog landscape behavior passed. |
+| Conversational assistance boundary | Multi-turn draft/context, grounded field proposals, corrections, clarification, approved business answers, bounded retries/timeouts and cancellation. Ten in-process API cases and four browser scenarios per engine cover the new integration. The default remains deterministic. |
+| Disabled real-provider transport | Fixed Responses endpoint, explicit authorization/configuration/injected transport, strict structured output, bounded streaming, cancellation and redacted errors. 31 mock HTTP cases pass. No actual provider connection was activated. |
+| XLSX export | Saved-project export through the existing authenticated tenant boundary. Explicit text cells, numeric quantities, two worksheets, frozen headers and filters. Independent reader plus all seven browser cases pass in each engine. CSV remains available. |
+| Native OCR limits and measurements | Fixed local engine, process ceilings, one active recognition and safe cancellation/shutdown. Two ambiguity defects corrected. All candidates remain unreviewed. |
+| Concurrency and recovery | Six actual cross-connection worker cases pass. A bounded two-business workload preserved 204 projects, 301 requests, image bytes, exact exports and restrictions through encrypted restore. Source data stayed unchanged. |
+| Browser defects | Error rendering no longer moves Export during pointer activation. Firefox/WebKit focus checks pass. Playwright callback errors were corrected without removing assertions. Geometry comparisons retain the 44 px requirement at 0.001 CSS-pixel precision. |
+| Business and operations preparation | Competitor comparison, positioning hypothesis, subscription options, cost variables, host options, recovery proposal, support, retention, legal inputs and rollback plan. No prices, SLA, legal terms or services were activated. |
+
+See [AI evidence](AI_PRELAUNCH.md), [XLSX evidence](XLSX_EXPORT.md), [OCR benchmark](OCR_BENCHMARK.md), [stress/recovery](STRESS_RECOVERY.md), [defect register](PRELAUNCH_DEFECTS.md) and [operations proposal](PRELAUNCH_OPERATIONS.md).
+
+## Measured limits and unfinished work
+
+- OCR: 253/310 synthetic images exactly matched all expected fields; 57 remain nonexact. Known-field matches were 177/219 part numbers, 190/219 manufacturers and 210/229 descriptions. Zero false positives on fields expected to be blank does not mean all extracted values were correct. Real job-site accuracy is NOT TESTED.
+- AI: 49 curated synthetic scenarios, 52 turns, 312 field checks, 47 context checks and 47 fake calls passed. Zero real-provider calls. This proves the tested integration behavior, not model accuracy, relevance or production quality. The requested 300–500 meaningful scenario target is not complete.
+- Workload: the CI storage/recovery drill finished in 1,792 ms with zero unexpected errors. This is one synchronous storage drill, not a hosted-load result, latency SLA or many-user capacity claim.
+- Spreadsheet compatibility: original XLSX files passed exact openpyxl readback. The available LibreOffice development build opened all nine fixtures, but resaving can normalize blank cells/newlines and escape-like strings. Microsoft Excel is NOT TESTED.
+- Hosted private access, offsite restoration, retention/deletion, monitoring delivery, self-service recovery, an OS-level OCR sandbox and durable AI spending limits are NOT IMPLEMENTED.
+- Actual Safari, physical phones, full assistive-technology conformance and production Core Web Vitals are NOT TESTED.
 
 ## Configuration defect requiring owner action
 
-HIGH: both existing Render services now report `not_suspended` in repeated read-only checks. Their updatedAt values are 2026-11-19T22:02:59.769174Z and 22:03:10.317358Z. Auto-deploy and PR previews remain off. The current brief requires suspended services and also forbids changing their state without new explicit approval.
+HIGH / FAIL: repeated read-only Render checks report both existing services as not_suspended. Their recorded update times are 5:02:59 PM and 5:03:10 PM EST on November 19. Run66 independently returned HTTP 200 from both URLs. Auto-deploy and PR previews remain off.
 
-- [Server service](https://dashboard.render.com/web/srv-dbv6do6tlv9c73fuvar0)
-- [Static service](https://dashboard.render.com/static/srv-dbu5o8tckfvc73b6fb4g)
+- [PanelReply AI service](https://dashboard.render.com/web/srv-dbv6do6tlv9c73fuvar0)
+- [PanelReply static service](https://dashboard.render.com/static/srv-dbu5o8tckfvc73b6fb4g)
 
-No infrastructure state was changed in this session. Run64 independently returned HTTP200 from both URLs and failed both required503 guards. The independent public-suspension CI job retains the existing GET-only assertions and must fail if the required state is absent. Separating that job lets isolated application tests continue, without hiding the deployment-state failure.
+The newest brief requires suspended services and explicitly forbids changing their state without new owner approval. No service state was changed here. The public URLs run the older main-branch demos, not this unmerged private-workspace branch. Restoring suspension requires approval and verification, not a code change or a weakened test.
 
-## Approval boundaries
+## Evidence history and visual review
 
-No real-provider call, customer data, customer contact, paid service, account creation, public deployment, domain or main merge. Real AI quality, representative electrical photographs, hosted operations and any pilot remain separate acceptance gates.
+Run64 exposed the validation-focus defect, Firefox fractional-coordinate assertions and three XLSX callback errors in each engine. Run65 verified the focus/geometry corrections and exposed the remaining route callback's positional-argument error. Run66 passed every application case after the correction. Earlier failures remain in GitHub and the defect register.
 
-Next action: run the updated full regression, capture actual browser evidence, commit to the same branch and update this document and [release acceptance](RELEASE_ACCEPTANCE.md) with exact results. See the [defect register](PRELAUNCH_DEFECTS.md) for reproduction and verification. Preserve all prior failures in the evidence history.
+Two new Chromium run66 panel-workspace captures were inspected: [1440 px desktop](evidence/prelaunch-panels-desktop.jpg) and [360 px mobile](evidence/prelaunch-panels-mobile.jpg). The saved export controls, contained table scrolling, source-image area and mobile layout fit the captured states. [Capture provenance](evidence/prelaunch-captures.json). Historical marketing/dashboard captures remain in the [redesign record](PLATFORM_VERIFICATION.md). Screenshot review does not prove every state is defect-free.
+
+## Next actions and approvals
+
+1. Obtain explicit approval to restore suspension of both existing public services, then verify configuration and GET-only guards.
+2. Continue OCR improvements from the recorded failure corpus and obtain authorized noncustomer photographs before claiming representative accuracy.
+3. Expand meaningful conversation scenarios. Obtain a model, data-transfer terms and a bounded approved budget before any real-provider call.
+4. Implement and verify durable usage limits and a restricted OCR worker before customer/provider activation. Prepare a bounded HTTP workload without treating the storage drill as HTTP capacity.
+5. Approve a host, backup destination, retention/deletion policy and support responsibility, then execute the selected-host recovery/security gates.
+6. Keep PR8 draft. Merge, public deployment, live integrations, customer data, spending and a pilot each require separate approval.
+
+The recurring audit remains the existing task. It must read this record and fresh refs, distinguish new execution from historical results and preserve all deployment and authorization restrictions. No continuous 100–200 hours of work is claimed.

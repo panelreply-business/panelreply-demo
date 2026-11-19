@@ -2,6 +2,8 @@
 
 Recorded November 18, 2026, America/New_York.
 
+This is historical suspension evidence. The November 19 pre-launch audit later found both services active. Current state, approvals and verification are recorded in [development progress](DEVELOPMENT_PROGRESS.md). The newest brief requires new explicit approval before any service-state change.
+
 The owner explicitly approved taking both public PanelReply demos offline while development continues. Both services were suspended through their Render Dashboard controls. No service, code, environment variable, deploy history or repository was deleted.
 
 ## Verified service state

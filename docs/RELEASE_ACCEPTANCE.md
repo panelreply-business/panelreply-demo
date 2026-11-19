@@ -1,37 +1,54 @@
 # Pre-launch release acceptance
 
-Current assessment is in progress. Historical passing results do not cover the working-tree changes. This matrix is updated with exact commits/runs after CI. A completed measurement is not necessarily an accuracy PASS. No overall score is calculated.
+Assessment date: November 19, 2026. Current tested source is [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9), verified by [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). The 1,096 application checks pass. The overall workflow fails because both required suspension guards fail. OCR measurement completion is not an accuracy PASS.
 
-| ID | Requirement | Implementation | Verification | Current result / remaining gate |
+In the table, Source 66 means commit 17223d6/run66. A PASS applies to the stated tested scope. It is not commercial readiness.
+
+| ID | Requirement | Implementation / verification | Last evidence | Result / remaining gate |
 | --- | --- | --- | --- | --- |
-| BASE-01 | Preserve latest verified branch and existing intake | Existing PR8 branch,120matching starting blobs | GitHub tree comparison,397fresh baseline checks | PASS on starting41e31a8 |
-| AI-01 | Multi-turn and structured proposals | `workspace/assistant.cjs`, `conversation.cjs` | Component, corpus, API and synthetic browser suites | IN PROGRESS, independent adversarial fixes/fullCI pending |
-| AI-02 | No unsupported commitments or model actions | Allowlisted fields/intents/topics, approved answers, deterministic wording | Grounding/adversarial and API tests | IN PROGRESS |
-| AI-03 | Provider errors/cancellation/duplicate retries | Bounded orchestrator and API cancellation/auth rechecks | Component/API/browser failure cases | IN PROGRESS |
-| AI-04 | Real model response quality | No live provider activated | Real-provider300–500scenario evaluation | BLOCKED by explicit provider/data-transfer approval |
-| SAFE-01 | Consent, STOP and safety holds | Existing store and deterministic intake boundary | Existing regressions plus adversarial hazard cases | IN PROGRESS, new hazard gaps being corrected |
-| OCR-01 | Validated image and bounded local processing | `workspace/ocr.cjs`, private source API | Unit, native resource/lifecycle, API/browser tests | IN PROGRESS, fullCI pending |
-| OCR-02 | Synthetic field extraction quality | Same OCR/parser, generated benchmark | Exact fields, false positives, omissions and latency | FAIL: nonexact cases remain; see benchmark |
-| OCR-03 | Representative photo quality | Review workflow exists | Authorized noncustomer photo benchmark | BLOCKED: no authorized representative photos supplied |
-| DATA-01 | Panel save/reopen/source ownership | Existing SQLite projects/sources | Store/API/browser and parallel-worker tests | IN PROGRESS, regression pending |
-| DATA-02 | Concurrent writes and retry integrity | Transactions, versions and idempotency | Real cross-connection workers, interrupted transaction | IN PROGRESS |
-| DATA-03 | Intake persistence/history/status/notes | Existing authenticated request API | Existing Node/HTTP/browser tests | IN PROGRESS, regression pending |
-| EXP-01 | Corrected saved CSV | Existing CSV exporter and authenticated route | Unit/API/browser exact-value/formula checks | IN PROGRESS, regression pending |
-| EXP-02 | Typed safe XLSX | `workspace/xlsx.cjs`, saved export API/UI | Component, independent XML/openpyxl, browser | IN PROGRESS, exact tested-reader evidence required |
-| AUTH-01 | Sessions, CSRF, Origin and tenant boundaries | Existing auth/store/API plus assistant rechecks | Unit, API, realHTTP and browser | IN PROGRESS, regression pending |
-| SEC-01 | Input/file/export/secret boundaries | Existing validation/CSP, bounded new code | Independent review and negative tests | IN PROGRESS, no absolute-security claim |
-| REC-01 | Encrypted backup and fresh-directory restore | Existing backup/reset tools | Existing recovery suite plus workload digests | IN PROGRESS, regression pending |
-| REC-02 | Offsite recovery and host objectives | Proposal only | Selected-host restore and approved archive destination | BLOCKED by infrastructure/budget approval |
-| UX-01 | Core workflow and six viewport widths | Existing design/application shell | Chromium, Firefox, WebKit workflow suites | IN PROGRESS, new browser execution pending |
-| A11Y-01 | Labels, keyboard, focus, motion and errors | Existing semantic controls/shared design | Browser assertions/visual review | IN PROGRESS; assistive-technology audit NOT TESTED |
-| PERF-01 | Bounded local storage/resource workload | New workload script, OCR limits | Real timings and integrity/error counts | IN PROGRESS; not production capacity/CWV |
-| OPS-01 | Hosting, monitoring, retention and rollback plan | `PRELAUNCH_OPERATIONS.md` | Document review against current architecture | PASS for proposal preparation; hosted implementation BLOCKED |
-| BUS-01 | Positioning, competitive facts, cost model, onboarding/support | `PRELAUNCH_OPERATIONS.md` | Official sources plus explicitly proposed decisions | PASS for preparation; pricing/legal/pilot approval pending |
-| DEP-01 | Both existing services suspended | Render configuration outside code | Repeated read-only reads, GET-only CI guard | FAIL: both report active; owner state-change approval required |
-| DEP-02 | No merge, auto-deploy or PR previews | Main unchanged, both Render settings off | GitHub/Render reads | PASS at baseline; recheck at delivery |
+| BASE-01 | Continue verified work without duplicates | All 120 starting blobs matched 41e31a8; existing branch/PR8 preserved | Baseline tree and current GitHub refs | PASS |
+| AI-01 | Multi-turn draft, context, corrections and conflicts | Assistant orchestrator, 49-scenario corpus, component/API and four browser cases per engine | Source 66; AI_PRELAUNCH.md | PASS for synthetic integration |
+| AI-02 | Grounded fields and approved business answers | Strict allowlist, field-bound evidence, independent adversarial tests, profile-version recheck | Source 66 | PASS for tested proposals |
+| AI-03 | Timeouts, errors, cancellation and retries | Bounded calls, cancellation/auth rechecks, unavailable-state preservation and fake browser failures | Source 66 | PASS |
+| AI-04 | Concrete provider transport | Disabled Responses adapter; 31 mock HTTP cases including compression and late cancellation | Source 66 | PASS for mock transport; actual provider compatibility BLOCKED |
+| AI-05 | Actual model quality | No real-provider calls or credentials activated | 49 fake scenarios do not measure model behavior | BLOCKED by provider, data-transfer and budget approval |
+| AI-06 | 300–500 meaningful evaluation scenarios | 49 curated scenarios implemented; no trivial multiplication | Source 66 corpus/evaluation report | NOT IMPLEMENTED beyond 49; expansion remains unfinished |
+| SAFE-01 | Consent, STOP and electrical safety holds | Existing deterministic store controls, new bounded hazard cases, in-process/API/browser checks | Source 66 | PASS for tested phrases and restrictions |
+| OCR-01 | Validated image, private source and bounded processing | Native engine with prlimit, timeout/cancel/shutdown/reaping, API and browser paths | Source 66; 14 native cases | PASS; process ceilings are not an OS sandbox |
+| OCR-02 | Synthetic extraction quality | 310 unique images, exact fields, omissions, wrong values and latency | Source 66 and baseline/candidate benchmark artifact | FAIL: 253 exact, 57 nonexact |
+| OCR-03 | Representative photograph quality | Review/correction workflow exists | No approved representative photo set supplied | NOT TESTED; authorized photos needed |
+| DATA-01 | Panel save, reopen, corrections and source ownership | Existing SQLite store and authenticated API/browser checks in three engines | Source 66 | PASS for executed workflows |
+| DATA-02 | Concurrent updates and duplicate retries | Six independent cross-connection worker races and interrupted uncommitted writer | Source 66 | PASS; sustained hosted concurrency not established |
+| DATA-03 | Intake requests, notes, status and history | Existing request API, pure logic, real HTTP and private-browser suites | Source 66 | PASS |
+| EXP-01 | Saved corrected CSV and inert formulas | Existing exporter, exact-value API/browser checks and unsaved-draft handling | Source 66 | PASS |
+| EXP-02 | Saved typed XLSX with tenant/session boundaries | 13 writer cases, API cases, 9 independent reader fixtures, 7 browser cases per engine | Source 66; XLSX_EXPORT.md | PASS for tested writer/readers/browsers |
+| EXP-03 | Native spreadsheet compatibility | Installed LibreOfficeDev 26.8 imported nine files; exact original-file reader tests | Local native observations documented in XLSX_EXPORT.md | PARTIAL evidence: resaving has normalization limits; Microsoft Excel NOT TESTED |
+| AUTH-01 | Authentication, CSRF, Origin, session pins and tenant boundaries | Existing store/API, real HTTP and three-engine private workflows | Source 66 | PASS for executed attack/failure cases |
+| SEC-01 | Inputs, files, outputs, errors and secret handling | Independent code review, negative tests, CSP and repository pattern scan | Source 66 plus documented local scan | PASS for tested controls; no absolute-security claim |
+| REC-01 | Encrypted backup and safe fresh-directory restore | Existing recovery suite plus 204-project/301-request source/restored digest drill | Source 66 | PASS; source unchanged, images/exports/restrictions retained |
+| REC-02 | Offsite recovery and host objectives | Review proposal only | PRELAUNCH_OPERATIONS.md | NOT IMPLEMENTED; host/destination/budget approval required |
+| UX-01 | Existing design and core workflows at six widths | Chromium 186, Firefox 121 and WebKit 121 executed cases; desktop/mobile captures | Source 66 | PASS; actual phones and Safari NOT TESTED |
+| A11Y-01 | Labels, keyboard, focus, motion, feedback and control geometry | Existing assertions retained; focus and precision corrections verified | Source 66 | PASS for scoped automated checks; full assistive-technology audit NOT TESTED |
+| PERF-01 | Bounded storage/resource workload | One drill, five workflow groups, zero unexpected errors; CPU/memory/storage observations | Source 66; 1,792 ms CI drill; separate local record | PASS for bounded drill; HTTP saturation, hosted capacity and production CWV NOT TESTED |
+| OPS-01 | Hosting, backup, monitoring, retention and rollback proposal | Architecture-specific options and approval gates documented | PRELAUNCH_OPERATIONS.md | PASS for preparation; hosted implementation NOT IMPLEMENTED |
+| OPS-02 | Durable provider budgets and restricted OCR worker | Process-local limits exist; durable ledger and OS sandbox absent | AI_PRELAUNCH.md and OCR_BENCHMARK.md | NOT IMPLEMENTED; required before customer/provider activation |
+| BUS-01 | Positioning, competitive facts, cost variables, pilot/support/legal inputs | Official sources, labeled hypotheses and proposed decisions | PRELAUNCH_OPERATIONS.md | PASS for preparation; no approved price, SLA, legal document or pilot |
+| DEP-01 | Both public services suspended | Repeated Render reads and GET-only guards | Source 66; both returned HTTP 200 | FAIL: both active; new explicit approval required for state changes |
+| DEP-02 | No merge, automatic deployment, PR preview or live activation | Main unchanged, PR8 draft, Render auto-deploy/previews off, zero real-provider calls | GitHub/Render reads and Source 66 | PASS at checkpoint; recheck before later actions |
+| LAUNCH-01 | Live customer, messaging, calendar and public pilot readiness | No new deployment or live integration | Current restrictions | BLOCKED; separate owner approval and missing engineering gates |
 
-## Decision
+## Verification layers
 
-NO-GO for a human pilot, live provider activation or public release. Continue isolated engineering and review. Real-model quality, representative OCR, infrastructure/recovery, retention/operations and the required deployment state are unresolved. No test count overrides these gates.
+- Component tests exercise parsing, grounding, validation, storage, writers, resource adapters and error contracts.
+- Integration tests use real SQLite connections, encrypted archives, native Tesseract, independent spreadsheet readers and actual loopback HTTP.
+- Browser/failure tests exercise saved versus unsaved state, interruption, retries, account changes, uploads, exports and review controls through three engines.
 
-[Authoritative progress](DEVELOPMENT_PROGRESS.md) records the current branch, source and next action. [Historical platform verification](PLATFORM_VERIFICATION.md) remains unchanged as prior evidence.
+These are different layers. Repeatedly running one assertion does not count as three forms of verification. The finite suite does not prove every defect is absent.
+
+## Release-candidate decision
+
+NO-GO for a human pilot, live-provider activation or public release. Required suspension, OCR accuracy, representative images, real-model quality, durable usage controls, host isolation/recovery and retention/operations remain unresolved. No aggregate pass count overrides these gates.
+
+GO for owner code/design review and isolated synthetic evaluation. Keep PR8 in draft. Do not merge or deploy.
+
+[Authoritative progress](DEVELOPMENT_PROGRESS.md) · [Defects and reproductions](PRELAUNCH_DEFECTS.md) · [Machine-readable evidence](evidence/prelaunch-verification.json).

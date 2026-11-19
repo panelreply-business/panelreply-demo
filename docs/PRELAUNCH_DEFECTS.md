@@ -4,7 +4,7 @@ Date: 2026-11-19. This register covers the work after baseline `41e31a8`. [Devel
 
 ## Confirmed code defects
 
-The following corrections are in `c5a47542d665a7d5ffb202e1cde4669c85512243`. The updated local suite passed 638 Node/SQLite/in-process API tests. Actual HTTP and browser verification is recorded in the progress document after CI completes.
+The following corrections are in `c5a47542d665a7d5ffb202e1cde4669c85512243`. The updated local suite passed 638 Node/SQLite/in-process API tests. Actual HTTP and browser verification passed in run66, source 17223d6, as recorded in the progress document.
 
 | ID | Priority | Reproduction and impact | Correction | Regression evidence |
 | --- | --- | --- | --- | --- |
@@ -25,17 +25,17 @@ The 11 independent AI adversarial cases and 31 transport cases passed after the 
 
 ## Test fixture correction
 
-QA-01, Medium: all four assistant browser cases initially shared one process-wide ten-call/minute allowance. Their combined calls could exhaust the quota before the STOP case. A pure fake-provider sequence reproduced `assistant_limit` and an empty phone before STOP. Each browser scenario now restarts only its synthetic server. The real database remains in place and production quotas are unchanged. This corrects fixture independence, not an application quota defect. Actual browser results belong in the current progress record.
+QA-01, Medium: all four assistant browser cases initially shared one process-wide ten-call/minute allowance. Their combined calls could exhaust the quota before the STOP case. A pure fake-provider sequence reproduced `assistant_limit` and an empty phone before STOP. Each browser scenario now restarts only its synthetic server. The real database remains in place and production quotas are unchanged. This corrects fixture independence, not an application quota defect. All four assistant browser cases passed in each engine in run66.
 
 The browser reset scenario uses a 300 ms fake-provider delay. The deterministic component/API cancellation cases provide stronger evidence that cancellation occurred while generation was pending. Do not use the timing-based browser case alone to claim that guarantee.
 
 ## First browser run corrections
 
-Run64 passed 645 Node/HTTP checks, 179 Chromium cases outside XLSX and four of seven XLSX cases. It exposed three callback errors before their browser assertions. Playwright cannot annotate a builtin `list.append` handler. Each is now wrapped in a Python lambda. All three corrected callbacks passed a local check through Playwright's actual mapping code. The browser rerun remains required.
+Run64 passed 645 Node/HTTP checks, 179 Chromium cases outside XLSX and four of seven XLSX cases. It exposed three callback errors before their browser assertions. Playwright cannot annotate a builtin `list.append` handler. Each is now wrapped in a Python lambda. All three corrected callbacks passed a local check through Playwright's actual mapping code. The browser rerun passed all seven XLSX cases in each engine in run66.
 
 Firefox found a medium marketing interaction defect: the first invalid quantity blurred while clicking Export, displaying error content above the button and moving its hit target. Blur painting now defers when focus moves directly to Export. The click handler still validates and focuses the invalid field. The existing browser test retains its focus assertion and additionally checks that the click was delivered.
 
-Three Firefox geometry checks measured 44 px controls as 43.99998474121094 or 43.99993896484375 px. The checks now compare at 0.001 CSS-pixel precision while retaining the 44 px requirement. This is a test measurement correction, not a larger touch-target design change. The new XLSX button is also included in the same responsive assertion. No full browser verification is claimed until the next CI completes.
+Three Firefox geometry checks measured 44 px controls as 43.99998474121094 or 43.99993896484375 px. The checks now compare at 0.001 CSS-pixel precision while retaining the 44 px requirement. This is a test measurement correction, not a larger touch-target design change. The new XLSX button is also included in the same responsive assertion. Run66 verified all of these assertions in Chromium, Firefox and WebKit.
 
 ## Unresolved findings and approval boundaries
 
@@ -47,3 +47,9 @@ Three Firefox geometry checks measured 44 px controls as 43.99998474121094 or 43
 Actual model quality, representative photographs, hosted recovery, retention/deletion, durable provider budgets, physical-device/assistive-technology checks and live integrations are incomplete requirements, not defects declared fixed by these local tests. See [release acceptance](RELEASE_ACCEPTANCE.md).
 
 No critical vulnerability or cross-business exposure was observed in the executed checks. This statement is limited to their coverage. The active public configuration remains a high-priority release blocker.
+
+## Final verification
+
+[Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) passed 1,096 application checks with zero application failures at source 17223d6. This includes the focus correction and all XLSX failure paths. Run65 exposed one additional fixture error: Playwright passed Request as the second positional argument, replacing a captured MIME default. The handler now accepts that argument explicitly. Both fixture responses passed the real local Playwright wrapper, then all seven browser cases passed in each engine. No assertion was removed.
+
+The two public-suspension checks still fail. The OCR quality gate still has 57 nonexact cases. Those findings remain open.
