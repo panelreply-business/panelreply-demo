@@ -6,20 +6,25 @@
   <meta name="color-scheme" content="light">
   <title>Request inbox · PanelReply</title>
   <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/platform.css">
   <script src="/assets/app.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Workspace navigation">
-      <a href="/" class="brand brand-light" id="home-link" aria-label="PanelReply inbox"><span class="brand-mark" aria-hidden="true">P</span><span>PanelReply<span class="brand-caption">FOR THE WORK AHEAD</span></span></a>
+      <a href="/" class="brand brand-light" id="home-link" aria-label="PanelReply inbox"><span class="brand-mark" aria-hidden="true">P</span><span>PanelReply<span class="brand-caption">CONTRACTOR WORKSPACE</span></span></a>
       <div class="sidebar-business"><span class="eyebrow">WORKSPACE</span><strong id="sidebar-business-name">Your business</strong><span class="private-label"><span class="status-dot" aria-hidden="true"></span> Owner access</span></div>
       <nav class="main-nav" aria-label="Main navigation">
-        <button id="nav-inbox" class="nav-item active" aria-current="page" type="button"><span aria-hidden="true" class="nav-icon">▤</span>Inbox<span id="nav-new-count" class="nav-count">0</span></button>
-        <button id="nav-profile" class="nav-item" type="button"><span aria-hidden="true" class="nav-icon">▦</span>Business profile</button>
-        <a id="preview-link" href="/preview" class="nav-item"><span aria-hidden="true" class="nav-icon">◇</span>Customer preview<span aria-hidden="true" class="nav-arrow">↗</span></a>
+        <a id="dashboard-link" href="/dashboard" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>Dashboard</a>
+        <button id="nav-inbox" class="nav-item active" aria-current="page" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3zM3 13h5l2 3h4l2-3h5"/></svg></span>Inbox<span id="nav-new-count" class="nav-count">0</span></button>
+        <a id="panels-link" href="/panels" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M7 8h10M7 12h10M7 16h6"/></svg></span>Panel scanning</a>
+        <a id="projects-link" href="/panels#projects" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 3h9v11H3z"/></svg></span>Saved projects</a>
+        <a id="exports-link" href="/panels#export" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg></span>Exports</a>
+        <button id="nav-profile" class="nav-item" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/></svg></span>Business profile</button>
+        <a id="preview-link" href="/preview" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h18v13H9l-5 4v-4H3zM7 8h10M7 12h6"/></svg></span>Customer preview<span aria-hidden="true" class="nav-arrow">↗</span></a>
       </nav>
-      <div class="sidebar-bottom"><span class="eyebrow">PRIVATE PREVIEW</span><p>Requests stay here for review. No calls, texts, or appointments are sent.</p><div class="sidebar-rule"></div><span id="signed-in-name" class="signed-in-name">Owner workspace</span><button id="sign-out" class="text-button light-button" type="button">Sign out <span aria-hidden="true">↗</span></button></div>
+      <div class="sidebar-bottom"><span class="eyebrow">PRIVATE PREVIEW</span><p>Requests and panel records stay here for review. No calls, texts, or appointments are sent.</p><div class="sidebar-rule"></div><span id="signed-in-name" class="signed-in-name">Owner workspace</span><button id="sign-out" class="text-button light-button" type="button">Sign out <span aria-hidden="true">↗</span></button></div>
     </aside>
     <main id="main-content" class="main-shell">
       <header class="page-header">
@@ -41,6 +46,7 @@
           <section class="panel request-list-panel" aria-labelledby="requests-title">
             <div class="panel-heading"><div><h2 id="requests-title">Requests</h2><p id="list-count" class="muted small-text">Loading requests…</p></div><button id="refresh-requests" class="button button-secondary button-small" type="button">Refresh</button></div>
             <div class="list-toolbar"><div class="form-field"><label for="request-search">Search requests</label><input id="request-search" type="search" placeholder="Name, phone, ZIP or work" maxlength="200" autocomplete="off"></div><div class="form-field"><label for="status-filter">Filter by status</label><select id="status-filter"><option value="all">All requests</option><option value="new">New</option><option value="needs_review">Needs review</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select></div></div>
+            <div class="record-export"><button id="export-records" class="button button-secondary button-small" type="button" aria-describedby="export-description" disabled>Export records</button><p id="export-description">Downloads all saved business details, requests and conversations for this business. Unsaved edits are not included.</p><p id="export-status" role="status" aria-live="polite"></p><p id="export-error" class="notice error" role="alert" hidden></p></div>
             <p id="list-status" class="sr-only" role="status" aria-live="polite"></p>
             <div id="requests-list" class="requests-list" role="list" aria-label="Saved requests"></div>
             <div id="list-empty" class="list-empty" hidden><span class="empty-symbol" aria-hidden="true">▤</span><h3 id="empty-list-title">Your inbox starts here</h3><p id="empty-list-copy">Save a test request from the customer preview to see the full review process.</p><a id="empty-preview-link" href="/preview" class="button button-secondary">Open customer preview <span aria-hidden="true">↗</span></a></div>

@@ -67,6 +67,7 @@
   async function api(path, options = {}) {
     const method = options.method || 'GET';
     const headers = { Accept: 'application/json', ...(options.headers || {}) };
+    if (csrfToken) headers['X-Workspace-Session'] = csrfToken;
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
     if (method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
     let response;
@@ -85,6 +86,8 @@
     if (response.status !== 204 && !data) throw new RequestError(response.status, 'invalid_response', 'The workspace returned an incomplete response.');
     return data;
   }
+
+  window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
 
   function updateControls() {
     const locked = !ready || expired || saveBusy || Boolean(savedLead) || Boolean(pendingSave);
