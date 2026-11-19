@@ -101,7 +101,9 @@
     $('upload-source').disabled = busy || !ready || Boolean(pendingSave) || (!pendingUpload && (!sourceAllowed || !selectedFile));
     $('upload-source').textContent = pendingUpload ? 'Retry image save' : 'Save image';
     $('clear-source-selection').disabled = locked;
-    $('source-dropzone').setAttribute('aria-disabled', String(!sourceAllowed));
+    // The file picker and retry action have different availability. Do not
+    // disable their shared ancestor, which would also disable a valid retry.
+    $('source-dropzone').dataset.disabled = String(!sourceAllowed);
     $('source-dropzone').setAttribute('aria-busy', String(savingSource));
     $('source-progress').hidden = !savingSource;
     $('source-save-help').textContent = unresolved() ? 'Confirm the pending save before continuing.' : !saved ? 'Save the project before adding an image.' : dirty() ? 'Save your changes before uploading an image or extracting text.' : conflict ? 'Reload the saved project before adding images or extracting text.' : project.sources.length >= 5 ? 'This project has five source images. You can still review the saved images and edit parts.' : 'Images stay with this project. Text extraction runs locally when the OCR engine is available.';
@@ -333,9 +335,10 @@
     error('source-error', '');
     $('source-status').textContent = '';
     if (!file) { clearSourceSelection(); updateControls(); return; }
-    if (files.length !== 1 || !['image/png', 'image/jpeg'].includes(file.type) || !file.size || file.size > 2 * 1024 * 1024) {
+    const multiple = files.length !== 1;
+    if (multiple || !['image/png', 'image/jpeg'].includes(file.type) || !file.size || file.size > 2 * 1024 * 1024) {
       clearSourceSelection();
-      error('source-error', files.length !== 1 ? 'Choose one image at a time.' : 'Choose a PNG or JPEG image no larger than 2 MB.');
+      error('source-error', multiple ? 'Choose one image at a time.' : 'Choose a PNG or JPEG image no larger than 2 MB.');
       updateControls(); return;
     }
     selectedFile = file;

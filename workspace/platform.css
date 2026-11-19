@@ -139,7 +139,7 @@ input:focus, textarea:focus, select:focus { border-color: #2466dd; box-shadow: 0
 .source-panel > p, .export-panel > p { color: var(--muted); font-size: .83rem; margin: 8px 0 16px; }
 .source-dropzone { margin: 18px 0; padding: 18px; border: 1px dashed #8199b7; border-radius: 9px; background: #f8fbff; }
 .source-dropzone[data-dragging="true"] { border-color: #2466dd; background: #edf3ff; outline: 2px solid #2466dd; outline-offset: 2px; }
-.source-dropzone[aria-disabled="true"] { border-color: #c8d3e1; }
+.source-dropzone[data-disabled="true"] { border-color: #c8d3e1; }
 .source-dropzone > p { color: var(--muted); font-size: .8rem; margin: 0 0 12px; }
 .source-upload { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin: 12px 0 0; }
 .source-upload .form-field { flex: 1; min-width: 0; }

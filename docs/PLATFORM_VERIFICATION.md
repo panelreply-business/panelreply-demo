@@ -6,7 +6,7 @@ Date: 2026-11-19. Scope: draft PR8 on `feature/interactive-dual-product-site`.
 
 [Run 59](https://github.com/panelreply-business/panelreply-demo/actions/runs/44529305704) passed at commit `5b17352854bd84c5519020666383af93fe9a054a`: 574 checks PASS, zero failures, and three public application checks BLOCKED by intentional owner suspension. The 574 count includes 400 Node/HTTP cases, 165 Chromium cases and nine actual native OCR cases. It excludes the three blocked checks.
 
-The next UX refinement is implemented and locally checked below. Its new browser states must pass CI before that refinement is called verified. No merge or deployment is authorized by this record.
+The next UX refinement is implemented and locally checked below. Run 60 verified marketing and platform navigation/layout changes but found two image-input defects and one browser-fixture error. Corrections now await another full run. No merge or deployment is authorized by this record.
 
 | Area | Baseline status | Evidence |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ Implemented after the verified baseline:
 
 Local verification of this refinement: 397 pure Node checks PASS, zero failures; nine actual Tesseract 5.5.0 cases PASS; generated-demo/CSP check PASS; JavaScript syntax and Python compilation PASS. These local checks are not additional cases to add to a later full CI total.
 
-New browser coverage is implemented but NOT TESTED until the next CI run: 27 marketing cases, 24 panel cases and 19 platform cases. These replace the prior suite counts of 21, 21 and 18 respectively. Existing 105 browser cases remain intact.
+Run 60 passed 406 Node/HTTP cases, nine native OCR cases, the existing 105 browser cases, all 27 marketing cases and all 19 platform cases. The 24-case panel suite passed 21, with one failure and two errors. Total: 587 PASS, one FAIL, two ERROR, three intentional public BLOCKED checks. One additional 844×390 landscape subcase is prepared in the existing dialog-responsive method; it does not increase the method count. The corrected panel cases and landscape subcase await the next run.
 
 ## Defects and verification
 
@@ -51,11 +51,13 @@ New browser coverage is implemented but NOT TESTED until the next CI run: 27 mar
 | Medium | Create a project beyond capacity and receive 409. | Only a `version_conflict` on a saved project opens conflict recovery; quota failures retain an editable draft. | PASS in run 59. |
 | Medium | Fail the first session read before readiness, then retry. | Enable retry after the operation ends even if bootstrap never completed. | PASS in run 59. |
 | Medium | View marketing parts at 360/390/430/768 px. The last header's screen-reader text used the viewport as its positioning container. | Contain the accessible label within the table scroller. Do not hide whole-page overflow. | PASS in runs 58 and 59 at all six requested widths. |
-| Medium | Open any authenticated page at 761–880 px. The desktop sidebar minimum height survived the topbar breakpoint. | Reset sidebar height/min-height at the 880 px breakpoint. | Implemented. New geometry assertions await CI. |
-| Medium | Open `/panels?project=ID`, then choose Exports. The full navigation URL discarded the selected ID. | Use in-page project/export anchors. Explain export selection when arriving from another page. | Implemented. New navigation regression awaits CI. |
-| Low | On phones the project name and notes inherited two columns while losing their full-row spans. | Give panel metadata fields full width and stack them on mobile. | Implemented. Existing responsive cases now assert geometry; CI pending. |
+| Medium | Open any authenticated page at 761–880 px. The desktop sidebar minimum height survived the topbar breakpoint. | Reset sidebar height/min-height at the 880 px breakpoint. | PASS in run 60 at the requested viewport widths. |
+| Medium | Open `/panels?project=ID`, then choose Exports. The full navigation URL discarded the selected ID. | Use in-page project/export anchors. Explain export selection when arriving from another page. | PASS in run 60. |
+| Low | On phones the project name and notes inherited two columns while losing their full-row spans. | Give panel metadata fields full width and stack them on mobile. | PASS in run 60 responsive geometry assertions. |
 | Low | Private mobile navigation labels extended outside the visible horizontal strip. | Wrap navigation into a grid with 44 px targets. | PASS in runs 58 and 59; visual captures inspected. |
 | Low | UI limits differed from backend part-number/notes limits; blob image previews conflicted with CSP. | Align field lengths and use authenticated same-origin source image URLs. | PASS in run 59 boundary and image-preview cases. |
+| Medium | Lose a successful image-save response, then choose Retry image save. The shared dropzone used `aria-disabled`, which also marked the retry unavailable. | Keep disabled state on each native input/button. Use a visual data attribute on the shared dropzone, retaining its busy state. | Reproduced in run 60. Correction awaits rerun. |
+| Low | Choose an unsupported, empty or oversized file. Clearing the native file input mutates its live FileList before the error message checks the count. | Capture the multiple-file condition before clearing selection. | Reproduced in run 60. Correction awaits rerun. |
 
 ## CI history and test-fixture corrections
 
@@ -63,10 +65,12 @@ New browser coverage is implemented but NOT TESTED until the next CI run: 27 mar
 - [Run 58](https://github.com/panelreply-business/panelreply-demo/actions/runs/44526917145), commit `95c6ad4fe4c57ca1a14653ae44ad650fbb3a015d`: marketing 21 and platform 18 passed. Panel 20 passed with one fixture error. The server returned the expected 401, but the test tried to read its response body after navigation released it.
 - [Run 59](https://github.com/panelreply-business/panelreply-demo/actions/runs/44529305704), commit `5b17352854bd84c5519020666383af93fe9a054a`: all 574 executed checks passed, zero failures, three intentional public blocks.
 
+- [Run 60](https://github.com/panelreply-business/panelreply-demo/actions/runs/44533037007), commit `f5186d323cf4561385263780071528a766654d08`: 587 PASS, one failed panel assertion, two panel errors and three intentional public blocks. The errors included the unavailable retry above and a new test polling string blocked by CSP. The image polling now uses an arrow function, matching the existing CSP-compatible browser pattern. The CSP is unchanged.
+
 The download-failure fixture was corrected to install its throwing replacement without returning the replacement function to Playwright. The stale-session fixture now captures the real response through `route.fetch()` before forwarding that unchanged response. Neither change weakens an application assertion. The session fixture still requires 401/session_changed, redirect and cleared private state.
 
 Independent new browser suites run after a sibling failure when Chromium installed successfully. Any failing test still fails the workflow. This exposes more evidence without hiding errors.
 
 ## Review gate
 
-The verified platform baseline is suitable for code/design review. The UX refinement remains pending its own full CI and screenshots. A customer pilot or public deployment remains NO-GO. Main and both suspended Render services remain unchanged. Merge and public exposure require separate owner approval.
+The verified platform baseline is suitable for code/design review. The website and platform suites passed run 60. Two corrected image-input behaviors, the test-fixture correction and final screenshots still require verification. A customer pilot or public deployment remains NO-GO. Main and both suspended Render services remain unchanged. Merge and public exposure require separate owner approval.

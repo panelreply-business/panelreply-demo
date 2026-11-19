@@ -142,7 +142,7 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         expect(self.page.locator("#source-selection")).to_be_hidden()
         self.page.get_by_role("button", name="View image dropped-label.png", exact=True).click()
         expect(self.page.locator("#source-list img")).to_be_visible()
-        self.page.wait_for_function("document.querySelector('#source-list img')?.complete && document.querySelector('#source-list img')?.naturalWidth > 0")
+        self.page.wait_for_function("() => document.querySelector('#source-list img')?.complete && document.querySelector('#source-list img')?.naturalWidth > 0")
         self.assertTrue(self.page.locator("#source-list img").evaluate("image => image.complete && image.naturalWidth > 0"))
 
     def test_image_selection_rejects_type_size_and_multiple_files_without_saving(self):
@@ -388,7 +388,7 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.page.locator("#source-list [data-view]").click()
         image = self.page.locator("#source-list img")
         expect(image).to_be_visible()
-        self.page.wait_for_function("document.querySelector('#source-list img')?.naturalWidth > 0")
+        self.page.wait_for_function("() => document.querySelector('#source-list img')?.naturalWidth > 0")
         self.assertTrue(image.get_attribute("src").startswith("/api/panel-projects/") or image.get_attribute("src").startswith(self.origin + "/api/panel-projects/"))
         url = self.origin + "/api/panel-projects/" + saved["id"] + "/sources/" + source["id"]
         response = self.context.request.get(url)

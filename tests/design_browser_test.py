@@ -461,16 +461,28 @@ class DesignBrowserTests(unittest.TestCase):
 
     def test_guided_dialog_fits_each_requested_viewport(self):
         self.parts_view()
-        for width in (360, 390, 430, 768, 1024, 1440):
-            with self.subTest(width=width):
-                self.page.set_viewport_size({"width": width, "height": 1000})
+        viewports = [(width, 1000) for width in (360, 390, 430, 768, 1024, 1440)] + [(844, 390)]
+        for width, height in viewports:
+            with self.subTest(width=width, height=height):
+                self.page.set_viewport_size({"width": width, "height": height})
                 self.page.locator("#start-parts-walkthrough").click()
                 box = self.page.locator("#parts-walkthrough").bounding_box()
                 self.assertGreaterEqual(box["x"], 0)
+                self.assertGreaterEqual(box["y"], 0)
                 self.assertLessEqual(box["x"] + box["width"], width)
+                self.assertLessEqual(box["y"] + box["height"], height)
                 self.page.locator("#walkthrough-next").click()
                 expect(self.page.locator("#parts-walkthrough")).to_have_attribute("data-stage", "ready")
                 self.assert_no_page_overflow()
+                for action in ("walkthrough-next", "walkthrough-skip"):
+                    button = self.page.locator("#" + action)
+                    button.scroll_into_view_if_needed()
+                    expect(button).to_be_enabled()
+                    action_box = button.bounding_box()
+                    self.assertGreaterEqual(action_box["x"], 0)
+                    self.assertGreaterEqual(action_box["y"], 0)
+                    self.assertLessEqual(action_box["x"] + action_box["width"], width)
+                    self.assertLessEqual(action_box["y"] + action_box["height"], height)
                 self.page.locator("#walkthrough-skip").click()
 
     def test_download_loading_and_browser_failure_path(self):
