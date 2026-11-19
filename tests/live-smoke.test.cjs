@@ -28,8 +28,8 @@ test('live Render demo CSP matches its delivered script and style', { timeout: 2
   const response = await fetch(origin + '/', { signal: AbortSignal.timeout(20000) });
   assert.equal(response.status, 200);
   const html = await response.text();
-  const script = html.match(/<script>([\\s\\S]*?)<\\/script>/)?.[1];
-  const style = html.match(/<style>([\\s\\S]*?)<\\/style>/)?.[1];
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+  const style = html.match(/<style>([\s\S]*?)<\/style>/)?.[1];
   const csp = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1];
   assert.ok(script && style && csp, 'Expected inline script, style and meta CSP');
   const sha = txt => crypto.createHash('sha256').update(txt).digest('base64');
