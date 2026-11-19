@@ -529,7 +529,10 @@
           if (partValidationShown) paintPartErrors();
           announce('parts-status', `Row ${position + 1} changed. Review the corrected values before export.`);
         });
-        input.addEventListener('blur', () => {
+        input.addEventListener('blur', event => {
+          // Export validates and focuses errors on click. Revealing errors here
+          // would move that button between pointer-down and pointer-up.
+          if (event.relatedTarget === $('export')) return;
           const current = parts.find(item => item.id === part.id);
           if (current && !core.validatePart(current).valid) {
             partValidationShown = true;

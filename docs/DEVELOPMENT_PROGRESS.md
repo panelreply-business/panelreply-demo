@@ -12,7 +12,7 @@ Authoritative current progress record. Date: 2026-11-19. Continue the existing `
 
 ## Current workstream
 
-Pre-launch reliability. New code is in the working tree. The updated full isolated run passed 638 Node/SQLite/in-process API tests with zero failures or skips. This includes the two transport defects found after the first 636-check pass. The focused transport/adversarial run passed 42 tests and the overlapping seven-suite run passed 323. Full updated CI is pending. Native OCR and resource checks passed 14 cases. Independent XLSX readback passed nine fixtures. This is not a release approval.
+Pre-launch reliability. Application commit [c5a4754](https://github.com/panelreply-business/panelreply-demo/commit/c5a47542d665a7d5ffb202e1cde4669c85512243) is saved on the existing branch. Its full 155-file GitHub tree matched the local candidate exactly. The latest browser correction is in progress. The updated full isolated run passed 638 Node/SQLite/in-process API tests with zero failures or skips. This includes the two transport defects found after the first 636-check pass. The focused transport/adversarial run passed 42 tests and the overlapping seven-suite run passed 323. Full updated CI [run64](https://github.com/panelreply-business/panelreply-demo/actions/runs/44631944024) passed 645 Node/HTTP checks, the existing 175 Chromium cases and four new assistant browser cases. Four XLSX browser cases passed and three stopped at a test callback error. Firefox found one validation-focus failure, three sub-0.001 px geometry assertion failures and the same three callback errors. The corrections preserve the assertions and require a new CI run. WebKit is still executing. Native OCR and resource checks passed 14 cases. Independent XLSX readback passed nine fixtures. This is not a release approval.
 
 | Work | Current state | Evidence/next action |
 | --- | --- | --- |
@@ -32,10 +32,10 @@ HIGH: both existing Render services now report `not_suspended` in repeated read-
 - [Server service](https://dashboard.render.com/web/srv-dbv6do6tlv9c73fuvar0)
 - [Static service](https://dashboard.render.com/static/srv-dbu5o8tckfvc73b6fb4g)
 
-No infrastructure state was changed in this session. The independent public-suspension CI job retains the existing GET-only assertions and must fail if the required state is absent. Separating that job lets isolated application tests continue, without hiding the deployment-state failure.
+No infrastructure state was changed in this session. Run64 independently returned HTTP200 from both URLs and failed both required503 guards. The independent public-suspension CI job retains the existing GET-only assertions and must fail if the required state is absent. Separating that job lets isolated application tests continue, without hiding the deployment-state failure.
 
 ## Approval boundaries
 
 No real-provider call, customer data, customer contact, paid service, account creation, public deployment, domain or main merge. Real AI quality, representative electrical photographs, hosted operations and any pilot remain separate acceptance gates.
 
-Next action: run the updated full regression, capture actual browser evidence, commit to the same branch and update this document and [release acceptance](RELEASE_ACCEPTANCE.md) with exact results. Preserve all prior failures in the evidence history.
+Next action: run the updated full regression, capture actual browser evidence, commit to the same branch and update this document and [release acceptance](RELEASE_ACCEPTANCE.md) with exact results. See the [defect register](PRELAUNCH_DEFECTS.md) for reproduction and verification. Preserve all prior failures in the evidence history.

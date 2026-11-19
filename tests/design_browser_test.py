@@ -321,9 +321,20 @@ class DesignBrowserTests(unittest.TestCase):
     def test_part_validation_blank_values_and_unknown_fields(self):
         self.parts_view()
         self.page.get_by_label("Quantity row 1", exact=True).fill("0")
+        self.page.evaluate("""() => {
+            window.exportValidationClicks = 0;
+            document.getElementById('export').addEventListener('click', () => {
+                window.exportValidationClicks += 1;
+            });
+        }""")
         self.page.locator("#export").click()
         expect(self.page.get_by_label("Quantity row 1", exact=True)).to_have_attribute("aria-invalid", "true")
         expect(self.page.locator("#parts-errors")).to_contain_text("whole quantity from 1 to 9999")
+        activation = self.page.evaluate("""() => ({
+            clicks: window.exportValidationClicks,
+            focused: document.activeElement && document.activeElement.id
+        })""")
+        self.assertEqual(activation["clicks"], 1, f"Export activation interrupted: {activation}")
         expect(self.page.get_by_label("Quantity row 1", exact=True)).to_be_focused()
         self.page.get_by_label("Quantity row 1", exact=True).fill("1")
         self.page.get_by_label("Manufacturer row 1", exact=True).fill("")

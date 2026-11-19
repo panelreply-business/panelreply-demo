@@ -349,7 +349,9 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.assertEqual(content["leads"][0]["customerName"], "Jamie Recovery")
         self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         box = self.page.get_by_role("button", name="Export records", exact=True).bounding_box()
-        self.assertGreaterEqual(box["height"], 44)
+        # Preserve the 44 px target while removing sub-0.001 px coordinate
+        # subtraction noise observed in Firefox (43.99998474121094 px).
+        self.assertGreaterEqual(round(box["height"], 3), 44)
         self.emit_preview("recovery-inbox-mobile.jpg")
 
     def test_encrypted_restore_preserves_requests_and_restrictions_but_rejects_old_sessions(self):

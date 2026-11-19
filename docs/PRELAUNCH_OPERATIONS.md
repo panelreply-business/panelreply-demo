@@ -10,8 +10,8 @@ Official public pages checked on 2026-11-19:
 
 | Product | Relevant documented capability | Observed pricing model | Implication for PanelReply |
 | --- | --- | --- | --- |
-| [Jobber](https://www.getjobber.com/pricing/) | Scheduling, quotes, invoices, payments, customer communication and an AI Receptionist. | Page lists one-user Core at USD49/month without commitment or USD29/month billed annually. Receptionist is shown as a USD99/month add-on. Team size and billing commitment change prices. | Conversational intake alone is not an established competitive advantage. Request accuracy, review and integration friction need evidence. |
-| [Housecall Pro](https://www.housecallpro.com/pricing/) | Booking, scheduling/dispatch, estimates, payments, mobile workflows and AI offerings. | Page lists Basic for one user at USD79/month or USD59/month billed annually. Add-ons and promotional prices vary. | Competing as a complete field-service suite would create a much larger scope. Keep the two core workflows dependable. |
+| [Jobber](https://www.getjobber.com/pricing/) | Scheduling, quotes, invoices, payments, customer communication and an AI Receptionist. | Page lists one-user Core at USD 49/month without commitment or USD 29/month billed annually. Receptionist is shown as a USD 99/month add-on. Team size and billing commitment change prices. | Conversational intake alone is not an established competitive advantage. Request accuracy, review and integration friction need evidence. |
+| [Housecall Pro](https://www.housecallpro.com/pricing/) | Booking, scheduling/dispatch, estimates, payments, mobile workflows and AI offerings. | Page lists Basic for one user at USD 79/month or USD 59/month billed annually. Add-ons and promotional prices vary. | Competing as a complete field-service suite would create a much larger scope. Keep the two core workflows dependable. |
 | [ServiceTitan](https://www.servicetitan.com/pricing) | Dispatch, scheduling, call booking, invoicing and pricebook, with further operational modules by package. | Per-technician packages with pricing requested from the vendor. No numeric quote was obtained. | Larger operational breadth already exists. Do not claim PanelReply replaces those functions. |
 
 These are vendor descriptions, not independent quality measurements. No account, trial or sales conversation was opened. The research did not establish that competitors lack electrical-label OCR. That absence must not be used as a marketing claim.
@@ -53,7 +53,7 @@ Monthly cost model:
 | Variable | Measurement or decision needed |
 | --- | --- |
 | Compute | Peak concurrent OCR and application memory, observed CPU time, recovery headroom and availability target |
-| Storage | Saved row/image bytes, growth, backup cadence and retention. Current panel-content cap is32MiB per local workspace, not a SaaS capacity promise. |
+| Storage | Saved row/image bytes, growth, backup cadence and retention. Current panel-content cap is 32 MiB per local workspace, not a SaaS capacity promise. |
 | Model usage | Approved model, average input/output tokens per conversation, measured retry rate and per-business hard allowance |
 | Support | Onboarding and recovery minutes per business, support hours and incident responsibility |
 | Margin | Proposed price less all direct usage/support costs under expected and high-usage cases |
@@ -66,7 +66,7 @@ No model, storage, monitoring or communication service was purchased for this wo
 
 The existing recovery tools create authenticated encrypted archives and restore into a fresh owner-only directory. Restored sessions are absent and passwords require operator reset. Existing source databases must never be overwritten by a restore attempt. See [recovery procedure](RECOVERY.md) and [bounded recovery evidence](STRESS_RECOVERY.md).
 
-Proposed targets for review, not guarantees: recovery-point objective of24hours and recovery-time objective of4hours for an initial controlled evaluation. These require an approved scheduled offsite backup and a timed restore on the selected host. A disk snapshot is not an independent offsite recovery drill.
+Proposed targets for review, not guarantees: recovery-point objective of 24 hours and recovery-time objective of 4 hours for an initial controlled evaluation. These require an approved scheduled offsite backup and a timed restore on the selected host. A disk snapshot is not an independent offsite recovery drill.
 
 Proposed schedule after approval: one encrypted application backup each day, seven daily archives and four weekly archives, with a verified restore each month and before a schema release. Keep the encryption secret separately from the archives. Backups should be non-public, access logged and protected from accidental overwrite. Owner approval is needed for the destination, credentials, retention and costs.
 

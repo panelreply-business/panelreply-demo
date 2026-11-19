@@ -66,7 +66,7 @@ class XlsxBrowserTests(PanelWorkspaceBrowserTests):
         saved = self.create_panel()
         self.open_panels(saved["id"])
         downloads = []
-        self.page.on("download", downloads.append)
+        self.page.on("download", lambda download: downloads.append(download))
         self.expected_console_errors.add("net::ERR_FAILED")
         route_url = self.origin + "/api/panel-projects/" + saved["id"] + "/export.xlsx"
         self.page.route(route_url, lambda route: route.abort("failed"))
@@ -84,7 +84,7 @@ class XlsxBrowserTests(PanelWorkspaceBrowserTests):
         saved = self.create_panel()
         self.open_panels(saved["id"])
         downloads = []
-        self.page.on("download", downloads.append)
+        self.page.on("download", lambda download: downloads.append(download))
         route_url = self.origin + "/api/panel-projects/" + saved["id"] + "/export.xlsx"
         for mime, body in [("application/json", '{}'), ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "")]:
             self.page.route(route_url, lambda route, mime=mime, body=body: route.fulfill(status=200, content_type=mime, body=body))
@@ -100,7 +100,7 @@ class XlsxBrowserTests(PanelWorkspaceBrowserTests):
         self.open_panels(saved["id"])
         other_username = self.seed_owner()
         downloads = []
-        self.page.on("download", downloads.append)
+        self.page.on("download", lambda download: downloads.append(download))
         self.allow_http_error(401)
 
         def change_cookie_after_export(route):

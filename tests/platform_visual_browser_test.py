@@ -229,8 +229,11 @@ def responsive_panel(width):
             self.assertGreaterEqual(notes["y"], name["y"] + name["height"] + 8,
                                     "Project notes must follow the name in one mobile column")
         expect(self.page.locator("#save-project")).to_be_enabled()
-        for selector in ["#save-project", "#add-part", "#export-project"]:
-            self.assertGreaterEqual(self.page.locator(selector).bounding_box()["height"], 44)
+        for selector in ["#save-project", "#add-part", "#export-project", "#export-project-xlsx"]:
+            # Firefox subtracts fractional coordinates when returning the box:
+            # a 44 px control can measure 43.99993896484375 px. Keep the 44 px
+            # requirement, comparing geometry at 0.001 CSS-pixel precision.
+            self.assertGreaterEqual(round(self.page.locator(selector).bounding_box()["height"], 3), 44)
         self.page.get_by_label("Part number row 1", exact=True).fill("UPDATED-120")
         self.page.locator("#save-project").click()
         expect(self.page.locator("#project-save-status")).to_contain_text("Project saved.")
