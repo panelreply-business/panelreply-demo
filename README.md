@@ -1,10 +1,28 @@
 # PanelReply / Ringkeep
 
-A contractor intake workspace for turning sample customer messages into a callback summary. It collects the electrical work, job ZIP and callback preference, shows missing or conflicting details, and keeps the conversation available for review.
+A contractor intake workspace that answers common questions from saved information and turns sample customer messages into a callback summary. It collects the electrical work, job ZIP and callback preference, shows missing or conflicting details, and keeps the conversation available for review.
 
 [Static demo](https://panelreply-demo.onrender.com/) · [AI server preview](https://panelreply-ai.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo)
 
-## AI server readiness
+## Current release: question answering
+
+Published November 18, 2026 at 10:37 PM America/New_York to both demo links. [PR #4](https://github.com/panelreply-business/panelreply-demo/pull/4) is merged. The release passed 209 checks: 144 Node/HTTP/live GET checks and 65 Chromium checks, with zero failures or skips. The merge commit passed CI as well.
+
+The published chat was checked through its controls. It answered questions, recalled the supplied ZIP, preserved job details when hours or coverage were queried, and handled mixed questions and callback requests. Both deployments serve commit `9e4bac0169e7d27942686cbb0a13f1e5003d378b`.
+
+| Area | Current status |
+| --- | --- |
+| Saved question answers and intake integrity | PASS — verified in CI and on both published demos |
+| Live AI extraction | BLOCKED — API-key setup and approved usage remain pending |
+| Live model-generated question answers | NOT IMPLEMENTED — saved answers are used |
+| Contractor prices, hours, services and coverage | NOT IMPLEMENTED as verified facts — the app states that confirmation is needed |
+| Appointment booking, customer messaging and durable customer records | NOT IMPLEMENTED |
+| Demo review | GO |
+| Customer pilot | NO-GO |
+
+[209-check CI run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452485870) · [Merge CI](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452662673) · [Release evidence and reproduction steps](docs/QUESTION_ANSWERS.md)
+
+## Previous AI server preparation
 
 The Node web service is deployed at https://panelreply-ai.onrender.com/. PR #3 passed 153 automated checks and was merged. Render deployed that tested application, and its health route and sample intake were checked through the browser. The live page still reports `Demo parsing. AI is not connected on this page.`
 
@@ -12,7 +30,7 @@ Live AI remains BLOCKED pending secure API-key setup, verified available credits
 
 [153-check CI run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44448007795) · [Activation changes — PR #3](https://github.com/panelreply-business/panelreply-demo/pull/3) · [Deployment evidence and remaining gates](docs/LIVE_AI_SETUP.md)
 
-## Static demo release
+## Previous static demo release
 
 The contractor workspace was published on November 18, 2026 at 8:24 PM America/Detroit. The canonical website was then checked through its controls.
 

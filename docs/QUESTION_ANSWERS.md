@@ -52,16 +52,53 @@ Live AI remains disabled pending the owner's credential choice, secure setup and
 
 ## Verification
 
-| Check at preparation | Status | Evidence |
+| Check | Status | Evidence |
 | --- | --- | --- |
 | Original corruption reproduced | FAIL on prior source | Seven new parser cases failed before the correction |
 | Offline controller, parser, saved-answer and server checks | PASS | 140 tests, zero failures or skips after the review fixes |
 | Generated bundle and content security policy | PASS | Source and generated hashes match |
 | Chromium test syntax | PASS | Python compilation succeeded |
-| Full HTTP and Chromium execution | NOT TESTED locally | Must run in GitHub Actions |
-| Deployed question answering | NOT TESTED at preparation | Requires the tested release and a live page check |
+| Full HTTP and Chromium execution | PASS | 209 checks: 144 Node/HTTP/live GET plus 65 Chromium, zero failures or skips |
+| Deployed question answering | PASS | Both Render deployments are live at the tested merge and were exercised through browser controls |
 | Live model answers | NOT IMPLEMENTED | Saved answers are used; the optional model adapter remains extraction-only |
 
 The regressions cover the original field corruption, empty and complete requests, mixed messages, natural question variants, polite callback requests, current-request recall, unverified/configured business facts, multiple topics, unknown questions, unresolved ZIP conflicts, STOP, hazards, model-output rejection and cancellation.
 
 The full suite runs Node logic tests, a real HTTP boundary with a fake provider, safe live GET checks and Chromium tests. Provider responses are fixtures. Local Chromium and listening sockets are unavailable in the development sandbox, so browser and HTTP execution must complete in GitHub Actions. Release status and deployment evidence are recorded after those checks.
+
+## Tested release
+
+[PR #4](https://github.com/panelreply-business/panelreply-demo/pull/4) is merged. Source commit `66257f72cf1c8eb49faa8bfb4651733808792f0e` passed [GitHub Actions run 44452485870](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452485870). Job `135319531787` reported 144 Node checks, 11 baseline browser checks, 42 intake browser checks and 12 layout/accessibility checks. All passed.
+
+Merge commit `9e4bac0169e7d27942686cbb0a13f1e5003d378b` has the same tree as the tested source: `e231d8eb1a74a5fc8e2c15c5725dd828a0fd6aec`.
+
+[Main merge CI run 44452662673](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452662673) also completed successfully.
+
+## Deployed verification
+
+Both existing services have auto-deploy disabled and received one manual deployment of the tested merge. No infrastructure plan, credential, permission or billing setting changed.
+
+| Service | Deployment | Confirmed state |
+| --- | --- | --- |
+| [Node app](https://panelreply-ai.onrender.com/) — `srv-dbv6do6tlv9c73fuvar0` | `dep-dbv6to1srm7s73bjtma0` | LIVE at November 18, 2026, 10:37:24 PM America/New_York |
+| [Static demo](https://panelreply-demo.onrender.com/) — `srv-dbu5o8tckfvc73b6fb4g` | `dep-dbv6tq6k1f9s73bl6fgg` | LIVE at November 18, 2026, 10:37:18 PM America/New_York |
+
+The following checks passed on the published Node app through its visible controls:
+
+- `What details do you need?` explained the intake and left all fields empty.
+- A supplied EV-charger job, ZIP `48315` and Monday callback populated all three fields.
+- `Are you open Friday? Do you service 48084?` returned unverified-hours and coverage answers without changing any fields.
+- `Can you call me tomorrow about whether you serve 48084?` updated the callback preference and preserved ZIP `48315` and the existing job.
+- `I have a question. Do you service 48084?` left all fields empty after reset.
+- `I need an EV charger installed. How much does it cost?` kept the stated job, admitted pricing was unavailable and asked for the missing ZIP.
+- An hours question followed by a newline and `Install lights in 48315. Call me Friday.` kept all three explicit details.
+- `What ZIP did I give you? Does this book an appointment?` recalled `48315` and correctly said no appointment was booked.
+- The [health route](https://panelreply-ai.onrender.com/health) returned `{"ok":true,"aiEnabled":false,"bookingEnabled":false}`.
+
+On the published static demo, `Install lights. ZIP 48315. Call Monday after 4 pm. Do you service 48084? Are you open Friday?` retained the stated job, ZIP and Monday preference while answering both questions. The questioned ZIP and Friday did not become request facts.
+
+![Published question answers and preserved request details](evidence/question-answers-2026-11-18.jpg)
+
+## Go/no-go
+
+Demo review is GO for the tested question-handling scope. Customer pilot remains NO-GO. Live AI extraction remains BLOCKED, live model-generated question answers remain NOT IMPLEMENTED, and calendar booking, customer messaging and durable customer records remain NOT IMPLEMENTED. Provider fixture tests do not establish live model quality or connectivity.
