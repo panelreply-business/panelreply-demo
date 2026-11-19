@@ -19,9 +19,9 @@ Live AI, inbound calls/SMS, outbound messages, notifications, calendar availabil
 
 ## Local setup
 
-Use Node.js 22.18 or later with its built-in `node:sqlite` module. No application dependencies or API keys are needed. SQLite is an experimental Node API in the Node22 line, so this development stage should stay on the tested runtime until another runtime is verified.
+Use Node.js 22.18 or later with its built-in `node:sqlite` module. No application dependencies or API keys are needed. SQLite is an experimental Node API in the Node.js 22 line, so this development stage should stay on the tested runtime until another runtime is verified.
 
-The database directory must be an absolute path, owned by the current operating-system user, with owner-only permissions. The app creates a missing directory with mode0700 and a database with mode0600. It rejects existing directories with broader access and paths containing symlinks. Use a directory outside the repository. Database files are ignored by Git as a second safeguard.
+The database directory must be an absolute path, owned by the current operating-system user, with owner-only permissions. The app creates a missing directory with mode 0700 and a database with mode 0600. It rejects existing directories with broader access and paths containing symlinks. Use a directory outside the repository. Database files are ignored by Git as a second safeguard.
 
 An operator can create the local owner from a terminal. The password goes through stdin. It is not accepted in arguments, environment variables or logs.
 
@@ -54,7 +54,7 @@ WORKSPACE_DATA_DIR="$HOME/.local/share/panelreply" \
 node workspace-server.cjs
 ```
 
-The startup entry point rejects non-loopback origins and binds only127.0.0.1. Changing `HOST` does not expose it. A separate deployment design, approval and validation are required for hosted access. Do not change the Render start command to publish this local development server.
+The startup entry point rejects non-loopback origins and binds only 127.0.0.1. Changing `HOST` does not expose it. A separate deployment design, approval and validation are required for hosted access. Do not change the Render start command to publish this local development server.
 
 ## Operator flow
 
@@ -73,7 +73,7 @@ Example synthetic message:
 My name is Jamie Stone. My phone is 586-555-0101. I need an EV charger installed. ZIP 48315. Call me Monday after 4 pm. I need the work done Friday.
 ```
 
-The callback window is Monday after4pm. The requested work date is Friday. Neither reserves an appointment. The phone number alone does not establish permission to contact someone.
+The callback window is Monday after 4 pm. The requested work date is Friday. Neither reserves an appointment. The phone number alone does not establish permission to contact someone.
 
 Try these follow-ups:
 
@@ -103,31 +103,31 @@ The server requires complete name, US phone, job and five-digit ZIP before savin
 ## Isolation and request integrity
 
 - Every profile, lead, conversation and audit lookup uses the business from the authenticated session. A client cannot choose a business with a request field.
-- Cross-business lead reads and changes return404.
-- Passwords use scrypt. Session tokens contain32random bytes and only their SHA-256 digests are stored. Password hashes and session tokens are not returned in lead/profile responses.
+- Cross-business lead reads and changes return 404.
+- Passwords use scrypt. Session tokens contain 32 random bytes and only their SHA-256 digests are stored. Password hashes and session tokens are not returned in lead/profile responses.
 - Cookies are HttpOnly and SameSiteStrict. The HTTPS handler uses a Secure `__Host-` cookie. The loopback development entry point uses HTTP with a separate local cookie name.
 - Mutations require the exact configured Origin. Authenticated mutations also require a session-derived CSRF token. GET requests do not change customer records.
-- Sessions expire after30minutes of inactivity or8hours in total. Sign-out revokes the stored session.
+- Sessions expire after 30 minutes of inactivity or 8 hours in total. Sign-out revokes the stored session.
 - Failed sign-ins are throttled by username and source address. The same generic failure message is used for absent accounts and incorrect passwords.
 - HTML/JS/CSS routes are allowlisted. The server never exposes its source directory, data directory, environment files or arbitrary filesystem paths.
 - Dynamic text is rendered as text. The content security policy does not permit inline scripts or remote scripts.
-- Save uses an idempotency key. Retrying the same accepted request returns the same lead. Reusing the key for different details returns409.
-- Profile and lead edits use a version number. A stale update returns409. The UI preserves the local draft for review.
+- Save uses an idempotency key. Retrying the same accepted request returns the same lead. Reusing the key for different details returns 409.
+- Profile and lead edits use a version number. A stale update returns 409. The UI preserves the local draft for review.
 - Writes use SQLite transactions, foreign keys, WAL mode and full synchronous commits. Audit entries record action metadata, version and changed field names without copying secrets into logs.
 
 ## Limits and failures
 
 | Limit | Value |
 | --- | --- |
-| Incoming preview message | 500characters |
-| Conversation | 60entries, 2000characters per entry, 20000characters total |
-| JSON body | 192KiB |
-| Customer name | 120characters |
-| Business name | 100characters |
-| Job or notes | 2000characters each |
-| Callback or work date | 200characters each |
-| Business answer | 1000characters |
-| Phone | US ten-digit format, normalized to+1 |
+| Incoming preview message | 500 characters |
+| Conversation | 60 entries, 2000 characters per entry, 20000 characters total |
+| JSON body | 192 KiB |
+| Customer name | 120 characters |
+| Business name | 100 characters |
+| Job or notes | 2000 characters each |
+| Callback or work date | 200 characters each |
+| Business answer | 1000 characters |
+| Phone | US ten-digit format, normalized to +1 |
 | ZIP | Five digits |
 
 A request failure does not show a saved state. A retry keeps its identifier until the payload changes or a save succeeds. Authentication expiry requires sign-in again. The browser keeps no customer records or session tokens in localStorage.
@@ -159,6 +159,6 @@ See [verification and remaining gates](PRIVATE_WORKSPACE_VERIFICATION.md) for th
 
 ## References
 
-- [Node22 SQLite documentation](https://nodejs.org/download/release/v22.21.0/docs/api/sqlite.html)
+- [Node.js 22 SQLite documentation](https://nodejs.org/download/release/v22.21.0/docs/api/sqlite.html)
 - [OWASP session management guidance](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 - [Public offline instruction and evidence](OFFLINE_MODE.md)

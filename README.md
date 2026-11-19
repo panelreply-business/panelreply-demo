@@ -30,6 +30,8 @@ The standalone workspace adds:
 - Persistent phone opt-outs and safety holds that reset, START and status changes cannot remove.
 - Duplicate prevention for save retries and version checks for conflicting edits.
 
+[Desktop inbox](docs/evidence/private-inbox-desktop.jpg) · [Mobile preview](docs/evidence/private-customer-preview-mobile.jpg)
+
 The callback window describes when a customer wants a call. The requested work date describes when they want the work done. Neither reserves an appointment. Contact permission is recorded separately. Saving a request sends no message.
 
 The preview uses explicit field parsing and saved answers. It does not call an AI provider. Questions about hours, coverage or pricing must not overwrite the supplied job details. Unknown business facts stay unknown.
@@ -53,6 +55,8 @@ Open http://127.0.0.1:10001/login. The entry point binds only to the loopback in
 The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their public Render services stay suspended.
 
 ## Verification
+
+The private-workspace candidate passed 313 checks with zero failures in [CI run 44460315464](https://github.com/panelreply-business/panelreply-demo/actions/runs/44460315464). Three public application checks remain BLOCKED by intentional suspension. The desktop inbox and 360-pixel customer preview were inspected from that run.
 
 The CI workflow checks the generated demo and CSP, pure intake and answer logic, private authentication and SQLite storage, real HTTP routes, existing demo browser behavior and the new private workspace through Chromium. Synthetic fixtures are isolated from real customers. No provider calls or outbound messages are used.
 
