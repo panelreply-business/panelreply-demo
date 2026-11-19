@@ -488,11 +488,26 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.assertEqual(switched.status, 200)
         self.create_request(customerName="Account B synthetic customer")
         self.allow_http_error(401)
+        actual_responses = []
+
+        def record_actual_refresh(route):
+            if route.request.method != "GET":
+                route.continue_()
+                return
+            # Capture the real server response before forwarding it unchanged.
+            # Navigation to login can evict Chromium's response body afterward.
+            response = route.fetch()
+            actual_responses.append({"status": response.status, "body": response.json()})
+            route.fulfill(response=response)
+
+        self.page.route(self.origin + "/api/leads", record_actual_refresh)
         with self.page.expect_response(lambda response:
                 response.url == self.origin + "/api/leads" and response.request.method == "GET") as pending:
             self.page.locator("#refresh-requests").click()
         self.assertEqual(pending.value.status, 401)
-        self.assertEqual(pending.value.json()["error"]["code"], "session_changed")
+        self.assertEqual(len(actual_responses), 1)
+        self.assertEqual(actual_responses[0]["status"], 401)
+        self.assertEqual(actual_responses[0]["body"]["error"]["code"], "session_changed")
         expect(self.page).to_have_url(self.origin + "/login")
         expect(self.page.locator("body")).not_to_contain_text("Account A synthetic customer")
         expect(self.page.locator("body")).not_to_contain_text("Account B synthetic customer")
