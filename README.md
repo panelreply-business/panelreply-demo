@@ -33,7 +33,7 @@ The standalone workspace adds:
 - Encrypted local backups and restore into a new directory, with no active sessions or usable passwords restored.
 - Operator password reset for an existing owner, with session revocation and protection against in-flight sign-in races.
 
-[Desktop inbox](docs/evidence/private-inbox-desktop.jpg) · [Mobile preview](docs/evidence/private-customer-preview-mobile.jpg)
+[Desktop inbox and export](docs/evidence/recovery-inbox-desktop.jpg) · [Mobile inbox and export](docs/evidence/recovery-inbox-mobile.jpg) · [Customer preview](docs/evidence/private-customer-preview-mobile.jpg)
 
 The callback window describes when a customer wants a call. The requested work date describes when they want the work done. Neither reserves an appointment. Contact permission is recorded separately. Saving a request sends no message.
 
@@ -61,7 +61,7 @@ The earlier static demo remains in `index.html`. The separate optional AI server
 
 ## Verification
 
-The previous private-workspace candidate passed 313 checks with zero failures in [CI run 44460315464](https://github.com/panelreply-business/panelreply-demo/actions/runs/44460315464). The recovery additions require their own complete CI run, recorded in [recovery verification](docs/RECOVERY_VERIFICATION.md). Three public application checks remain BLOCKED by intentional suspension.
+The recovery candidate passed 396 checks with zero failures in [CI run 44516705029](https://github.com/panelreply-business/panelreply-demo/actions/runs/44516705029): 291 Node/HTTP checks and 105 Chromium cases. This adds 83 test cases to the previous workspace baseline. Three public application checks remain BLOCKED by intentional suspension and are excluded from the pass count. The desktop and 360-pixel inbox/export captures were inspected from the passing run.
 
 The CI workflow checks the generated demo and CSP, pure intake and answer logic, private authentication and SQLite storage, real HTTP routes, existing demo browser behavior and the private workspace through Chromium. It also exercises export downloads, encrypted restore into a fresh directory and password recovery. Synthetic fixtures are isolated from real customers. No provider calls or outbound messages are used.
 
@@ -85,6 +85,8 @@ Historical release records describe their status at the time. Both public demos 
 
 | Stage | Evidence |
 | --- | --- |
+| Record export and local recovery | [PR7](https://github.com/panelreply-business/panelreply-demo/pull/7), [396-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44516705029), [recovery record](docs/RECOVERY_VERIFICATION.md) |
+| Local private workspace | [PR6](https://github.com/panelreply-business/panelreply-demo/pull/6), [313-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44460885413), [workspace record](docs/PRIVATE_WORKSPACE_VERIFICATION.md) |
 | Question answering | [PR4](https://github.com/panelreply-business/panelreply-demo/pull/4), [209-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452485870), [release record](docs/QUESTION_ANSWERS.md) |
 | Public demos taken offline | [PR5](https://github.com/panelreply-business/panelreply-demo/pull/5), [offline CI](https://github.com/panelreply-business/panelreply-demo/actions/runs/44454520969), [offline record](docs/OFFLINE_MODE.md) |
 | Optional AI server preparation | [PR3](https://github.com/panelreply-business/panelreply-demo/pull/3), [activation boundaries](docs/LIVE_AI_SETUP.md) |

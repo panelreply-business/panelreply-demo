@@ -2,7 +2,7 @@
 
 This stage adds a business-record download, encrypted local backups, restore to a new directory and operator password recovery. It keeps both public demos suspended. It does not provision a hosted workspace, send messages, activate AI or change any real account during development.
 
-The tools are intended for the existing local workspace on Linux or WSL with Node.js 22.18 or later. CI targets Node 22 on Ubuntu 24.04. Native Windows/macOS operation, offsite storage, backup scheduling and a production recovery-time target remain unverified or unimplemented.
+The tools are intended for the existing local workspace on Linux or WSL with Node.js 22.18 or later. CI verifies Node 22.23.4 on Ubuntu 24.04. Native Windows/macOS operation, offsite storage, backup scheduling and a production recovery-time target remain unverified or unimplemented.
 
 ## Three separate operations
 
