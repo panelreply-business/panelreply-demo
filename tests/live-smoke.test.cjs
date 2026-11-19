@@ -5,8 +5,31 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 
 const origin = 'https://panelreply-demo.onrender.com';
+const expectPublicOffline = process.env.PANELREPLY_EXPECT_PUBLIC_OFFLINE === 'true';
+const liveOptions = {
+  timeout: 25000,
+  skip: expectPublicOffline ? 'BLOCKED: public demos intentionally offline' : false
+};
 
-test('live Render demo responds with an explicit sample-only disclosure', { timeout: 25000 }, async () => {
+if (expectPublicOffline) {
+  for (const publicOrigin of [origin, 'https://panelreply-ai.onrender.com']) {
+    test('public demo remains owner-suspended: ' + publicOrigin, { timeout: 25000 }, async () => {
+      const response = await fetch(publicOrigin + '/', {
+        signal: AbortSignal.timeout(20000),
+        redirect: 'error'
+      });
+      assert.equal(response.status, 503, 'Expected the owner-suspended service to return HTTP 503');
+      const html = await response.text();
+      assert.ok(html.includes('This service has been suspended by its owner.'),
+        'Expected Render to identify deliberate owner suspension');
+      assert.doesNotMatch(html,
+        /data-ai-enabled|PanelReplyIntake|PanelReplyQuestions|id=["'](?:reply|events|field-progress|detail-job|detail-zip|detail-timing)["']|Customer requests|Start with a question or request/i,
+        'The suspended public URL must not serve PanelReply app markup');
+    });
+  }
+}
+
+test('live Render demo responds with an explicit sample-only disclosure', liveOptions, async () => {
   const response = await fetch(origin + '/', { signal: AbortSignal.timeout(20000) });
   assert.equal(response.status, 200, 'Expected the live site to return HTTP 200');
   const html = await response.text();
@@ -16,7 +39,7 @@ test('live Render demo responds with an explicit sample-only disclosure', { time
   assert.match(html, /does not (?:store customer requests|save requests to a customer database) or book appointments/);
 });
 
-test('live robots.txt is available and blocks search indexing', { timeout: 25000 }, async () => {
+test('live robots.txt is available and blocks search indexing', liveOptions, async () => {
   const response = await fetch(origin + '/robots.txt', { signal: AbortSignal.timeout(20000) });
   assert.equal(response.status, 200, 'Expected robots.txt to return HTTP 200');
   const txt = await response.text();
@@ -24,7 +47,7 @@ test('live robots.txt is available and blocks search indexing', { timeout: 25000
   assert.match(txt, /Disallow:\s*\//i);
 });
 
-test('live Render demo CSP matches its delivered script and style', { timeout: 25000 }, async () => {
+test('live Render demo CSP matches its delivered script and style', liveOptions, async () => {
   const response = await fetch(origin + '/', { signal: AbortSignal.timeout(20000) });
   assert.equal(response.status, 200);
   const html = await response.text();

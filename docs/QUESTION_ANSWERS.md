@@ -2,6 +2,8 @@
 
 Recorded November 18, 2026, America/New_York.
 
+Later the same evening, the owner requested that both public demos be taken offline. They are now intentionally suspended. This document retains the release evidence from before shutdown. See [the current offline status](OFFLINE_MODE.md).
+
 The owner requested that the chat answer questions as well as collect job details. The existing adapter only extracted fields. Turning that adapter on would not have added question answering.
 
 ## Confirmed medium defect

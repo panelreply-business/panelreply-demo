@@ -20,6 +20,8 @@ jobs:
         with:
           node-version: '22'
       - name: Verify demo behavior and CSP
+        env:
+          PANELREPLY_EXPECT_PUBLIC_OFFLINE: 'true'
         run: |
           node scripts/build-demo.cjs --check
           node --test tests/*.test.cjs
