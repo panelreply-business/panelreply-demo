@@ -3,7 +3,7 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { createAuth } = require('./auth.cjs');
-const { StoreError, object, normalizePhone } = require('./store.cjs');
+const { StoreError, object, normalizePhone, FACT_KEYS } = require('./store.cjs');
 const { PreviewError } = require('./conversation.cjs');
 const intake = require('../src/intake.js');
 
@@ -25,6 +25,34 @@ const BASE_HEADERS = Object.freeze({
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
   'Content-Security-Policy': "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'"
 });
+const EXPORTED_LEAD_FIELDS = Object.freeze(['id', 'version', 'createdAt', 'updatedAt', 'customerName', 'phone', 'job', 'zip', 'callbackWindow', 'requestedWorkDate', 'contactPermission', 'notes', 'status', 'safetyHold', 'optedOut', 'contactAllowed']);
+const EXPORTED_CHANGE_FIELDS = Object.freeze(['customerName', 'phone', 'job', 'zip', 'callbackWindow', 'requestedWorkDate', 'contactPermission', 'notes', 'status', 'conversation']);
+
+function businessExport(store, actor) {
+  const { profile, leads } = store.exportBusiness(actor);
+  // Keep the download contract independent of internal store additions. In
+  // particular, accounts, password hashes, session tokens and counters have no
+  // route into this export. It is a readable record copy, not a restore backup.
+  return {
+    format: 'panelreply-business-export', version: 1, exportedAt: new Date().toISOString(),
+    profile: {
+      business: { id: profile.business.id, name: profile.business.name }, version: profile.version,
+      facts: Object.fromEntries(FACT_KEYS.map(key => [key, { verified: profile.facts[key].verified, answer: profile.facts[key].answer }]))
+    },
+    leads: leads.map(lead => ({
+      ...Object.fromEntries(EXPORTED_LEAD_FIELDS.map(key => [key, lead[key]])),
+      conversation: lead.conversation.map(entry => ({ role: entry.role, text: entry.text })),
+      audit: lead.audit.map(entry => ({
+        id: entry.id, actorId: entry.actorId, action: entry.action, version: entry.version, createdAt: entry.createdAt,
+        details: {
+          ...(Array.isArray(entry.details?.fields) ? { fields: entry.details.fields.filter(field => EXPORTED_CHANGE_FIELDS.includes(field)) } : {}),
+          ...(Number.isSafeInteger(entry.details?.messageCount) ? { messageCount: entry.details.messageCount } : {}),
+          ...(['preview', 'lead'].includes(entry.details?.source) ? { source: entry.details.source } : {})
+        }
+      }))
+    }))
+  };
+}
 
 function validateOrigin(origin) {
   if (typeof origin !== 'string') throw new Error('An exact workspace origin is required.');
@@ -85,6 +113,22 @@ function createWorkspaceApp({ store, origin, previewMessage } = {}) {
     if (req.headers.origin !== origin) throw new StoreError(403, 'origin_rejected', 'The request origin was not accepted.');
     if (session && !auth.verifyCsrf(session, req.headers['x-csrf-token'])) throw new StoreError(403, 'csrf_rejected', 'Refresh this page before saving.');
   }
+  function currentMutationSession(req, expected) {
+    const current = sessionRequired(req);
+    if (current.token !== expected.token || current.user.id !== expected.user.id || current.user.businessId !== expected.user.businessId) {
+      throw new StoreError(401, 'unauthorized', 'Sign in to continue.');
+    }
+    mutationRequired(req, current);
+    return current;
+  }
+  async function withMutationBody(req, expected, mutate) {
+    const input = await readJson(req);
+    // Reading a slow request body yields control. Password recovery, sign-out
+    // or session expiry during that wait must invalidate the pending write.
+    // Call the synchronous store mutation in this same continuation so another
+    // awaited helper cannot reopen the gap between checking and writing.
+    return mutate(input, currentMutationSession(req, expected));
+  }
   function knownPhone(state) {
     try { return normalizePhone(state && state.phone); } catch (_) { return null; }
   }
@@ -119,36 +163,57 @@ function createWorkspaceApp({ store, origin, previewMessage } = {}) {
       if (req.method === 'GET' && route === '/api/session') return send(res, 200, { user: session.user, csrfToken: session.csrfToken });
       if (req.method === 'GET' && route === '/api/profile') return send(res, 200, store.getProfile(session.user));
       if (req.method === 'GET' && route === '/api/leads') return send(res, 200, { leads: store.listLeads(session.user) });
+      if (req.method === 'GET' && route === '/api/export') {
+        const exported = businessExport(store, session.user);
+        return send(res, 200, exported, {
+          'Content-Disposition': 'attachment; filename="panelreply-records-' + exported.exportedAt.slice(0, 10) + '.json"',
+          'Cross-Origin-Resource-Policy': 'same-origin'
+        });
+      }
       const match = /^\/api\/leads\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/.exec(route);
       if (req.method === 'GET' && match) return send(res, 200, { lead: store.getLead(session.user, match[1]) });
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) mutationRequired(req, session);
       if (req.method === 'POST' && route === '/api/logout') {
-        auth.logout(session);
+        auth.logout(currentMutationSession(req, session));
         return send(res, 204, undefined, { 'Set-Cookie': auth.cookie('', true) });
       }
-      if (req.method === 'PATCH' && route === '/api/profile') return send(res, 200, store.updateProfile(session.user, await readJson(req)));
+      if (req.method === 'PATCH' && route === '/api/profile') {
+        const result = await withMutationBody(req, session, (input, current) => store.updateProfile(current.user, input));
+        return send(res, 200, result);
+      }
       if (req.method === 'POST' && route === '/api/leads') {
-        const result = store.createLead(session.user, await readJson(req), req.headers['idempotency-key']);
+        const result = await withMutationBody(req, session, (input, current) => store.createLead(current.user, input, req.headers['idempotency-key']));
         return send(res, result.created ? 201 : 200, result);
       }
-      if (req.method === 'PATCH' && match) return send(res, 200, { lead: store.updateLead(session.user, match[1], await readJson(req)) });
+      if (req.method === 'PATCH' && match) {
+        const result = await withMutationBody(req, session, (input, current) => store.updateLead(current.user, match[1], input));
+        return send(res, 200, { lead: result });
+      }
       if (req.method === 'POST' && route === '/api/preview') {
         const input = object(await readJson(req), ['message', 'state']);
-        const profile = store.getProfile(session.user);
+        const current = { session: currentMutationSession(req, session) };
+        const profile = store.getProfile(current.session.user);
         let preview = previewMessage;
         if (!preview) {
           const conversation = require('./conversation.cjs');
           preview = conversation.previewMessage;
         }
+        async function runPreview(suppressed) {
+          const result = await preview(input.message, input.state, profile, { suppressed });
+          // The preview hook can also yield. Recheck before any phone opt-out
+          // write or response containing the authenticated business answers.
+          currentMutationSession(req, current.session);
+          return result;
+        }
         const phoneBefore = knownPhone(input.state);
-        const wasSuppressed = !!phoneBefore && store.isSuppressed(session.user, phoneBefore);
-        let result = await preview(input.message, input.state, profile, { suppressed: wasSuppressed });
+        const wasSuppressed = !!phoneBefore && store.isSuppressed(current.session.user, phoneBefore);
+        let result = await runPreview(wasSuppressed);
         const phoneAfter = knownPhone(result.state);
-        if (phoneAfter && !wasSuppressed && store.isSuppressed(session.user, phoneAfter)) result = await preview(input.message, input.state, profile, { suppressed: true });
+        if (phoneAfter && !wasSuppressed && store.isSuppressed(current.session.user, phoneAfter)) result = await runPreview(true);
         const resultingPhone = knownPhone(result.state);
         const optOutHistory = result.state.conversation.some(item => item.role === 'customer' && intake.isOptOut(item.text));
-        if (resultingPhone && (result.state.stopped || optOutHistory)) store.suppressPhone(session.user, resultingPhone);
-        if (resultingPhone && store.isSuppressed(session.user, resultingPhone) && !result.state.stopped) result = await preview(input.message, input.state, profile, { suppressed: true });
+        if (resultingPhone && (result.state.stopped || optOutHistory)) store.suppressPhone(currentMutationSession(req, current.session).user, resultingPhone);
+        if (resultingPhone && store.isSuppressed(current.session.user, resultingPhone) && !result.state.stopped) result = await runPreview(true);
         return send(res, 200, result);
       }
       throw new StoreError(404, 'not_found', 'The requested operation was not found.');

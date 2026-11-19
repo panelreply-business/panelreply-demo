@@ -151,6 +151,11 @@ input[type="checkbox"] { appearance: auto; width: 17px; min-height: 17px; height
 .list-toolbar .form-field { gap: 5px; }
 .list-toolbar label { font-size: .71rem; color: #6a7961; }
 .list-toolbar input, .list-toolbar select { font-size: .81rem; min-height: 39px; padding: 8px 10px; }
+.record-export { padding: 15px 21px; border-bottom: 1px solid #e8ede3; }
+.record-export .button { min-height: 44px; }
+.record-export p { margin-top: 8px; font-size: .73rem; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.record-export #export-status:empty { display: none; }
+.record-export #export-error { color: #96342e; }
 .requests-list { max-height: 790px; overflow: auto; }
 .request-list-item { border-bottom: 1px solid #e8ede3; }
 .request-list-item:last-child { border-bottom: 0; }

@@ -8,7 +8,8 @@ const SCRYPT_OPTIONS = Object.freeze({ N: 32768, r: 8, p: 3, maxmem: 64 * 1024 *
 const DUMMY_HASH = 'scrypt$32768$8$3$' + Buffer.alloc(16, 71).toString('base64url') + '$' + Buffer.alloc(64, 83).toString('base64url');
 
 function validPassword(password) {
-  return typeof password === 'string' && password.length >= 15 && password.length <= 128 && /\S/.test(password) && !/[\u0000-\u001f\u007f]/.test(password);
+  return typeof password === 'string' && password.length >= 15 && password.length <= 128 && password.isWellFormed()
+    && /\S/.test(password) && !/[\u0000-\u001f\u007f]/.test(password);
 }
 async function hashPassword(password) {
   if (!validPassword(password)) throw new StoreError(400, 'invalid_password', 'Use a password of 15–128 characters without control characters.');
@@ -59,9 +60,9 @@ function createAuth(store, { secure = false } = {}) {
         const row = name ? store.findUser(name) : null;
         const valid = await verifyPassword(input.password, row ? row.password_hash : DUMMY_HASH);
         if (!row || !valid) throw new StoreError(401, 'invalid_credentials', 'The username or password was not accepted.');
-        store.resetLoginAttempts(userKey);
         const token = crypto.randomBytes(32).toString('base64url');
-        store.createSession(row.id, digest(token));
+        store.createSession(row.id, digest(token), row.password_hash);
+        store.resetLoginAttempts(userKey);
         return { user: store.publicUser(row), token, csrfToken: csrfFor(token) };
       } finally { concurrentLogins -= 1; }
     },

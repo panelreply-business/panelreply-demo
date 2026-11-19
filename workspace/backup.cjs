@@ -1,0 +1,265 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const { promisify } = require('node:util');
+const { DatabaseSync, backup } = require('node:sqlite');
+const { assertPrivateDirectory, assertPrivateRegularFile, assertUnusedPath, existingDatabasePath } = require('./file-safety.cjs');
+const { validateLeadInput, validateProfileInput, normalizePhone, username, STATUSES, assertWorkspaceSchema } = require('./store.cjs');
+
+const scrypt = promisify(crypto.scrypt);
+const MAGIC = Buffer.from('PRKBK001');
+const HEADER_BYTES = 64;
+const TAG_BYTES = 16;
+const MAX_DATABASE_BYTES = 64 * 1024 * 1024;
+const MAX_ARCHIVE_BYTES = MAX_DATABASE_BYTES + HEADER_BYTES + TAG_BYTES;
+const RESTORE_DISABLED_PASSWORD = 'disabled:restore-required';
+const SCRYPT_OPTIONS = Object.freeze({ N: 32768, r: 8, p: 3, maxmem: 64 * 1024 * 1024 });
+const DB_OPTIONS = Object.freeze({ enableForeignKeyConstraints: true, enableDoubleQuotedStringLiterals: false, allowExtension: false });
+
+
+class BackupError extends Error {
+  constructor(code, message) { super(message); this.name = 'BackupError'; this.code = code; }
+}
+function fail(code, message) { throw new BackupError(code, message); }
+function validPassphrase(value) {
+  return typeof value === 'string' && value.length >= 15 && value.length <= 128 && value.isWellFormed()
+    && /\S/.test(value) && !/[\u0000-\u001f\u007f]/.test(value);
+}
+function requirePassphrase(value) {
+  if (!validPassphrase(value)) fail('invalid_passphrase', 'Use a backup passphrase of 15–128 characters without control characters.');
+}
+function expectedPath(fn, ...args) {
+  try { return fn(...args); }
+  catch (_) { fail('unsafe_path', 'Use absolute, owner-only paths without links. The source must exist and the destination must be unused.'); }
+}
+function regularInfo(fd) {
+  const info = fs.fstatSync(fd);
+  if (!info.isFile() || info.nlink !== 1 || ![0o400, 0o600].includes(info.mode & 0o7777) || (typeof process.getuid === 'function' && info.uid !== process.getuid())) fail('unsafe_path', 'Use an owner-only regular file without links.');
+  return info;
+}
+function readBoundedFile(filename, limit) {
+  const fd = fs.openSync(filename, fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0));
+  try {
+    const info = regularInfo(fd);
+    if (info.size < 1 || info.size > limit) fail('size_limit', 'The file is empty or exceeds the 64 MiB local recovery limit.');
+    const data = Buffer.alloc(info.size);
+    let read = 0;
+    while (read < data.length) {
+      const count = fs.readSync(fd, data, read, data.length - read, read);
+      if (!count) fail('changed_file', 'The file changed while it was being read. Try again with a stable copy.');
+      read += count;
+    }
+    if (fs.fstatSync(fd).size !== info.size || fs.readSync(fd, Buffer.alloc(1), 0, 1, read) !== 0) fail('changed_file', 'The file changed while it was being read. Try again with a stable copy.');
+    return data;
+  } finally { fs.closeSync(fd); }
+}
+function syncFile(filename) {
+  const fd = fs.openSync(filename, fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0));
+  try { fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
+}
+function syncDirectory(directory) {
+  const fd = fs.openSync(directory, fs.constants.O_RDONLY | (fs.constants.O_DIRECTORY || 0));
+  try { fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
+}
+function writeExclusive(filename, data) {
+  const fd = fs.openSync(filename, 'wx', 0o600);
+  try { fs.writeFileSync(fd, data); fs.fsyncSync(fd); }
+  finally { fs.closeSync(fd); }
+}
+function temporaryDirectory(parent) {
+  const directory = fs.mkdtempSync(path.join(parent, '.panelreply-recovery-'));
+  fs.chmodSync(directory, 0o700);
+  return directory;
+}
+function readJson(value) {
+  try { return JSON.parse(value); } catch (_) { fail('invalid_database', 'The workspace contains an invalid saved record.'); }
+}
+function databaseSize(db) {
+  const pages = db.prepare('PRAGMA page_count').get().page_count;
+  const size = db.prepare('PRAGMA page_size').get().page_size;
+  const bytes = pages * size;
+  if (!Number.isSafeInteger(bytes) || bytes < 100 || bytes > MAX_DATABASE_BYTES) fail('size_limit', 'The database exceeds the 64 MiB local recovery limit.');
+  return { pages, pageSize: size, bytes };
+}
+
+function validateDatabase(db) {
+  db.exec('PRAGMA trusted_schema=OFF; PRAGMA foreign_keys=ON;');
+  databaseSize(db);
+  try { assertWorkspaceSchema(db); }
+  catch (error) {
+    if (error && error.code === 'invalid_database') fail('invalid_database', 'The database integrity check failed.');
+    fail('unsupported_schema', 'The workspace database schema is not supported.');
+  }
+  const integrity = db.prepare('PRAGMA integrity_check').all();
+  if (integrity.length !== 1 || integrity[0].integrity_check !== 'ok' || db.prepare('PRAGMA foreign_key_check').all().length) fail('invalid_database', 'The database integrity check failed.');
+  const badRelationships = [
+    'SELECT 1 FROM messages m JOIN leads l ON l.id=m.lead_id WHERE m.business_id<>l.business_id LIMIT 1',
+    'SELECT 1 FROM audit a JOIN users u ON u.id=a.actor_id WHERE a.business_id<>u.business_id LIMIT 1',
+    'SELECT 1 FROM audit a LEFT JOIN leads l ON l.id=a.lead_id WHERE a.lead_id IS NOT NULL AND (l.id IS NULL OR l.business_id<>a.business_id) LIMIT 1'
+  ];
+  if (badRelationships.some(sql => db.prepare(sql).get())) fail('invalid_database', 'The database business-isolation check failed.');
+  try {
+    for (const row of db.prepare('SELECT * FROM businesses').iterate()) validateProfileInput({ version: row.version, businessName: row.name, facts: readJson(row.facts_json) });
+    for (const row of db.prepare('SELECT username,password_hash FROM users').iterate()) {
+      if (username(row.username) !== row.username || (row.password_hash !== RESTORE_DISABLED_PASSWORD && !/^scrypt\$32768\$8\$3\$[A-Za-z0-9_-]{22}\$[A-Za-z0-9_-]{86}$/.test(row.password_hash))) fail('invalid_database', 'The workspace contains an invalid account record.');
+    }
+    const transcript = db.prepare('SELECT role,text FROM messages WHERE lead_id=? ORDER BY position');
+    const suppression = db.prepare('SELECT 1 FROM suppression WHERE business_id=? AND phone=?');
+    for (const row of db.prepare('SELECT * FROM leads').iterate()) {
+      const record = readJson(row.data_json);
+      if (!record || typeof record !== 'object' || Array.isArray(record) || typeof record.notes !== 'string' || record.notes.length > 2000 || typeof record.safetyHold !== 'boolean'
+        || !Number.isSafeInteger(row.version) || row.version < 1 || !STATUSES.includes(row.status) || !/^[a-f0-9]{64}$/.test(row.request_hash)) fail('invalid_database', 'The workspace contains an invalid request record.');
+      const { notes, safetyHold, ...fields } = record;
+      validateLeadInput({ ...fields, conversation: transcript.all(row.id).map(item => ({ role: item.role, text: item.text })) });
+      if (normalizePhone(record.phone) !== record.phone || (record.contactPermission === 'opted_out' && !suppression.get(row.business_id, record.phone))) fail('invalid_database', 'The workspace contains an invalid contact restriction.');
+    }
+    for (const row of db.prepare('SELECT phone FROM suppression').iterate()) if (normalizePhone(row.phone) !== row.phone) fail('invalid_database', 'The workspace contains an invalid contact restriction.');
+    for (const row of db.prepare('SELECT details_json FROM audit').iterate()) {
+      const details = readJson(row.details_json);
+      if (!details || typeof details !== 'object' || Array.isArray(details)) fail('invalid_database', 'The workspace contains an invalid audit record.');
+    }
+  } catch (error) {
+    if (error instanceof BackupError) throw error;
+    fail('invalid_database', 'The workspace contains a record that failed validation.');
+  }
+  const count = table => Number(db.prepare('SELECT count(*) AS n FROM ' + table).get().n);
+  return { businesses: count('businesses'), users: count('users'), leads: count('leads'), messages: count('messages'), audit: count('audit'), optOuts: count('suppression') };
+}
+
+function makeHeader(payloadBytes) {
+  const header = Buffer.alloc(HEADER_BYTES);
+  MAGIC.copy(header);
+  header.writeUInt16BE(1, 8); // Archive version determines the fixed cipher/KDF parameters.
+  header.writeUInt16BE(1, 10); // Workspace schema version.
+  header[12] = 1; // AES-256-GCM, 16-byte authentication tag.
+  header[13] = 1; // scrypt N32768/r8/p3, 32-byte key.
+  header.writeBigUInt64BE(BigInt(Date.now()), 16);
+  header.writeBigUInt64BE(BigInt(payloadBytes), 24);
+  crypto.randomBytes(16).copy(header, 32);
+  crypto.randomBytes(12).copy(header, 48);
+  return header;
+}
+function parseHeader(archive) {
+  if (archive.length < HEADER_BYTES + TAG_BYTES + 100 || !archive.subarray(0, 8).equals(MAGIC)) fail('invalid_archive', 'This is not a supported PanelReply encrypted backup.');
+  const header = archive.subarray(0, HEADER_BYTES);
+  if (header.readUInt16BE(8) !== 1 || header.readUInt16BE(10) !== 1 || header[12] !== 1 || header[13] !== 1 || header.readUInt16BE(14) !== 0 || header.readUInt32BE(60) !== 0) fail('unsupported_format', 'This archive version or encryption format is not supported.');
+  const size = header.readBigUInt64BE(24);
+  const timestamp = header.readBigUInt64BE(16);
+  if (size < 100n || size > BigInt(MAX_DATABASE_BYTES) || size !== BigInt(archive.length - HEADER_BYTES - TAG_BYTES) || timestamp > 8640000000000000n) fail('invalid_archive', 'The encrypted backup is incomplete or has invalid metadata.');
+  return { header, createdAt: new Date(Number(timestamp)).toISOString(), size: Number(size) };
+}
+async function deriveKey(passphrase, header) { return scrypt(passphrase, header.subarray(32, 48), 32, SCRYPT_OPTIONS); }
+function normalizedFailure(error, code, message) { return error instanceof BackupError ? error : new BackupError(code, message); }
+
+async function createEncryptedBackup({ dataDir, outputFile, passphrase } = {}) {
+  requirePassphrase(passphrase);
+  const sourceFile = expectedPath(existingDatabasePath, dataDir);
+  const destination = expectedPath(assertUnusedPath, outputFile);
+  const parent = expectedPath(assertPrivateDirectory, path.dirname(destination));
+  let temporary, source, snapshot, key, plaintext;
+  try {
+    source = new DatabaseSync(sourceFile, { ...DB_OPTIONS, readOnly: true });
+    source.exec('PRAGMA query_only=ON; PRAGMA busy_timeout=3000;');
+    validateDatabase(source);
+    const size = databaseSize(source);
+    temporary = temporaryDirectory(parent);
+    const snapshotFile = path.join(temporary, 'snapshot.sqlite');
+    writeExclusive(snapshotFile, Buffer.alloc(0));
+    const deadline = Date.now() + 30000;
+    await backup(source, snapshotFile, {
+      rate: 256,
+      progress: ({ totalPages }) => {
+        if (totalPages * size.pageSize > MAX_DATABASE_BYTES) fail('size_limit', 'The database exceeds the 64 MiB local recovery limit.');
+        if (Date.now() > deadline) fail('workspace_busy', 'The workspace stayed busy during backup. Try again when writes are paused.');
+      }
+    });
+    source.close(); source = null;
+    if (fs.statSync(snapshotFile).size > MAX_DATABASE_BYTES) fail('size_limit', 'The database exceeds the 64 MiB local recovery limit.');
+    snapshot = new DatabaseSync(snapshotFile, DB_OPTIONS);
+    validateDatabase(snapshot);
+    snapshot.exec('PRAGMA journal_mode=DELETE; PRAGMA secure_delete=ON; BEGIN IMMEDIATE; DELETE FROM sessions; DELETE FROM login_attempts; COMMIT; VACUUM;');
+    const counts = validateDatabase(snapshot);
+    snapshot.close(); snapshot = null;
+    plaintext = readBoundedFile(snapshotFile, MAX_DATABASE_BYTES);
+    const header = makeHeader(plaintext.length);
+    key = await deriveKey(passphrase, header);
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, header.subarray(48, 60), { authTagLength: TAG_BYTES });
+    cipher.setAAD(header);
+    const encrypted = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+    const archive = Buffer.concat([header, encrypted, cipher.getAuthTag()]);
+    const pendingFile = path.join(temporary, 'archive.pending');
+    writeExclusive(pendingFile, archive);
+    // link() fails with EEXIST instead of replacing a file created meanwhile.
+    fs.linkSync(pendingFile, destination);
+    fs.unlinkSync(pendingFile);
+    syncDirectory(parent);
+    expectedPath(assertPrivateRegularFile, destination);
+    return { format: 'panelreply-encrypted-backup', version: 1, schemaVersion: 1, createdAt: new Date(Number(header.readBigUInt64BE(16))).toISOString(), archiveBytes: archive.length, counts, sessionsIncluded: false };
+  } catch (error) {
+    throw normalizedFailure(error, error && error.code === 'EEXIST' ? 'destination_exists' : 'backup_failed', error && error.code === 'EEXIST' ? 'The backup destination already exists. Choose a new file.' : 'The encrypted backup could not be created and verified.');
+  } finally {
+    key?.fill(0); plaintext?.fill(0);
+    source?.close(); snapshot?.close();
+    if (temporary) fs.rmSync(temporary, { recursive: true, force: true });
+  }
+}
+
+async function restoreEncryptedBackup({ backupFile, dataDir, passphrase } = {}) {
+  requirePassphrase(passphrase);
+  const archiveFile = expectedPath(assertPrivateRegularFile, backupFile);
+  const destination = expectedPath(assertUnusedPath, dataDir);
+  const parent = expectedPath(assertPrivateDirectory, path.dirname(destination));
+  let temporary, snapshot, key, plaintext, createdDirectory = false;
+  try {
+    const archive = readBoundedFile(archiveFile, MAX_ARCHIVE_BYTES);
+    const { header, createdAt } = parseHeader(archive);
+    key = await deriveKey(passphrase, header);
+    try {
+      const decipher = crypto.createDecipheriv('aes-256-gcm', key, header.subarray(48, 60), { authTagLength: TAG_BYTES });
+      decipher.setAAD(header);
+      decipher.setAuthTag(archive.subarray(archive.length - TAG_BYTES));
+      const partial = decipher.update(archive.subarray(HEADER_BYTES, archive.length - TAG_BYTES));
+      try { plaintext = Buffer.concat([partial, decipher.final()]); }
+      finally { partial.fill(0); }
+    } catch (_) { fail('authentication_failed', 'The backup passphrase is incorrect or the archive failed authentication.'); }
+    // No plaintext file is written until the complete authentication tag passes.
+    temporary = temporaryDirectory(parent);
+    const snapshotFile = path.join(temporary, 'workspace.sqlite');
+    writeExclusive(snapshotFile, plaintext);
+    plaintext.fill(0); plaintext = null;
+    snapshot = new DatabaseSync(snapshotFile, DB_OPTIONS);
+    validateDatabase(snapshot);
+    // Old archives must not revive a password that was changed after backup.
+    // Every restored owner needs a local operator reset before sign-in works.
+    snapshot.exec('PRAGMA journal_mode=DELETE; PRAGMA secure_delete=ON; BEGIN IMMEDIATE; DELETE FROM sessions; DELETE FROM login_attempts;');
+    snapshot.prepare('UPDATE users SET password_hash=?').run(RESTORE_DISABLED_PASSWORD);
+    snapshot.exec('COMMIT; VACUUM;');
+    const counts = validateDatabase(snapshot);
+    snapshot.close(); snapshot = null;
+    syncFile(snapshotFile);
+    // mkdir without recursive is exclusive: even an existing empty directory is
+    // refused. The database hard link also refuses any racing database creator.
+    fs.mkdirSync(destination, { mode: 0o700 });
+    createdDirectory = true;
+    fs.linkSync(snapshotFile, path.join(destination, 'workspace.sqlite'));
+    fs.unlinkSync(snapshotFile);
+    syncDirectory(destination);
+    syncDirectory(parent);
+    expectedPath(existingDatabasePath, destination);
+    return { restored: true, format: 'panelreply-encrypted-backup', version: 1, schemaVersion: 1, createdAt, counts, sessionsRestored: false, passwordResetRequired: true, ownersRequiringReset: counts.users };
+  } catch (error) {
+    // A failed restore never removes a competitor's file or an existing folder.
+    if (createdDirectory) {
+      try { fs.rmdirSync(destination); } catch (_) { /* Only remove our empty directory. */ }
+    }
+    throw normalizedFailure(error, error && error.code === 'EEXIST' ? 'destination_exists' : 'restore_failed', error && error.code === 'EEXIST' ? 'The restore destination already exists. Choose a new directory.' : 'The encrypted backup could not be restored and verified.');
+  } finally {
+    key?.fill(0); plaintext?.fill(0);
+    snapshot?.close();
+    if (temporary) fs.rmSync(temporary, { recursive: true, force: true });
+  }
+}
+
+module.exports = { createEncryptedBackup, restoreEncryptedBackup, validateDatabase, validPassphrase, BackupError, MAX_DATABASE_BYTES, MAX_ARCHIVE_BYTES, HEADER_BYTES, TAG_BYTES, RESTORE_DISABLED_PASSWORD };

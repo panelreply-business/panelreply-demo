@@ -12,7 +12,8 @@ permissions:
   contents: read
 jobs:
   demo-tests:
-    runs-on: ubuntu-latest
+    # Keep the OS baseline explicit when GitHub moves the latest label.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -45,4 +46,8 @@ jobs:
         env:
           PANELREPLY_EMIT_WORKSPACE_PREVIEWS: '1'
         run: python tests/workspace_browser_test.py
+      - name: Verify record export, encrypted restore and password recovery
+        env:
+          PANELREPLY_EMIT_RECOVERY_PREVIEWS: '1'
+        run: python tests/workspace_recovery_browser_test.py
 

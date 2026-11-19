@@ -13,6 +13,8 @@ This stage adds a standalone, authenticated contractor inbox with saved requests
 | Contact permission | A recorded callback request is separate from the existence of a phone number. This workspace sends nothing. |
 | Status | New, Needs review, Contacted and Closed. No Booked status exists. Contacted records a contractor's manual action. |
 | Restrictions | STOP persists against a known phone for that business. A safety hold remains under review. START, reset and status edits cannot clear these restrictions. |
+| Record export | The signed-in owner can download saved business records as JSON. The export excludes accounts and credentials. |
+| Local recovery | Encrypted backup, restore into a new directory and operator password reset are documented in the [recovery guide](RECOVERY.md). |
 | Public services | Both existing Render demos remain intentionally suspended. Auto-deploy remains off. |
 
 Live AI, inbound calls/SMS, outbound messages, notifications, calendar availability, appointment booking and billing are not implemented in this workspace. The existing optional AI adapter is a separate application and is not imported here.
@@ -35,7 +37,7 @@ printf '%s\n' "$WORKSPACE_ADMIN_PASSWORD" | node scripts/workspace-admin.cjs \
 unset WORKSPACE_ADMIN_PASSWORD
 ```
 
-The CLI creates a new business and its owner together. It cannot add a second owner to an existing business or change an account's password. Do not use it as a password reset tool. Usernames are unique across the local database.
+The setup CLI creates a new business and its owner together. It cannot add a second owner to an existing business or change an account's password. Use the separate [operator recovery command](RECOVERY.md#reset-an-existing-owners-password) to reset an existing owner. Usernames are unique across the local database.
 
 Start the workspace:
 
@@ -132,7 +134,7 @@ The server requires complete name, US phone, job and five-digit ZIP before savin
 
 A request failure does not show a saved state. A retry keeps its identifier until the payload changes or a save succeeds. Authentication expiry requires sign-in again. The browser keeps no customer records or session tokens in localStorage.
 
-This is a single-process local workspace. Shared hosting, encrypted backups and a restore drill, password recovery, retention/export/deletion flows, pagination and operational monitoring remain future work. Filesystem owner-only access does not encrypt the database at rest. No production durability, recovery-time or service-level claim is made.
+This is a single-process local workspace. Business-record export, encrypted local backup and restore, and operator password recovery are implemented in the [recovery stage](RECOVERY.md). Shared hosting, scheduled offsite backups, self-service account recovery, retention/deletion controls, pagination and operational monitoring remain future work. Filesystem owner-only access does not encrypt the live database at rest. No production durability, recovery-time or service-level claim is made.
 
 ## Test commands
 
@@ -141,6 +143,7 @@ Pure logic, storage and mocked-request tests can run without opening a network l
 ```bash
 node scripts/build-demo.cjs --check
 node --test tests/demo.test.cjs tests/intake.test.cjs tests/questions.test.cjs tests/server.test.cjs tests/workspace-conversation.test.cjs tests/workspace-store.test.cjs tests/workspace-api.test.cjs
+node --test tests/workspace-file-safety.test.cjs tests/workspace-recovery-auth.test.cjs tests/workspace-backup.test.cjs tests/workspace-export.test.cjs tests/workspace-revocation.test.cjs
 ```
 
 Full CI also runs real HTTP tests, the existing browser suites and the private workspace browser suite. The workspace tests create only temporary synthetic accounts and files. They block browser requests to external destinations and never call an AI provider, calendar, phone or SMS service.
@@ -151,11 +154,12 @@ python tests/browser_test.py
 python tests/intake_browser_test.py
 python tests/ui_browser_test.py
 python tests/workspace_browser_test.py
+python tests/workspace_recovery_browser_test.py
 ```
 
 The three public application checks stay BLOCKED while the demos are suspended. Two safe GET guards verify that both URLs still return their owner-suspended response. Intentional suspension is not repaired by deployment.
 
-See [verification and remaining gates](PRIVATE_WORKSPACE_VERIFICATION.md) for the exact tested revision, results, reproduced defects and release decision.
+See [recovery verification](RECOVERY_VERIFICATION.md) for the current tested revision and remaining gates. The [prior workspace verification](PRIVATE_WORKSPACE_VERIFICATION.md) records the earlier stage.
 
 ## References
 
