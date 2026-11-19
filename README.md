@@ -1,68 +1,72 @@
 # PanelReply / Ringkeep
 
-A sample walkthrough of an electrical contractor intake flow: collect a job description, ZIP code and callback timing, then show a contractor review summary.
+A contractor intake workspace for turning sample customer messages into a callback summary. It collects the electrical work, job ZIP and callback preference, shows missing or conflicting details, and keeps the conversation available for review.
 
-This feature branch adds intake from one message and an optional server-side AI adapter. It builds on the safety corrections in PR #1. The published site has not received this branch, and live AI is not activated.
+[Open the website](https://panelreply-demo.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo) · [Workspace and AI intake — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2)
 
-[Open the demo](https://panelreply-demo.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo) · [Corrections — PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1) · [AI intake candidate — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2)
+## Release status
 
-## What this project currently does
+Status recorded November 18, 2026, America/Detroit:
 
-- Demonstrates an intake conversation using sample messages.
-- Provides a sample request, manual message entry and reset controls.
-- Shows a callback summary and simulated contractor status changes.
-- Demonstrates STOP/START and hazard-review behavior. The corrected implementation is in PR #1.
+| Area | Status |
+| --- | --- |
+| Tested workspace candidate | PASS — revision `b52105a8a5a69c259b4392d224ea785c255615b1` completed 149 automated checks, with zero failures or skips |
+| Visual review | Desktop and mobile screenshots from CI were inspected. One mobile navigation label wrapped within a word. A CSS correction is prepared, with its final recheck pending |
+| Published website | At inspection, Render served application commit `100030c7976f60dba483510a233cdc8ce95d5097`. This is a recorded deployment snapshot, not evidence that the redesign is published |
+| Front-end release verification | NOT TESTED — final candidate and release verification are pending. Verify published behavior before marking website defects resolved |
+| Live AI | BLOCKED — AI remains disabled pending API configuration and approved spending |
+| Customer messaging, calendar booking and durable customer records | NOT IMPLEMENTED |
+| Customer pilot | NO-GO — production integrations and operational controls remain incomplete |
 
-The default app is a static HTML, CSS and JavaScript demo. An optional Node server can connect the intake form to OpenAI after configuration and cost approval. Neither mode receives real calls or SMS, sends messages or alerts, dispatches electricians, saves customer requests to a database, creates customer accounts, books appointments or processes payments. Use sample information when trying it.
+[Verified 149-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44435263388) · [Workspace redesign and test evidence](docs/WORKSPACE_REDESIGN.md)
 
-## Intake and AI feature
+The earlier safety corrections in [PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1) were merged at `184ec8d6214747966b687d126dc6619afeea2ca8`. Their [49-check baseline](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) remains historical evidence. Merging source is separate from publishing and verifying the website.
 
-The candidate accepts this in one message:
+The live GET checks establish availability and static disclosures. They do not establish that a branch's behavior has reached the website. Release evidence must identify the deployed revision and the checks performed against it.
+
+## What the workspace does
+
+- Presents a conversation panel and a request detail card with a consistent desktop and mobile layout.
+- Accepts the job, ZIP and timing in one message or in a different order.
+- Shows confirmed-field progress and asks for missing information.
+- Retains the job and timing when the ZIP is corrected.
+- Keeps conflicting details marked for confirmation instead of treating the request as ready.
+- Shows collection, clarification, STOP, safety-hold and callback-ready states.
+- Provides a character counter, sample request and reset controls.
+- Keeps the latest reply in view after a message is sent.
+- Copies a request summary on demand, with manual selection if clipboard permission is unavailable.
+- Shows which integrations are disconnected and what the sample status controls mean.
+
+Try this sample message:
 
 > I need an EV charger installed in my garage. My ZIP is 48315. Call me Friday after 4 pm.
 
-It collects the job, ZIP and callback preference, then asks only for missing information. Details can arrive in a different order. A correction such as `Actually the job ZIP is 48084` preserves the job and timing. Conflicting ZIPs require confirmation.
+Then try `Actually the job ZIP is 48084`. The ZIP changes without replacing the other collected fields. Each message can contain up to 500 characters.
 
-- Static mode uses a local parser and labels itself `Demo parsing`. It makes no AI requests.
-- AI mode uses `POST /api/intake` on the same origin. The server keeps the OpenAI key out of the browser.
-- The model extracts source text into fields. Replies and safety handling remain controlled by application code.
-- Invalid or unavailable AI responses fall back to local parsing, with that change shown on screen.
-- STOP, safety holds and reset take precedence over a late AI response.
-- The page shows the extracted summary for review. Extraction is not a guarantee that every message will be understood.
+The website is a sample workspace. It does not receive real calls or SMS, send messages or alerts, dispatch electricians, save customer requests to a database, create customer accounts, book appointments or process payments. Page state resets on reload. Use sample information when trying it.
 
-[AI design, configuration, test status and booking boundaries](docs/AI_INTAKE.md)
+## AI and appointment boundaries
 
-## Appointment status
+Static mode uses a local parser and labels itself `Demo parsing`. It makes no AI requests.
 
-Appointment booking is NOT IMPLEMENTED. Callback timing is a customer preference, not a checked calendar slot. `Booked by contractor` changes a sample label only. It does not create a calendar event, reserve a time, notify anyone or check for conflicts.
+The optional Node server can connect `POST /api/intake` to OpenAI after configuration and cost approval. The server keeps the API key out of the browser. The model extracts source text into fields, while application code controls replies, opt-out handling and safety holds. Invalid or unavailable AI responses visibly fall back to local parsing. STOP, safety holds and reset take precedence over late AI responses.
 
-Real booking needs a connected calendar or booking system, contractor working hours, service area and job-duration rules, customer/contact details, availability checks, a verified event write, and cancellation/rescheduling handling. Confirmation must follow a successful booking write. AI extraction alone does not provide those functions.
+Appointment booking is NOT IMPLEMENTED. Callback timing is a customer preference, not a calendar slot. `Booked by contractor` changes a sample label only. It does not create an event, reserve a time, check availability or notify anyone.
 
-## Live site and tested revision
+Real booking needs a connected calendar, working hours, timezone and job-duration rules, customer details, availability checks, a verified booking write, and cancellation/rescheduling handling. The app must confirm an appointment only after the booking system accepts it.
 
-Status recorded on November 18, 2026:
+[AI configuration, data limits and booking requirements](docs/AI_INTAKE.md)
 
-| Version | Status |
-| --- | --- |
-| [Published Render site](https://panelreply-demo.onrender.com/) | Serves application commit `100030c7976f60dba483510a233cdc8ce95d5097`. Browser checks found opt-out, hazard and long-message layout defects in that version. |
-| [Draft PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1) | Contains corrections and the automated test suites. Those application changes have not been merged or deployed. |
-| [AI intake candidate — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2) | Revision `d5a16f9bc4a6499196cabd27243cf33be201db8e` passed 89 Node/HTTP checks and 32 Chromium scenarios: 121 checks, zero failures or skips. Model responses are fixtures. Not deployed. |
-| Tested revision `4a967ca11f9ba3e64988e53ac83b9fe95b44d6ef` | Passed 35 logic checks, 3 live-site GET checks and 11 Chromium browser scenarios: 49 checks, zero failures or skips. |
-| Customer pilot | NO-GO. Production integrations and operational controls remain unimplemented in this inspected repository. |
-
-[Verified PR #1 run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) · [Verified AI intake candidate run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44432478293)
-
-The live GET checks verify availability, sample disclosures, robots.txt and content security policy integrity. They do not prove the published app contains the corrections. After an approved deployment, retest the published app before marking its behavioral defects resolved.
-
-## Try the demo
+## Try the website
 
 1. Open [panelreply-demo.onrender.com](https://panelreply-demo.onrender.com/).
-2. Select `Run the sample request` to see the example flow.
-3. Select `Reset tour` to start again.
-4. Enter a sample job description, a five-digit ZIP and callback timing.
-5. Try the STOP/START buttons or change the sample contractor status.
+2. Check the release status above before assuming that the published version contains the workspace changes.
+3. Select `Run the sample request`, or enter a sample job, ZIP and callback preference.
+4. Review the request details and confirmed-field progress.
+5. Try a correction, STOP/START or `Copy request summary`.
+6. Use `Reset tour` to clear the page.
 
-The published version currently has the defects listed above. These controls simulate a workflow and do not contact anyone.
+The status selector and simulated missed-call button demonstrate a workflow. They do not contact anyone.
 
 ## Run locally
 
@@ -73,30 +77,30 @@ git clone https://github.com/panelreply-business/panelreply-demo.git
 cd panelreply-demo
 ```
 
-To use this candidate and its tests while the changes remain unmerged:
+While PR #2 remains under review, use its branch to inspect the candidate:
 
 ```sh
 git fetch origin
 git switch feature/ai-assisted-intake-20261118
 ```
 
-Serve the files with Python:
+The checked-in static page needs no API key or application dependency installation. Serve it with Python:
 
 ```sh
 python -m http.server 8000 --bind 127.0.0.1
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Stop the server with Ctrl+C. The checked-in static demo needs no API keys or application dependencies.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Stop the server with Ctrl+C.
 
-To serve the optional backend with AI disabled:
+To serve the optional backend with AI disabled, use Node.js 22 or later:
 
 ```sh
 node server.cjs
 ```
 
-Open [http://localhost:10000](http://localhost:10000). `/health` reports whether AI is configured and always reports booking disabled. Enabling live AI is a separate, approved configuration step described in the feature document.
+Open [http://localhost:10000](http://localhost:10000). `/health` reports AI readiness and booking disabled. Live AI activation is a separate configuration step described in the AI document.
 
-After changing `src/intake.js` or `src/demo.js`, regenerate the inline bundle and its content security policy hashes:
+After changing `src/intake.js`, `src/demo.js` or the page stylesheet, regenerate the bundle and content security policy hashes:
 
 ```sh
 node scripts/build-demo.cjs
@@ -105,19 +109,17 @@ node scripts/build-demo.cjs --check
 
 ## Run the tests
 
-The commands below apply to `feature/ai-assisted-intake-20261118` until the feature is merged.
+### Offline logic and server checks
 
-### Logic checks
-
-Requires Node.js 22 or later. No Node package installation is required.
+Requires Node.js 22 or later. No Node package installation is required. These tests inject fake provider responses and do not call OpenAI:
 
 ```sh
 node --test tests/demo.test.cjs tests/intake.test.cjs tests/server.test.cjs
 ```
 
-### Logic and live-site checks
+### Full Node, HTTP and live GET checks
 
-The live checks make read-only GET requests to the public Render site:
+This command includes the localhost HTTP boundary test and read-only GET requests to the public Render site:
 
 ```sh
 node scripts/build-demo.cjs --check
@@ -126,70 +128,82 @@ node --test tests/*.test.cjs
 
 ### Browser checks
 
-Requires Python 3.12 and Playwright:
+Requires Python 3.12, Playwright and an environment that permits Chromium and listening sockets:
 
 ```sh
 python -m pip install -r tests/browser-requirements.txt
 python -m playwright install --with-deps --only-shell chromium
 python tests/browser_test.py
 python tests/intake_browser_test.py
+python tests/ui_browser_test.py
 ```
 
-The browser suite serves a temporary copy of `index.html` and `robots.txt` over localhost HTTP and uses the actual app controls, script, stylesheet and content security policy. It checks:
+The suites serve copied application files over localhost and exercise the real controls, styles, script and content security policy. They cover:
 
-- Sample and manual intake, invalid input and native form validation.
+- Manual and bundled intake, corrections, invalid input and native form validation.
+- Address, electrical-rating and extended-ZIP edge cases.
 - Opt-out phrases, STOP/START, safety holds and reset.
-- Keyboard navigation and activation.
-- Display of text that resembles HTML.
-- Reset on reload, empty localStorage/sessionStorage and no document cookies.
-- Layout and long-message wrapping at 320, 390, 768 and 1280 pixels.
+- Simulated AI success, malformed output, failures and late-response cancellation.
+- Confirmed-field progress, request status and character counts.
+- Clipboard success, permission denial and stale completion after reset.
+- Conversation scrolling, skip navigation and keyboard access.
+- Touch targets, long-message wrapping and layout from 320 to 1440 pixels.
+- Text scaling to 200% and rendered text/control contrast.
+- Text resembling HTML, empty browser storage and no retained state after reload.
 
-External browser requests are blocked and fail the test. These checks use synthetic messages and send no calls, SMS or email.
+External browser requests are blocked and fail the test. AI responses are fixtures. The HTTP suite injects a fake provider. Passing these checks verifies tested application behavior, not live model accuracy or functioning customer integrations.
 
-The AI browser suite intercepts same-origin intake requests with fixtures. The server unit suite injects a fake provider. `server-http.test.cjs` exercises the real HTTP boundary over localhost with a fake provider. None of these tests calls OpenAI or establishes live model accuracy. The HTTP and browser suites require an environment that permits listening sockets and Chromium.
+For local visual review, save synthetic desktop and mobile screenshots:
 
-Screen-reader support, physical devices, other browser engines and production integrations remain outside the verified coverage.
+```sh
+PANELREPLY_CAPTURE_DIR=/tmp/panelreply-previews python tests/ui_browser_test.py
+```
+
+The UI suite can also emit review images to CI logs when `PANELREPLY_EMIT_PREVIEWS=1` is set. The images contain sample data only.
+
+Physical devices, Safari, other browser engines and assistive-technology testing remain outside the verified coverage. Automated keyboard and contrast checks do not establish complete accessibility conformance.
 
 ## Automated checks
 
-The feature workflow runs the logic, fake-provider server, live GET and Chromium suites on pull requests targeting `main` or an `audit/` branch, and pushes to `main`. It also defines manual dispatch and a daily schedule at 13:15 UTC. Live model calls are not part of the scheduled tests.
+The workflow runs the logic, fake-provider server, live GET and three Chromium suites for supported pull requests and pushes to `main`. It also defines manual dispatch and a daily schedule at 13:15 UTC. GitHub activates that schedule when the workflow is on the default branch. The separate ChatGPT audit schedule is independent.
 
-The GitHub daily schedule becomes active after the workflow reaches the default branch. The separately configured ChatGPT daily audit is independent of that workflow.
+Live model calls are not part of scheduled tests. The audit distinguishes verified branch fixes from published behavior and uses PASS, FAIL, BLOCKED, NOT IMPLEMENTED or NOT TESTED according to evidence.
 
 ## Repository contents
 
 | Path | Purpose |
 | --- | --- |
-| `index.html` | Static page with a generated inline bundle and CSP hashes |
+| `index.html` | Workspace markup, styles and generated inline bundle |
 | `src/` | Shared intake parser and browser controller |
-| `scripts/build-demo.cjs` | Bundle generation and integrity check |
+| `scripts/build-demo.cjs` | Bundle generation and CSP integrity check |
 | `server.cjs` | Optional gated AI adapter and restricted file server |
-| `.env.example` | Disabled-by-default configuration example, without secrets |
+| `.env.example` | Disabled configuration example without credentials |
 | `robots.txt` | Crawler exclusion directive |
-| `README.md` | Project overview, links and operating instructions |
-| `tests/` | Logic, live GET and browser tests, available in PR #1 |
-| `.github/workflows/demo-tests.yml` | Automated checks, available in PR #1 |
-| `docs/` | Findings, reproduction steps and test evidence, available in PR #1 |
+| `tests/` | Logic, HTTP, live GET and browser regression suites |
+| `.github/workflows/demo-tests.yml` | Automated verification workflow |
+| `docs/` | Findings, reproduction steps and verification evidence |
 
 ## Render configuration
 
-The connected `panelreply-demo` service is a static site. Its configured build command is:
+The connected `panelreply-demo` service is a static site. Its inspected build command is:
 
 ```sh
 mkdir -p public-demo && cp index.html robots.txt public-demo/
 ```
 
-Publish directory: `public-demo`. Only the two application files are published by this command. The README, tests and audit documents remain repository documentation.
+Publish directory: `public-demo`. Only those two application files are published. Repository documentation, tests and server code are not served by this command.
 
-The last inspected configuration had automatic deployment disabled. Changes to application code require a reviewed deployment and a live retest.
+Automatic deployment was disabled at inspection. A front-end release must verify the final source revision and then retest the published page. The static page keeps `data-ai-enabled="false"`.
 
-The current Render static site cannot execute `server.cjs`. AI requires a separate approved web-service deployment, server environment variables and a chosen model with an approved spending limit. No service was provisioned and no real OpenAI requests were made for this implementation.
+The static service cannot execute `server.cjs`. Live AI requires an approved web-service deployment, server environment variables and a selected model with an approved spending limit. This front-end redesign does not activate those services.
 
 ## Audit records
 
-- [Release audit](https://github.com/panelreply-business/panelreply-demo/blob/audit/fix-intake-safety-20261118/docs/RELEASE_AUDIT.md)
-- [Browser retest and reproduction evidence](https://github.com/panelreply-business/panelreply-demo/blob/audit/fix-intake-safety-20261118/docs/BROWSER_RETEST_2026-11-18.md)
-- [Pull request for the corrected demo](https://github.com/panelreply-business/panelreply-demo/pull/1)
+- [Workspace redesign and 149-check evidence](docs/WORKSPACE_REDESIGN.md)
+- [AI intake design and earlier test evidence](docs/AI_INTAKE.md)
+- [Release audit](docs/RELEASE_AUDIT.md)
+- [Browser retest and reproduction evidence](docs/BROWSER_RETEST_2026-11-18.md)
+- [Safety corrections — PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1)
+- [Workspace and AI intake — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2)
 
-Before customer use, the project needs a verified telephony/SMS backend, durable consent and suppression, authentication, customer isolation, owner notifications, recovery paths and end-to-end integration tests.
-
+Before customer use, the project still needs verified telephony/SMS, durable consent and suppression, authentication, customer isolation, owner notifications, recovery paths and end-to-end integration tests.

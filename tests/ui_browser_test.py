@@ -119,6 +119,7 @@ class WorkspaceBrowserTests(unittest.TestCase):
         emit_preview = os.environ.get("PANELREPLY_EMIT_PREVIEWS") == "1"
         if not directory and not emit_preview:
             return
+        self.page.evaluate("() => window.scrollTo({top: 0, left: 0, behavior: 'instant'})")
         options = {"type": "jpeg", "quality": 70, "full_page": True, "animations": "disabled"}
         if directory:
             target = Path(directory).resolve()
