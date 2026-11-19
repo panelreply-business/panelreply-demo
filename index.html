@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vMRjTJiyBGNw2AfAq1YWOXupfrQziBWyLrZ7jLqpzUA='; style-src 'sha256-N6RCSH9SMXpRtZnEcWkfbzOvOEjg7mSvxeDmx03haK4='; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-cunym8jHtTM6f5l+y4BeCaj4yp87fzyPcR+1TpM81Gk='; style-src 'sha256-N6RCSH9SMXpRtZnEcWkfbzOvOEjg7mSvxeDmx03haK4='; connect-src 'self'; form-action 'none'; base-uri 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow">
@@ -601,7 +601,13 @@
     return [...new Set(topics.map(topic => topicAnswer(topic, state, approvedFacts)))].join('\n\n');
   }
 
-  return Object.freeze({ answer });
+  // The private workspace shares topic detection and verified business answers,
+  // while supplying its own persistence, consent and booking disclosures.
+  function answerTopic(topic, fields, approvedFacts = defaultFacts) {
+    return topicAnswer(topic, requestState(fields), approvedFacts);
+  }
+
+  return Object.freeze({ answer, topicsFor, answerTopic });
 });
 
 'use strict';

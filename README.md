@@ -1,269 +1,88 @@
 # PanelReply / Ringkeep
 
-A contractor intake workspace that answers common questions from saved information and turns sample customer messages into a callback summary. It collects the electrical work, job ZIP and callback preference, shows missing or conflicting details, and keeps the conversation available for review.
+PanelReply is a contractor intake project. The next stage adds a local, authenticated inbox with saved requests, business settings and a customer-flow preview.
 
-[Static demo](https://panelreply-demo.onrender.com/) · [AI server preview](https://panelreply-ai.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo)
+[Repository](https://github.com/panelreply-business/panelreply-demo) · [Private workspace setup](docs/PRIVATE_WORKSPACE.md) · [Verification](docs/PRIVATE_WORKSPACE_VERIFICATION.md)
 
-## Current status: public demos intentionally offline
+## Current status
 
-The owner asked to take both demos offline while development continues. On November 18, 2026, both existing Render services were suspended without deleting them. Their public URLs now show `This service has been suspended by its owner.` Auto-deploy remains off.
+Both public Render demos are intentionally offline at the owner's request. They show `This service has been suspended by its owner.` Auto-deploy remains off. Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
 
-Continue code review, offline tests and fake-provider checks. Do not resume, deploy, republish or create another public preview without the owner's explicit approval. Live application checks are BLOCKED during this intentional shutdown, not evidence of a defect to repair. The recurring audit has been updated to preserve this instruction.
+- Public static URL: https://panelreply-demo.onrender.com/
+- Public server URL: https://panelreply-ai.onrender.com/
+- The new workspace runs locally at `http://127.0.0.1:10001` after setup. It has no public URL.
+- Live AI, calls, SMS and calendar booking remain disconnected.
+- A customer pilot remains NO-GO until the remaining operational and integration gates are verified.
 
-[Suspension evidence and testing policy](docs/OFFLINE_MODE.md)
+[Offline instruction and suspension evidence](docs/OFFLINE_MODE.md)
 
-## Previous release: question answering
+## Private workspace
 
-Published November 18, 2026 at 10:37 PM America/New_York to both demo links. [PR #4](https://github.com/panelreply-business/panelreply-demo/pull/4) is merged. The release passed 209 checks: 144 Node/HTTP/live GET checks and 65 Chromium checks, with zero failures or skips. The merge commit passed CI as well.
+The standalone workspace adds:
 
-The published chat was checked through its controls. It answered questions, recalled the supplied ZIP, preserved job details when hours or coverage were queried, and handled mixed questions and callback requests. Both deployments serve commit `9e4bac0169e7d27942686cbb0a13f1e5003d378b`.
+- Owner sign-in and session expiry, with no public signup or default account.
+- Separate business profiles and requests. One business cannot read or edit another business's data.
+- An inbox with search, status filters, request details, notes, conversation history and change records.
+- SQLite records that survive reload and server restart when the same data directory is used.
+- Eleven categories of business answers. Each answer must be confirmed before the preview uses it.
+- A separate customer preview with structured review before Save request.
+- Name, US callback number, electrical work, five-digit job ZIP, callback window and requested work date.
+- Persistent phone opt-outs and safety holds that reset, START and status changes cannot remove.
+- Duplicate prevention for save retries and version checks for conflicting edits.
 
-| Area | Current status |
-| --- | --- |
-| Saved question answers and intake integrity | PASS — verified in CI and on both published demos |
-| Live AI extraction | BLOCKED — API-key setup and approved usage remain pending |
-| Live model-generated question answers | NOT IMPLEMENTED — saved answers are used |
-| Contractor prices, hours, services and coverage | NOT IMPLEMENTED as verified facts — the app states that confirmation is needed |
-| Appointment booking, customer messaging and durable customer records | NOT IMPLEMENTED |
-| Demo review | GO |
-| Customer pilot | NO-GO |
+[Desktop inbox](docs/evidence/private-inbox-desktop.jpg) · [Mobile preview](docs/evidence/private-customer-preview-mobile.jpg)
 
-[209-check CI run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452485870) · [Merge CI](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452662673) · [Release evidence and reproduction steps](docs/QUESTION_ANSWERS.md)
+The callback window describes when a customer wants a call. The requested work date describes when they want the work done. Neither reserves an appointment. Contact permission is recorded separately. Saving a request sends no message.
 
-## Previous AI server preparation
+The preview uses explicit field parsing and saved answers. It does not call an AI provider. Questions about hours, coverage or pricing must not overwrite the supplied job details. Unknown business facts stay unknown.
 
-The Node web service is deployed at https://panelreply-ai.onrender.com/. PR #3 passed 153 automated checks and was merged. Render deployed that tested application, and its health route and sample intake were checked through the browser. The live page still reports `Demo parsing. AI is not connected on this page.`
-
-Live AI remains BLOCKED pending secure API-key setup, verified available credits or an approved spending allowance, and a real provider-backed test. No OpenAI request has been made. The static demo remains available at its existing URL.
-
-[153-check CI run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44448007795) · [Activation changes — PR #3](https://github.com/panelreply-business/panelreply-demo/pull/3) · [Deployment evidence and remaining gates](docs/LIVE_AI_SETUP.md)
-
-## Previous static demo release
-
-The contractor workspace was published on November 18, 2026 at 8:24 PM America/Detroit. The canonical website was then checked through its controls.
-
-| Area | Status |
-| --- | --- |
-| Final tested source | PASS — revision `23e2c38746c13e096dc74221c94ab6ca6e733173` completed 149 automated checks, with zero failures or skips |
-| Desktop and mobile visual review | PASS — final screenshots were inspected. The mobile `Connections` label no longer splits within the word |
-| Published website | PASS — Render deployed merge commit `4db01f6ae2e02620487e297f87d28f0c4ca2fe8a` in deployment `dep-dbv4veek1f9s73bfb85g` |
-| Live front-end behavior | PASS — bundled intake, corrections, clipboard copying, opt-out, safety holds, reset and the sample booking disclosure were exercised on the published page |
-| Live AI | BLOCKED — AI remains disabled pending API configuration and approved spending |
-| Customer messaging, calendar booking and durable customer records | NOT IMPLEMENTED |
-| Customer pilot | NO-GO — production integrations and operational controls remain incomplete |
-
-[Final 149-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44436345651) · [Main-branch CI](https://github.com/panelreply-business/panelreply-demo/actions/runs/44436556064) · [Release evidence and live checks](docs/WORKSPACE_REDESIGN.md)
-
-PR #2 is merged. The tested source and deployed merge commit have the same tree, `f443598d481d099b08cb116caf34f06be9754542`. The published workspace and content security policy matched the expected application, and `data-ai-enabled="false"` remained in place. This is a front-end demo release. It does not activate the model or customer integrations.
-
-The earlier [49-check baseline](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) and the earlier 149-check candidate run remain historical evidence in the audit records.
-
-## What the workspace does
-
-- Answers common questions using saved information and the current request details.
-- Keeps business-hours, pricing and coverage questions from changing the job, ZIP or callback preference.
-- Presents a conversation panel and a request detail card with a consistent desktop and mobile layout.
-- Accepts the job, ZIP and timing in one message or in a different order.
-- Shows confirmed-field progress and asks for missing information.
-- Retains the job and timing when the ZIP is corrected.
-- Keeps conflicting details marked for confirmation instead of treating the request as ready.
-- Shows collection, clarification, STOP, safety-hold and callback-ready states.
-- Provides a character counter, sample request and reset controls.
-- Keeps the latest reply in view after a message is sent.
-- Copies a request summary on demand, with manual selection if clipboard permission is unavailable.
-- Shows which integrations are disconnected and what the sample status controls mean.
-
-Try this sample message:
-
-> I need an EV charger installed in my garage. My ZIP is 48315. Call me Friday after 4 pm.
-
-Then try `Actually the job ZIP is 48084`. The ZIP changes without replacing the other collected fields. Each message can contain up to 500 characters.
-
-The website is a sample workspace. It does not receive real calls or SMS, send messages or alerts, dispatch electricians, save customer requests to a database, create customer accounts, book appointments or process payments. Page state resets on reload. Use sample information when trying it.
-
-## Questions and request details
-
-The chat can answer questions without starting over or changing the information already supplied. It can also collect details and answer a question from the same message.
-
-Try:
-
-```text
-What details do you need?
-I need an EV charger installed. How much does it cost?
-My ZIP is 48315. Do you serve that area?
-What ZIP did I give you?
-Does this book an appointment?
-```
-
-Question replies use saved information and are labelled `Saved answer`. They do not call an AI provider. Unknown topics get an explicit limitation. These replies are not unrestricted AI chat.
-
-No contractor services, hours, prices, service area, contact details or qualifications have been supplied and verified. The app states that those facts need confirmation. It does not invent them. Approved public business answers belong in `src/business-info.js`; each entry stays unavailable until it has both a nonempty answer and `verified: true`. Never put credentials or customer information in that public file.
-
-Pure questions preserve field progress and unresolved clarification. Mixed messages keep explicitly stated details while excluding information mentioned only in a question. STOP and safety holds take precedence. A polite callback request such as `Can you call me Friday after 4 pm?` still records a preference.
-
-[Question handling, defects and verification](docs/QUESTION_ANSWERS.md)
-
-## AI and appointment boundaries
-
-Static mode uses a local parser and labels itself `Demo parsing`. It makes no AI requests.
-
-The optional Node server can connect `POST /api/intake` to OpenAI after configuration and cost approval. The server keeps the API key out of the browser. The model extracts source text into fields, while application code controls replies, saved question answers, opt-out handling and safety holds. Informational question clauses are excluded from model extraction. Invalid or unavailable AI responses visibly fall back to local parsing. STOP, safety holds and reset take precedence over late AI responses. Enabling this extraction adapter does not provide unrestricted AI-generated answers.
-
-Appointment booking is NOT IMPLEMENTED. Callback timing is a customer preference, not a calendar slot. `Booked by contractor` changes a sample label only. It does not create an event, reserve a time, check availability or notify anyone.
-
-Real booking needs a connected calendar, working hours, timezone and job-duration rules, customer details, availability checks, a verified booking write, and cancellation/rescheduling handling. The app must confirm an appointment only after the booking system accepts it.
-
-[AI configuration, data limits and booking requirements](docs/AI_INTAKE.md)
-
-## Try the website
-
-1. Open [panelreply-demo.onrender.com](https://panelreply-demo.onrender.com/).
-2. The workspace heading should read `Customer requests`.
-3. Select `Run the sample request`, or enter a sample job, ZIP and callback preference.
-4. Review the request details and confirmed-field progress.
-5. Try a correction, STOP/START or `Copy request summary`.
-6. Use `Reset tour` to clear the page.
-
-The status selector and simulated missed-call button demonstrate a workflow. They do not contact anyone.
+[Setup, behavior, limits and failure handling](docs/PRIVATE_WORKSPACE.md)
 
 ## Run locally
 
-Clone the repository:
+Use Node.js 22.18 or later. No application packages or API keys are required for the private workspace.
 
-```sh
-git clone https://github.com/panelreply-business/panelreply-demo.git
-cd panelreply-demo
+Create a local owner using the stdin-only setup described in [Private workspace setup](docs/PRIVATE_WORKSPACE.md#local-setup). Keep its database outside the repository in an owner-only directory. No real account is bundled with the source.
+
+Then start it:
+
+```bash
+WORKSPACE_DATA_DIR="$HOME/.local/share/panelreply" node workspace-server.cjs
 ```
 
-The released workspace source and its tests are on `main`.
+Open http://127.0.0.1:10001/login. The entry point binds only to the loopback interface. It rejects a public origin.
 
-The checked-in static page needs no API key or application dependency installation. Serve it with Python:
+The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their public Render services stay suspended.
 
-```sh
-python -m http.server 8000 --bind 127.0.0.1
-```
+## Verification
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Stop the server with Ctrl+C.
+The private-workspace candidate passed 313 checks with zero failures in [CI run 44460315464](https://github.com/panelreply-business/panelreply-demo/actions/runs/44460315464). Three public application checks remain BLOCKED by intentional suspension. The desktop inbox and 360-pixel customer preview were inspected from that run.
 
-To serve the optional backend with AI disabled, use Node.js 22 or later:
+The CI workflow checks the generated demo and CSP, pure intake and answer logic, private authentication and SQLite storage, real HTTP routes, existing demo browser behavior and the new private workspace through Chromium. Synthetic fixtures are isolated from real customers. No provider calls or outbound messages are used.
 
-```sh
-node server.cjs
-```
+The recurring audit continues to review code and CI, safe external GET checks and accessible Render state. Three application checks are BLOCKED while the public services are intentionally offline. Offline guards must confirm the suspended response rather than report an outage to fix.
 
-Open [http://localhost:10000](http://localhost:10000). `/health` reports AI readiness and booking disabled. Live AI activation is a separate configuration step described in the AI document.
+[Exact tested revision, results, reproduced defects and remaining gates](docs/PRIVATE_WORKSPACE_VERIFICATION.md)
 
-After changing `src/intake.js`, `src/demo.js` or the page stylesheet, regenerate the bundle and content security policy hashes:
+## Next gates
 
-```sh
-node scripts/build-demo.cjs
-node scripts/build-demo.cjs --check
-```
+- A hosted private-access plan with approved persistent storage, backup and restore verification, password recovery and retention controls.
+- Secure API-key choice and approved provider usage before live AI tests.
+- A verified calendar integration before appointment confirmations.
+- Approved contact and messaging integration before any live call, SMS, email or notification test.
+- Owner approval before either public demo reopens or a new public preview is created.
 
-## Run the tests
+No deployment or live integration is implied by merging code.
 
-### Offline logic and server checks
+## Project history
 
-Requires Node.js 22 or later. No Node package installation is required. These tests inject fake provider responses and do not call OpenAI:
+Historical release records describe their status at the time. Both public demos were suspended afterward.
 
-```sh
-node --test tests/demo.test.cjs tests/intake.test.cjs tests/questions.test.cjs tests/server.test.cjs
-```
-
-### Full Node, HTTP and live GET checks
-
-This command includes the localhost HTTP boundary test and read-only GET checks that both public Render URLs remain owner-suspended:
-
-```sh
-node scripts/build-demo.cjs --check
-PANELREPLY_EXPECT_PUBLIC_OFFLINE=true node --test tests/*.test.cjs
-```
-
-Offline mode requires HTTP 503 and Render's owner-suspension text from both URLs, and rejects app markup. Network failures, redirects or unexpected responses fail these checks. The three checks that need the public app running are explicitly skipped as `BLOCKED: public demos intentionally offline`. All local application, HTTP and browser tests remain active. Only remove this mode after the owner approves reopening the demos.
-
-### Browser checks
-
-Requires Python 3.12, Playwright and an environment that permits Chromium and listening sockets:
-
-```sh
-python -m pip install -r tests/browser-requirements.txt
-python -m playwright install --with-deps --only-shell chromium
-python tests/browser_test.py
-python tests/intake_browser_test.py
-python tests/ui_browser_test.py
-```
-
-The suites serve copied application files over localhost and exercise the real controls, styles, script and content security policy. They cover:
-
-- Manual and bundled intake, corrections, invalid input and native form validation.
-- Saved answers, current-request recall, mixed questions and details, and preservation of fields and clarification state.
-- Address, electrical-rating and extended-ZIP edge cases.
-- Opt-out phrases, STOP/START, safety holds and reset.
-- Simulated AI success, malformed output, failures and late-response cancellation.
-- Confirmed-field progress, request status and character counts.
-- Clipboard success, permission denial and stale completion after reset.
-- Conversation scrolling, skip navigation and keyboard access.
-- Touch targets, long-message wrapping and layout from 320 to 1440 pixels.
-- Text scaling to 200% and rendered text/control contrast.
-- Text resembling HTML, empty browser storage and no retained state after reload.
-
-External browser requests are blocked and fail the test. AI responses are fixtures. The HTTP suite injects a fake provider. Passing these checks verifies tested application behavior, not live model accuracy or functioning customer integrations.
-
-For local visual review, save synthetic desktop and mobile screenshots:
-
-```sh
-PANELREPLY_CAPTURE_DIR=/tmp/panelreply-previews python tests/ui_browser_test.py
-```
-
-The UI suite can also emit review images to CI logs when `PANELREPLY_EMIT_PREVIEWS=1` is set. The images contain sample data only.
-
-Physical devices, Safari, other browser engines and assistive-technology testing remain outside the verified coverage. Automated keyboard and contrast checks do not establish complete accessibility conformance.
-
-## Automated checks
-
-The workflow on `main` runs the logic, fake-provider server, live GET and three Chromium suites for supported pull requests and pushes to `main`. It also defines manual dispatch and a daily schedule at 13:15 UTC. The separate ChatGPT audit schedule is independent. A configured schedule is not evidence that a particular future run completed.
-
-Live model calls are not part of scheduled tests. The audit distinguishes verified branch fixes from published behavior and uses PASS, FAIL, BLOCKED, NOT IMPLEMENTED or NOT TESTED according to evidence.
-
-## Repository contents
-
-| Path | Purpose |
+| Stage | Evidence |
 | --- | --- |
-| `index.html` | Workspace markup, styles and generated inline bundle |
-| `src/` | Shared intake parser and browser controller |
-| `src/business-info.js` | Approved public business answers, empty and unverified by default |
-| `src/questions.js` | Saved question answers and request recall, without provider calls |
-| `scripts/build-demo.cjs` | Bundle generation and CSP integrity check |
-| `server.cjs` | Optional gated AI adapter and restricted file server |
-| `.env.example` | Disabled configuration example without credentials |
-| `robots.txt` | Crawler exclusion directive |
-| `tests/` | Logic, HTTP, live GET and browser regression suites |
-| `.github/workflows/demo-tests.yml` | Automated verification workflow |
-| `docs/` | Findings, reproduction steps and verification evidence |
+| Question answering | [PR4](https://github.com/panelreply-business/panelreply-demo/pull/4), [209-check run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44452485870), [release record](docs/QUESTION_ANSWERS.md) |
+| Public demos taken offline | [PR5](https://github.com/panelreply-business/panelreply-demo/pull/5), [offline CI](https://github.com/panelreply-business/panelreply-demo/actions/runs/44454520969), [offline record](docs/OFFLINE_MODE.md) |
+| Optional AI server preparation | [PR3](https://github.com/panelreply-business/panelreply-demo/pull/3), [activation boundaries](docs/LIVE_AI_SETUP.md) |
+| Static workspace redesign | [PR2](https://github.com/panelreply-business/panelreply-demo/pull/2), [release record](docs/WORKSPACE_REDESIGN.md) |
 
-## Render configuration
-
-The connected `panelreply-demo` service is a static site. Its inspected build command is:
-
-```sh
-mkdir -p public-demo && cp index.html robots.txt public-demo/
-```
-
-Publish directory: `public-demo`. Only those two application files are published. Repository documentation, tests and server code are not served by this command.
-
-Automatic deployment was disabled at inspection. The November 18 front-end release was deployed and checked on the canonical website. Future releases must verify the final source revision and retest the published page. The static page keeps `data-ai-enabled="false"`.
-
-The static service cannot execute `server.cjs`. A separate free-plan Node web service, `panelreply-ai`, now runs that server with AI disabled. It uses `node scripts/build-demo.cjs --check` to build, `node server.cjs` to start, Node 22, the Ohio region and automatic deployment disabled. See [the activation record](docs/LIVE_AI_SETUP.md) for the deployed revision, test results and credential gate.
-
-## Audit records
-
-- [Workspace redesign and 149-check evidence](docs/WORKSPACE_REDESIGN.md)
-- [Question answers and intake-integrity correction](docs/QUESTION_ANSWERS.md)
-- [Live AI activation setup and verification](docs/LIVE_AI_SETUP.md)
-- [AI intake design and earlier test evidence](docs/AI_INTAKE.md)
-- [Release audit](docs/RELEASE_AUDIT.md)
-- [Browser retest and reproduction evidence](docs/BROWSER_RETEST_2026-11-18.md)
-- [Safety corrections — PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1)
-- [Workspace and AI intake — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2)
-
-Before customer use, the project still needs verified telephony/SMS, durable consent and suppression, authentication, customer isolation, owner notifications, recovery paths and end-to-end integration tests.
+Other design records: [AI intake and appointment boundaries](docs/AI_INTAKE.md).

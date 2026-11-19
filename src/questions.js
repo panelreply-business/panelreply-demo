@@ -180,5 +180,11 @@
     return [...new Set(topics.map(topic => topicAnswer(topic, state, approvedFacts)))].join('\n\n');
   }
 
-  return Object.freeze({ answer });
+  // The private workspace shares topic detection and verified business answers,
+  // while supplying its own persistence, consent and booking disclosures.
+  function answerTopic(topic, fields, approvedFacts = defaultFacts) {
+    return topicAnswer(topic, requestState(fields), approvedFacts);
+  }
+
+  return Object.freeze({ answer, topicsFor, answerTopic });
 });
