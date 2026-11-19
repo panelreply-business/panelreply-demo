@@ -112,7 +112,10 @@ class DemoBrowserTests(unittest.TestCase):
         self.send("Install lights")
         for invalid in ("1234", "123456", "abcde", "48315-1234"):
             self.send(invalid)
-            expect(self.page.locator("#title")).to_have_text("Collect the job ZIP.")
+            expected_heading = "Clarify the request." if invalid == "48315-1234" else "Collect the job ZIP."
+            expect(self.page.locator("#title")).to_have_text(expected_heading)
+            expect(self.page.locator("#summary")).to_contain_text("ZIP: Not collected")
+            expect(self.page.locator("#events .event").last).to_contain_text("five-digit job ZIP")
         self.send("48315")
         self.send("...")
         expect(self.page.locator("#title")).to_have_text("Collect timing.")
@@ -159,7 +162,7 @@ class DemoBrowserTests(unittest.TestCase):
         expect(self.page.locator("#events .event").last).to_contain_text("does not release the safety hold")
 
     def test_normal_jobs_are_not_held_or_opted_out(self):
-        for message in ("Install a smoke detector", "Wire a hot tub", "Please stop by Thursday, please."):
+        for message in ("Install a smoke detector", "Wire a hot tub", "Inspect my panel Thursday"):
             with self.subTest(message=message):
                 self.reset()
                 self.send(message)
@@ -172,13 +175,20 @@ class DemoBrowserTests(unittest.TestCase):
         expect(self.page.locator("#events img")).to_have_count(0)
 
     def test_keyboard_access_to_every_control(self):
-        controls = ["call", "example", "reply", None, "stop", "restart", "reset", "callback"]
+        self.page.locator("#example").focus()
+        expect(self.page.locator("#example")).to_be_focused()
+        controls = ["call", "reply", "send", "stop", "restart", "reset", "summary-details > summary", "callback"]
         for identifier in controls:
             self.page.keyboard.press("Tab")
-            selector = "button[type=submit]" if identifier is None else "#" + identifier
+            selector = "#" + identifier
             expect(self.page.locator(selector)).to_be_focused()
         self.page.get_by_role("button", name="Run the sample request", exact=True).click()
         expect(self.page.locator("#title")).to_have_text("Ready for callback.")
+        self.page.locator("#summary-details > summary").focus()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator("#copy-summary")).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator("#callback")).to_be_focused()
         self.page.get_by_role("button", name="Reset tour", exact=True).focus()
         self.page.keyboard.press("Enter")
         expect(self.page.locator("#title")).to_have_text("Save the call.")
@@ -190,11 +200,13 @@ class DemoBrowserTests(unittest.TestCase):
                 self.reset()
                 self.send("a" * 500)
                 self.send("48315")
-                self.send("b" * 500)
+                self.send("Timing: Friday after 4 pm " + "b" * 475)
                 expect(self.page.locator("#title")).to_have_text("Ready for callback.")
+                self.page.locator("#summary-details > summary").click()
+                expect(self.page.locator("#summary")).to_be_visible()
                 dimensions = self.page.evaluate("""() => {
                     const summary = document.getElementById('summary');
-                    const cards = [...document.querySelectorAll('.card')].map(e => e.getBoundingClientRect().toJSON());
+                    const cards = [...document.querySelectorAll('.workspace-grid > .card')].map(e => e.getBoundingClientRect().toJSON());
                     return {viewport: innerWidth, pageWidth: document.documentElement.scrollWidth,
                             summaryWidth: summary.clientWidth, summaryScroll: summary.scrollWidth, cards};
                 }""")

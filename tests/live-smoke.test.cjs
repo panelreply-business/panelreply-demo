@@ -13,7 +13,7 @@ test('live Render demo responds with an explicit sample-only disclosure', { time
   assert.match(html, /PanelReply/);
   assert.match(html, /SAMPLE DATA/);
   assert.match(html, /No calls, texts or emails are sent/);
-  assert.match(html, /does not store customer requests or book appointments/);
+  assert.match(html, /does not (?:store customer requests|save requests to a customer database) or book appointments/);
 });
 
 test('live robots.txt is available and blocks search indexing', { timeout: 25000 }, async () => {
@@ -35,7 +35,13 @@ test('live Render demo CSP matches its delivered script and style', { timeout: 2
   const sha = txt => crypto.createHash('sha256').update(txt).digest('base64');
   assert.ok(csp.includes("script-src 'sha256-" + sha(script) + "'"));
   assert.ok(csp.includes("style-src 'sha256-" + sha(style) + "'"));
-  assert.match(csp, /connect-src 'none'/);
+  assert.match(csp, /connect-src '(?:none|self)'(?:;|$)/);
+  if (csp.includes("connect-src 'self'")) {
+    assert.match(html, /data-ai-enabled="false"/, 'The published static app must not activate the server AI mode');
+    assert.match(script, /fetch\('\/api\/intake'/, 'The optional AI adapter must stay on the same origin');
+    assert.doesNotMatch(script, /fetch\(['"]https?:/, 'No direct third-party provider calls from the browser');
+  }
   assert.match(csp, /form-action 'none'/);
   assert.match(html, /name="robots" content="noindex,nofollow"/);
 });
+

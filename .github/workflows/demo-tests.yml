@@ -1,7 +1,7 @@
 name: PanelReply demo regression tests
 on:
   pull_request:
-    branches: [main]
+    branches: [main, 'audit/**']
   push:
     branches:
       - main
@@ -20,7 +20,9 @@ jobs:
         with:
           node-version: '22'
       - name: Verify demo behavior and CSP
-        run: node --test tests/*.test.cjs
+        run: |
+          node scripts/build-demo.cjs --check
+          node --test tests/*.test.cjs
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -29,5 +31,11 @@ jobs:
       - name: Install Chromium for browser checks
         run: python -m playwright install --with-deps --only-shell chromium
       - name: Exercise the demo through a real browser
-        run: python tests/browser_test.py
+        run: |
+          python tests/browser_test.py
+          python tests/intake_browser_test.py
+      - name: Verify workspace accessibility and capture review images
+        env:
+          PANELREPLY_EMIT_PREVIEWS: '1'
+        run: python tests/ui_browser_test.py
 
