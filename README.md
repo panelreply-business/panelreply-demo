@@ -31,7 +31,7 @@ The branch adds:
 - Optional local Tesseract 5 text extraction. All candidates require review. Missing values stay blank.
 - Browser checks at 360, 390, 430, 768, 1024 and 1440 px, plus failure, isolation and export regressions.
 
-The platform baseline passed 574 checks with zero failures in [run 59](https://github.com/panelreply-business/panelreply-demo/actions/runs/44529305704). Three public application checks remain intentionally BLOCKED. Later UX refinements and their verification are tracked separately in [platform verification](docs/PLATFORM_VERIFICATION.md). Do not infer a pass from implementation alone. [Design system and interaction decisions](docs/DESIGN_SYSTEM.md). [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
+The platform and redesign passed 590 checks with zero failures in [run 61](https://github.com/panelreply-business/panelreply-demo/actions/runs/44535177854): 406 Node/HTTP, 175 Chromium and 9 native OCR cases. Three public application checks remain intentionally BLOCKED. [Full verification, corrected defects and reviewed screenshots](docs/PLATFORM_VERIFICATION.md). This completes the first development milestone on the draft branch, not commercial readiness. [Design system and interaction decisions](docs/DESIGN_SYSTEM.md). [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
 
 ## Private workspace
 
@@ -50,7 +50,7 @@ The standalone workspace adds:
 - Encrypted local backups and restore into a new directory, with no active sessions or usable passwords restored.
 - Operator password reset for an existing owner, with session revocation and protection against in-flight sign-in races.
 
-[Desktop inbox and export](docs/evidence/recovery-inbox-desktop.jpg) · [Mobile inbox and export](docs/evidence/recovery-inbox-mobile.jpg) · [Customer preview](docs/evidence/private-customer-preview-mobile.jpg)
+[Current desktop inbox](docs/evidence/platform-intake-desktop.jpg) · [Current mobile inbox](docs/evidence/platform-intake-mobile.jpg) · [Panel workspace](docs/evidence/platform-panels-1440.jpg) · [Dashboard](docs/evidence/platform-dashboard-1440.jpg) · [Historical recovery evidence](docs/RECOVERY_VERIFICATION.md)
 
 The callback window describes when a customer wants a call. The requested work date describes when they want the work done. Neither reserves an appointment. Contact permission is recorded separately. Saving a request sends no message.
 

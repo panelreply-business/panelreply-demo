@@ -53,6 +53,6 @@ No CSP allowance, third-party resource, live integration or application dependen
 
 ## Verification and remaining scope
 
-The browser suites exercise keyboard tabs, form errors, demo reset, corrected CSV content, formula-prefix protection, reduced motion, dialog focus, replay preservation, image selection, private save/retry behavior and responsive geometry. Requested widths are 360, 390, 430, 768, 1024 and 1440 px. See the current [verification record](PLATFORM_VERIFICATION.md) for actual results, failures and screenshots.
+The browser suites exercise keyboard tabs, form errors, demo reset, corrected CSV content, formula-prefix protection, reduced motion, dialog focus, replay preservation, image selection, private save/retry behavior and responsive geometry. Requested widths are 360, 390, 430, 768, 1024 and 1440 px. The guided dialog also passes the 844×390 landscape subcase in CI run 61. See the current [verification record](PLATFORM_VERIFICATION.md) for actual results, failures and screenshots.
 
 Chromium evidence does not establish Safari/Firefox, physical-device or screen-reader compatibility. WCAG 2.2 AA is a target, not a certified outcome. Production Core Web Vitals and real job-site OCR accuracy remain unmeasured. No unsupported performance or recognition claim belongs in marketing copy.

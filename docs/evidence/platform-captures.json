@@ -1,0 +1,93 @@
+{
+  "capturedFrom": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44535177854",
+  "sourceCommit": "370d158fb8c7dbf3daf74fe8798df4cc85e61c94",
+  "browser": "Chromium 151.0.7922.34",
+  "data": "Synthetic fixtures only",
+  "edited": false,
+  "captures": [
+    {
+      "file": "platform-marketing-desktop-home.jpg",
+      "width": 1440,
+      "height": 1000,
+      "bytes": 80812,
+      "sha256": "2966fd4c0358ea9482d84ea2074b9d9dd507eba9598ff33c01e0e4246098a87d"
+    },
+    {
+      "file": "platform-marketing-desktop-parts.jpg",
+      "width": 1440,
+      "height": 2061,
+      "bytes": 161239,
+      "sha256": "821ac615c33fd534fb664d5cc21d0fe6de043d1c8308bf46649c4e5bbef59d8d"
+    },
+    {
+      "file": "platform-marketing-mobile-home.jpg",
+      "width": 390,
+      "height": 1000,
+      "bytes": 38278,
+      "sha256": "cd32586ab8e8070bee92a8a608f3bce4eef5016754777eaeb22087e1d4fdfd6f"
+    },
+    {
+      "file": "platform-marketing-mobile-parts.jpg",
+      "width": 390,
+      "height": 2670,
+      "bytes": 102253,
+      "sha256": "cecd7ae36f4e1152d48608851ad73e834fdf639a48da795c9d56f192ecdebd6c"
+    },
+    {
+      "file": "platform-marketing-desktop-walkthrough.jpg",
+      "width": 720,
+      "height": 700,
+      "bytes": 46373,
+      "sha256": "8c6e383a74e4da3d10c072d16c8c2b504b289beb0bf958719d53ac314f58f3bf"
+    },
+    {
+      "file": "platform-marketing-mobile-walkthrough.jpg",
+      "width": 366,
+      "height": 840,
+      "bytes": 37810,
+      "sha256": "74e3030b3f4d2fd35ff0dbc142b025ce511e55ced5d59b3e8173c27cf073eadc"
+    },
+    {
+      "file": "platform-dashboard-1440.jpg",
+      "width": 1440,
+      "height": 1122,
+      "bytes": 106217,
+      "sha256": "56c18683e23fb1b70569ffc1a9d7aafceeebe47bd564af90e3c01b2ba0906605"
+    },
+    {
+      "file": "platform-dashboard-360.jpg",
+      "width": 360,
+      "height": 1979,
+      "bytes": 79729,
+      "sha256": "275784a3220b470d848f81c4e244c816758d231d370f8b85a81fbd473941ff98"
+    },
+    {
+      "file": "platform-panels-1440.jpg",
+      "width": 1440,
+      "height": 1473,
+      "bytes": 146475,
+      "sha256": "1d19b7a89db403d8a14a294dba1eff1e4589b4051df742ea2806401ba716ac5b"
+    },
+    {
+      "file": "platform-panels-360.jpg",
+      "width": 360,
+      "height": 2289,
+      "bytes": 99778,
+      "sha256": "27cdaba62da706239622e4c66350147febb9114d812385ee460fbaedbb089eea"
+    },
+    {
+      "file": "platform-intake-desktop.jpg",
+      "width": 1440,
+      "height": 1559,
+      "bytes": 132170,
+      "sha256": "fc886ab094040bab369aebf0b80ab3fc74dfa64caedf55fe1a08702e16f13b32"
+    },
+    {
+      "file": "platform-intake-mobile.jpg",
+      "width": 360,
+      "height": 2712,
+      "bytes": 98168,
+      "sha256": "2469408e6377ee0713637e8c4f9cb6f951151cbf7d8997da3fa5bf1963d9b17a"
+    }
+  ]
+}
