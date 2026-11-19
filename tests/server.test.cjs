@@ -317,6 +317,8 @@ test('a model cannot reinterpret phone, street, wattage, ZIP+4 or conflicting nu
     'I live at 48315 Main Street',
     'I need a 48315 watt generator',
     'My ZIP is 48315-1234',
+    'My ZIP is 48315–1234',
+    'My ZIP is 48315 1234',
     'The ZIP is 48315 or 48316'
   ]) {
     const extraction = { ...EXTRACTION, job: null, timing: null };
@@ -325,6 +327,23 @@ test('a model cannot reinterpret phone, street, wattage, ZIP+4 or conflicting nu
     assert.equal(result.status, 502, message);
     assert.equal(result.body.error.code, 'invalid_ai_output', message);
   }
+});
+
+test('new explicit opt-out phrases bypass the provider even when bundled with details', async () => {
+  const provider = spyProvider();
+  const app = createApp({ env: environment(), fetchImpl: provider.fetchImpl });
+  for (const message of [
+    'Please don’t send me any more texts.',
+    'My ZIP is 48315. I do not want any more text messages.'
+  ]) {
+    const result = await request(app, { input: { message, fields: FIELDS } });
+    assert.equal(result.status, 200);
+    assert.equal(result.body.mode, 'local');
+    assert.equal(result.body.flags.optOut, true);
+    assert.deepEqual(result.body.fields, { job: null, zip: null, timing: null });
+  }
+  assert.equal(provider.calls.length, 0);
+  assert.equal(app.stats.attempted, 0);
 });
 
 test('a model cannot hide a conflicting ZIP by returning null and ambiguous false', async () => {

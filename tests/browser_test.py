@@ -175,13 +175,20 @@ class DemoBrowserTests(unittest.TestCase):
         expect(self.page.locator("#events img")).to_have_count(0)
 
     def test_keyboard_access_to_every_control(self):
-        controls = ["call", "example", "reply", None, "stop", "restart", "reset", "callback"]
+        self.page.locator("#example").focus()
+        expect(self.page.locator("#example")).to_be_focused()
+        controls = ["call", "reply", "send", "stop", "restart", "reset", "summary-details > summary", "callback"]
         for identifier in controls:
             self.page.keyboard.press("Tab")
-            selector = "button[type=submit]" if identifier is None else "#" + identifier
+            selector = "#" + identifier
             expect(self.page.locator(selector)).to_be_focused()
         self.page.get_by_role("button", name="Run the sample request", exact=True).click()
         expect(self.page.locator("#title")).to_have_text("Ready for callback.")
+        self.page.locator("#summary-details > summary").focus()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator("#copy-summary")).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator("#callback")).to_be_focused()
         self.page.get_by_role("button", name="Reset tour", exact=True).focus()
         self.page.keyboard.press("Enter")
         expect(self.page.locator("#title")).to_have_text("Save the call.")
@@ -195,9 +202,11 @@ class DemoBrowserTests(unittest.TestCase):
                 self.send("48315")
                 self.send("Timing: Friday after 4 pm " + "b" * 475)
                 expect(self.page.locator("#title")).to_have_text("Ready for callback.")
+                self.page.locator("#summary-details > summary").click()
+                expect(self.page.locator("#summary")).to_be_visible()
                 dimensions = self.page.evaluate("""() => {
                     const summary = document.getElementById('summary');
-                    const cards = [...document.querySelectorAll('.card')].map(e => e.getBoundingClientRect().toJSON());
+                    const cards = [...document.querySelectorAll('.workspace-grid > .card')].map(e => e.getBoundingClientRect().toJSON());
                     return {viewport: innerWidth, pageWidth: document.documentElement.scrollWidth,
                             summaryWidth: summary.clientWidth, summaryScroll: summary.scrollWidth, cards};
                 }""")

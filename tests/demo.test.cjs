@@ -23,7 +23,9 @@ function fixture(options = {}) {
     selectedIndex: 0,
     disabled: false,
     hidden: false,
-    setAttribute() {},
+    attributes: {},
+    setAttribute(name, value) { this.attributes[name] = String(value); },
+    getAttribute(name) { return this.attributes[name]; },
     children: [],
     append(node) { this.children.push(node); },
     replaceChildren() { this.children = []; },
@@ -37,7 +39,7 @@ function fixture(options = {}) {
     },
     createElement: element,
   };
-  const sandbox = { document, AbortController, setTimeout, clearTimeout, fetch: options.fetch || (() => { throw new Error('Unexpected network request'); }) };
+  const sandbox = { document, AbortController, setTimeout, clearTimeout, navigator: options.navigator, fetch: options.fetch || (() => { throw new Error('Unexpected network request'); }) };
   vm.runInNewContext(
     script + '\n;globalThis.__testApi = {send, reset, state: () => ({stage, stopped, hold, job, zip, timing, pending, clarificationPending})};',
     sandbox,
@@ -550,6 +552,66 @@ test('STOP ignores a late AI result and does not resume collection', async () =>
   assert.doesNotMatch(f.messages().join(' '), /ready for a callback/);
 });
 
+test('request card tracks confirmed fields, clarification and reset', async () => {
+  const f = fixture();
+  assert.equal(f.node('field-count').textContent, '0 of 3');
+  assert.equal(f.node('request-state').textContent, 'Not started');
+  assert.equal(f.node('copy-summary').disabled, true);
+  assert.equal(f.node('conversation-empty').hidden, false);
+  await f.send('48315');
+  assert.equal(f.node('field-count').textContent, '1 of 3');
+  assert.equal(f.node('detail-zip').textContent, '48315');
+  assert.equal(f.node('detail-job').textContent, 'Not collected');
+  await f.send('Install lights. Call Friday after 4 pm.');
+  assert.equal(f.node('field-count').textContent, '3 of 3');
+  assert.equal(f.node('request-state').textContent, 'Ready for callback');
+  await f.send('The ZIP is 48315 or 48084');
+  assert.equal(f.node('field-count').textContent, '2 of 3');
+  assert.equal(f.node('field-progress').value, 2);
+  assert.equal(f.node('request-state').textContent, 'Needs confirmation');
+  assert.match(f.node('detail-zip').textContent, /needs confirmation/);
+  f.reset();
+  assert.equal(f.node('field-count').textContent, '0 of 3');
+  assert.equal(f.node('copy-summary').disabled, true);
+  assert.equal(f.node('conversation-empty').hidden, false);
+});
+
+test('message counter reflects typing, form submission and reset', () => {
+  const f = fixture();
+  f.node('reply').value = 'Install lights';
+  f.node('reply').oninput();
+  assert.equal(f.node('reply-count').textContent, '14 / 500');
+  f.node('form').onsubmit({ preventDefault() {} });
+  assert.equal(f.node('reply-count').textContent, '0 / 500');
+  f.node('reply').value = 'x'.repeat(500);
+  f.node('reply').oninput();
+  assert.equal(f.node('reply-count').textContent, '500 / 500');
+  f.reset();
+  assert.equal(f.node('reply-count').textContent, '0 / 500');
+});
+
+test('copy reports success only after writing the summary and ignores stale completion', async () => {
+  let finish;
+  let copied;
+  const f = fixture({ navigator: { clipboard: { writeText: text => {
+    copied = text;
+    return new Promise(resolve => { finish = resolve; });
+  } } } });
+  await f.send(bundled);
+  let result = f.node('copy-summary').onclick();
+  assert.equal(f.node('copy-status').textContent, 'Copying summary…');
+  assert.match(copied, /PanelReply sample request/);
+  assert.match(copied, /Status: Ready for callback/);
+  assert.match(copied, /No appointment has been booked/);
+  finish();
+  await result;
+  assert.equal(f.node('copy-status').textContent, 'Summary copied.');
+  result = f.node('copy-summary').onclick();
+  f.reset();
+  finish();
+  await result;
+  assert.equal(f.node('copy-status').textContent, '');
+});
 
 test('polite unsubscribe and opt-out requests suppress all follow-up intake', async () => {
   for (const message of ['Please unsubscribe me', 'Please opt out', 'Opt out please', 'Please opt out, ZIP 48315']) {
@@ -562,3 +624,4 @@ test('polite unsubscribe and opt-out requests suppress all follow-up intake', as
     assert.match(f.messages().at(-1), /without an automated reply/);
   }
 });
+

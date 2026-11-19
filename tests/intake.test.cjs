@@ -194,17 +194,80 @@ test('module runs in browser scope without Node modules', () => {
 
 test('polite unsubscribe and opt-out requests inside bundled input stop the local intake', () => {
   for (const message of [
-    'Please unsubscribe me',
-    'Please, unsubscribe me.',
-    'Unsubscribe me please',
-    'Please opt out',
-    'Opt out please',
-    'Please unsubscribe me. ZIP 48315. Call Friday.',
-    'Please opt out, ZIP 48315.'
+    'Please unsubscribe me', 'Please, unsubscribe me.', 'Unsubscribe me please',
+    'Please opt out', 'Opt out please',
+    'Please unsubscribe me. ZIP 48315. Call Friday.', 'Please opt out, ZIP 48315.'
   ]) {
     assert.equal(intake.isOptOut(message), true, message);
     assert.deepEqual(intake.extractFields(message, empty),
       { job: null, zip: null, timing: null, ambiguous: false }, message);
   }
   assert.equal(intake.isOptOut('Please review my opt out wiring'), false);
+});
+
+test('short street numbers and voltage values do not invent callback timing', () => {
+  for (const text of [
+    'Replace the panel at 12 Main Street. ZIP 48315.',
+    'Install lights at 5 Oak Road, ZIP 48315.',
+    'Wire the fixture at 12 volts. ZIP 48315.'
+  ]) {
+    const result = intake.extractFields(text, empty);
+    assert.equal(result.timing, null, text);
+    assert.equal(result.zip, '48315', text);
+    assert.deepEqual(intake.missingFields(intake.mergeFields(empty, result)), ['timing']);
+  }
+  const withTime = intake.extractFields('Install lights at 12 Main Street after 4 pm. ZIP 48315.', empty);
+  assert.match(withTime.job, /12 Main Street/);
+  assert.equal(withTime.timing, 'after 4 pm');
+  for (const text of ['Call me at 4 pm on Main Street', 'Call after 4 at Main Street']) {
+    assert.ok(intake.extractFields(text, empty).timing, text);
+  }
+});
+
+test('extended ZIP spellings never silently lose their final four digits', () => {
+  for (const suffix of ['–1234', '—1234', '‑1234', ' 1234', '- 1234']) {
+    for (const text of ['Install lights. ZIP 48315' + suffix + '. Call Friday.', '48315' + suffix]) {
+      const result = intake.extractFields(text, empty);
+      assert.equal(result.zip, null, text);
+      assert.equal(result.ambiguous, true, text);
+    }
+  }
+  const phone = intake.extractFields('Install lights. Phone 586–555–1234. ZIP 48315. Friday.', empty);
+  assert.equal(phone.zip, '48315');
+  assert.equal(phone.ambiguous, false);
+});
+
+test('unavailable days remain negated in callback preferences', () => {
+  for (const [text, required] of [
+    ['Not Friday, Monday after 4.', 'Not Friday'],
+    ['I am not available on Friday. Call Monday.', 'not available on Friday'],
+    ['I can’t answer calls Friday. Monday after 4 works.', 'can’t answer calls Friday'],
+    ['Don’t call Friday. Call Monday.', 'Don’t call Friday']
+  ]) {
+    const result = intake.extractFields(text, empty);
+    assert.equal(result.job, null, text);
+    assert.ok(result.timing.includes(required), text + ' => ' + result.timing);
+    assert.match(result.timing, /Monday/, text);
+  }
+  const withJob = intake.extractFields('Install lights, but not Friday. ZIP 48315. Call Monday.', empty);
+  assert.equal(withJob.job, 'Install lights');
+  assert.match(withJob.timing, /not Friday/);
+});
+
+test('additional explicit opt-out wording blocks bundled intake without false opt-outs', () => {
+  for (const text of [
+    'Please don’t send me any more texts.',
+    'ZIP 48315. Do not send me more messages.',
+    'I don’t want any more text messages. Call Friday.',
+    'Please stop sending me any more texts.'
+  ]) {
+    assert.equal(intake.isOptOut(text), true, text);
+    assert.deepEqual(intake.extractFields(text, empty), { job: null, zip: null, timing: null, ambiguous: false });
+  }
+  for (const text of [
+    'Don’t stop sending me texts.',
+    'I don’t want to stop receiving texts.',
+    'Do not send me a quote until Friday.',
+    'Please stop by with the text messages printed out.'
+  ]) assert.equal(intake.isOptOut(text), false, text);
 });

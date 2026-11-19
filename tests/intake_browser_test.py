@@ -191,6 +191,41 @@ class IntakeBrowserTests(unittest.TestCase):
         expect(self.page.locator("#summary")).to_contain_text("Friday after 4 pm")
         self.assertEqual(self.api_requests, [])
 
+    def test_a_street_address_is_not_a_callback_time(self):
+        self.send("Replace the panel at 12 Main Street. ZIP 48315.")
+        expect(self.page.locator("#title")).to_have_text("Collect timing.")
+        expect(self.page.locator("#summary")).to_contain_text("Timing: Not collected")
+        expect(self.page.locator("#summary")).to_contain_text("12 Main Street")
+        self.send("Call me Friday after 4 pm")
+        self.assert_ready()
+
+    def test_extended_zip_spellings_require_five_digit_confirmation(self):
+        for value in ("48315–1234", "48315 1234", "48315—1234"):
+            with self.subTest(value=value):
+                self.page.locator("#reset").click()
+                self.send("Install lights. ZIP " + value + ". Call Monday after 4 pm.")
+                expect(self.page.locator("#title")).to_have_text("Clarify the request.")
+                expect(self.page.locator("#summary")).to_contain_text("ZIP: Not collected")
+                self.send("The five-digit job ZIP is 48315")
+                self.assert_ready()
+
+    def test_negated_day_stays_with_timing_and_does_not_invent_a_job(self):
+        self.send("Not Friday, Monday after 4")
+        expect(self.page.locator("#summary")).to_contain_text("Job: Not collected")
+        expect(self.page.locator("#summary")).to_contain_text("Not Friday")
+        expect(self.page.locator("#summary")).to_contain_text("Monday after 4")
+        self.send("Install lights. ZIP 48315")
+        self.assert_ready()
+        expect(self.page.locator("#summary")).to_contain_text("Not Friday")
+
+    def test_explicit_no_more_texts_phrase_stops_bundled_intake(self):
+        self.send("Please don’t send me any more texts. ZIP 48315.")
+        expect(self.page.locator("#title")).to_have_text("Automated replies paused.")
+        expect(self.page.locator("#events .event:not(.customer):not(.system)")).to_have_count(0)
+        self.send("Install lights")
+        expect(self.page.locator("#events .event").last).to_contain_text("without an automated reply")
+        expect(self.page.locator("#title")).to_have_text("Automated replies paused.")
+
     def test_callback_only_phrase_keeps_the_job_missing(self):
         self.send("Please, stop by Thursday.")
         expect(self.page.locator("#title")).to_have_text("Save the call.")
@@ -427,11 +462,8 @@ class IntakeBrowserTests(unittest.TestCase):
 
     def test_polite_unsubscribe_and_opt_out_stop_demo_intake(self):
         for message in (
-            "Please unsubscribe me",
-            "Please, unsubscribe me.",
-            "Unsubscribe me please",
-            "Please opt out",
-            "Opt out please",
+            "Please unsubscribe me", "Please, unsubscribe me.",
+            "Unsubscribe me please", "Please opt out", "Opt out please",
             "Please opt out, ZIP 48315.",
         ):
             with self.subTest(message=message):

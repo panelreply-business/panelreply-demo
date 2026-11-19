@@ -7,14 +7,19 @@ let stage = 0, stopped = false, hold = false, job = '', zip = '', timing = '';
 let pending = false, requestVersion = 0, requestController = null;
 let clarificationPending = false;
 let clarificationFields = [];
+let viewRevision = 0;
 
 function fields() { return { job, zip, timing }; }
 
 function event(text, type = '') {
+  const list = $('events');
+  const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 48;
   const node = document.createElement('div');
   node.className = 'event ' + type;
   node.textContent = text;
-  $('events').append(node);
+  list.append(node);
+  $('conversation-empty').hidden = true;
+  if (nearBottom || type === 'customer') list.scrollTop = list.scrollHeight;
 }
 
 function mode(text) {
@@ -40,17 +45,19 @@ function cancelPending() {
 function nextQuestion() {
   if (clarificationPending) {
     const labels = { job: 'electrical work', zip: 'five-digit job ZIP', timing: 'callback timing' };
-    return 'Demo Electric: I found conflicting details. Please confirm the ' +
+    return 'I found conflicting details. Please confirm the ' +
       clarificationFields.map(key => labels[key]).join(' and ') + '.';
   }
   const missing = intake.missingFields(fields());
-  if (missing.includes('job')) return 'Demo Electric: What electrical work do you need? You can include the ZIP and callback time in the same message. Reply STOP to unsubscribe.';
-  if (missing.includes('zip')) return 'Demo Electric: What is the five-digit job ZIP? Reply STOP to unsubscribe.';
-  if (missing.includes('timing')) return 'Demo Electric: When do you need the work, and when can we call?';
-  return 'Demo Electric: Your request is ready for a callback. No appointment is booked.';
+  if (missing.includes('job')) return 'What electrical work do you need? You can include the ZIP and callback time in the same message. Reply STOP to unsubscribe.';
+  if (missing.includes('zip')) return 'What is the five-digit job ZIP? Reply STOP to unsubscribe.';
+  if (missing.includes('timing')) return 'When do you need the work, and when can we call?';
+  return 'Your request is ready for a callback. No appointment is booked.';
 }
 
 function update() {
+  viewRevision += 1;
+  $('copy-status').textContent = '';
   stage = !job ? 0 : !zip ? 1 : !timing ? 2 : 3;
   const heads = ['Save the call.', 'Collect the job ZIP.', 'Collect timing.', 'Ready for callback.'];
   $('title').textContent = heads[stage];
@@ -74,6 +81,52 @@ function update() {
     $('title').textContent = 'Urgent review required.';
     $('step').textContent = 'SAFETY HOLD / HUMAN REVIEW';
     $('summary').textContent = 'Demo safety hold. A human review is required, but no notification was sent.\n' + details;
+  }
+  const values = fields();
+  const confirmed = ['job', 'zip', 'timing'].filter(key => values[key] && !clarificationFields.includes(key));
+  for (const key of ['job', 'zip', 'timing']) {
+    const needsConfirmation = clarificationFields.includes(key);
+    $('detail-' + key).textContent = (values[key] || 'Not collected') + (needsConfirmation ? ' (needs confirmation)' : '');
+    $('detail-' + key).setAttribute('data-state', needsConfirmation ? 'confirm' : values[key] ? 'collected' : 'missing');
+  }
+  $('field-count').textContent = confirmed.length + ' of 3';
+  $('field-progress').value = confirmed.length;
+  $('field-progress').setAttribute('aria-valuetext', confirmed.length + ' of 3 details confirmed');
+  const state = hold ? 'Safety hold' : stopped ? 'Replies paused' : clarificationPending ? 'Needs confirmation'
+    : stage === 3 ? 'Ready for callback' : confirmed.length ? 'Collecting details' : 'Not started';
+  $('request-state').textContent = state;
+  $('request-state').setAttribute('data-state', hold ? 'hold' : stopped ? 'paused' : clarificationPending ? 'confirm' : stage === 3 ? 'ready' : 'collecting');
+  $('copy-summary').disabled = !(job || zip || timing || hold || stopped);
+  $('conversation-empty').hidden = $('events').children.length > 0;
+}
+
+function updateCharacterCount() {
+  $('reply-count').textContent = $('reply').value.length + ' / 500';
+}
+
+async function copySummary() {
+  if ($('copy-summary').disabled) return;
+  const revision = viewRevision;
+  const text = 'PanelReply sample request\nStatus: ' + $('request-state').textContent + '\n' + $('summary').textContent;
+  $('copy-status').textContent = 'Copying summary…';
+  try {
+    if (typeof navigator === 'undefined' || !navigator.clipboard || !navigator.clipboard.writeText) throw new Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(text);
+    if (revision === viewRevision) $('copy-status').textContent = 'Summary copied.';
+  } catch (_error) {
+    if (revision !== viewRevision) return;
+    $('summary-details').open = true;
+    try {
+      $('summary').focus();
+      const selection = globalThis.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents($('summary'));
+      selection.removeAllRanges();
+      selection.addRange(range);
+      $('copy-status').textContent = 'Copy is unavailable here. The summary is selected. Copy it manually.';
+    } catch (_selectionError) {
+      $('copy-status').textContent = 'Copy is unavailable here. Open the full summary and copy it manually.';
+    }
   }
 }
 
@@ -112,7 +165,7 @@ function applyExtraction(extracted, fromAI = false) {
   clarificationPending = clarificationFields.length > 0;
   update();
   event(nextQuestion());
-  if (stage === 3 && !clarificationPending) event('Demo callback task ready locally. No notification sent.', 'system');
+  if (stage === 3 && !clarificationPending) event('Sample request ready for contractor review. No notification sent.', 'system');
 }
 
 function validExtraction(payload, body) {
@@ -228,11 +281,13 @@ function reset() {
   clarificationPending = false;
   clarificationFields = [];
   $('reply').value = '';
+  updateCharacterCount();
   $('ai-access').value = '';
   $('events').replaceChildren();
   $('call-status').textContent = '';
   $('callback').selectedIndex = 0;
   $('outcome').textContent = 'A completed intake does not book an appointment.';
+  $('summary-details').open = false;
   mode();
   update();
 }
@@ -250,8 +305,11 @@ $('form').onsubmit = e => {
   e.preventDefault();
   const body = $('reply').value;
   $('reply').value = '';
+  updateCharacterCount();
   send(body);
 };
+$('reply').oninput = updateCharacterCount;
+$('copy-summary').onclick = copySummary;
 $('stop').onclick = () => send('STOP');
 $('restart').onclick = () => send('START');
 $('reset').onclick = reset;
@@ -259,5 +317,10 @@ $('callback').onchange = () => {
   $('outcome').textContent = 'Sample contractor update: ' + $('callback').value + '. This is demonstration data. No calendar event was created.';
 };
 $('ai-controls').hidden = !aiEnabled;
+$('ai-connection-status').textContent = aiEnabled ? 'Configured for testing' : 'Not enabled';
+$('ai-connection-detail').textContent = aiEnabled
+  ? 'Enter the test access code to use AI for sample messages.'
+  : 'This workspace uses local parsing. AI requires a configured server.';
 mode();
+updateCharacterCount();
 update();
