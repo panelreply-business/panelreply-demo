@@ -4,7 +4,15 @@ A contractor intake workspace that answers common questions from saved informati
 
 [Static demo](https://panelreply-demo.onrender.com/) · [AI server preview](https://panelreply-ai.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo)
 
-## Current release: question answering
+## Current status: public demos intentionally offline
+
+The owner asked to take both demos offline while development continues. On November 18, 2026, both existing Render services were suspended without deleting them. Their public URLs now show `This service has been suspended by its owner.` Auto-deploy remains off.
+
+Continue code review, offline tests and fake-provider checks. Do not resume, deploy, republish or create another public preview without the owner's explicit approval. Live application checks are BLOCKED during this intentional shutdown, not evidence of a defect to repair. The recurring audit has been updated to preserve this instruction.
+
+[Suspension evidence and testing policy](docs/OFFLINE_MODE.md)
+
+## Previous release: question answering
 
 Published November 18, 2026 at 10:37 PM America/New_York to both demo links. [PR #4](https://github.com/panelreply-business/panelreply-demo/pull/4) is merged. The release passed 209 checks: 144 Node/HTTP/live GET checks and 65 Chromium checks, with zero failures or skips. The merge commit passed CI as well.
 
@@ -164,12 +172,14 @@ node --test tests/demo.test.cjs tests/intake.test.cjs tests/questions.test.cjs t
 
 ### Full Node, HTTP and live GET checks
 
-This command includes the localhost HTTP boundary test and read-only GET requests to the public Render site:
+This command includes the localhost HTTP boundary test and read-only GET checks that both public Render URLs remain owner-suspended:
 
 ```sh
 node scripts/build-demo.cjs --check
-node --test tests/*.test.cjs
+PANELREPLY_EXPECT_PUBLIC_OFFLINE=true node --test tests/*.test.cjs
 ```
+
+Offline mode requires HTTP 503 and Render's owner-suspension text from both URLs, and rejects app markup. Network failures, redirects or unexpected responses fail these checks. The three checks that need the public app running are explicitly skipped as `BLOCKED: public demos intentionally offline`. All local application, HTTP and browser tests remain active. Only remove this mode after the owner approves reopening the demos.
 
 ### Browser checks
 
