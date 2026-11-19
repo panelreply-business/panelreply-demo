@@ -14,28 +14,32 @@ assert.ok(scriptMatch, 'Expected one inline demo script');
 assert.ok(styleMatch, 'Expected one inline stylesheet');
 const script = scriptMatch[1];
 
-function fixture() {
+function fixture(options = {}) {
   const elements = new Map();
   const element = () => ({
     textContent: '',
     value: '',
     className: '',
     selectedIndex: 0,
+    disabled: false,
+    hidden: false,
+    setAttribute() {},
     children: [],
     append(node) { this.children.push(node); },
     replaceChildren() { this.children = []; },
     click() { if (this.onclick) this.onclick(); },
   });
   const document = {
+    body: { dataset: { aiEnabled: String(Boolean(options.aiEnabled)) } },
     getElementById(id) {
       if (!elements.has(id)) elements.set(id, element());
       return elements.get(id);
     },
     createElement: element,
   };
-  const sandbox = { document };
+  const sandbox = { document, AbortController, setTimeout, clearTimeout, fetch: options.fetch || (() => { throw new Error('Unexpected network request'); }) };
   vm.runInNewContext(
-    script + '\n;globalThis.__testApi = {send, reset, state: () => ({stage, stopped, hold, job, zip, timing})};',
+    script + '\n;globalThis.__testApi = {send, reset, state: () => ({stage, stopped, hold, job, zip, timing, pending, clarificationPending})};',
     sandbox,
     { timeout: 1000 }
   );
@@ -44,23 +48,25 @@ function fixture() {
   return { node, messages, ...sandbox.__testApi };
 }
 
-test('CSP authorizes the exact inline script and CSS, with network blocked', () => {
+test('CSP authorizes the exact inline script and CSS, with connections limited to the same origin', () => {
   const sh = crypto.createHash('sha256').update(script).digest('base64');
   const st = crypto.createHash('sha256').update(styleMatch[1]).digest('base64');
   assert.ok(html.includes("script-src 'sha256-" + sh + "'"));
   assert.ok(html.includes("style-src 'sha256-" + st + "'"));
-  assert.match(html, /connect-src 'none'/);
+  assert.match(html, /connect-src 'self'/);
   assert.match(html, /form-action 'none'/);
 });
 
 test('site identifies itself as a sample and does not promise actual dispatch', () => {
   assert.match(html, /SAMPLE DATA/);
   assert.match(html, /No calls, texts or emails are sent/);
-  assert.match(html, /does not store customer requests or book appointments/);
+  assert.match(html, /does not save requests to a customer database or book appointments/);
 });
 
-test('no external network or browser storage interfaces are used by demo script', () => {
-  assert.doesNotMatch(script, /\bfetch\s*\(/);
+test('AI uses only the same-origin intake endpoint and no browser storage', () => {
+  assert.match(script, /fetch\('\/api\/intake'/);
+  assert.doesNotMatch(script, /https?:\/\//);
+  assert.match(html, /data-ai-enabled="false"/);
   assert.doesNotMatch(script, /\bXMLHttpRequest\b/);
   assert.doesNotMatch(script, /\blocalStorage\b/);
   assert.doesNotMatch(script, /\bnavigator\.sendBeacon\b/);
@@ -215,8 +221,11 @@ test('polite punctuation and smart apostrophes keep ordinary jobs in intake', ()
     const f = fixture();
     f.send(message);
     assert.equal(f.state().stopped, false, message);
-    assert.equal(f.state().stage, 1);
-    assert.equal(f.state().job, message);
+    assert.equal(f.messages()[0], message, 'Display the original wording');
+    if (message.includes('Thursday')) {
+      assert.equal(f.state().job, '', 'A callback preference is not a job description');
+      assert.match(f.state().timing, /Thursday/);
+    } else assert.match(f.state().job, /stop work on my panel/);
   }
 });
 
@@ -402,5 +411,142 @@ test('user input is placed in textContent, never HTML markup', () => {
   f.send(input);
   assert.equal(f.messages()[0], input);
   assert.doesNotMatch(script, /\.innerHTML\s*=/);
+});
+
+const bundled = 'I need an EV charger installed in my garage. My ZIP is 48315. Call me Friday after 4 pm.';
+const aiAnswer = (fields = {}, flags = {}) => ({
+  mode: 'ai',
+  fields: { job: null, zip: null, timing: null, ...fields },
+  flags: { optOut: false, hazard: false, ambiguous: false, ...flags },
+});
+const okResponse = payload => ({ ok: true, json: async () => payload });
+
+test('one message fills all fields without an AI request in the static demo', async () => {
+  let called = 0;
+  const f = fixture({ fetch: () => { called++; throw new Error('No network expected'); } });
+  f.node('ai-access').value = 'not-an-enabled-server';
+  await f.send(bundled);
+  assert.equal(called, 0);
+  assert.equal(f.state().stage, 3);
+  assert.equal(f.state().zip, '48315');
+  assert.match(f.state().job, /EV charger/);
+  assert.match(f.state().timing, /Friday after 4 pm/);
+  assert.doesNotMatch(f.messages().at(-2), /What is the|When do you/);
+  assert.match(f.node('ai-mode').textContent, /AI is not connected/);
+});
+
+test('ZIP correction does not overwrite the job and timing', async () => {
+  const f = fixture();
+  await f.send(bundled);
+  const before = f.state();
+  await f.send('Actually the job ZIP is 48084');
+  assert.equal(f.state().zip, '48084');
+  assert.equal(f.state().job, before.job);
+  assert.equal(f.state().timing, before.timing);
+});
+
+test('ZIP ambiguity stays unresolved when unrelated timing changes', async () => {
+  const f = fixture();
+  await f.send(bundled);
+  await f.send('Actually the ZIP is 48315 or 48084');
+  assert.equal(f.state().clarificationPending, true);
+  await f.send('Call me Monday after 5 pm');
+  assert.equal(f.state().clarificationPending, true);
+  assert.equal(f.node('title').textContent, 'Clarify the request.');
+  await f.send('The correct job ZIP is 48084');
+  assert.equal(f.state().clarificationPending, false);
+  assert.equal(f.state().zip, '48084');
+  assert.equal(f.node('title').textContent, 'Ready for callback.');
+});
+
+test('bundled STOP and danger keep opt-out and safety protections together', async () => {
+  const f = fixture();
+  await f.send('STOP. My breaker is melting.');
+  assert.equal(f.state().stopped, true);
+  assert.equal(f.state().hold, true);
+  assert.equal(f.state().stage, 0);
+  assert.doesNotMatch(f.messages().join(' '), /move away and call 911/);
+  await f.send('START');
+  assert.equal(f.state().stopped, true);
+  assert.equal(f.state().hold, true);
+});
+
+test('enabled AI sends only sample context to the same-origin adapter', async () => {
+  let request;
+  const f = fixture({ aiEnabled: true, fetch: async (url, options) => {
+    request = { url, options };
+    return okResponse(aiAnswer({ job: 'EV charger installed in my garage', zip: '48315', timing: 'Friday after 4 pm' }));
+  } });
+  f.node('ai-access').value = 'test-access-code';
+  await f.send(bundled);
+  assert.equal(request.url, '/api/intake');
+  assert.equal(request.options.headers.Authorization, 'Bearer test-access-code');
+  assert.deepEqual(JSON.parse(request.options.body), { message: bundled, fields: { job: '', zip: '', timing: '' } });
+  assert.equal(f.state().stage, 3);
+  assert.equal(f.state().pending, false);
+  assert.match(f.node('ai-mode').textContent, /AI extracted/);
+});
+
+test('failed or fabricated AI output visibly falls back without retrying', async () => {
+  for (const response of [
+    { ok: false },
+    okResponse(aiAnswer({ job: 'Invented furnace installation', zip: '99999', timing: 'Tuesday morning' })),
+    { ok: true, json: async () => { throw new Error('bad JSON'); } },
+  ]) {
+    let calls = 0;
+    const f = fixture({ aiEnabled: true, fetch: async () => { calls++; return response; } });
+    f.node('ai-access').value = 'test-access-code';
+    await f.send(bundled);
+    assert.equal(calls, 1);
+    assert.equal(f.state().stage, 3);
+    assert.equal(f.state().zip, '48315');
+    assert.match(f.state().job, /EV charger/);
+    assert.match(f.node('ai-mode').textContent, /AI is unavailable.*demo parsing/);
+  }
+});
+
+test('an AI cannot turn a ZIP-only message into a completed intake', async () => {
+  const f = fixture({ aiEnabled: true, fetch: async () => okResponse(aiAnswer({ job: '48315', zip: '48315', timing: '48315' })) });
+  f.node('ai-access').value = 'test-access-code';
+  await f.send('48315');
+  assert.equal(f.state().job, '');
+  assert.equal(f.state().timing, '');
+  assert.equal(f.state().zip, '48315');
+  assert.equal(f.state().stage, 0);
+  assert.match(f.node('ai-mode').textContent, /AI is unavailable.*demo parsing/);
+});
+
+test('reset ignores an AI result that arrives after the conversation was cleared', async () => {
+  let finish;
+  let signal;
+  const f = fixture({ aiEnabled: true, fetch: (_url, options) => {
+    signal = options.signal;
+    return new Promise(resolve => { finish = resolve; });
+  } });
+  f.node('ai-access').value = 'test-access-code';
+  const request = f.send(bundled);
+  assert.equal(f.state().pending, true);
+  f.reset();
+  assert.equal(signal.aborted, true);
+  finish(okResponse(aiAnswer({ job: 'EV charger installed in my garage', zip: '48315', timing: 'Friday after 4 pm' })));
+  await request;
+  assert.equal(f.state().stage, 0);
+  assert.equal(f.state().job, '');
+  assert.equal(f.messages().length, 0);
+  assert.equal(f.node('ai-access').value, '');
+});
+
+test('STOP ignores a late AI result and does not resume collection', async () => {
+  let finish;
+  const f = fixture({ aiEnabled: true, fetch: () => new Promise(resolve => { finish = resolve; }) });
+  f.node('ai-access').value = 'test-access-code';
+  const request = f.send(bundled);
+  await f.send('STOP');
+  finish(okResponse(aiAnswer({ job: 'EV charger installed in my garage', zip: '48315', timing: 'Friday after 4 pm' })));
+  await request;
+  assert.equal(f.state().stopped, true);
+  assert.equal(f.state().stage, 0);
+  assert.equal(f.state().pending, false);
+  assert.doesNotMatch(f.messages().join(' '), /ready for a callback/);
 });
 

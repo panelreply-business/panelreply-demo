@@ -1,6 +1,455 @@
-<!doctype html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-LOP+lZ6U6lVea4eDRGcKux/D399aMSpo9mfkZXEPplQ='; style-src 'sha256-m85Im7ylYuJMgaZfE+f5AXLZKftjL44MxJgeC2Nr4kA='; connect-src 'none'; form-action 'none'; base-uri 'none'"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>PanelReply — Product walkthrough</title><style>
+<!doctype html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iUbr0Cgoc1+3g97/AIgbXQ1wRsuA2bBwJ10D2Awxdcw='; style-src 'sha256-haQ4Y2j3uuAXtkM+rI29AxBEb/TWqw5c4uF/tXAliW0='; connect-src 'self'; form-action 'none'; base-uri 'none'"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>PanelReply — Product walkthrough</title><style>
 *{box-sizing:border-box}body{margin:0;background:#f4f3ed;color:#142b2b;font:15px system-ui,sans-serif}.wrap{max-width:1000px;margin:auto;padding:40px 24px}.brand{font-weight:750;letter-spacing:2px}header{display:flex;justify-content:space-between;align-items:center;gap:20px}.tag{font-size:10px;border:1px solid #d9dfd4;border-radius:5px;padding:8px;color:#53644f}.intro{margin:50px 0 30px}h1{font:46px Georgia,serif;letter-spacing:-1px;margin:15px 0}p{line-height:1.8;color:#54634f}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card{background:white;border:1px solid #dce3d5;border-radius:14px;padding:28px;min-width:0}.card h2{font-size:20px;margin-top:0}label{display:block;font-size:12px;margin:16px 0 8px}input,textarea,button{font:inherit}input,textarea{width:100%;padding:12px;border:1px solid #d5dfcf;border-radius:7px}button{border:0;background:#eabe72;padding:13px 18px;border-radius:7px;color:#163027;font-size:12px;font-weight:600;cursor:pointer}button:focus-visible,input:focus,textarea:focus{outline:3px solid #a87933;outline-offset:3px}.outline{background:#edf1e7}.row{display:flex;gap:10px;flex-wrap:wrap}.small{font-size:11px}.events{display:flex;flex-direction:column;gap:10px;margin:20px 0}.event{padding:12px;background:#edf2e6;border-radius:9px;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.event.customer{background:#163b30;color:#fff;align-self:flex-end}.event.system{border:1px dashed #d2ddc6;background:none;color:#53644b;font-size:12px}.summary{padding:20px;background:#f1f4e9;border-radius:8px;font-size:12px;line-height:1.8;white-space:pre-line;overflow-wrap:anywhere}.step{font-size:10px;letter-spacing:1.7px;color:#586c48}footer{margin-top:30px;font-size:12px;color:#526048}.status{font-size:12px;margin:15px 0;color:#486033}@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{padding:24px 16px}h1{font-size:36px}.intro{margin-top:30px}.card{padding:22px}header{align-items:flex-start}.tag{max-width:150px;font-size:10px}button{min-height:44px}}
-select{font:inherit;min-height:44px;padding:12px;width:100%;border:1px solid #d5dfcf;border-radius:7px}.tourbuttons{margin-top:18px}</style></head><body><main class="wrap"><header><div class="brand">PanelReply</div><span class="tag">INTERACTIVE WALKTHROUGH · SAMPLE DATA</span></header><section class="intro"><span class="step">TWO-MINUTE PRODUCT TOUR</span><h1>From request to callback.</h1><p>Try the electrical intake flow using sample messages. No calls, texts or emails are sent. This walkthrough does not store customer requests or book appointments.</p></section><div class="grid"><section class="card"><span class="step" id="step">01 / MISSED CALL</span><h2 id="title">Save the call.</h2><p class="small" id="explain">This tour simulates a callback task. A missed call alone does not authorize a text.</p><div class="row"><button id="call">Simulate missed call</button><button class="outline" id="example">Run the sample request</button></div><div id="call-status" class="status" role="status"></div><form id="form"><label for="reply">Customer message</label><textarea id="reply" rows="3" placeholder="I need an EV charger installed" maxlength="500" required></textarea><button type="submit">Send sample reply</button></form><div class="row tourbuttons"><button class="outline" id="stop">STOP</button><button class="outline" id="restart">START</button><button class="outline" id="reset">Reset tour</button></div><p class="small">STOP blocks simulated automated replies. START resumes only if there is no safety hold.</p></section><section class="card"><span class="step">CUSTOMER CONVERSATION</span><div id="events" class="events" aria-live="polite"></div><div id="summary" class="summary">The sample callback summary updates as details are collected.</div><label for="callback">Contractor callback status</label><select id="callback"><option>New request</option><option>Contacted</option><option>Booked by contractor</option></select><p class="small" id="outcome">A completed intake does not book an appointment.</p></section></div><footer>PanelReply sample walkthrough. Requests and status changes shown here are demonstrations.</footer></main><script>
-'use strict';let stage=0,stopped=false,hold=false,job='',zip='',timing='';const $=id=>document.getElementById(id);function intentText(body){return body.replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim()}function urgent(body){return /\b(?:sparks?|sparking|arcing|arc flash|electrical fire|on fire|smoke\b(?!\s+(?:detector|alarm)s?\b)|smoking|burning (?:smell|odor|wire|outlet|panel)|smell (?:something |of )?burning|downed (?:wire|power ?line)|power lines? (?:(?:is|are|has|have) )?(?:fell|fallen|down|collapsed|hanging)|live (?:exposed )?wire|exposed (?:live|energized) wire|electric(?:al)? shock|shocked|electrocuted|zapped|hot (?:outlet|panel)|(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug).{0,35}?(?:melting\b(?!\s+(?:pot|point|wax)\b)|overheating|sizzling|smoldering|smouldering|caught fire|in flames|smells? (?:like )?(?:it'?s )?burning)|(?:flames?|melting|overheating|sizzling|smoldering|smouldering).{0,40}?(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug))\b/i.test(intentText(body))}function event(text,type=''){const e=document.createElement('div');e.className='event '+type;e.textContent=text;$('events').append(e)}function update(){const heads=['Save the call.','Collect the job ZIP.','Collect timing.','Ready for callback.'];$('title').textContent=heads[stage];$('step').textContent=String(stage+1).padStart(2,'0')+' / '+['MISSED CALL','JOB LOCATION','CALLBACK TIME','READY FOR REVIEW'][stage];const details=job?'Job: '+job+'\nZIP: '+(zip||'Not collected')+'\nTiming: '+(timing||'Not collected')+'\nNo appointment has been booked.':'The sample callback summary updates as details are collected.';if(hold){$('title').textContent='Urgent review required.';$('step').textContent='SAFETY HOLD / HUMAN REVIEW';$('summary').textContent='Demo safety hold. A human review is required, but no notification was sent.\n'+details}else{$('summary').textContent=details;if(stopped){$('title').textContent='Automated replies paused.';$('step').textContent='STOP / SIMULATED OPT-OUT'}}}function send(body){body=body.trim();if(!body)return;event(body,'customer');const command=intentText(body).replace(/^please\s*,\s*/i,'please ').replace(/,\s*please[.!?]*$/i,'');if(/^(?:(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:[.!?]*|\s+please[.!?]*)|(?:please\s+)?stop\s+(?:texting|messaging|sending\s+(?:me\s+)?(?:texts?|messages?)|all\s+(?:texts?|messages?))(?:\s+me)?(?:\s+(?:now|again|please))?[.!?]*|(?:please\s+)?(?:do\s+not|don't|dont)\s+(?:text|message|contact)\s+me(?:\s+again)?[.!?]*|(?:please\s+)?remove\s+me(?:\s+from\s+(?:your\s+)?(?:list|messages?))?[.!?]*|(?:please\s+)?no\s+more\s+(?:texts?|messages?)[.!?]*|unsubscribe\s+me[.!?]*|opt\s*out[.!?]*)$/i.test(command)){stopped=true;event('Demo STOP state: simulated automated replies paused. This page does not persist opt-out status.','system');update();return}if(/^(?:start|unstop)[.!]?$/i.test(body)){if(hold){event('Demo paused for human review. START does not release the safety hold.','system');return}stopped=false;event('Demo START state: simulated replies enabled.','system');update();event(stage===0?'Demo Electric: What electrical work do you need? Reply STOP to unsubscribe.':stage===1?'Demo Electric: What is the job ZIP code?':stage===2?'Demo Electric: When do you need the work, and when can we call?':'Demo Electric: Your sample request is ready for review.');return}if(stopped){if(urgent(body)){hold=true;event('Demo urgent flag for human review. No reply or notification sent because of STOP.','system')}else{event('Message shown without an automated reply. This simulated caller is opted out.','system')}update();return}if(urgent(body)){event('If there is immediate danger, move away and call 911. This inbox is not emergency dispatch. No electrician has been dispatched.');event('Demo urgent flag: human review required. No notification sent.','system');hold=true;update();return}if(hold){event('Additional detail shown for human review. No data stored.','system');return}if(stage===0){if(!/[a-z]/i.test(body)){event('Demo Electric: Please describe the electrical work you need.');return}job=body;stage=1;event('Demo Electric: What is the five-digit job ZIP? Reply STOP to unsubscribe.')}else if(stage===1){if(!/^\d{5}$/.test(body)){event('Demo Electric: Please send a five-digit ZIP.');return}zip=body;stage=2;event('Demo Electric: When do you need the work, and when can we call?')}else if(stage===2){if(!/[a-z0-9]/i.test(body)){event('Demo Electric: Please provide a day or callback time.');return}timing=body;stage=3;event('Demo Electric: Your request is ready for a callback. No appointment is booked.');event('Demo callback task ready locally. No notification sent.','system')}else{event('Additional detail shown in this demo. No data stored.','system')}update()}function reset(){stage=0;stopped=false;hold=false;job='';zip='';timing='';$('reply').value='';$('events').replaceChildren();$('call-status').textContent='';$('callback').selectedIndex=0;$('outcome').textContent='A completed intake does not book an appointment.';update()}$('call').onclick=()=>{$('call-status').textContent='Simulated missed call recorded on this page. No text sent.';event('Demo missed call recorded. No actual call or text took place.','system')};$('example').onclick=()=>{reset();$('call').click();send('I need an EV charger installed in the garage.');send('48315');send('Next week. Call after 4 pm.')};$('form').onsubmit=e=>{e.preventDefault();send($('reply').value);$('reply').value=''};$('stop').onclick=()=>send('STOP');$('restart').onclick=()=>send('START');$('reset').onclick=reset;$('callback').onchange=()=>{$('outcome').textContent='Sample contractor update: '+$('callback').value+'. This is demonstration data.'};update();
+select{font:inherit;min-height:44px;padding:12px;width:100%;border:1px solid #d5dfcf;border-radius:7px}.tourbuttons{margin-top:18px}[hidden]{display:none!important}button:disabled{opacity:.65;cursor:wait}</style></head><body data-ai-enabled="false"><main class="wrap"><header><div class="brand">PanelReply</div><span class="tag">INTERACTIVE WALKTHROUGH · SAMPLE DATA</span></header><section class="intro"><span class="step">TWO-MINUTE PRODUCT TOUR</span><h1>From request to callback.</h1><p>Try the electrical intake flow using sample messages. No calls, texts or emails are sent. This walkthrough does not save requests to a customer database or book appointments. You can give the job, ZIP and callback time in one message.</p></section><div class="grid"><section class="card"><span class="step" id="step">01 / MISSED CALL</span><h2 id="title">Save the call.</h2><p class="small" id="explain">This tour simulates a callback task. A missed call alone does not authorize a text.</p><div class="row"><button id="call">Simulate missed call</button><button class="outline" id="example">Run the sample request</button></div><div id="call-status" class="status" role="status"></div><p id="ai-mode" class="status" role="status"></p><div id="ai-controls" hidden><label for="ai-access">AI test access code</label><input id="ai-access" type="password" maxlength="256" autocomplete="off" spellcheck="false"><p class="small">Use sample data. When you enter an access code, your message and collected details go to the AI service for extraction. Reset clears the code from this page.</p></div><form id="form"><label for="reply">Customer message</label><textarea id="reply" rows="3" placeholder="Install an EV charger. ZIP 48315. Call Friday after 4 pm." maxlength="500" required></textarea><button id="send" type="submit">Send sample reply</button></form><div class="row tourbuttons"><button class="outline" id="stop">STOP</button><button class="outline" id="restart">START</button><button class="outline" id="reset">Reset tour</button></div><p class="small">STOP blocks simulated automated replies. START resumes only if there is no safety hold.</p></section><section class="card"><span class="step">CUSTOMER CONVERSATION</span><div id="events" class="events" aria-live="polite"></div><div id="summary" class="summary">The sample callback summary updates as details are collected.</div><label for="callback">Contractor callback status</label><select id="callback"><option>New request</option><option>Contacted</option><option>Booked by contractor</option></select><p class="small" id="outcome">A completed intake does not book an appointment.</p></section></div><footer>PanelReply sample walkthrough. Requests and status changes shown here are demonstrations.</footer></main><script>
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.PanelReplyIntake = factory();
+})(globalThis, function () {
+  'use strict';
+
+  // This local fallback recognizes explicit fields and common phrases. It is not
+  // an AI model, an address verifier, an emergency classifier or a booking engine.
+  const FIELD_NAMES = ['job', 'zip', 'timing'];
+  const MAX_MESSAGE_LENGTH = 2000;
+
+  function normalize(text) {
+    return typeof text === 'string' ? text.replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim() : '';
+  }
+
+  function isOptOut(text) {
+    if (typeof text !== 'string') return false;
+    const prepare = value => normalize(value).replace(/^please\s*,\s*/i, 'please ').replace(/,\s*please[.!?]*$/i, '');
+    const command = /^(?:(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:[.!?]*|\s+please[.!?]*)|(?:please\s+)?stop\s+(?:texting|messaging|sending\s+(?:me\s+)?(?:texts?|messages?)|all\s+(?:texts?|messages?))(?:\s+me)?(?:\s+(?:now|again|please))?[.!?]*|(?:please\s+)?(?:do\s+not|don't|dont)\s+(?:text|message|contact)\s+me(?:\s+again)?[.!?]*|(?:please\s+)?remove\s+me(?:\s+from\s+(?:your\s+)?(?:list|messages?))?[.!?]*|(?:please\s+)?no\s+more\s+(?:texts?|messages?)[.!?]*|unsubscribe\s+me[.!?]*|opt\s*out[.!?]*)$/i;
+    const bareCommand = /^(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:\s+please)?[.!?]*$/i;
+    if (command.test(prepare(text))) return true;
+    // A complete opt-out inside a bundled request still controls the request.
+    // Commas only delimit natural opt-out phrases, so "stop, by Thursday" does
+    // not become the standalone STOP command.
+    for (const clause of text.split(/[.!?]+(?=\s|$)|[\n\r;]+/)) {
+      if (command.test(prepare(clause))) return true;
+      for (const part of clause.split(',')) {
+        const phrase = prepare(part).replace(/^(?:and|but)\s+/i, '');
+        if (!bareCommand.test(phrase) && command.test(phrase)) return true;
+      }
+    }
+    return false;
+  }
+
+  function isStart(text) {
+    return /^(?:start|unstop)[.!]?$/i.test(normalize(text));
+  }
+
+  function isUrgent(text) {
+    return /\b(?:sparks?|sparking|arcing|arc flash|electrical fire|on fire|smoke\b(?!\s+(?:detector|alarm)s?\b)|smoking|burning (?:smell|odor|wire|outlet|panel)|smell (?:something |of )?burning|downed (?:wire|power ?line)|power lines? (?:(?:is|are|has|have) )?(?:fell|fallen|down|collapsed|hanging)|live (?:exposed )?wire|exposed (?:live|energized) wire|electric(?:al)? shock|shocked|electrocuted|zapped|hot (?:outlet|panel)|(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug).{0,35}?(?:melting\b(?!\s+(?:pot|point|wax)\b)|overheating|sizzling|smoldering|smouldering|caught fire|in flames|smells? (?:like )?(?:it'?s )?burning)|(?:flames?|melting|overheating|sizzling|smoldering|smouldering).{0,40}?(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug))\b/i.test(normalize(text));
+  }
+
+  function cleanPhrase(text) {
+    return text.trim().replace(/^[\s,;:.!?-]+|[\s,;:.!?-]+$/g, '')
+      .replace(/^(?:and|also|then)\s+/i, '').replace(/\s+(?:and|or|in|at|on|for|by|with)$/i, '').trim();
+  }
+
+  function maskRanges(text, ranges) {
+    const chars = text.split('');
+    for (const [start, end] of ranges) {
+      for (let index = start; index < end; index++) {
+        if (!/[\n;,!.?]/.test(chars[index])) chars[index] = ' ';
+      }
+    }
+    return chars.join('');
+  }
+
+  function findZip(text) {
+    const values = [];
+    const ranges = [];
+    let ambiguous = false;
+    const labelled = /\b(?:(?:my|our|the|job|correct|new)\s+)*(?:zip(?:\s*code)?|postal\s*code)\b\s*(?:(?:is|should\s+be|to)\s+)?[:=#]?\s*([a-z0-9-]+)/gi;
+    for (const match of text.matchAll(labelled)) {
+      ranges.push([match.index, match.index + match[0].length]);
+      if (/^\d{5}$/.test(match[1])) values.push(match[1]);
+      else ambiguous = true;
+    }
+
+    const phones = [...text.matchAll(/\+?\d[\d\s().-]{7,}\d/g)].map(match => [match.index, match.index + match[0].length]);
+    for (const match of text.matchAll(/\b\d{5}(?:-\d{4})?\b/g)) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (ranges.some(([a, b]) => start >= a && start < b)) continue;
+      if (phones.some(([a, b]) => start >= a && start < b)) continue;
+      const before = text.slice(Math.max(0, start - 45), start);
+      const after = text.slice(end, end + 90);
+      if (/[\d-]/.test(text[start - 1] || '') || /[\d-]/.test(text[end] || '')) continue;
+      if (/(?:\$\s*|\b(?:budget|cost|price|quote|usd|phone|telephone|mobile|tel|address)(?:\s+(?:is|number|of))*\s*[:=]?\s*|\b(?:call|text|reach|contact)\s+(?:me|us)\s+(?:at|on)\s*)$/i.test(before)) continue;
+      if (/^\s*(?:watts?|kw|volts?|amps?|btu|dollars?|usd)\b/i.test(after)) continue;
+      if (/^\s+[a-z][a-z .'’-]{0,45}\s+(?:street|st|road|rd|avenue|ave|boulevard|blvd|lane|ln|court|ct|drive|dr|circle|cir|way|terrace|ter|trail|trl|parkway|pkwy)\b/i.test(after)) continue;
+      if (match[0].includes('-')) {
+        ambiguous = true;
+        ranges.push([start, end]);
+        continue;
+      }
+      values.push(match[0]);
+      const locationPrefix = before.match(/\b(?:in|at|near|located\s+in)\s+$/i);
+      ranges.push([locationPrefix ? start - locationPrefix[0].length : start, end]);
+    }
+    // A standalone ZIP+4 is rejected even though its digit pattern resembles a phone number.
+    if (/^\s*\d{5}-\d{4}\s*$/.test(text)) ambiguous = true;
+    const unique = [...new Set(values)];
+    if (unique.length > 1) ambiguous = true;
+    return { value: !ambiguous && unique.length === 1 ? unique[0] : null, ranges, ambiguous };
+  }
+
+  const TIME_CUE = /\b(?:today|tomorrow|tonight|(?:next|this)\s+(?:week(?:end)?|month|monday|tuesday|wednesday|thursday|friday|saturday|sunday|morning|afternoon|evening)|monday|tuesday|wednesday|thursday|friday|saturday|sunday|weekdays?|weekends?|morning|afternoon|evening|asap|as\s+soon\s+as\s+possible|anytime|any\s+(?:day|time)|flexible|after\s+work|during\s+business\s+hours|in\s+\d+\s+(?:days?|weeks?|months?)|(?:after|before|around|at|from|between)\s+\d{1,2}(?::\d{2})?(?!\d)|\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m|p\.m)|(?:0?[1-9]|1[0-2])\/(?:0?[1-9]|[12]\d|3[01])(?:\/\d{2,4})?)\b/i;
+  const JOB_CUE = /\b(?:(?:i|we)\s+(?:need|want)|(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move)\b|(?:job|work|request)\s*:)/i;
+  const JOB_CORRECTION = /^\s*(?:(?:actually|correction)\b\s*[,;:]?\s*|(?:change|update|correct)\s+(?:the\s+|my\s+)?(?:job|work|request)\s*(?:to|:)\s*)/i;
+
+  function splitTiming(clause) {
+    const labelled = clause.match(/\b(?:my\s+)?(?:timing|availability|callback(?:\s+time)?|preferred(?:\s+callback)?\s+time)\s*[:=]\s*/i);
+    if (labelled) {
+      const valueStart = labelled.index + labelled[0].length;
+      const following = clause.slice(valueStart);
+      const nextJob = following.match(JOB_CUE);
+      const end = nextJob ? valueStart + nextJob.index : clause.length;
+      const timing = cleanPhrase(clause.slice(valueStart, end));
+      return { job: clause.slice(0, labelled.index) + ' ' + clause.slice(end), timing: /[a-z0-9]/i.test(timing) ? timing : null };
+    }
+    const cue = clause.match(TIME_CUE);
+    if (!cue) return { job: clause, timing: null };
+    let start = cue.index;
+    const prefix = clause.slice(0, start);
+    const lead = prefix.match(/\b(?:(?:please\s+)?(?:(?:can|could|would|will)\s+you\s+)?(?:call(?:\s+me|\s+us)?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit)|(?:my\s+)?(?:timing|availability|callback(?:\s+time)?)(?:\s+is)?\s*[:=]?|(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+available)\s*(?:on\s+)?$/i);
+    if (lead) start -= lead[0].length;
+    else {
+      const preposition = prefix.match(/\b(?:on|by|for)\s+$/i);
+      if (preposition) start -= preposition[0].length;
+    }
+    const following = clause.slice(cue.index + cue[0].length);
+    const nextJob = following.match(JOB_CUE);
+    const end = nextJob ? cue.index + cue[0].length + nextJob.index : clause.length;
+    return { job: clause.slice(0, start) + ' ' + clause.slice(end), timing: cleanPhrase(clause.slice(start, end)) };
+  }
+
+  function meaningfulJob(text) {
+    const normalized = normalize(text);
+    if (!/[a-z]/i.test(normalized)) return false;
+    if (/^(?:a|an|the|my|our|your|is|in|at|to)$/i.test(normalized)) return false;
+    if (/^(?:(?:hi|hello|hey|thanks|thank\s+you|ok|okay|yes|no|please|and|or|also|actually|correction)[.!\s,]*)+$/i.test(normalized)) return false;
+    if (/^(?:(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+(?:in|at)|(?:my|the|our)\s+(?:zip|zip\s*code|postal\s*code)(?:\s+is)?)$/i.test(normalized)) return false;
+    if (/^(?:my\s+|the\s+)?(?:phone|telephone|mobile|address|budget|price|cost)\b/i.test(normalized) && !JOB_CUE.test(normalized)) return false;
+    if (/^(?:what|which|why|how)\b/i.test(normalized) && !JOB_CUE.test(normalized)) return false;
+    return true;
+  }
+
+  function extractFields(message, currentFields) {
+    const result = { job: null, zip: null, timing: null, ambiguous: false };
+    if (typeof message !== 'string' || !message.trim()) return result;
+    if (message.length > MAX_MESSAGE_LENGTH) return { ...result, ambiguous: true };
+    if (isOptOut(message) || isStart(message) || isUrgent(message)) return result;
+    const current = mergeFields({}, currentFields);
+    const zip = findZip(message);
+    result.zip = zip.value;
+    result.ambiguous = zip.ambiguous;
+    const remaining = maskRanges(message, zip.ranges);
+    const jobParts = [];
+    const timingParts = [];
+    let correction = false;
+    for (const raw of remaining.split(/[.!?](?=\s|$)|[\n;,]+/)) {
+      let clause = raw.trim();
+      if (!clause) continue;
+      if (JOB_CORRECTION.test(clause) || /^(?:job|work|request)\s*:/i.test(clause)) correction = true;
+      clause = clause.replace(JOB_CORRECTION, '').replace(/^(?:job|work|request)\s*:\s*/i, '');
+      const parts = splitTiming(clause);
+      if (parts.timing && /[a-z0-9]/i.test(parts.timing)) timingParts.push(parts.timing);
+      const job = cleanPhrase(parts.job);
+      if (meaningfulJob(job)) jobParts.push(job);
+    }
+    if (timingParts.length) result.timing = timingParts.join('. ');
+    if (jobParts.length && (!current.job || correction)) result.job = jobParts.join('. ');
+    return result;
+  }
+
+  function mergeFields(current, extracted) {
+    const result = { job: '', zip: '', timing: '' };
+    for (const source of [current, extracted]) {
+      if (!source || typeof source !== 'object' || Array.isArray(source)) continue;
+      for (const key of FIELD_NAMES) {
+        if (!Object.prototype.hasOwnProperty.call(source, key) || typeof source[key] !== 'string') continue;
+        const value = source[key].trim();
+        if (!value || value.length > MAX_MESSAGE_LENGTH) continue;
+        if (key === 'zip' ? /^\d{5}$/.test(value) : /[a-z0-9]/i.test(value)) result[key] = value;
+      }
+    }
+    return result;
+  }
+
+  function missingFields(fields) {
+    const validated = mergeFields({}, fields);
+    return FIELD_NAMES.filter(key => !validated[key]);
+  }
+
+  return Object.freeze({ normalize, isOptOut, isStart, isUrgent, extractFields, mergeFields, missingFields });
+});
+
+'use strict';
+
+const intake = globalThis.PanelReplyIntake;
+const $ = id => document.getElementById(id);
+const aiEnabled = document.body.dataset.aiEnabled === 'true';
+let stage = 0, stopped = false, hold = false, job = '', zip = '', timing = '';
+let pending = false, requestVersion = 0, requestController = null;
+let clarificationPending = false;
+let clarificationFields = [];
+
+function fields() { return { job, zip, timing }; }
+
+function event(text, type = '') {
+  const node = document.createElement('div');
+  node.className = 'event ' + type;
+  node.textContent = text;
+  $('events').append(node);
+}
+
+function mode(text) {
+  $('ai-mode').textContent = text || (aiEnabled
+    ? 'AI test server available. Enter an access code to use AI. Without it, messages use demo parsing.'
+    : 'Demo parsing. AI is not connected on this page.');
+}
+
+function setPending(value) {
+  pending = value;
+  $('send').disabled = value;
+  $('reply').disabled = value;
+  $('form').setAttribute('aria-busy', String(value));
+}
+
+function cancelPending() {
+  requestVersion += 1;
+  if (requestController) requestController.abort();
+  requestController = null;
+  setPending(false);
+}
+
+function nextQuestion() {
+  if (clarificationPending) {
+    const labels = { job: 'electrical work', zip: 'five-digit job ZIP', timing: 'callback timing' };
+    return 'Demo Electric: I found conflicting details. Please confirm the ' +
+      clarificationFields.map(key => labels[key]).join(' and ') + '.';
+  }
+  const missing = intake.missingFields(fields());
+  if (missing.includes('job')) return 'Demo Electric: What electrical work do you need? You can include the ZIP and callback time in the same message. Reply STOP to unsubscribe.';
+  if (missing.includes('zip')) return 'Demo Electric: What is the five-digit job ZIP? Reply STOP to unsubscribe.';
+  if (missing.includes('timing')) return 'Demo Electric: When do you need the work, and when can we call?';
+  return 'Demo Electric: Your request is ready for a callback. No appointment is booked.';
+}
+
+function update() {
+  stage = !job ? 0 : !zip ? 1 : !timing ? 2 : 3;
+  const heads = ['Save the call.', 'Collect the job ZIP.', 'Collect timing.', 'Ready for callback.'];
+  $('title').textContent = heads[stage];
+  $('step').textContent = String(stage + 1).padStart(2, '0') + ' / ' +
+    ['MISSED CALL', 'JOB LOCATION', 'CALLBACK TIME', 'READY FOR REVIEW'][stage];
+  const details = job || zip || timing
+    ? 'Job: ' + (job || 'Not collected') + '\nZIP: ' + (zip || 'Not collected') +
+      '\nTiming: ' + (timing || 'Not collected') + '\nNo appointment has been booked.'
+    : 'The sample callback summary updates as details are collected.';
+  $('summary').textContent = details;
+  if (clarificationPending) {
+    $('title').textContent = 'Clarify the request.';
+    $('step').textContent = 'DETAILS / CONFIRMATION NEEDED';
+    $('summary').textContent = 'Conflicting details need confirmation before this request is ready.\n' + details;
+  }
+  if (stopped) {
+    $('title').textContent = 'Automated replies paused.';
+    $('step').textContent = 'STOP / SIMULATED OPT-OUT';
+  }
+  if (hold) {
+    $('title').textContent = 'Urgent review required.';
+    $('step').textContent = 'SAFETY HOLD / HUMAN REVIEW';
+    $('summary').textContent = 'Demo safety hold. A human review is required, but no notification was sent.\n' + details;
+  }
+}
+
+function pauseReplies() {
+  cancelPending();
+  stopped = true;
+  event('Demo STOP state: simulated automated replies paused. This page does not persist opt-out status.', 'system');
+  mode(aiEnabled ? 'Replies paused. Any pending AI result has been cancelled.' : undefined);
+  update();
+}
+
+function safetyHold() {
+  cancelPending();
+  hold = true;
+  if (!stopped) event('If there is immediate danger, move away and call 911. This inbox is not emergency dispatch. No electrician has been dispatched.');
+  event(stopped
+    ? 'Demo urgent flag for human review. No reply or notification sent because of STOP.'
+    : 'Demo urgent flag: human review required. No notification sent.', 'system');
+  mode(aiEnabled ? 'Safety hold. AI intake is paused for human review.' : undefined);
+  update();
+}
+
+function applyExtraction(extracted, fromAI = false) {
+  const merged = intake.mergeFields(fields(), extracted);
+  job = merged.job;
+  zip = merged.zip;
+  timing = merged.timing;
+  if (extracted.ambiguous) {
+    // The local parser flags ZIP conflicts. An AI conflict without a field name
+    // is treated conservatively: re-confirm each field it could not extract.
+    const unresolved = fromAI ? ['job', 'zip', 'timing'].filter(key => extracted[key] === null) : ['zip'];
+    clarificationFields = [...new Set([...clarificationFields, ...(unresolved.length ? unresolved : ['job', 'zip', 'timing'])])];
+  } else {
+    clarificationFields = clarificationFields.filter(key => extracted[key] === null);
+  }
+  clarificationPending = clarificationFields.length > 0;
+  update();
+  event(nextQuestion());
+  if (stage === 3 && !clarificationPending) event('Demo callback task ready locally. No notification sent.', 'system');
+}
+
+function validExtraction(payload, body) {
+  if (!payload || !['ai', 'local'].includes(payload.mode) || !payload.fields || !payload.flags) return false;
+  if (Object.keys(payload.fields).sort().join(',') !== 'job,timing,zip') return false;
+  if (Object.keys(payload.flags).sort().join(',') !== 'ambiguous,hazard,optOut') return false;
+  if (!['optOut', 'hazard', 'ambiguous'].every(key => typeof payload.flags[key] === 'boolean')) return false;
+  for (const key of ['job', 'zip', 'timing']) {
+    const value = payload.fields[key];
+    if (value !== null && (typeof value !== 'string' || !value.trim() || value.length > 500 || !body.includes(value))) return false;
+  }
+  if (payload.fields.job !== null && !/[a-z]/i.test(payload.fields.job)) return false;
+  if (payload.fields.timing !== null && (!/[a-z0-9]/i.test(payload.fields.timing) || /^\d{5}(?:-\d{4})?$/.test(payload.fields.timing.trim()))) return false;
+  return payload.fields.zip === null || /^\d{5}$/.test(payload.fields.zip);
+}
+
+async function send(body) {
+  if (typeof body !== 'string') return;
+  body = body.trim();
+  if (!body) return;
+  if (body.length > 500) {
+    event('Please keep each sample message to 500 characters.', 'system');
+    return;
+  }
+  event(body, 'customer');
+  if (intake.isOptOut(body)) {
+    pauseReplies();
+    if (intake.isUrgent(body)) safetyHold();
+    return;
+  }
+  if (intake.isStart(body)) {
+    if (hold) {
+      event('Demo paused for human review. START does not release the safety hold.', 'system');
+      return;
+    }
+    cancelPending();
+    stopped = false;
+    event('Demo START state: simulated replies enabled.', 'system');
+    mode();
+    update();
+    event(nextQuestion());
+    return;
+  }
+  if (stopped) {
+    if (intake.isUrgent(body)) safetyHold();
+    else event('Message shown without an automated reply. This simulated caller is opted out.', 'system');
+    return;
+  }
+  if (intake.isUrgent(body)) { safetyHold(); return; }
+  if (hold) {
+    event('Additional detail shown for human review. No data stored in a customer database.', 'system');
+    return;
+  }
+  if (pending) {
+    event('Please wait for the current reply, or use STOP or Reset tour.', 'system');
+    return;
+  }
+
+  const accessCode = $('ai-access').value.trim();
+  if (!aiEnabled || !accessCode) {
+    mode();
+    applyExtraction(intake.extractFields(body, fields()));
+    return;
+  }
+
+  const version = ++requestVersion;
+  const controller = new AbortController();
+  requestController = controller;
+  setPending(true);
+  mode('AI is reading the sample message. STOP and Reset tour remain available.');
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const response = await fetch('/api/intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessCode },
+      body: JSON.stringify({ message: body, fields: fields() }),
+      signal: controller.signal,
+      credentials: 'omit',
+      cache: 'no-store',
+    });
+    if (!response.ok) throw new Error('AI unavailable');
+    const payload = await response.json();
+    if (!validExtraction(payload, body)) throw new Error('Invalid AI response');
+    if (version !== requestVersion || stopped || hold) return;
+    if (payload.flags.optOut) pauseReplies();
+    if (payload.flags.hazard) safetyHold();
+    if (payload.flags.optOut || payload.flags.hazard) return;
+    mode(payload.mode === 'ai'
+      ? 'AI extracted these details. Check the summary and correct anything it misunderstood.'
+      : 'Demo parsing handled this message.');
+    applyExtraction({ ...payload.fields, ambiguous: payload.flags.ambiguous }, payload.mode === 'ai');
+  } catch (_error) {
+    if (version !== requestVersion || stopped || hold) return;
+    mode('AI is unavailable. This message used demo parsing. Check the summary before continuing.');
+    applyExtraction(intake.extractFields(body, fields()));
+  } finally {
+    clearTimeout(timeout);
+    if (version === requestVersion) {
+      requestController = null;
+      setPending(false);
+    }
+  }
+}
+
+function reset() {
+  cancelPending();
+  stage = 0;
+  stopped = false;
+  hold = false;
+  job = '';
+  zip = '';
+  timing = '';
+  clarificationPending = false;
+  clarificationFields = [];
+  $('reply').value = '';
+  $('ai-access').value = '';
+  $('events').replaceChildren();
+  $('call-status').textContent = '';
+  $('callback').selectedIndex = 0;
+  $('outcome').textContent = 'A completed intake does not book an appointment.';
+  mode();
+  update();
+}
+
+$('call').onclick = () => {
+  $('call-status').textContent = 'Simulated missed call recorded on this page. No text sent.';
+  event('Demo missed call recorded. No actual call or text took place.', 'system');
+};
+$('example').onclick = () => {
+  reset();
+  $('call').click();
+  send('I need an EV charger installed in the garage. My ZIP is 48315. Next week. Call after 4 pm.');
+};
+$('form').onsubmit = e => {
+  e.preventDefault();
+  const body = $('reply').value;
+  $('reply').value = '';
+  send(body);
+};
+$('stop').onclick = () => send('STOP');
+$('restart').onclick = () => send('START');
+$('reset').onclick = reset;
+$('callback').onchange = () => {
+  $('outcome').textContent = 'Sample contractor update: ' + $('callback').value + '. This is demonstration data. No calendar event was created.';
+};
+$('ai-controls').hidden = !aiEnabled;
+mode();
+update();
 </script></body></html>
 

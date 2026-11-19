@@ -159,7 +159,7 @@ class DemoBrowserTests(unittest.TestCase):
         expect(self.page.locator("#events .event").last).to_contain_text("does not release the safety hold")
 
     def test_normal_jobs_are_not_held_or_opted_out(self):
-        for message in ("Install a smoke detector", "Wire a hot tub", "Please stop by Thursday, please."):
+        for message in ("Install a smoke detector", "Wire a hot tub", "Inspect my panel Thursday"):
             with self.subTest(message=message):
                 self.reset()
                 self.send(message)
@@ -190,7 +190,7 @@ class DemoBrowserTests(unittest.TestCase):
                 self.reset()
                 self.send("a" * 500)
                 self.send("48315")
-                self.send("b" * 500)
+                self.send("Timing: Friday after 4 pm " + "b" * 475)
                 expect(self.page.locator("#title")).to_have_text("Ready for callback.")
                 dimensions = self.page.evaluate("""() => {
                     const summary = document.getElementById('summary');
