@@ -322,6 +322,29 @@ class IntakeBrowserTests(unittest.TestCase):
         self.assertEqual(second["body"]["fields"], {"job": "Install lights", "zip": "", "timing": ""})
         self.assertNotIn(ACCESS_CODE, self.page.locator("body").inner_text())
 
+    def test_sample_request_uses_entered_ai_code_and_reset_clears_it(self):
+        self.enable_ai()
+        self.api_handler = lambda route: self.fulfill(
+            route, self.answer(
+                job="EV charger installed in the garage", zip_code="48315",
+                timing="Next week. Call after 4 pm",
+            )
+        )
+        self.page.get_by_role("button", name="Run the sample request", exact=True).click()
+        self.assert_ready()
+        expect(self.page.locator("#ai-mode")).to_contain_text("AI extracted these details")
+        self.assertEqual(len(self.api_requests), 1)
+        request = self.api_requests[0]
+        self.assertEqual(request["headers"]["authorization"], "Bearer " + ACCESS_CODE)
+        self.assertEqual(request["body"]["fields"], {"job": "", "zip": "", "timing": ""})
+        expect(self.page.locator("#ai-access")).to_have_value(ACCESS_CODE)
+        self.page.get_by_role("button", name="Reset tour", exact=True).click()
+        expect(self.page.locator("#ai-access")).to_have_value("")
+        expect(self.page.locator("#events .event")).to_have_count(0)
+        self.page.get_by_role("button", name="Run the sample request", exact=True).click()
+        self.assert_ready()
+        self.assertEqual(len(self.api_requests), 1, "No code must keep the sample local")
+
     def test_provider_failure_uses_labelled_local_fallback(self):
         self.enable_ai()
         self.expected_api_http_error = True

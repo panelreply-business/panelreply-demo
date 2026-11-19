@@ -1,8 +1,8 @@
-# AI intake candidate
+# AI intake design and earlier test evidence
 
 Status recorded November 18, 2026, America/New_York.
 
-This feature builds on `audit/fix-intake-safety-20261118` at `7d63a6b355e8d8fe2febaead1498d07bd08c94c7`. The published Render app still uses application commit `100030c7976f60dba483510a233cdc8ce95d5097`. Changes here are not evidence of a production fix.
+This document records the earlier AI intake candidate and its original checks. That candidate built on `audit/fix-intake-safety-20261118` at `7d63a6b355e8d8fe2febaead1498d07bd08c94c7`. The front-end intake work has since shipped through PR #2. See [the release record](WORKSPACE_REDESIGN.md) for deployed front-end evidence and [live AI setup](LIVE_AI_SETUP.md) for current activation work. Historical test counts below do not establish a working live provider connection.
 
 ## Problem and resulting behavior
 
@@ -33,7 +33,7 @@ The local parser is not AI. The model is used only for extraction. Application c
 
 ## Live activation requirements
 
-The existing Render service is a static site. It cannot keep an API key on a request-processing server or run the new Node endpoint. The implementation remains disabled until a web-service deployment and API use are approved and configured.
+The existing Render demo service is a static site. It cannot run the Node endpoint. The owner requested live AI activation on November 18, 2026. A Node web service, a server-side API credential and verified available credits or an approved API spending allowance are required before live provider tests. [Current activation status](LIVE_AI_SETUP.md).
 
 Required settings:
 
@@ -42,6 +42,7 @@ Required settings:
 | `AI_DEMO_ENABLED` | Exactly `true`. Default is disabled |
 | `OPENAI_API_KEY` | Server-side secret, never committed or sent to the browser |
 | `OPENAI_MODEL` | Explicitly selected model supporting Responses structured outputs |
+| `OPENAI_REASONING_EFFORT` | Optional supported reasoning level. Empty omits the option. Invalid values disable AI |
 | `DEMO_ACCESS_TOKEN` | 32–256 non-whitespace characters. Shared test access, not customer authentication |
 | `PUBLIC_ORIGIN` | Exact HTTPS origin without a trailing slash. HTTP allowed only for localhost |
 | `AI_MAX_REQUESTS_PER_PROCESS` | Explicit cap of 1–1000 attempted provider requests. Example defaults to 0, which disables AI |
@@ -63,7 +64,7 @@ The `.env.example` file contains no active credentials. `.env` and local variant
 
 Known STOP/START and hazard inputs bypass the provider. A bundled opt-out and hazard retain both protections. The browser also processes these before starting an AI request.
 
-The provider request uses a strict JSON schema, `store:false`, a 1024-token output limit and a 12-second server timeout. The endpoint has no automatic retries, allows two concurrent provider calls and at most ten attempts per minute, and counts failed attempts against its cap. Requests already disconnected before provider processing do not make a call. A later disconnect aborts the pending request, although cancellation does not establish that a provider attempt was free.
+The provider request uses a strict JSON schema, standard processing through `service_tier:default`, `store:false`, a 1024-token output limit and a 12-second server timeout. A configured reasoning level is passed explicitly. The endpoint has no automatic retries, allows two concurrent provider calls and at most ten attempts per minute, and counts failed attempts against its cap. Requests already disconnected before provider processing do not make a call. A later disconnect aborts the pending request, although cancellation does not establish that a provider attempt was free.
 
 The adapter rejects incomplete, refused, malformed or unexpected tool output. Non-null extracted strings must appear verbatim in the latest message. ZIP extraction also has deterministic checks against conflicting ZIPs, phone numbers, prices, street numbers, wattage and ZIP+4. Numeric-only job descriptions and ZIP-shaped timing are rejected. These controls reduce errors but do not prove semantic accuracy.
 

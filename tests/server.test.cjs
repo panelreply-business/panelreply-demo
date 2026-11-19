@@ -125,6 +125,34 @@ test('health reports AI readiness and no booking without exposing configuration 
   assert.equal(result.headers['X-Content-Type-Options'], 'nosniff');
 });
 
+test('reasoning settings are optional and explicit supported levels reach the provider', async () => {
+  for (const effort of [undefined, '', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']) {
+    const provider = spyProvider();
+    const app = createApp({ env: environment({ OPENAI_REASONING_EFFORT: effort }), fetchImpl: provider.fetchImpl });
+    assert.equal(app.config.enabled, true);
+    const result = await request(app);
+    assert.equal(result.status, 200);
+    assert.equal(provider.calls.length, 1);
+    const body = JSON.parse(provider.calls[0][1].body);
+    assert.equal(body.service_tier, 'default', 'A project setting must not select another processing tier');
+    if (effort) assert.deepEqual(body.reasoning, { effort });
+    else assert.equal(Object.hasOwn(body, 'reasoning'), false, 'Generic models must not receive a reasoning option by default');
+  }
+});
+
+test('invalid configured reasoning effort disables AI before any provider request', async () => {
+  for (const effort of ['automatic', 'NONE', 'low ', 'none\nhigh', ' ', null, false, 0, {}]) {
+    const provider = spyProvider();
+    const app = createApp({ env: environment({ OPENAI_REASONING_EFFORT: effort }), fetchImpl: provider.fetchImpl });
+    assert.equal(app.config.enabled, false);
+    const result = await request(app);
+    assert.equal(result.status, 503);
+    assert.equal(result.body.error.code, 'ai_disabled');
+    assert.equal(provider.calls.length, 0);
+    assert.equal(app.stats.attempted, 0);
+  }
+});
+
 test('the server exposes only the walkthrough, robots and health', async () => {
   const provider = spyProvider();
   const app = createApp({ env: {}, fetchImpl: provider.fetchImpl });
@@ -209,6 +237,8 @@ test('verified model extraction accepts bundled fields and preserves exact suppl
   assert.equal(options.redirect, 'error');
   const body = JSON.parse(options.body);
   assert.equal(body.model, environment().OPENAI_MODEL);
+  assert.equal(body.service_tier, 'default');
+  assert.equal(Object.hasOwn(body, 'reasoning'), false);
   assert.equal(body.store, false);
   assert.equal(body.max_output_tokens, 1024);
   assert.equal(body.text.format.type, 'json_schema');

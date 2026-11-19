@@ -14,6 +14,7 @@ const MAX_PROVIDER_TEXT_LENGTH = 65536;
 const PROVIDER_URL = 'https://api.openai.com/v1/responses';
 const FIELD_KEYS = ['job', 'zip', 'timing'];
 const OUTPUT_KEYS = [...FIELD_KEYS, 'opt_out_evidence', 'hazard_evidence', 'ambiguous'];
+const REASONING_EFFORTS = new Set(['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']);
 const EMPTY_FIELDS = { job: null, zip: null, timing: null };
 const OUTPUT_SCHEMA = {
   type: 'object',
@@ -60,6 +61,11 @@ function ownKeysExactly(value, keys) {
 function readConfig(env) {
   const apiKey = typeof env.OPENAI_API_KEY === 'string' ? env.OPENAI_API_KEY : '';
   const model = typeof env.OPENAI_MODEL === 'string' ? env.OPENAI_MODEL : '';
+  const rawReasoningEffort = env.OPENAI_REASONING_EFFORT;
+  const reasoningEffort = typeof rawReasoningEffort === 'string' ? rawReasoningEffort : '';
+  const reasoningValid = rawReasoningEffort === undefined
+    || (typeof rawReasoningEffort === 'string'
+      && (reasoningEffort === '' || REASONING_EFFORTS.has(reasoningEffort)));
   const token = typeof env.DEMO_ACCESS_TOKEN === 'string' ? env.DEMO_ACCESS_TOKEN : '';
   const origin = typeof env.PUBLIC_ORIGIN === 'string' ? env.PUBLIC_ORIGIN : '';
   const capValue = String(env.AI_MAX_REQUESTS_PER_PROCESS || '');
@@ -74,9 +80,10 @@ function readConfig(env) {
   const enabled = env.AI_DEMO_ENABLED === 'true'
     && Boolean(apiKey) && !/\s/.test(apiKey)
     && /^[a-zA-Z0-9._:-]{1,100}$/.test(model)
+    && reasoningValid
     && token.length >= 32 && token.length <= 256 && !/\s/.test(token)
     && originValid && Number.isSafeInteger(maxRequests) && maxRequests >= 1 && maxRequests <= 1000;
-  return { enabled, apiKey, model, token, origin, maxRequests };
+  return { enabled, apiKey, model, reasoningEffort, token, origin, maxRequests };
 }
 
 function validToken(actual, expected) {
@@ -197,6 +204,8 @@ function parseProviderResponse(body, message, fields) {
 function createProviderRequest(config, message, fields) {
   return {
     model: config.model,
+    service_tier: 'default',
+    ...(config.reasoningEffort ? { reasoning: { effort: config.reasoningEffort } } : {}),
     store: false,
     max_output_tokens: 1024,
     input: [
