@@ -156,6 +156,35 @@ test('STOP works for recognized opt-out commands', () => {
   }
 });
 
+test('natural-language text opt-outs pause simulated automated replies', () => {
+  for (const command of [
+    'Please stop texting me', 'Don\'t text me again', 'Do not contact me',
+    'Remove me from your list', 'unsubscribe me', 'No more texts',
+    'stop sending me messages', 'stop messaging me', 'opt out',
+    'do not message me', 'dont text me', 'stop!!!'
+  ]) {
+    const f = fixture();
+    f.send(command);
+    assert.equal(f.state().stopped, true, 'Opt-out intent: ' + command);
+    f.send('I need a breaker upgrade');
+    assert.equal(f.state().stage, 0, 'No intake advancement after ' + command);
+  }
+});
+
+test('ordinary text containing stop or cancel is not treated as opt-out', () => {
+  for (const command of [
+    'Stop by Thursday to look at my panel',
+    'Can you stop by today?',
+    'Please cancel my installation appointment',
+    'I would like a quote for a stop switch',
+    'Do not stop work on my panel'
+  ]) {
+    const f = fixture();
+    f.send(command);
+    assert.equal(f.state().stopped, false, 'Normal message: ' + command);
+  }
+});
+
 test('START resumes without a safety hold', () => {
   const f = fixture();
   f.send('STOP');
