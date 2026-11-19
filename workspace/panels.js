@@ -336,9 +336,8 @@
       $('ocr-warnings').replaceChildren(...warnings.map(message => node('li', message)));
       $('ocr-warnings').hidden = !warnings.length;
       $('source-status').textContent = 'Text extraction completed. The saved parts have not changed.';
-      if (result.candidates.length) $('add-ocr-rows').focus();
     } catch (cause) { if (!expired) { $('source-status').textContent = ''; error('source-error', cause.message); if (cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true; } }
-    finally { busy = false; if (!expired) updateControls(); }
+    finally { busy = false; if (!expired) { updateControls(); if (ocrResult?.candidates?.length) $('add-ocr-rows').focus(); } }
   }
   async function exportProject() {
     if (busy || unresolved() || !project?.id) return;

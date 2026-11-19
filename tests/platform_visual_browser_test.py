@@ -4,6 +4,7 @@ Reuses the existing synthetic owner/server harness, but runs only the tests in
 this file. It never starts a public listener or calls a customer/provider.
 """
 import base64
+import json
 import os
 import unittest
 import uuid
@@ -25,6 +26,11 @@ class PlatformVisualTests(PrivateWorkspaceBrowserTests):
     def capture(self, name):
         if os.environ.get("PANELREPLY_EMIT_PLATFORM_PREVIEWS") != "1":
             return
+        metrics = self.page.evaluate("""() => {
+            const entry = performance.getEntriesByType('navigation')[0];
+            return { viewport: innerWidth, domContentLoadedMs: Math.round(entry.domContentLoadedEventEnd), loadMs: Math.round(entry.loadEventEnd), resourceCount: performance.getEntriesByType('resource').length };
+        }""")
+        print("PLATFORM_BROWSER_METRICS=" + json.dumps({"capture": name, **metrics}), flush=True)
         self.page.evaluate("() => scrollTo({top: 0, left: 0, behavior: 'instant'})")
         data = self.page.screenshot(type="jpeg", quality=78, full_page=True, animations="disabled")
         encoded = base64.b64encode(data).decode("ascii")
@@ -43,6 +49,12 @@ class PlatformVisualTests(PrivateWorkspaceBrowserTests):
             self.assertIsNotNone(box, selector)
             self.assertGreaterEqual(box["x"], -1, selector)
             self.assertLessEqual(box["x"] + box["width"], width + 1, selector)
+        for item in self.page.locator(".main-nav .nav-item").all():
+            box = item.bounding_box()
+            self.assertIsNotNone(box)
+            self.assertGreaterEqual(box["x"], -1, item.inner_text())
+            self.assertLessEqual(box["x"] + box["width"], width + 1, item.inner_text())
+            self.assertGreaterEqual(box["height"], 44)
 
     def test_dashboard_counts_empty_and_saved_records(self):
         self.login()

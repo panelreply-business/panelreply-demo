@@ -124,10 +124,33 @@ class DesignBrowserTests(unittest.TestCase):
 
     def assert_no_page_overflow(self):
         dimensions = self.page.evaluate("""() => ({
+            route: location.hash || '#home',
+            tab: document.querySelector('[role="tab"][aria-selected="true"]')?.id,
             viewport: document.documentElement.clientWidth,
             html: document.documentElement.scrollWidth,
             body: document.body.scrollWidth
         })""")
+        if max(dimensions["html"], dimensions["body"]) > dimensions["viewport"] + 1:
+            dimensions["overflowing_elements"] = self.page.evaluate("""() => {
+                const viewport = document.documentElement.clientWidth;
+                return [...document.querySelectorAll('body *')]
+                    .filter(node => node.getClientRects().length)
+                    .map(node => {
+                        const rect = node.getBoundingClientRect();
+                        const parent = node.parentElement;
+                        return {
+                            element: node.id ? '#' + node.id : node.tagName.toLowerCase() + '.' + String(node.className).trim().replace(/\\s+/g, '.'),
+                            left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width),
+                            parent: parent?.id || parent?.className || parent?.tagName,
+                            parentWidth: parent ? Math.round(parent.getBoundingClientRect().width) : null,
+                            overflow: getComputedStyle(node).overflowX,
+                            inTableScroller: Boolean(node.closest('.table-scroll'))
+                        };
+                    })
+                    .filter(node => node.right > viewport + 1 || node.left < -1)
+                    .sort((a, b) => b.width - a.width)
+                    .slice(0, 24);
+            }""")
         self.assertLessEqual(dimensions["html"], dimensions["viewport"] + 1, dimensions)
         self.assertLessEqual(dimensions["body"], dimensions["viewport"] + 1, dimensions)
 
@@ -336,7 +359,7 @@ class DesignBrowserTests(unittest.TestCase):
 
     def test_download_loading_and_browser_failure_path(self):
         self.parts_view()
-        self.page.evaluate("URL.createObjectURL = () => { throw new Error('Synthetic download failure'); };")
+        self.page.evaluate("() => { URL.createObjectURL = () => { throw new Error('Synthetic download failure'); }; }")
         busy = self.page.evaluate("""() => {
             const button = document.getElementById('export');
             button.click();
