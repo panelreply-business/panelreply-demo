@@ -5,3 +5,12 @@ node_modules/
 __pycache__/
 *.pyc
 public-demo/
+workspace-data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-wal
+*.db-shm
+test-results/
+playwright-report/

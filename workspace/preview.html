@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Customer preview · PanelReply</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script src="/assets/preview.js" defer></script>
+</head>
+<body class="preview-body">
+  <a class="skip-link" href="#preview-main">Skip to content</a>
+  <header class="preview-header"><a id="back-to-inbox" href="/" class="brand" aria-label="PanelReply inbox"><span class="brand-mark" aria-hidden="true">P</span><span>PanelReply<span class="brand-caption">FOR THE WORK AHEAD</span></span></a><div class="preview-header-actions"><span class="private-pill"><span class="status-dot" aria-hidden="true"></span> Owner preview</span><a id="inbox-link" href="/" class="button button-secondary button-small">Back to inbox <span aria-hidden="true">↗</span></a></div></header>
+  <main id="preview-main" class="preview-main">
+    <div class="preview-page-heading"><div><span class="eyebrow">TRY THE CUSTOMER EXPERIENCE</span><h1>Customer preview</h1><p>Ask a question. Share a request. Review the details before saving.</p></div><div class="preview-mode"><span class="mini-dot review-dot" aria-hidden="true"></span> Test details only</div></div>
+    <p class="preview-disclosure">Private test conversation. Answers come from your approved business information. Live AI is not connected. No calls, messages, or bookings are sent.</p>
+    <section id="preview-navigation-guard" class="notice warning navigation-guard" role="alertdialog" aria-labelledby="preview-guard-title" aria-describedby="preview-guard-description" hidden><div><strong id="preview-guard-title">This draft has not been saved</strong><p id="preview-guard-description">Keep the draft, or discard it before leaving. Saved requests and opt-outs will remain.</p></div><div class="button-row"><button id="preview-keep-editing" type="button" class="button button-secondary button-small">Keep editing</button><button id="preview-discard" type="button" class="button button-danger button-small">Discard draft</button></div></section>
+    <p id="preview-error" class="notice error" role="alert" hidden></p>
+    <div class="preview-grid">
+      <section class="panel chat-panel" aria-labelledby="chat-heading">
+        <div class="chat-heading"><span class="chat-avatar" aria-hidden="true">P</span><div><h2 id="chat-heading">Your business</h2><p>Request assistant · Private preview</p></div><span class="chat-presence" aria-label="Preview available"></span></div>
+        <div class="chat-intro"><span class="eyebrow">LET’S GET THE DETAILS</span><p>Tell us what you need help with. You can share several details in one message or ask a question along the way.</p><p class="chat-example">For example: “My name is Alex Example. I need a ceiling fan installed in 10001. Please call tomorrow morning.”</p></div>
+        <div id="conversation" class="conversation" role="log" aria-label="Preview conversation" aria-live="polite" aria-relevant="additions"></div>
+        <div id="chat-state-banner" class="chat-state-banner" role="status" hidden></div>
+        <form id="message-form" class="message-form"><label for="customer-message">Customer message</label><textarea id="customer-message" name="message" rows="3" maxlength="500" placeholder="Type a question or share the job details…" required disabled></textarea><div class="message-form-footer"><span id="message-helper">Use test details. Up to 500 characters per message.</span><button id="send-message" type="submit" class="button button-primary" disabled>Send message <span aria-hidden="true">↑</span></button></div></form>
+      </section>
+      <section class="panel review-panel" aria-labelledby="review-title">
+        <div class="panel-heading"><div><span class="eyebrow">BEFORE IT REACHES YOUR INBOX</span><h2 id="review-title">Review request</h2><p class="muted small-text">Check or correct each detail below.</p></div><span id="draft-badge" class="badge badge-neutral">Unsaved draft</span></div>
+        <div id="save-success" class="notice success" hidden><strong>Request saved</strong><p id="saved-request-summary"></p><a id="saved-request-link" href="/" class="text-link">View saved request <span aria-hidden="true">→</span></a></div>
+        <div id="save-retry-notice" class="notice warning" hidden><strong>Save needs confirmation</strong><p>The result of the last save is not confirmed. Retry the same request to check it. The draft is locked until that result is known.</p><button id="retry-save" type="button" class="button button-secondary button-small">Retry save</button></div>
+        <form id="request-form">
+          <fieldset id="preview-fields" class="plain-fieldset" disabled>
+            <legend class="sr-only">Review customer request</legend>
+            <div class="form-grid">
+              <div class="form-field"><label for="preview-name">Customer name</label><input id="preview-name" name="customerName" autocomplete="off" required maxlength="120"></div>
+              <div class="form-field"><label for="preview-phone">Phone number</label><input id="preview-phone" name="phone" type="tel" autocomplete="off" required maxlength="40"></div>
+              <div class="form-field span-two"><label for="preview-job">Electrical work</label><textarea id="preview-job" name="job" rows="3" required maxlength="2000"></textarea></div>
+              <div class="form-field span-two"><label for="preview-zip">Job ZIP</label><input id="preview-zip" name="zip" inputmode="numeric" autocomplete="off" required pattern="[0-9]{5}" maxlength="5"></div>
+              <div class="form-field"><label for="preview-callback">Callback window</label><input id="preview-callback" name="callbackWindow" maxlength="200" placeholder="When to get in touch"><span class="field-help">Follow-up preference.</span></div>
+              <div class="form-field"><label for="preview-work-date">Requested work date</label><input id="preview-work-date" name="requestedWorkDate" maxlength="200" placeholder="When work is wanted"><span class="field-help">Not a confirmed appointment.</span></div>
+              <div class="form-field span-two"><label for="preview-permission">Contact permission</label><select id="preview-permission" name="contactPermission"><option value="not_recorded">Not recorded</option><option value="requested_callback">Customer requested a callback</option><option value="opted_out">Customer opted out</option></select><span class="field-help">Select a callback request only when the customer asked to be contacted. An existing opt-out remains in effect.</span></div>
+            </div>
+          </fieldset>
+          <div id="preview-issues" class="notice warning" hidden><p id="preview-issues-text"></p><button id="confirm-review" type="button" class="button button-secondary button-small">Confirm these details</button></div>
+          <p id="preview-status" class="form-status" role="status" aria-live="polite"></p>
+          <div class="review-actions"><button id="save-request" type="submit" class="button button-primary full-width" disabled>Save request <span aria-hidden="true">→</span></button><button id="reset-draft" type="button" class="button button-secondary full-width" disabled>Reset draft</button></div>
+        </form>
+        <p class="review-footnote">Only “Save request” adds this draft to your inbox. Reset clears this draft only. Saved requests and opt-outs remain.</p>
+      </section>
+    </div>
+    <footer class="workspace-footer"><span>PanelReply</span><span>Private preview · No appointment is booked</span></footer>
+  </main>
+</body>
+</html>

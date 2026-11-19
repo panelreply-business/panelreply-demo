@@ -1,4 +1,4 @@
-name: PanelReply demo regression tests
+name: PanelReply regression tests
 on:
   pull_request:
     branches: [main, 'audit/**']
@@ -13,15 +13,16 @@ permissions:
 jobs:
   demo-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify demo behavior and CSP
+      - name: Verify intake, private workspace, HTTP and CSP
         env:
           PANELREPLY_EXPECT_PUBLIC_OFFLINE: 'true'
+          WORKSPACE_HTTP_TESTS: '1'
         run: |
           node scripts/build-demo.cjs --check
           node --test tests/*.test.cjs
@@ -40,4 +41,8 @@ jobs:
         env:
           PANELREPLY_EMIT_PREVIEWS: '1'
         run: python tests/ui_browser_test.py
+      - name: Verify private inbox, isolation, persistence and failure recovery
+        env:
+          PANELREPLY_EMIT_WORKSPACE_PREVIEWS: '1'
+        run: python tests/workspace_browser_test.py
 
