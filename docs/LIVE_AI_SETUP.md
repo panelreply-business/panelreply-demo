@@ -10,15 +10,31 @@ The owner requested live AI activation. This document separates preparation, mod
 | --- | --- | --- |
 | Offline controller, parser and server tests | PASS | 99 tests, zero failures or skips |
 | Generated page and CSP integrity | PASS | `node scripts/build-demo.cjs --check` |
-| New sample-button browser regression | NOT TESTED | Added to the Chromium suite; CI is required |
-| Full current revision CI | NOT TESTED | Pending the activation pull request |
-| Node web-service deployment | NOT TESTED | Preparation in progress |
-| Secure OpenAI credential | BLOCKED | No connected credential capability or supplied server credential was available at preparation |
+| New sample-button browser regression | PASS | Real Chromium with a fake provider verified code preservation and explicit reset |
+| Full application revision CI | PASS | 153 checks: 103 Node/HTTP/live GET and 50 Chromium, zero failures or skips |
+| Node web-service deployment | PASS | Render deployment `dep-dbv6em8u01pc73cv87bg` is live from merge commit `01351baadd8061aa9df6c0712dc0d3f6be3bb082` |
+| Deployed health route and sample intake | PASS | Browser showed healthy configuration, AI disabled, and the sample request collected all three fields |
+| Secure OpenAI credential | BLOCKED | OpenAI Developers is installed; secure key setup remains to be completed |
 | Available API credits or spending allowance | BLOCKED | Not yet verified or approved |
 | Live model accuracy and failure handling | NOT TESTED | No real API requests made |
 | Customer calls, SMS and calendar booking | NOT IMPLEMENTED | The app collects sample callback preferences only |
 
 Passing fixture-based tests does not establish model availability, authentication, provider connectivity or live extraction accuracy. `/health` reports whether configuration passes validation. Its `aiEnabled` value is not proof that OpenAI accepted a request.
+
+## Deployed preparation
+
+- Service: `srv-dbv6do6tlv9c73fuvar0`, named `panelreply-ai`.
+- Website: https://panelreply-ai.onrender.com/.
+- Render dashboard: https://dashboard.render.com/web/srv-dbv6do6tlv9c73fuvar0.
+- Deployment became live on November 18, 2026 at 10:05 PM America/New_York.
+- Tested source: `d524ed8f2d07fe09a743f472c50f99a3ac20522f` in [PR #3](https://github.com/panelreply-business/panelreply-demo/pull/3).
+- Deployed merge: `01351baadd8061aa9df6c0712dc0d3f6be3bb082`. It has the same tree, `5fabd09b574964416b886e52a9221a5834986e82`, as the tested source.
+- Verification: [GitHub Actions run 44448007795](https://github.com/panelreply-business/panelreply-demo/actions/runs/44448007795), job `135304773115`.
+- `/health` returned `{"ok":true,"aiEnabled":false,"bookingEnabled":false}`.
+- The deployed browser sample produced job `I need an EV charger installed in the garage`, ZIP `48315`, timing `Next week. Call after 4 pm`, and `3 of 3` confirmed fields. The app showed that no appointment was booked and no notification was sent.
+- The page body retained `data-ai-enabled="false"` and showed the local-parsing label. This is deployment readiness evidence, not a live model pass.
+
+![Deployed Node server with AI disabled and synthetic sample intake](evidence/ai-server-preview-2026-11-18.jpg)
 
 ## Changes needed before activation
 

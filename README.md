@@ -2,11 +2,17 @@
 
 A contractor intake workspace for turning sample customer messages into a callback summary. It collects the electrical work, job ZIP and callback preference, shows missing or conflicting details, and keeps the conversation available for review.
 
-[Open the website](https://panelreply-demo.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo) · [Workspace and AI intake — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2)
+[Static demo](https://panelreply-demo.onrender.com/) · [AI server preview](https://panelreply-ai.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo)
 
-## Release status
+## AI server readiness
 
-Live AI activation was requested on November 18, 2026. The server adapter is being prepared for a controlled test. The current static website still uses local parsing. [Activation configuration, verification and remaining gates](docs/LIVE_AI_SETUP.md).
+The Node web service is deployed at https://panelreply-ai.onrender.com/. PR #3 passed 153 automated checks and was merged. Render deployed that tested application, and its health route and sample intake were checked through the browser. The live page still reports `Demo parsing. AI is not connected on this page.`
+
+Live AI remains BLOCKED pending secure API-key setup, verified available credits or an approved spending allowance, and a real provider-backed test. No OpenAI request has been made. The static demo remains available at its existing URL.
+
+[153-check CI run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44448007795) · [Activation changes — PR #3](https://github.com/panelreply-business/panelreply-demo/pull/3) · [Deployment evidence and remaining gates](docs/LIVE_AI_SETUP.md)
+
+## Static demo release
 
 The contractor workspace was published on November 18, 2026 at 8:24 PM America/Detroit. The canonical website was then checked through its controls.
 
@@ -192,7 +198,7 @@ Publish directory: `public-demo`. Only those two application files are published
 
 Automatic deployment was disabled at inspection. The November 18 front-end release was deployed and checked on the canonical website. Future releases must verify the final source revision and retest the published page. The static page keeps `data-ai-enabled="false"`.
 
-The static service cannot execute `server.cjs`. Live AI requires an approved web-service deployment, server environment variables and a selected model with an approved spending limit. This front-end redesign does not activate those services.
+The static service cannot execute `server.cjs`. A separate free-plan Node web service, `panelreply-ai`, now runs that server with AI disabled. It uses `node scripts/build-demo.cjs --check` to build, `node server.cjs` to start, Node 22, the Ohio region and automatic deployment disabled. See [the activation record](docs/LIVE_AI_SETUP.md) for the deployed revision, test results and credential gate.
 
 ## Audit records
 
