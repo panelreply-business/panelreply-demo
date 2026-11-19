@@ -17,6 +17,14 @@ Business questions were interpreted as customer facts. The defect is reproducibl
 
 To reproduce on the prior revision, open the chat, send `Install lights. ZIP 48315. Call Monday after 4 pm.`, then send `Are you open Friday?` or `Do you service 48084?`. The prior version changed the request instead of answering. The correction must preserve the original fields and any unresolved clarification.
 
+Review of the feature branch found three related cases before release. Each was classified medium because it could corrupt or omit request details:
+
+- `I have a question. Do you service 48084?` treated the introduction as a job. A question introduction must not become a customer fact or trigger a provider call.
+- `Can you call me tomorrow about whether you serve 48084?` treated the coverage ZIP as the job ZIP. Keep the explicit callback preference while excluding the embedded coverage question from extraction.
+- `What are your hours` followed by a newline and `Install lights in 48315. Call me Friday.` discarded the imperative job and ZIP. Preserve the new detail clause while answering the hours question.
+
+The first feature CI run also found a browser-test fixture error: reading `inner_text()` from the collapsed summary produced an empty expected value. The corrected test reads `text_content()`, checks it contains the supplied ZIP, and then asserts that a question leaves it unchanged. The actual page retained the details in that run.
+
 ## Changes
 
 - The shared parser separates informational question clauses from supplied details before ZIP, timing or job extraction.
@@ -47,7 +55,7 @@ Live AI remains disabled pending the owner's credential choice, secure setup and
 | Check at preparation | Status | Evidence |
 | --- | --- | --- |
 | Original corruption reproduced | FAIL on prior source | Seven new parser cases failed before the correction |
-| Offline controller, parser, saved-answer and server checks | PASS | 136 tests, zero failures or skips |
+| Offline controller, parser, saved-answer and server checks | PASS | 140 tests, zero failures or skips after the review fixes |
 | Generated bundle and content security policy | PASS | Source and generated hashes match |
 | Chromium test syntax | PASS | Python compilation succeeded |
 | Full HTTP and Chromium execution | NOT TESTED locally | Must run in GitHub Actions |

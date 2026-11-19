@@ -164,12 +164,17 @@
     const value = questionText(text);
     return /^(?:what|which|why|how|when|where|who|whose|is|are|was|were)\b/i.test(value)
       || /^(?:do|does|did|can|could|would|will|should|may|might|has|have)\s+(?:you|i|we|they|he|she|it|this|that|these|those|there|the|my|your|our|a|an|anyone|someone)\b/i.test(value)
+      || /^(?:(?:i|we)(?:'ve|\s+have)(?:\s+got)?|(?:i|we)\s+got)\s+(?:(?:a(?:\s+(?:few|couple(?:\s+of)?))?|one|some|several|another|more)\s+)?(?:quick\s+)?questions?\b(?!\s+marks?\b)/i.test(value)
+      || /^(?:just\s+)?(?:a\s+)?(?:quick\s+)?questions?\s*(?:[:?.!]|$)/i.test(value)
       || /^(?:(?:tell|show)\s+me|let\s+me\s+know|explain|describe|help\s+me\s+understand|i(?:'d|\s+would)\s+like\s+to\s+(?:know|ask)|i\s+(?:want|wanted|need)\s+to\s+(?:know|ask)|i(?:'m|\s+am|\s+was)\s+(?:just\s+)?wondering)\b/i.test(value);
   }
 
+  const CALLBACK_REQUEST_LEAD = /^(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:be\s+able\s+to\s+)?)?(?:call(?:\s+(?:me|us))?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit(?:\s+(?:me|us))?)\b/i;
+  const IMPERATIVE_JOB_LEAD = /^(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move)\b/i;
+
   function callbackRequest(text) {
     const value = questionText(text);
-    const request = value.match(/^(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:be\s+able\s+to\s+)?)?(?:call(?:\s+(?:me|us))?(?:\s+back)?|reach\s+me|contact\s+me|stop\s+by|come\s+(?:by|over)|visit(?:\s+(?:me|us))?)\b/i);
+    const request = value.match(CALLBACK_REQUEST_LEAD);
     if (!request || !timingCue(value)) return false;
     // Bare "call" is a request only when its next words identify the time.
     // A question about calling customers must not become callback availability.
@@ -181,11 +186,12 @@
     return true;
   }
 
-  function explicitDetailStart(text) {
+  function explicitDetailStart(text, allowImperative = true) {
     const value = questionText(text);
     if (callbackRequest(value)) return true;
     if (informationalStart(value)) return false;
     return /^(?:i|we)\s+(?:need|want|require)\b/i.test(value)
+      || (allowImperative && IMPERATIVE_JOB_LEAD.test(value))
       || /^(?:(?:my|our|the|job|correct|new)\s+)*(?:zip(?:\s*code)?|postal\s*code)\b/i.test(value)
       || /^(?:job|work|request|timing|availability|callback(?:\s+time)?|preferred(?:\s+callback)?\s+time)\s*[:=]/i.test(value)
       || /^(?:i(?:'m|\s+am)|we(?:'re|\s+are))\s+(?:in|at|available|unavailable|not\s+available)\b/i.test(value)
@@ -198,13 +204,25 @@
     for (const joiner of text.matchAll(/\s+(?:and|but|also)\s+/gi)) {
       const before = text.slice(start, joiner.index);
       const after = text.slice(joiner.index + joiner[0].length);
-      if (informationalStart(after) || (informationalStart(before) && explicitDetailStart(after))) {
+      if (informationalStart(after) || (informationalStart(before) && explicitDetailStart(after, false))) {
         parts.push(before);
         start = joiner.index + joiner[0].length;
       }
     }
     parts.push(text.slice(start));
-    return parts;
+    return parts.flatMap(part => {
+      if (!CALLBACK_REQUEST_LEAD.test(questionText(part))) return [{ text: part, question: false }];
+      // A requested callback time and the question to discuss are separate.
+      // The question's ZIP/date must never become a supplied job location/time.
+      const topic = part.match(/\s+(?:(?:about|regarding)\s+(?=(?:whether|if|what|which|why|how|when|where|who)\b)|to\s+(?=(?:(?:tell|show)\s+me|let\s+me\s+know|explain|describe|discuss|ask|answer)\b))/i);
+      if (!topic) return [{ text: part, question: false }];
+      const callback = part.slice(0, topic.index);
+      if (!callbackRequest(callback)) return [{ text: part, question: true }];
+      return [
+        { text: callback, question: false },
+        { text: part.slice(topic.index + topic[0].length), question: true }
+      ];
+    });
   }
 
   function partitionMessage(message) {
@@ -215,28 +233,29 @@
     // supplied Friday preference. Periods inside prices and p.m. stay intact.
     const clauses = message.split(/([!?]+|\.+(?=\s|$)|[\n\r;,]+)/);
     let questionContinues = false;
+    let continuationAllowsImperative = false;
     let detailRunStart = 0;
     let previousWasDetail = false;
     for (let index = 0; index < clauses.length; index += 2) {
       const parts = splitQuestionJoiners(clauses[index]);
       const delimiter = clauses[index + 1] || '';
       for (let partIndex = 0; partIndex < parts.length; partIndex++) {
-        const clause = parts[partIndex].trim();
+        const clause = parts[partIndex].text.trim();
         if (!clause) continue;
         const last = partIndex === parts.length - 1;
         const ending = last ? delimiter : '';
         let text = clause + ending;
         const startsQuestion = informationalStart(clause);
-        const continuation = questionContinues && !explicitDetailStart(clause);
-        const question = !callbackRequest(clause) && (startsQuestion || ending.includes('?') || continuation);
+        const continuation = questionContinues && !explicitDetailStart(clause, continuationAllowsImperative);
+        const question = parts[partIndex].question
+          || (!callbackRequest(clause) && (startsQuestion || ending.includes('?') || continuation));
         if (question) {
           // "48084, do you serve there?" supplies a question topic, not a job
           // location. Preserve explicit facts, but fold adjacent topic fragments
           // into their question until a sentence boundary or supplied fact.
           while (previousWasDetail && details.length > detailRunStart) {
             const previous = details[details.length - 1];
-            const explicit = explicitDetailStart(previous.text)
-              || /^(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move)\b/i.test(questionText(previous.text));
+            const explicit = explicitDetailStart(previous.text);
             if (!previous.joinable || explicit) break;
             text = details.pop().text + ' ' + text;
           }
@@ -249,6 +268,7 @@
           previousWasDetail = true;
         }
         questionContinues = question && (!last || /[,;\n\r]/.test(ending));
+        continuationAllowsImperative = question && last && /[;\n\r]/.test(ending);
       }
     }
     if (!questions.length) return { details: message, questions: [] };

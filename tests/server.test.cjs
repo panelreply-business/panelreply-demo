@@ -128,7 +128,7 @@ test('health reports AI readiness and no booking without exposing configuration 
 test('informational questions bypass the provider and never become intake fields', async () => {
   const provider = spyProvider();
   const app = createApp({ env: environment(), fetchImpl: provider.fetchImpl });
-  for (const message of ['Are you open Friday?', 'Do you service 48084?', 'How much does it cost to install an EV charger?', 'What ZIP did I give you?']) {
+  for (const message of ['Are you open Friday?', 'Do you service 48084?', 'How much does it cost to install an EV charger?', 'What ZIP did I give you?', 'I have a question. Do you service 48084?']) {
     const result = await request(app, { input: { message, fields: { job: 'Install lights', zip: '48315', timing: 'Monday after 4 pm' } } });
     assert.equal(result.status, 200, message);
     assert.deepEqual(result.body, { mode: 'local', fields: { job: null, zip: null, timing: null }, flags: { optOut: false, hazard: false, ambiguous: false } });
@@ -155,6 +155,23 @@ test('question wording cannot be accepted as provider-supplied customer facts', 
   for (const changed of [{ job: 'Do you service' }, { zip: '48084' }, { timing: 'Friday' }]) {
     assert.throws(() => validateExtraction({ ...EXTRACTION, job: null, zip: null, timing: null, ...changed }, message, FIELDS), error => error.code === 'invalid_ai_output');
   }
+});
+
+test('a callback preference excludes an embedded coverage question from provider input', async () => {
+  const extraction = { ...EXTRACTION, job: null, zip: null, timing: 'tomorrow' };
+  const provider = spyProvider(providerResponse(providerBody(extraction)));
+  const app = createApp({ env: environment(), fetchImpl: provider.fetchImpl });
+  const result = await request(app, { input: {
+    message: 'Can you call me tomorrow about whether you serve 48084?',
+    fields: { job: 'Install lights', zip: '48315', timing: 'Monday' }
+  } });
+  assert.equal(result.status, 200);
+  assert.equal(provider.calls.length, 1);
+  const sent = JSON.parse(JSON.parse(provider.calls[0][1].body).input[1].content);
+  assert.match(sent.message, /tomorrow/);
+  assert.doesNotMatch(sent.message, /48084|whether|serve/);
+  assert.equal(sent.fields.zip, '48315');
+  assert.deepEqual(result.body.fields, { job: null, zip: null, timing: 'tomorrow' });
 });
 
 test('reasoning settings are optional and explicit supported levels reach the provider', async () => {

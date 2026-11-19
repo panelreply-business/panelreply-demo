@@ -211,7 +211,10 @@ class IntakeBrowserTests(unittest.TestCase):
     def test_questions_preserve_completed_request_and_do_not_repeat_ready_event(self):
         self.send(BUNDLED_MESSAGE)
         self.assert_ready()
-        summary = self.page.locator("#summary").inner_text()
+        summary = self.page.locator("#summary").text_content()
+        self.assertIsInstance(summary, str)
+        self.assertIn("ZIP: 48315", summary)
+        self.assertIn("Friday after 4 pm", summary)
         ready_events = self.page.locator("#events .system").filter(
             has_text="Sample request ready for contractor review"
         )
@@ -255,7 +258,10 @@ class IntakeBrowserTests(unittest.TestCase):
         self.assert_ready()
         self.send("Actually the job ZIP is 48315 or 48084")
         expect(self.page.locator("#title")).to_have_text("Clarify the request.")
-        summary = self.page.locator("#summary").inner_text()
+        summary = self.page.locator("#summary").text_content()
+        self.assertIsInstance(summary, str)
+        self.assertIn("Conflicting details need confirmation", summary)
+        self.assertIn("ZIP: 48315", summary)
         self.send("Do you service 48084?")
         expect(self.page.locator("#title")).to_have_text("Clarify the request.")
         expect(self.page.locator("#summary")).to_have_text(summary)
@@ -267,7 +273,10 @@ class IntakeBrowserTests(unittest.TestCase):
     def test_question_can_recall_the_supplied_zip_without_changing_the_request(self):
         self.send(BUNDLED_MESSAGE)
         self.assert_ready()
-        summary = self.page.locator("#summary").inner_text()
+        summary = self.page.locator("#summary").text_content()
+        self.assertIsInstance(summary, str)
+        self.assertIn("ZIP: 48315", summary)
+        self.assertIn("EV charger", summary)
         self.send("What ZIP did I give you?")
         expect(self.assistant_replies().last).to_contain_text("48315")
         expect(self.assistant_replies().last).to_contain_text(re.compile(r"ZIP", re.I))
@@ -335,6 +344,41 @@ class IntakeBrowserTests(unittest.TestCase):
         self.assert_ready()
         expect(self.page.locator("#detail-timing")).to_contain_text("Friday after 4 pm")
         expect(self.page.locator("#summary")).to_contain_text("No appointment has been booked.")
+        self.assertEqual(self.api_requests, [])
+
+    def test_question_introduction_does_not_become_electrical_work(self):
+        self.send("I have a question. Do you service 48084?")
+        for field in ("job", "zip", "timing"):
+            expect(self.page.locator("#detail-" + field)).to_have_text("Not collected")
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        expect(self.assistant_replies().last).to_contain_text(re.compile(r"service area|coverage", re.I))
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_callback_about_service_area_does_not_replace_the_job_zip(self):
+        self.send(BUNDLED_MESSAGE)
+        self.assert_ready()
+        original_job = self.page.locator("#detail-job").text_content()
+        self.assertIsInstance(original_job, str)
+        self.assertIn("EV charger", original_job)
+        self.send("Can you call me tomorrow about whether you serve 48084?")
+        expect(self.page.locator("#detail-job")).to_have_text(original_job)
+        expect(self.page.locator("#detail-zip")).to_have_text("48315")
+        expect(self.page.locator("#detail-timing")).to_contain_text(re.compile(r"tomorrow", re.I))
+        expect(self.page.locator("#detail-timing")).not_to_contain_text(re.compile(r"48084|whether", re.I))
+        expect(self.page.locator("#field-count")).to_have_text("3 of 3")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"service area|coverage", re.I))
+        self.assertEqual(self.api_requests, [])
+
+    def test_explicit_work_after_newline_question_keeps_job_and_zip(self):
+        self.send("What are your hours\nInstall lights in 48315")
+        expect(self.page.locator("#detail-job")).to_have_text("Install lights")
+        expect(self.page.locator("#detail-zip")).to_have_text("48315")
+        expect(self.page.locator("#detail-timing")).to_have_text("Not collected")
+        expect(self.page.locator("#field-count")).to_have_text("2 of 3")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"hours|opening", re.I))
         self.assertEqual(self.api_requests, [])
 
     def test_a_street_address_is_not_a_callback_time(self):
