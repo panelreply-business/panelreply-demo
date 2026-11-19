@@ -32,7 +32,7 @@ async function verifyNativeStop(bytes, mode) {
     recognitionTimeoutMs: mode === 'timeout' ? 5 : 15_000,
     spawnProcess: (binary, args, options) => {
       const spawned = spawn(binary, args, options);
-      if (args[0] === 'stdin') {
+      if (args.includes('stdin')) {
         child = spawned;
         if (mode === 'cancel') spawned.once('spawn', () => controller.abort());
       }

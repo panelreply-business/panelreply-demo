@@ -97,10 +97,11 @@ async function readJson(req, maxBytes = MAX_BODY_BYTES) {
   } catch (_) { throw new StoreError(400, 'invalid_json', 'Send a valid JSON object.'); }
 }
 
-function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, getOcrStatus } = {}) {
+function createWorkspaceApp({ store, origin, previewMessage, conversationProvider = null, allowExternalProvider = false, recognizeImage, getOcrStatus } = {}) {
   if (!store) throw new Error('A workspace store is required.');
   const originUrl = validateOrigin(origin);
   const auth = createAuth(store, { secure: originUrl.protocol === 'https:' });
+  const assistant = require('./assistant.cjs').createConversationOrchestrator({ provider: conversationProvider, allowExternal: allowExternalProvider });
   function send(res, status, body, extra = {}, head = false) {
     const serialized = body === undefined ? '' : JSON.stringify(body);
     res.writeHead(status, { ...BASE_HEADERS, 'Content-Type': 'application/json; charset=utf-8', ...extra });
@@ -157,7 +158,7 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
       const route = req.url.split('?')[0];
       const read = req.method === 'GET' || req.method === 'HEAD';
       if (read && route === '/favicon.ico') return send(res, 204, undefined);
-      if (read && route === '/health') return send(res, 200, { ok: true, mode: 'private-local', aiEnabled: false, bookingEnabled: false }, {}, req.method === 'HEAD');
+      if (read && route === '/health') return send(res, 200, { ok: true, mode: 'private-local', aiEnabled: assistant.status().liveEnabled, bookingEnabled: false }, {}, req.method === 'HEAD');
       if (read && Object.hasOwn(ASSETS, route)) return await staticFile(req, res, ...ASSETS[route]);
       if (read && route === '/login') return await staticFile(req, res, 'workspace/login.html', 'text/html; charset=utf-8');
       if (read && ['/', '/preview', '/panels', '/dashboard'].includes(route)) {
@@ -179,6 +180,10 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
       if (!route.startsWith('/api/')) throw new StoreError(404, 'not_found', 'The page was not found.');
       const session = sessionRequired(req);
       if (req.method === 'GET' && route === '/api/session') return send(res, 200, { user: session.user, csrfToken: session.csrfToken });
+      if (req.method === 'GET' && route === '/api/assistant') {
+        const { mode, liveEnabled } = assistant.status();
+        return send(res, 200, { mode, liveEnabled });
+      }
       if (req.method === 'GET' && route === '/api/profile') return send(res, 200, store.getProfile(session.user));
       if (req.method === 'GET' && route === '/api/leads') return send(res, 200, { leads: store.listLeads(session.user) });
       if (req.method === 'GET' && route === '/api/panel-projects') return send(res, 200, { projects: store.listPanelProjects(session.user) });
@@ -187,7 +192,7 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
         currentSession(req, session);
         return send(res, 200, status);
       }
-      const panelMatch = /^\/api\/panel-projects\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/(export\.csv|sources)(?:\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(\/ocr)?)?)?$/.exec(route);
+      const panelMatch = /^\/api\/panel-projects\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/(export\.(?:csv|xlsx)|sources)(?:\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(\/ocr)?)?)?$/.exec(route);
       if (req.method === 'GET' && panelMatch) {
         const [, id, section, sourceId, ocrAction] = panelMatch;
         if (!section) return send(res, 200, { project: store.getPanelProject(session.user, id) });
@@ -195,6 +200,14 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
           const csv = store.exportPanelProject(session.user, id);
           res.writeHead(200, { ...BASE_HEADERS, 'Content-Type': 'text/csv; charset=utf-8', 'Content-Length': Buffer.byteLength(csv), 'Content-Disposition': 'attachment; filename="panelreply-parts-' + id + '.csv"', 'Cross-Origin-Resource-Policy': 'same-origin' });
           return res.end(csv);
+        }
+        if (section === 'export.xlsx' && !sourceId) {
+          // The database and session choose the export content. Unsaved browser
+          // fields, supplied business IDs and provider text cannot enter it.
+          const { exportProjectXlsx, XLSX_MIME } = require('./xlsx.cjs');
+          const workbook = exportProjectXlsx(store.getPanelProject(session.user, id));
+          res.writeHead(200, { ...BASE_HEADERS, 'Content-Type': XLSX_MIME, 'Content-Length': workbook.length, 'Content-Disposition': 'attachment; filename="panelreply-parts-' + id + '.xlsx"', 'Cross-Origin-Resource-Policy': 'same-origin' });
+          return res.end(workbook);
         }
         if (section === 'sources' && sourceId && !ocrAction) {
           const source = store.getPanelSource(session.user, id, sourceId);
@@ -213,6 +226,7 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
       if (req.method === 'GET' && match) return send(res, 200, { lead: store.getLead(session.user, match[1]) });
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) mutationRequired(req, session);
       if (req.method === 'POST' && route === '/api/logout') {
+        assistant.cancel(session.token);
         auth.logout(currentMutationSession(req, session));
         return send(res, 204, undefined, { 'Set-Cookie': auth.cookie('', true) });
       }
@@ -248,6 +262,7 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
         const cancel = () => controller.abort();
         req.once('aborted', cancel);
         res.once('close', cancel);
+        if (req.aborted || res.destroyed || res.writableEnded) controller.abort();
         try {
           const result = await (recognizeImage || require('./ocr.cjs').recognizeImage)(source.data, { signal: controller.signal });
           const stillCurrent = currentMutationSession(req, current);
@@ -270,16 +285,33 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
         const input = object(await readJson(req), ['message', 'state']);
         const current = { session: currentMutationSession(req, session) };
         const profile = store.getProfile(current.session.user);
-        let preview = previewMessage;
-        if (!preview) {
-          const conversation = require('./conversation.cjs');
-          preview = conversation.previewMessage;
-        }
+        const preview = previewMessage || assistant.previewMessage;
+        const controller = new AbortController();
+        const cancel = () => controller.abort();
+        req.once('aborted', cancel);
+        res.once('close', cancel);
+        if (req.aborted || res.destroyed || res.writableEnded) controller.abort();
+        try {
         async function runPreview(suppressed) {
-          const result = await preview(input.message, input.state, profile, { suppressed });
+          let result;
+          try { result = await preview(input.message, input.state, profile, {
+            suppressed, signal: controller.signal, scope: current.session.token,
+            isCurrent: () => {
+              try { currentMutationSession(req, current.session); return true; }
+              catch (_) { return false; }
+            }
+          }); } catch (error) {
+            // Expiry/revocation remains an authentication failure even when a
+            // cancelled adapter also reports a draft cancellation.
+            currentMutationSession(req, current.session);
+            throw error;
+          }
           // The preview hook can also yield. Recheck before any phone opt-out
           // write or response containing the authenticated business answers.
           currentMutationSession(req, current.session);
+          if (store.getProfile(current.session.user).version !== profile.version) {
+            throw new StoreError(409, 'profile_changed', 'The approved business information changed while this message was processed. Your draft is unchanged. Try the message again.');
+          }
           return result;
         }
         const phoneBefore = knownPhone(input.state);
@@ -292,6 +324,10 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
         if (resultingPhone && (result.state.stopped || optOutHistory)) store.suppressPhone(currentMutationSession(req, current.session).user, resultingPhone);
         if (resultingPhone && store.isSuppressed(current.session.user, resultingPhone) && !result.state.stopped) result = await runPreview(true);
         return send(res, 200, result);
+        } finally {
+          req.removeListener('aborted', cancel);
+          res.removeListener('close', cancel);
+        }
       }
       throw new StoreError(404, 'not_found', 'The requested operation was not found.');
     } catch (error) {
@@ -304,7 +340,7 @@ function createWorkspaceApp({ store, origin, previewMessage, recognizeImage, get
       return send(res, status, { error: detail }, extra);
     }
   }
-  return { handler, auth };
+  return { handler, auth, close: () => assistant.close() };
 }
 
 module.exports = { createWorkspaceApp, validateOrigin, MAX_BODY_BYTES, MAX_PANEL_BODY_BYTES, readJson };

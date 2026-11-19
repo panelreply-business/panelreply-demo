@@ -2,7 +2,9 @@
 
 Date: 2026-11-19. Scope: draft PR8 on `feature/interactive-dual-product-site`.
 
-## Current verified result
+This is the historical redesign milestone record. Later code, XLSX support, browser-engine coverage and the current Render configuration are tracked in [development progress](DEVELOPMENT_PROGRESS.md) and [release acceptance](RELEASE_ACCEPTANCE.md). Historical results below have not been relabeled as tests of newer code.
+
+## Historical verified result
 
 [Run 61](https://github.com/panelreply-business/panelreply-demo/actions/runs/44535177854) passed at application commit `370d158fb8c7dbf3daf74fe8798df4cc85e61c94`: 590 checks PASS, zero failures and three public application checks BLOCKED by intentional owner suspension. The 590 count comprises 406 Node/HTTP cases, 175 Chromium cases and nine actual native OCR cases. It excludes the three blocked checks.
 

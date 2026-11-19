@@ -20,6 +20,7 @@ import unittest
 import uuid
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -52,11 +53,7 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"RECOVERY_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):

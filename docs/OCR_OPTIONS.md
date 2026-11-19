@@ -4,6 +4,8 @@ Date: 2026-11-19. Scope: the existing private, local PanelReply workspace.
 
 ## Decision
 
+Pre-launch follow-up: [310-image benchmark, corrected ambiguity defects, native resource ceilings and shutdown verification](OCR_BENCHMARK.md). The earlier six-fixture measurements below remain historical. Broader synthetic extraction does not pass an all-fields accuracy gate, and real-photo quality remains unverified.
+
 Use an optional Tesseract 5 executable installed on the same machine as the private workspace. The Node adapter adds no application package, provider account, API key or per-image API charge. It uses the machine's CPU and memory. Public demos and paid services remain disconnected.
 
 The implementation reads printed text and prepares review candidates from explicit labels. It does not identify electrical compatibility, certify ratings, fill missing specifications, identify a manufacturer from a logo, or verify that a component can be installed. A person must compare every value with its source.
@@ -69,7 +71,7 @@ await recognizeImage(buffer, { signal })
 | JPEG validation |SOI/EOI markers, segment lengths, scan structure and frame dimensions. Supported formats are 8-bit baseline or progressive grayscale/RGB JPEG |
 | Native decoding |Tesseract performs the actual pixel decode. Structurally valid but undecodable pixels fail with a generic error |
 | PNG metadata |Only header, palette, transparency, image data and end chunks reach the native decoder. Compressed metadata is omitted. The saved private source is not changed |
-| Invocation |Fixed `/usr/bin/tesseract`, `shell:false`, stdin image bytes and stdout TSV |
+| Invocation |Fixed `/usr/bin/prlimit` executes fixed `/usr/bin/tesseract`, `shell:false`, stdin image bytes and stdout TSV. Missing resource limiter fails closed |
 | OCR arguments |`stdin stdout -l eng --oem 1 --psm 6 tsv` |
 | Child environment |Only fixed PATH, locale and single-thread settings. No inherited provider credentials or caller-supplied environment |
 | Working directory |Filesystem root, not a customer-controlled upload directory |
@@ -77,6 +79,8 @@ await recognizeImage(buffer, { signal })
 | OCR duration | 15 seconds after readiness. Timeout or cancellation sends SIGKILL and awaits child close before releasing the slot |
 | Readiness |Fixed `--version` and `--list-langs` probes, at most 2 seconds and 16 KiB output each. Requires Tesseract 5 and `eng`. Result cached 60 seconds |
 | Process output | 512 KiB combined stdout and stderr. Stderr is counted and discarded, never returned or logged |
+| Native ceilings |1 GiB address space, 10 CPU seconds, 64 open files, zero core-dump bytes and zero regular-file output. Applied to readiness and recognition |
+| Shutdown |Idempotent asynchronous shutdown cancels native work, waits for close, and rejects later recognition |
 | Text |At most 20,000 characters. Excess output fails explicitly |
 | Fields |Part number 120 characters, manufacturer 120, description 500. Overlong values remain in bounded raw text and require manual entry |
 
@@ -84,7 +88,7 @@ Readiness has no provider dependency. Missing or unsupported engines return `ava
 
 Source bytes are copied before asynchronous work. Caller changes to the original Buffer cannot replace the validated input while readiness runs. No temporary image or OCR text file is written by the adapter.
 
-These bounds are not an operating-system memory sandbox. A future hosted service would need an approved worker/container resource limit and native dependency patch policy before accepting untrusted public uploads. This phase exposes no public upload service.
+The address-space and CPU ceilings are enforced by Linux process limits. They are not a security sandbox. A future hosted service still needs an approved worker/container isolation boundary and native dependency patch policy before accepting untrusted public uploads. This phase exposes no public upload service.
 
 ### Extraction and confidence
 
@@ -98,7 +102,7 @@ DESCRIPTION: SYNTHETIC LABEL ALPHA
 
 It also accepts explicit `P/N`, `MFR` and `DESC` labels. It preserves recognized values and letter case. It does not repair ambiguous characters from a catalogue or invent absent fields.
 
-This first parser produces zero or one candidate per image. Conflicting repeated labels and multiple labelled fields on one line are treated as ambiguous. The affected value stays blank. Unlabelled text stays available for manual entry. Multiple components in one photograph require separate images or manual entry.
+This parser produces zero or one candidate per image. Conflicting repeated labels and multiple labelled fields on one line are treated as ambiguous. The affected value stays blank. If multiple core fields conflict, all candidate values stay blank rather than combining different components. A single leading bullet/hyphen before an otherwise exact label is accepted, while values remain unchanged. Unlabelled text stays available for manual entry. Multiple components in one photograph require separate images or manual entry.
 
 Each field's OCR confidence is the lowest recognized-word confidence on its labelled line, rounded to two decimal places. Unknown confidence is `null`. A score below 80 adds a review prompt. This threshold is a UI attention rule, not a measured correctness probability. Even a score of 100 never changes `reviewStatus` from `unreviewed`.
 

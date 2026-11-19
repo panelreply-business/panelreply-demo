@@ -39,7 +39,19 @@
   }
 
   function isUrgent(text) {
-    return /\b(?:sparks?|sparking|arcing|arc flash|electrical fire|on fire|smoke\b(?!\s+(?:detector|alarm)s?\b)|smoking|burning (?:smell|odor|wire|outlet|panel)|smell (?:something |of )?burning|downed (?:wire|power ?line)|power lines? (?:(?:is|are|has|have) )?(?:fell|fallen|down|collapsed|hanging)|live (?:exposed )?wire|exposed (?:live|energized) wire|electric(?:al)? shock|shocked|electrocuted|zapped|hot (?:outlet|panel)|(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug).{0,35}?(?:melting\b(?!\s+(?:pot|point|wax)\b)|overheating|sizzling|smoldering|smouldering|caught fire|in flames|smells? (?:like )?(?:it'?s )?burning)|(?:flames?|melting|overheating|sizzling|smoldering|smouldering).{0,40}?(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug))\b/i.test(normalize(text));
+    const value = normalize(text);
+    // Recognize explicit heat/fire/water descriptions around electrical parts.
+    // Routine fire-alarm, smoke-detector, hot-tub and water-heater work remains
+    // outside these patterns. This is a conservative hold, not a diagnosis.
+    const component = '(?:electrical\\s+)?(?:panel|breaker\\s+box|fuse\\s+box|outlet|socket|breaker|wires?|wiring|cord|plug|cable|terminal|busbar)';
+    const fireAtComponent = new RegExp('\\bfire\\s+(?:in|inside|at|around|coming\\s+from)\\s+(?:(?:my|the|our|an?|this|that)\\s+)*' + component + '\\b', 'i').test(value);
+    const hotComponent = new RegExp('\\b' + component + '.{0,24}?\\b(?:is|are|feels?|gets?|getting|becomes?|becoming)\\s+(?:(?:too|very|extremely|really)\\s+)?hot\\b(?!\\s+(?:tub|water)\\b)', 'i').test(value);
+    const glowingComponent = new RegExp('\\b' + component + '.{0,24}?\\bglow(?:ing|s)?\\s+(?:red|orange|white)\\b', 'i').test(value);
+    const burntOdor = new RegExp('\\b' + component + '.{0,35}?\\bsmells?\\s+(?:(?:like|of)\\s+)?burnt(?:\\s+(?:plastic|rubber|wiring))?\\b', 'i').test(value);
+    const waterInComponent = new RegExp('\\b(?:water|floodwater)\\b.{0,35}?\\b(?:into|inside|entering|filling|pouring|dripping|leaking)\\b.{0,30}?\\b(?:(?:live|energized|electrical)\\s+)?' + component + '\\b', 'i').test(value);
+    const componentInWater = new RegExp('\\b' + component + '.{0,35}?\\b(?:touching|in|under|submerged|sitting)\\b.{0,15}?\\b(?:(?:standing|flood)\\s+)?water\\b', 'i').test(value);
+    const previouslyRecognized = /\b(?:sparks?|sparking|arcing|arc flash|electrical fire|on fire|smoke\b(?!\s+(?:detector|alarm)s?\b)|smoking|burning (?:smell|odor|wire|outlet|panel)|smell (?:something |of )?burning|downed (?:wire|power ?line)|power lines? (?:(?:is|are|has|have) )?(?:fell|fallen|down|collapsed|hanging)|live (?:exposed )?wire|exposed (?:live|energized) wire|electric(?:al)? shock|shocked|electrocuted|zapped|hot (?:outlet|panel)|(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug).{0,35}?(?:melting\b(?!\s+(?:pot|point|wax)\b)|overheating|sizzling|smoldering|smouldering|caught fire|in flames|smells? (?:like )?(?:it'?s )?burning)|(?:flames?|melting|overheating|sizzling|smoldering|smouldering).{0,40}?(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug))\b/i.test(value);
+    return previouslyRecognized || fireAtComponent || hotComponent || glowingComponent || burntOdor || waterInComponent || componentInWater;
   }
 
   function cleanPhrase(text) {

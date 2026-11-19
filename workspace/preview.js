@@ -202,7 +202,7 @@
       state = result.state;
       $('customer-message').value = '';
       limitReached = state.conversation.length >= 60 || state.conversation.reduce((sum, entry) => sum + entry.text.length, 0) >= 20000;
-      $('preview-status').textContent = state.stopped ? 'Message recorded. Automated replies are stopped. This request has not been saved.' : 'Draft updated. Review the details before saving.';
+      $('preview-status').textContent = state.stopped ? 'Message recorded. Automated replies are stopped. This request has not been saved.' : result.assistance?.mode === 'unavailable' ? 'Assisted extraction did not complete. Your previous fields are unchanged. Review the fields or try again.' : 'Draft updated. Review the details before saving.';
       renderState();
     } catch (cause) {
       if (serial !== generation || expired || cause.name === 'AbortError') return;
@@ -309,6 +309,14 @@
       if (expired) return;
       if (!profile?.business?.name) throw new Error('Could not load your business information. Reload this page to try again.');
       $('chat-heading').textContent = profile.business.name;
+      const assistant = await api('/api/assistant');
+      if (expired) return;
+      if (!['deterministic', 'fake-provider', 'external-provider'].includes(assistant?.mode) || typeof assistant.liveEnabled !== 'boolean') throw new Error('The request assistant mode could not be confirmed. Reload the preview.');
+      $('assistant-mode-status').textContent = assistant.mode === 'fake-provider'
+        ? 'Synthetic provider test. This adapter uses prepared responses to test the AI integration. No live model receives these messages. No calls, messages, or bookings are sent.'
+        : assistant.liveEnabled
+          ? 'Provider-assisted draft. Review every extracted field. Business answers use approved information. No calls, messages, or bookings are sent.'
+          : 'Private test conversation. Answers come from your approved business information. Live AI is not connected. No calls, messages, or bookings are sent.';
       ready = true;
       renderState();
     } catch (cause) { if (!expired) error(cause.message || 'Could not open the preview. Reload this page to try again.'); }

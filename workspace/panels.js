@@ -111,6 +111,7 @@
     for (const button of $('source-list').querySelectorAll('[data-view]')) button.disabled = busy || !ready || expired;
     $('add-ocr-rows').disabled = locked || !ocrResult?.candidates?.length || rows.length + (ocrResult?.candidates?.length || 0) > 200;
     $('export-project').disabled = locked || !saved;
+    $('export-project-xlsx').disabled = locked || !saved;
     $('sign-out').disabled = busy || unresolved() || !ready;
     for (const button of $('project-list').querySelectorAll('button')) button.disabled = locked;
     $('parts-review-count').textContent = rows.length ? `${rows.length} ${rows.length === 1 ? 'part' : 'parts'} · ${rows.filter(row => row.reviewStatus !== 'reviewed').length} need review` : 'No parts yet';
@@ -393,19 +394,26 @@
     } catch (cause) { if (!expired) { $('source-status').textContent = ''; error('source-error', cause.message); if (cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true; } }
     finally { busy = false; if (!expired) { updateControls(); if (ocrResult?.candidates?.length) $('add-ocr-rows').focus(); } }
   }
-  async function exportProject() {
+  async function exportProject(format = 'csv') {
     if (busy || unresolved() || !project?.id) return;
-    busy = true; updateControls(); error('panel-export-error', ''); $('panel-export-status').textContent = 'Preparing saved CSV…';
+    const label = format === 'xlsx' ? 'XLSX' : 'CSV';
+    const mime = format === 'xlsx' ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : 'text/csv';
+    let downloadUrl = null;
+    busy = true; updateControls(); error('panel-export-error', ''); $('panel-export-status').textContent = `Preparing saved ${label}…`;
     try {
-      const res = await response(`/api/panel-projects/${project.id}/export.csv`, { binary: true });
+      const res = await response(`/api/panel-projects/${project.id}/export.${format}`, { binary: true });
       const blob = await res.blob(); if (expired) return;
-      if (!/text\/csv/i.test(res.headers.get('Content-Type') || '')) throw new Error('The workspace did not return a CSV file. Try again.');
+      if ((res.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase() !== mime || !blob.size) throw new Error(`The workspace did not return a ${label} file. Try again.`);
+      // The binary body may arrive after another tab changes its cookie. Keep
+      // the download attached to this page's pinned session before exposing it.
+      await api('/api/session'); if (expired) return;
       const url = URL.createObjectURL(blob); downloadUrls.add(url);
-      const a = node('a'); a.href = url; a.download = `panelreply-project-${project.id}.csv`; document.body.append(a);
+      downloadUrl = url;
+      const a = node('a'); a.href = url; a.download = `panelreply-project-${project.id}.${format}`; document.body.append(a);
       try { a.click(); } finally { a.remove(); }
       setTimeout(() => { URL.revokeObjectURL(url); downloadUrls.delete(url); }, 60000);
-      $('panel-export-status').textContent = dirty() ? 'Saved CSV prepared. Your unsaved edits are still here and are not included. Check your browser downloads.' : 'Saved CSV prepared. Check your browser downloads.';
-    } catch (cause) { if (!expired) { $('panel-export-status').textContent = ''; error('panel-export-error', cause.message || 'Could not prepare the CSV. Try again.'); } }
+      $('panel-export-status').textContent = dirty() ? `Saved ${label} prepared. Your unsaved edits are still here and are not included. Check your browser downloads.` : `Saved ${label} prepared. Check your browser downloads.`;
+    } catch (cause) { if (downloadUrl) { URL.revokeObjectURL(downloadUrl); downloadUrls.delete(downloadUrl); } if (!expired) { $('panel-export-status').textContent = ''; error('panel-export-error', cause.message || `Could not prepare the ${label}. Try again.`); } }
     finally { busy = false; if (!expired) updateControls(); }
   }
   async function bootstrap() {
@@ -472,7 +480,8 @@
     $('project-save-status').textContent = 'Unreviewed candidates added to the draft. Check the fields, then save.';
     $('panel-parts-body').lastElementChild?.querySelector('input')?.focus();
   });
-  $('export-project').addEventListener('click', exportProject);
+  $('export-project').addEventListener('click', () => exportProject('csv'));
+  $('export-project-xlsx').addEventListener('click', () => exportProject('xlsx'));
   $('reload-project').addEventListener('click', () => guarded(() => openProject(project.id)));
   $('retry-panel-load').addEventListener('click', () => guarded(bootstrap));
   $('panel-keep-editing').addEventListener('click', () => { pendingNavigation = null; $('panel-navigation-guard').hidden = true; });

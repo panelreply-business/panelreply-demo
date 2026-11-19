@@ -9,6 +9,30 @@ const intake = require('../src/intake.js');
 
 const empty = { job: '', zip: '', timing: '' };
 
+for (const message of [
+  'There is a fire in my electrical panel',
+  "There's a fire inside the breaker box",
+  'The outlet is too hot to touch',
+  'The breaker box feels hot',
+  'The wire is glowing red',
+  'There is water pouring into the energized panel',
+  'The breaker box smells like burnt plastic',
+  'The service cable is touching standing water'
+]) test('hazard review holds explicit component heat/fire/water: ' + message, () => {
+  assert.equal(intake.isUrgent(message), true);
+});
+
+for (const message of [
+  'I need a smoke detector installed',
+  'I need a fire alarm panel upgrade',
+  'Install a hot tub control panel',
+  'Replace the water heater electrical circuit',
+  'I need a waterproof outdoor outlet installed',
+  'The panel has a red indicator light'
+]) test('routine installation remains outside new hazard rules: ' + message, () => {
+  assert.equal(intake.isUrgent(message), false);
+});
+
 test('bundled message captures job, ZIP and callback timing', () => {
   const result = intake.extractFields('I need an EV charger installed in my garage. My ZIP is 48315. Call me Friday after 4 pm.', empty);
   assert.equal(result.job, 'I need an EV charger installed in my garage');

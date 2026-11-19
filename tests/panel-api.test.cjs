@@ -130,6 +130,33 @@ test('CSV downloads only persisted rows with safe headers, encoding and formulas
   assert.match(result.text, /"' \t=1\+1","'@formula","Corrected, ""quoted"" Ω"/); assert.match(result.text, /"'-1\+2"\r\n$/);
 });
 
+test('XLSX downloads the persisted project with private binary headers and existing tenant checks', async t => {
+  const f = await fixture(t), p = f.store.createPanelProject(f.alice, project({ rows: [row({ partNumber: '000123', notes: '=literal()' })] }), crypto.randomUUID()).project;
+  const url = '/api/panel-projects/' + p.id + '/export.xlsx';
+  assert.equal((await request(f.app, { url })).status, 401);
+  assert.equal((await request(f.app, { url, headers: f.login(f.bob) })).status, 404);
+  const headers = f.login();
+  assert.equal((await request(f.app, { url, headers: { ...headers, 'x-workspace-session': 'wrong' } })).status, 401);
+  const result = await request(f.app, { url, headers });
+  assert.equal(result.status, 200);
+  assert.equal(result.headers['Content-Type'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  assert.equal(result.headers['Content-Length'], result.buffer.length);
+  assert.equal(result.headers['Cache-Control'], 'no-store');
+  assert.equal(result.headers['Cross-Origin-Resource-Policy'], 'same-origin');
+  assert.match(result.headers['Content-Disposition'], /^attachment; filename="panelreply-parts-[0-9a-f-]+\.xlsx"$/);
+  assert.equal(result.buffer.subarray(0, 4).toString('hex'), '504b0304');
+  assert.deepEqual(f.store.getPanelProject(f.alice, p.id), p);
+});
+
+test('XLSX rejects XML-invalid saved text visibly while keeping CSV and saved data intact', async t => {
+  const f = await fixture(t), p = f.store.createPanelProject(f.alice, project({ rows: [row({ partNumber: 'SYN\uffff' })] }), crypto.randomUUID()).project;
+  const headers = f.login(), base = '/api/panel-projects/' + p.id;
+  const xlsx = await request(f.app, { url: base + '/export.xlsx', headers });
+  assert.equal(xlsx.status, 422); assert.match(xlsx.body.error.message, /CSV/);
+  assert.equal((await request(f.app, { url: base + '/export.csv', headers })).status, 200);
+  assert.deepEqual(f.store.getPanelProject(f.alice, p.id), p);
+});
+
 test('panel JSON has its own bound while the intake endpoint retains its smaller bound', async t => {
   const f = await fixture(t), headers = { ...f.login(), 'idempotency-key': crypto.randomUUID() };
   const large = project({ rows: Array.from({ length: 200 }, () => row({ description: 'x'.repeat(1000), notes: 'y'.repeat(1000) })) });

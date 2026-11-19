@@ -18,6 +18,7 @@ import shutil
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser
 
 
 BUNDLED_MESSAGE = (
@@ -61,11 +62,7 @@ class WorkspaceBrowserTests(unittest.TestCase):
         cls.thread.start()
         cls.origin = f"http://127.0.0.1:{cls.server.server_port}"
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"WORKSPACE_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):

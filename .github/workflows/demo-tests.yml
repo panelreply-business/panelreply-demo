@@ -14,7 +14,7 @@ jobs:
   demo-tests:
     # Keep the OS baseline explicit when GitHub moves the latest label.
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,22 +22,35 @@ jobs:
           node-version: '22'
       - name: Verify intake, private workspace, HTTP and CSP
         env:
-          PANELREPLY_EXPECT_PUBLIC_OFFLINE: 'true'
           WORKSPACE_HTTP_TESTS: '1'
         run: |
           node scripts/build-demo.cjs --check
-          node --test tests/*.test.cjs
+          node - <<'NODE'
+          const { readdirSync } = require('node:fs');
+          const { spawnSync } = require('node:child_process');
+          const files = readdirSync('tests').filter(name => name.endsWith('.test.cjs') && name !== 'live-smoke.test.cjs').map(name => 'tests/' + name);
+          const result = spawnSync(process.execPath, ['--test', ...files], { stdio: 'inherit' });
+          process.exit(result.status ?? 1);
+          NODE
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install the local OCR engine and English data
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng util-linux
       - name: Verify actual OCR and native failure handling on synthetic images
-        run: node scripts/test-ocr-fixtures.cjs
+        run: |
+          node scripts/test-ocr-fixtures.cjs
+          node scripts/test-ocr-resource-limits.cjs
+      - name: Measure synthetic conversation integration and bounded storage workload
+        run: |
+          node scripts/evaluate-assistant.cjs
+          node scripts/prelaunch-stress.cjs
       - name: Install browser test dependency
-        run: python -m pip install -r tests/browser-requirements.txt
+        run: python -m pip install -r tests/browser-requirements.txt -r tests/prelaunch-requirements.txt
+      - name: Independently read generated spreadsheet contents
+        run: python scripts/test-xlsx-reader.py
       - name: Install Chromium for browser checks
         id: browser_install
         run: python -m playwright install --with-deps --only-shell chromium
@@ -70,4 +83,87 @@ jobs:
         env:
           PANELREPLY_EMIT_PLATFORM_PREVIEWS: '1'
         run: python tests/platform_visual_browser_test.py
+      - name: Verify provider-assisted synthetic conversations through the browser
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
+        run: python tests/assistant_browser_test.py
+      - name: Verify saved XLSX downloads and binary failure recovery
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
+        run: python tests/xlsx_browser_test.py
+
+  browser-compatibility:
+    name: Private workflows (${{ matrix.browser }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    env:
+      PANELREPLY_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install isolated test tools and native OCR
+        run: |
+          python -m pip install -r tests/browser-requirements.txt -r tests/prelaunch-requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng util-linux
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify marketing, private workflows, recovery and exports
+        run: |
+          result=0
+          for suite in tests/design_browser_test.py tests/workspace_browser_test.py tests/panel_browser_test.py tests/workspace_recovery_browser_test.py tests/platform_visual_browser_test.py tests/assistant_browser_test.py tests/xlsx_browser_test.py; do
+            python "$suite" || result=1
+          done
+          exit "$result"
+
+  ocr-benchmark:
+    name: Synthetic OCR measurements
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install benchmark tools
+        run: |
+          python -m pip install -r tests/prelaunch-requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng util-linux fonts-dejavu-core
+      - name: Generate and measure 310 unique synthetic label conditions
+        run: |
+          python tests/fixtures/panels-benchmark/generate.py "$RUNNER_TEMP/panelreply-ocr-benchmark"
+          node scripts/benchmark-ocr.cjs "$RUNNER_TEMP/panelreply-ocr-benchmark" "$RUNNER_TEMP/panelreply-ocr-results.json"
+      - name: Report the separate accuracy gate
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const r = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'panelreply-ocr-results.json')));
+          console.log(JSON.stringify({ accuracyGate: r.accuracyGate, overall: r.overall, scope: r.scope }));
+          if (r.accuracyGate !== 'PASS') console.log('::warning::Synthetic OCR has nonexact cases. Measurement completion is not an accuracy pass or release approval.');
+          NODE
+
+  public-suspension:
+    name: Required public suspension
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check the required suspended state using GET only
+        env:
+          PANELREPLY_EXPECT_PUBLIC_OFFLINE: 'true'
+        run: node --test tests/live-smoke.test.cjs
 

@@ -14,6 +14,9 @@ const LIMITS = Object.freeze({
   partNumberCharacters: 120,
   manufacturerCharacters: 120,
   descriptionCharacters: 500,
+  nativeAddressSpaceBytes: 1024 * 1024 * 1024,
+  nativeCpuSeconds: 10,
+  nativeOpenFiles: 64,
 });
 
 const MESSAGES = Object.freeze({
@@ -211,7 +214,9 @@ function parseTsv(tsv) {
   let matched = false;
   for (const line of recognizedLines) {
     for (const [field, pattern] of FIELD_LABELS) {
-      const match = line.text.match(pattern);
+      // A bullet/hyphen before an otherwise exact label is decoration, not a
+      // reason to ignore a second conflicting field. Never alter field values.
+      const match = line.text.replace(/^[-•]\s*/u, '').match(pattern);
       if (!match) continue;
       matched = true;
       const value = match[1].trim();
@@ -233,6 +238,10 @@ function parseTsv(tsv) {
     }
   }
   for (const field of ['partNumber', 'manufacturer', 'description']) {
+    // More than one conflicting field indicates different component records.
+    // Retaining the one remaining value would silently associate it with an
+    // unknown component. Preserve all source text for manual separation.
+    if (conflicts.size > 1) conflicts.add(field);
     if (conflicts.has(field)) {
       candidate[field] = '';
       candidate.confidence[field] = null;
@@ -250,6 +259,14 @@ function parseTsv(tsv) {
 }
 
 const BINARY = '/usr/bin/tesseract';
+const PROCESS_BINARY = '/usr/bin/prlimit';
+const PROCESS_PREFIX = Object.freeze([
+  `--as=${LIMITS.nativeAddressSpaceBytes}:${LIMITS.nativeAddressSpaceBytes}`,
+  `--cpu=${LIMITS.nativeCpuSeconds}:${LIMITS.nativeCpuSeconds}`,
+  '--core=0:0', '--fsize=0:0',
+  `--nofile=${LIMITS.nativeOpenFiles}:${LIMITS.nativeOpenFiles}`,
+  '--', BINARY,
+]);
 const OCR_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '6', 'tsv']);
 const CHILD_ENV = Object.freeze({ PATH: '/usr/bin:/bin', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8', OMP_THREAD_LIMIT: '1', OMP_NUM_THREADS: '1' });
 
@@ -257,9 +274,16 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
   // Injection exists for isolated process-failure tests, not HTTP callers or application settings.
   if (typeof spawnProcess !== 'function' || typeof now !== 'function' || !Number.isInteger(recognitionTimeoutMs) || recognitionTimeoutMs < 1 || recognitionTimeoutMs > LIMITS.recognitionTimeoutMs || !Number.isInteger(statusTimeoutMs) || statusTimeoutMs < 1 || statusTimeoutMs > LIMITS.statusTimeoutMs) throw new TypeError('Invalid local OCR service options.');
   let activeRecognition = false, processingImage = false, statusCache = null, statusPromise = null;
+  let closed = false, shutdownPromise = null;
+  const lifetime = new AbortController();
+  const pendingProcesses = new Set();
 
   function runProcess(args, { input, signal, timeoutMs, maxOutputBytes } = {}) {
+    signal = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
     if (signal?.aborted) return Promise.reject(new OcrError('OCR_CANCELLED'));
+    let markSettled;
+    const settled = new Promise(resolve => { markSettled = resolve; });
+    pendingProcesses.add(settled);
     return new Promise((resolve, reject) => {
       let child, timer, outputBytes = 0, terminalError = null, finished = false;
       const chunks = [];
@@ -268,6 +292,8 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         finished = true;
         clearTimeout(timer);
         signal?.removeEventListener('abort', cancel);
+        pendingProcesses.delete(settled);
+        markSettled();
         if (error) reject(error); else resolve(output);
       };
       const stop = code => {
@@ -279,7 +305,9 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       };
       const cancel = () => stop('OCR_CANCELLED');
       try {
-        child = spawnProcess(BINARY, [...args], { shell: false, cwd: '/', env: { ...CHILD_ENV }, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+        // prlimit execs the fixed engine in the same process. Missing limits or
+        // an unsupported host fail closed, never fall back to unbounded OCR.
+        child = spawnProcess(PROCESS_BINARY, [...PROCESS_PREFIX, ...args], { shell: false, cwd: '/', env: { ...CHILD_ENV }, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
       } catch (error) {
         finish(new OcrError(error?.code === 'ENOENT' ? 'OCR_UNAVAILABLE' : 'OCR_FAILED'));
         return;
@@ -318,6 +346,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
   }
 
   async function getOcrStatus() {
+    if (closed) return { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'service_shutdown' };
     if (statusCache && (now() - statusCache.at < LIMITS.statusCacheMs || processingImage)) return { ...statusCache.value };
     if (statusPromise) return { ...await statusPromise };
     statusPromise = (async () => {
@@ -342,6 +371,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
   }
 
   async function recognizeImage(buffer, { signal } = {}) {
+    if (closed) fail('OCR_CANCELLED');
     const image = inspectImage(buffer);
     const sourceBytes = Buffer.from(buffer);
     if (signal?.aborted) fail('OCR_CANCELLED');
@@ -350,7 +380,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
     const start = now();
     try {
       const status = await getOcrStatus();
-      if (signal?.aborted) fail('OCR_CANCELLED');
+      if (signal?.aborted || closed) fail('OCR_CANCELLED');
       if (!status.available) fail('OCR_UNAVAILABLE');
       processingImage = true;
       const input = image.mime === 'image/png' ? pngRecognitionBytes(sourceBytes) : sourceBytes;
@@ -359,8 +389,19 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
     } finally { activeRecognition = false; processingImage = false; }
   }
 
-  return { getOcrStatus, recognizeImage };
+  function shutdown() {
+    if (shutdownPromise) return shutdownPromise;
+    closed = true;
+    lifetime.abort();
+    shutdownPromise = (async () => {
+      await Promise.allSettled([...pendingProcesses]);
+      if (statusPromise) await statusPromise;
+    })();
+    return shutdownPromise;
+  }
+
+  return { getOcrStatus, recognizeImage, shutdown };
 }
 
 const localOcr = createOcrService();
-module.exports = { inspectImage, parseTsv, OcrError, LIMITS, createOcrService, getOcrStatus: localOcr.getOcrStatus, recognizeImage: localOcr.recognizeImage };
+module.exports = { inspectImage, parseTsv, OcrError, LIMITS, createOcrService, getOcrStatus: localOcr.getOcrStatus, recognizeImage: localOcr.recognizeImage, shutdown: localOcr.shutdown };

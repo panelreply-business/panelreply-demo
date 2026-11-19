@@ -24,8 +24,8 @@ Main's prior baseline is 396 passing checks and three intentionally blocked publ
 | Image rendering | Use authenticated same-origin source URLs. Keep the existing CSP: no inline scripts, no third-party scripts, no remote resources and no `blob:` image allowance. |
 | OCR | Optional local Tesseract 5 with English data. Results are candidates, never automatic confirmation. No paid OCR provider or remote upload. See [OCR comparison and measurements](OCR_OPTIONS.md). |
 | Spreadsheet format | Implement CSV first. UTF-8 BOM, CRLF, quote escaping and formula-prefix neutralization support spreadsheet import. Exact corrected field strings are retained apart from documented formula protection. |
-| XLSX | Evaluated and deferred. XLSX needs a ZIP/XML writer or a maintained library, plus type/formula/round-trip checks. CSV meets the first milestone without adding that dependency. XLSX is NOT IMPLEMENTED. |
-| Deployment | No new deployment, automatic deployment, public preview, domain or live integration. Both existing Render services remain owner-suspended. |
+| XLSX | A bounded dependency-free OOXML writer exports saved projects with explicit text cells, numeric quantities and no formulas or external relationships. Independent reader and native spreadsheet limits are documented in [XLSX verification](XLSX_EXPORT.md). |
+| Deployment | No new deployment, automatic deployment, public preview, domain or live integration. Both existing Render services are required to remain suspended. The current pre-launch audit found a conflicting active state. See [development progress](DEVELOPMENT_PROGRESS.md); do not change service state without owner approval. |
 
 ## Product surfaces
 
@@ -41,7 +41,7 @@ The authenticated dashboard links to customer requests, panel scanning, saved pr
 4. Choose or drop one PNG or JPEG label photograph you are authorized to store, then choose Save image. Selection stays in browser memory until that explicit save. The UI shows the pending operation without inventing a percentage. After saving, use View image to preview the private source. Save existing edits before upload or OCR so a new project version cannot overwrite a draft.
 5. If the local OCR readiness check passes, choose Extract text. Read the raw text, add candidates to the table, and correct each field against the original image.
 6. Missing core fields are identified in the table. A row must contain part number, manufacturer and description before it can be marked reviewed. Unknown fields stay blank and unreviewed. Editing a row clears its previous review status.
-7. Save the project. Reopen it from Saved projects. Export saved CSV to include the current saved corrections.
+7. Save the project. Reopen it from Saved projects. Export saved CSV or XLSX to include the current saved corrections.
 
 Removing a populated row requires confirmation and changes only the draft until Save project. Exports and Saved projects links retain the current project. Arriving at Exports without a project explains how to select one.
 
@@ -71,7 +71,7 @@ These are local development limits. They are not a hosted service plan or commer
 - An uncertain update checks the exact saved correction values before confirming success. Whitespace in notes or component fields is meaningful and must not be trimmed to manufacture a match.
 - Capacity errors describe the capacity issue. They must not pretend that a new project has a stale saved version.
 - A session change or expiry clears the client state and returns to sign-in. Existing server business scoping applies independently.
-- Missing OCR support leaves manual entry, correction, persistence and CSV available.
+- Missing OCR support leaves manual entry, correction, persistence, CSV and XLSX available.
 - Unsupported, oversized, malformed or undecodable images fail without a guessed result.
 - Native OCR timeout/cancellation kills and reaps the child process before another recognition can start.
 
@@ -79,7 +79,7 @@ These are local development limits. They are not a hosted service plan or commer
 
 Use the existing [private workspace setup](PRIVATE_WORKSPACE.md). Node 22.18 or later is required. The private server binds to 127.0.0.1 and rejects a public origin.
 
-For OCR, install Tesseract 5 and English language data on an approved local Linux development machine. The current adapter uses `/usr/bin/tesseract`. It does not automatically install packages or activate a provider at application startup. If the executable is unavailable, the UI reports that OCR is unavailable. Other operating systems or executable paths require a reviewed adapter change.
+For OCR, install Tesseract 5 and English language data on an approved local Linux development machine. The current adapter uses `/usr/bin/tesseract` behind `/usr/bin/prlimit` from util-linux. Readiness fails closed if either executable is absent. It does not automatically install packages or activate a provider at application startup. If the executable is unavailable, the UI reports that OCR is unavailable. Other operating systems or executable paths require a reviewed adapter change.
 
 The design website can be reviewed from the checked-out branch using a local-only static server:
 
@@ -91,16 +91,16 @@ Open `http://127.0.0.1:8080`. This command is for local review. It does not auth
 
 ## Storage, recovery and retention
 
-Uploaded images are private BLOBs, not files under a public directory. All image, project, OCR and CSV requests require the existing authenticated business scope. The database retains owner-only filesystem permissions. It is not encrypted at rest by this change. Encrypted backups cover intake, projects and images together and retain the restore password-reset requirement.
+Uploaded images are private BLOBs, not files under a public directory. All image, project, OCR, CSV and XLSX requests require the existing authenticated business scope. The database retains owner-only filesystem permissions. It is not encrypted at rest by this change. Encrypted backups cover intake, projects and images together and retain the restore password-reset requirement.
 
 Before opening an existing database with the new branch, take an encrypted backup and keep the original archive. Normal startup migrates schema 1 to schema 2. A schema 2 database must be used with schema 2-capable code. Do not point older main/recovery code at the upgraded database as a rollback. To revert, restore a pre-migration archive into a fresh directory with the matching code and follow the existing password-reset process.
 
 Project/image deletion, automatic retention and offsite backup are NOT IMPLEMENTED. Keep development data synthetic or explicitly authorized. A customer pilot needs an approved retention/deletion process, storage plan, restore objectives and resource isolation before accepting live documents.
 
-The existing JSON business-record export keeps its intake/profile contract. Per-project CSV exports cover panel rows. Encrypted backups cover both modules and source images. These three outputs serve different purposes and are not interchangeable.
+The existing JSON business-record export keeps its intake/profile contract. Per-project CSV and XLSX exports cover panel rows. Encrypted backups cover both modules and source images. These three outputs serve different purposes and are not interchangeable.
 
 ## Remaining product gates
 
-This branch targets the first development milestone and a local authenticated panel workflow. It is not full commercial readiness. Pending gates include authorized real-photo OCR benchmarking, hosted private access and storage, resource isolation for native image processing, deletion/retention, offsite restore drills, account recovery operations, reviewed legal text, pricing and any approved live integrations. No appointment is confirmed until an actual calendar integration is implemented and verified.
+This branch targets the first development milestone and a local authenticated panel workflow. It is not full commercial readiness. Pending gates include authorized real-photo OCR benchmarking, hosted private access and storage, host isolation beyond the implemented native process limits, deletion/retention, offsite restore drills, account recovery operations, reviewed legal text, pricing and any approved live integrations. No appointment is confirmed until an actual calendar integration is implemented and verified.
 
 The owner must approve a merge into main and any later public exposure separately.

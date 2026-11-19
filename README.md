@@ -6,7 +6,9 @@ PanelReply is a software platform for electrical contractors. It combines custom
 
 ## Current status
 
-Both public Render demos are intentionally offline at the owner's request. They show `This service has been suspended by its owner.` Auto-deploy remains off. Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
+The required public state is suspended. The 2026-11-19 pre-launch audit found both Render services reporting active, contrary to that requirement. Auto-deploy and PR previews remain off. This configuration is a release blocker and needs owner-approved correction. No Render state was changed by this development session. Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
+
+Current pre-launch work and evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Operations and business proposal](docs/PRELAUNCH_OPERATIONS.md). Earlier verification below describes the previously passing milestone, not current-commit verification.
 
 - Public static URL: https://panelreply-demo.onrender.com/
 - Public server URL: https://panelreply-ai.onrender.com/
@@ -26,9 +28,11 @@ The branch adds:
 - A guided sample-label-to-parts walkthrough with Skip, reduced motion and preserved edits. It displays predetermined data and makes no live OCR claim.
 - Product, feature, pricing-preparation, login-information, pilot-preparation and legal-review views without external submission or invented claims.
 - A shared dashboard and navigation for requests, panel scanning, saved projects, exports, settings and account details.
-- Authenticated panel projects with editable parts, quantities, source images, review status and saved CSV exports.
+- Authenticated panel projects with editable parts, quantities, source images, review status and saved CSV and XLSX exports.
 - Private source-image storage in the existing SQLite database, with schema 1-to-schema 2 migration and recovery compatibility.
-- Optional local Tesseract 5 text extraction. All candidates require review. Missing values stay blank.
+- Optional local Tesseract 5 text extraction with bounded native resources. All candidates require review. Missing values stay blank. The expanded synthetic benchmark still has nonexact cases.
+- Provider-independent conversational assistance with strict field grounding, cancellation, error handling and synthetic integration tests. The concrete external transport remains disabled.
+- Independent spreadsheet readback, concurrent database workers and a bounded backup/restore workload. See the current pre-launch evidence for limits.
 - Browser checks at 360, 390, 430, 768, 1024 and 1440 px, plus failure, isolation and export regressions.
 
 The platform and redesign passed 590 checks with zero failures in [run 61](https://github.com/panelreply-business/panelreply-demo/actions/runs/44535177854): 406 Node/HTTP, 175 Chromium and 9 native OCR cases. Three public application checks remain intentionally BLOCKED. [Full verification, corrected defects and reviewed screenshots](docs/PLATFORM_VERIFICATION.md). This completes the first development milestone on the draft branch, not commercial readiness. [Design system and interaction decisions](docs/DESIGN_SYSTEM.md). [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
@@ -74,7 +78,7 @@ WORKSPACE_DATA_DIR="$HOME/.local/share/panelreply" node workspace-server.cjs
 
 Open http://127.0.0.1:10001/login. The entry point binds only to the loopback interface. It rejects a public origin.
 
-The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their public Render services stay suspended.
+The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their required public state is suspended. The current configuration discrepancy is recorded above and in the progress report.
 
 ## Prior recovery verification
 
@@ -82,7 +86,7 @@ The recovery candidate passed 396 checks with zero failures in [CI run 445167050
 
 The CI workflow checks the generated demo and CSP, pure intake and answer logic, private authentication and SQLite storage, real HTTP routes, existing demo browser behavior and the private workspace through Chromium. It also exercises export downloads, encrypted restore into a fresh directory and password recovery. Synthetic fixtures are isolated from real customers. No provider calls or outbound messages are used.
 
-The recurring audit continues to review code and CI, safe external GET checks and accessible Render state. Three application checks are BLOCKED while the public services are intentionally offline. Offline guards must confirm the suspended response rather than report an outage to fix.
+The recurring audit continues to review code and CI, safe external GET checks and accessible Render state. Three application checks are intentionally BLOCKED under the offline policy. Separate GET-only guards check the required suspended responses and report FAIL if a service is active. They must never resume a service or silently treat an active service as acceptable.
 
 [Recovery results and remaining gates](docs/RECOVERY_VERIFICATION.md) · [Prior workspace evidence](docs/PRIVATE_WORKSPACE_VERIFICATION.md)
 

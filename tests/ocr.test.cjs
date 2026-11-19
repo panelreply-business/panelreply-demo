@@ -45,11 +45,13 @@ function tinyPng({ width = 1, height = 1, extra = [], depth = 8, colorType = 2 }
 function fakeSpawner({ recognize, probe, version = 'tesseract 5.5.0\n', languages = 'List of available languages in private-path (1):\neng\n', spawnError, killDelay = 0 } = {}) {
   const calls = [];
   function spawnProcess(binary, args, options) {
+    const processArgs = [...args];
+    args = args.slice(args.indexOf('/usr/bin/tesseract') + 1);
     const child = new EventEmitter();
     child.pid = spawnError ? undefined : 12345;
     child.stdout = new PassThrough();
     child.stderr = new PassThrough();
-    const call = { binary, args, options, child, input: [], kills: [], closed: false };
+    const call = { binary, args, processArgs, options, child, input: [], kills: [], closed: false };
     child.stdin = new Writable({ write(data, encoding, callback) { call.input.push(Buffer.from(data)); callback(); } });
     call.finish = (output = '', code = 0) => {
       if (call.closed) return;
@@ -242,7 +244,8 @@ test('recognition uses shell-free stdin with fixed args and no inherited credent
   assert.equal(result.engineVersion, '5.5.0');
   assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
   for (const call of fake.calls) {
-    assert.equal(call.binary, '/usr/bin/tesseract');
+    assert.equal(call.binary, '/usr/bin/prlimit');
+    assert.deepEqual(call.processArgs.slice(0, 7), ['--as=1073741824:1073741824', '--cpu=10:10', '--core=0:0', '--fsize=0:0', '--nofile=64:64', '--', '/usr/bin/tesseract']);
     assert.equal(call.options.shell, false);
     assert.equal(call.options.cwd, '/');
     assert.deepEqual(Object.keys(call.options.env).sort(), ['LANG', 'LC_ALL', 'OMP_NUM_THREADS', 'OMP_THREAD_LIMIT', 'PATH']);
@@ -397,4 +400,86 @@ test('stream failures terminate the recognition child without returning stream e
 test('production bounds cannot be relaxed through the injected service options', () => {
   assert.throws(() => createOcrService({ recognitionTimeoutMs: LIMITS.recognitionTimeoutMs + 1 }), /Invalid local OCR service options/);
   assert.throws(() => createOcrService({ statusTimeoutMs: 0 }), /Invalid local OCR service options/);
+});
+
+test('multiple conflicting component fields cannot borrow a remaining field from another component', () => {
+  const result = parseTsv(tsv(['PART NUMBER: FIRST-1', 'MANUFACTURER: FIRST MAKER', 'DESCRIPTION: FIRST LABEL', 'PART NUMBER: SECOND-2', 'MANUFACTURER: SECOND MAKER']));
+  assert.deepEqual(Object.fromEntries(['partNumber', 'manufacturer', 'description'].map(key => [key, result.candidates[0][key]])), { partNumber: '', manufacturer: '', description: '' });
+  assert.match(result.rawText, /FIRST LABEL/);
+  assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+});
+
+test('bullet-prefixed labelled conflicts remain unknown without correcting OCR field characters', () => {
+  const result = parseTsv(tsv(['PART NUMBER: SAMPLE-2042 |', 'MANUFACTURER: INVENTED ZETALAB)', '-MANUFACTURER: FICTIONAL COMPONENTS', 'DESCRIPTION: SYNTHETIC LABEL ALPHA']));
+  assert.equal(result.candidates[0].manufacturer, '');
+  assert.equal(result.candidates[0].partNumber, 'SAMPLE-2042 |');
+  assert.match(result.rawText, /-MANUFACTURER/);
+  assert.match(result.candidates[0].warnings.join(' '), /Ambiguous manufacturer/);
+  assert.deepEqual(parseTsv(tsv(['UNKNOWN MANUFACTURER: FICTIONAL COMPONENTS'])).candidates, []);
+  assert.equal(parseTsv(tsv(['• PART NUMBER: TEST-1'])).candidates[0].partNumber, 'TEST-1');
+});
+
+test('shutdown cancels recognition and awaits native close before resolving', async () => {
+  let started;
+  const ready = new Promise(resolve => { started = resolve; });
+  const fake = fakeSpawner({ recognize: () => started(), killDelay: 20 });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const pending = service.recognizeImage(tinyPng());
+  const rejected = assert.rejects(pending, isError('OCR_CANCELLED', 499));
+  await ready;
+  const firstShutdown = service.shutdown();
+  assert.equal(service.shutdown(), firstShutdown);
+  assert.equal(fake.calls.at(-1).closed, false);
+  await firstShutdown;
+  assert.equal(fake.calls.at(-1).closed, true);
+  assert.deepEqual(fake.calls.at(-1).kills, ['SIGKILL']);
+  await rejected;
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_CANCELLED', 499));
+});
+
+test('shutdown during readiness prevents a recognition process from starting', async () => {
+  let started;
+  const ready = new Promise(resolve => { started = resolve; });
+  const fake = fakeSpawner({ probe: () => started(), killDelay: 10 });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const pending = service.recognizeImage(tinyPng());
+  const rejected = assert.rejects(pending, isError('OCR_CANCELLED', 499));
+  await ready;
+  await service.shutdown();
+  await rejected;
+  assert.equal(fake.calls.length, 1);
+  assert.equal(fake.calls[0].closed, true);
+  assert.equal((await service.getOcrStatus()).reason, 'service_shutdown');
+});
+
+test('shutting down an idle service starts no process and invalidates cached readiness', async () => {
+  const fake = fakeSpawner();
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  await service.getOcrStatus();
+  const count = fake.calls.length;
+  await service.shutdown();
+  assert.deepEqual(await service.getOcrStatus(), { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'service_shutdown' });
+  assert.equal(fake.calls.length, count);
+});
+
+test('missing resource limiter never falls back to an unbounded engine', async () => {
+  const fake = fakeSpawner({ spawnError: 'ENOENT' });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  assert.equal((await service.getOcrStatus()).available, false);
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
+  assert.ok(fake.calls.every(call => call.binary === '/usr/bin/prlimit'));
+  await service.shutdown();
+});
+
+test('unexpected native crash releases the slot only after close and permits retry', async () => {
+  let calls = 0;
+  const fake = fakeSpawner({ recognize: call => {
+    calls += 1;
+    if (calls === 1) { call.closed = true; call.child.emit('close', null, 'SIGSEGV'); }
+    else call.finish(GOOD_TSV);
+  } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_FAILED', 422));
+  assert.equal((await service.recognizeImage(tinyPng())).candidates[0].partNumber, 'DEMO-1234');
+  await service.shutdown();
 });

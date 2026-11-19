@@ -137,4 +137,4 @@ The dual-product development branch adds schema 2 panel projects and private sou
 
 Normal application startup migrates a validated schema 1 database to schema 2 in one transaction. Recovery reads use `create:false` and do not migrate an existing database. Take an encrypted pre-migration backup before opening an existing workspace with the new branch. Older schema 1-only code cannot open a schema 2 database. A rollback uses the pre-migration archive in a fresh directory rather than overwriting the upgraded database.
 
-The JSON business-record export remains intake/profile data. Per-project CSV is the panel spreadsheet export. Encrypted backups cover both modules and source images. Project/image deletion, automatic retention and hosted/offsite storage remain outside the implemented local recovery scope.
+The JSON business-record export remains intake/profile data. Per-project CSV and XLSX are panel spreadsheet exports. Encrypted backups cover both modules and source images. Project/image deletion, automatic retention and hosted/offsite storage remain outside the implemented local recovery scope.
