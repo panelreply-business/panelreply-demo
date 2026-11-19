@@ -186,6 +186,11 @@ test('urgent electrical situations trigger safety hold', () => {
     'There is smoke!', 'downed power line','downed wire',
     'I got an electric shock', 'electrocuted','exposed live wire',
     'burning odor', 'burning smell', 'hot panel',
+    'My breaker is melting', 'The outlet is overheating', 'The wires are sizzling',
+    'The outlet caught fire', 'A power line fell in my yard',
+    'I just got zapped by an outlet', 'I smell something burning in the panel',
+    'There are flames coming out of the breaker box',
+    'The outlet smells like it\'s burning', 'My plug is smoldering',
   ];
   for (const message of cases) {
     const f = fixture();
@@ -201,6 +206,32 @@ test('ordinary smoke-detector installation does not trigger emergency hold', () 
   f.send('Install a smoke detector');
   assert.equal(f.state().hold, false);
   assert.equal(f.state().stage, 1);
+});
+
+test('normal electrical requests do not trigger a hazard hold', () => {
+  for (const message of [
+    'Install a smoke alarm', 'I need smoke detector replacement',
+    'I want a hot tub outlet', 'My heating bill is burning through cash',
+    'Install a fire alarm', 'I need a new outlet for a melting pot',
+  ]) {
+    const f = fixture();
+    f.send(message);
+    assert.equal(f.state().hold, false, 'Normal job: ' + message);
+    assert.equal(f.state().stage, 1);
+  }
+});
+
+test('emergency messages at ZIP and callback stages stop intake', () => {
+  for (const stage of [1, 2]) {
+    const f = fixture();
+    f.send('Install a new panel');
+    if (stage === 2) f.send('48315');
+    assert.equal(f.state().stage, stage);
+    f.send('My breaker is melting');
+    assert.equal(f.state().hold, true);
+    assert.equal(f.state().stage, stage, 'No advancement after hazard');
+    assert.match(f.node('step').textContent, /SAFETY HOLD/);
+  }
 });
 
 test('STOP is honored even if an urgent message arrives afterward', () => {
