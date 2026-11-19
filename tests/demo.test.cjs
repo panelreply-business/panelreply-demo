@@ -550,3 +550,15 @@ test('STOP ignores a late AI result and does not resume collection', async () =>
   assert.doesNotMatch(f.messages().join(' '), /ready for a callback/);
 });
 
+
+test('polite unsubscribe and opt-out requests suppress all follow-up intake', async () => {
+  for (const message of ['Please unsubscribe me', 'Please opt out', 'Opt out please', 'Please opt out, ZIP 48315']) {
+    const f = fixture();
+    await f.send(message);
+    assert.equal(f.state().stopped, true, message);
+    assert.equal(f.state().stage, 0, message);
+    await f.send('Install lights, ZIP 48315, Friday');
+    assert.equal(f.state().stage, 0);
+    assert.match(f.messages().at(-1), /without an automated reply/);
+  }
+});

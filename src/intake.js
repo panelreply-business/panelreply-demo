@@ -16,7 +16,7 @@
   function isOptOut(text) {
     if (typeof text !== 'string') return false;
     const prepare = value => normalize(value).replace(/^please\s*,\s*/i, 'please ').replace(/,\s*please[.!?]*$/i, '');
-    const command = /^(?:(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:[.!?]*|\s+please[.!?]*)|(?:please\s+)?stop\s+(?:texting|messaging|sending\s+(?:me\s+)?(?:texts?|messages?)|all\s+(?:texts?|messages?))(?:\s+me)?(?:\s+(?:now|again|please))?[.!?]*|(?:please\s+)?(?:do\s+not|don't|dont)\s+(?:text|message|contact)\s+me(?:\s+again)?[.!?]*|(?:please\s+)?remove\s+me(?:\s+from\s+(?:your\s+)?(?:list|messages?))?[.!?]*|(?:please\s+)?no\s+more\s+(?:texts?|messages?)[.!?]*|unsubscribe\s+me[.!?]*|opt\s*out[.!?]*)$/i;
+    const command = /^(?:(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:[.!?]*|\s+please[.!?]*)|(?:please\s+)?stop\s+(?:texting|messaging|sending\s+(?:me\s+)?(?:texts?|messages?)|all\s+(?:texts?|messages?))(?:\s+me)?(?:\s+(?:now|again|please))?[.!?]*|(?:please\s+)?(?:do\s+not|don't|dont)\s+(?:text|message|contact)\s+me(?:\s+again)?[.!?]*|(?:please\s+)?remove\s+me(?:\s+from\s+(?:your\s+)?(?:list|messages?))?[.!?]*|(?:please\s+)?no\s+more\s+(?:texts?|messages?)[.!?]*|(?:please\s+)?unsubscribe\s+me(?:\s+please)?[.!?]*|(?:please\s+)?opt\s*out(?:\s+please)?[.!?]*)$/i;
     const bareCommand = /^(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:\s+please)?[.!?]*$/i;
     if (command.test(prepare(text))) return true;
     // A complete opt-out inside a bundled request still controls the request.

@@ -425,5 +425,21 @@ class IntakeBrowserTests(unittest.TestCase):
         self.assertEqual(stored, {"local": 0, "session": 0, "cookies": ""})
 
 
+    def test_polite_unsubscribe_and_opt_out_stop_demo_intake(self):
+        for message in (
+            "Please unsubscribe me",
+            "Please, unsubscribe me.",
+            "Unsubscribe me please",
+            "Please opt out",
+            "Opt out please",
+            "Please opt out, ZIP 48315.",
+        ):
+            with self.subTest(message=message):
+                self.page.locator("#reset").click()
+                self.send(message)
+                expect(self.page.locator("#title")).to_have_text("Automated replies paused.")
+                expect(self.page.locator("#summary")).not_to_contain_text("ZIP: 48315")
+                self.assertEqual(self.api_requests, [])
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -191,3 +191,20 @@ test('module runs in browser scope without Node modules', () => {
   assert.equal(typeof sandbox.PanelReplyIntake.extractFields, 'function');
   assert.equal(sandbox.PanelReplyIntake.extractFields('ZIP 48315', {}).zip, '48315');
 });
+
+test('polite unsubscribe and opt-out requests inside bundled input stop the local intake', () => {
+  for (const message of [
+    'Please unsubscribe me',
+    'Please, unsubscribe me.',
+    'Unsubscribe me please',
+    'Please opt out',
+    'Opt out please',
+    'Please unsubscribe me. ZIP 48315. Call Friday.',
+    'Please opt out, ZIP 48315.'
+  ]) {
+    assert.equal(intake.isOptOut(message), true, message);
+    assert.deepEqual(intake.extractFields(message, empty),
+      { job: null, zip: null, timing: null, ambiguous: false }, message);
+  }
+  assert.equal(intake.isOptOut('Please review my opt out wiring'), false);
+});

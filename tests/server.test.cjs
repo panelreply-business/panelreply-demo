@@ -477,3 +477,16 @@ test('a client already disconnected before extraction never starts or spends a p
     assert.equal(app.stats.active, 0, state);
   }
 });
+
+test('polite unsubscribe and opt-out phrases bypass the provider with no usage', async () => {
+  const provider = spyProvider();
+  const app = createApp({ env: environment(), fetchImpl: provider.fetchImpl });
+  for (const message of ['Please unsubscribe me', 'Please opt out', 'Opt out please', 'Please, unsubscribe me. ZIP 48315.']) {
+    const result = await request(app, { input: { message, fields: FIELDS } });
+    assert.equal(result.status, 200, message);
+    assert.equal(result.body.flags.optOut, true, message);
+    assert.equal(result.body.mode, 'local', message);
+  }
+  assert.equal(provider.calls.length, 0);
+  assert.equal(app.stats.attempted, 0);
+});

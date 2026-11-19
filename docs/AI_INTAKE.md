@@ -132,6 +132,7 @@ The first CI attempt, [44432326216](https://github.com/panelreply-business/panel
 | Medium | Complete intake, then send `Actually the job ZIP is 48084` | Strip correction/location scaffolding without replacing the job |
 | Medium | Supply conflicting ZIPs, then provide only a timing correction | Keep ZIP clarification pending until a ZIP is confirmed |
 | High | Send `No more texts. My ZIP is 48315.` or `STOP. My breaker is melting.` | Honor opt-out clauses within bundled input and retain safety hold separately |
+| Medium | Send `Please unsubscribe me` or `Please opt out, ZIP 48315` in static demo | Recognize polite opt-out requests before any intake extraction and avoid AI calls |
 | Medium | Fake model returns the same ZIP as job, ZIP and timing | Reject impossible field types, then show local fallback |
 | Medium | Client is already disconnected when provider processing begins | Check connection state before counters and provider call |
 
