@@ -112,7 +112,10 @@ class DemoBrowserTests(unittest.TestCase):
         self.send("Install lights")
         for invalid in ("1234", "123456", "abcde", "48315-1234"):
             self.send(invalid)
-            expect(self.page.locator("#title")).to_have_text("Collect the job ZIP.")
+            expected_heading = "Clarify the request." if invalid == "48315-1234" else "Collect the job ZIP."
+            expect(self.page.locator("#title")).to_have_text(expected_heading)
+            expect(self.page.locator("#summary")).to_contain_text("ZIP: Not collected")
+            expect(self.page.locator("#events .event").last).to_contain_text("five-digit job ZIP")
         self.send("48315")
         self.send("...")
         expect(self.page.locator("#title")).to_have_text("Collect timing.")
