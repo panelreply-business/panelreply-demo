@@ -93,6 +93,38 @@ test('editing any permitted part field clears prior review without mutating the 
   assert.throws(() => core.editPart(original, '__proto__', 'value'), TypeError);
 });
 
+test('untouched sample rows can be removed without a correction confirmation', () => {
+  for (const part of core.freshParts()) assert.equal(core.partNeedsRemovalConfirmation(part), false);
+});
+
+test('removing a corrected or reviewed row requires confirmation', () => {
+  for (const field of core.PART_FIELDS) {
+    const part = core.freshParts()[0];
+    part[field] = field === 'quantity' ? '3' : 'Corrected value';
+    assert.equal(core.partNeedsRemovalConfirmation(part), true, field);
+  }
+  assert.equal(core.partNeedsRemovalConfirmation({ ...core.freshParts()[0], reviewed: true }), true);
+});
+
+test('removal confirmation protects manual values but permits removing an empty new row', () => {
+  const blank = core.newPart('new-part-1');
+  assert.equal(core.partNeedsRemovalConfirmation(blank), false);
+  assert.equal(core.partNeedsRemovalConfirmation({ ...blank, description: 'Manually entered sample' }), true);
+  assert.equal(core.partNeedsRemovalConfirmation({ ...blank, manufacturer: 'Example manufacturer' }), true);
+  assert.equal(core.partNeedsRemovalConfirmation({ ...blank, quantity: '2' }), true);
+});
+
+test('walkthrough change detection includes corrected, reviewed, removed and reordered rows', () => {
+  assert.equal(core.partsMatchSample(core.freshParts()), true);
+  const parts = core.freshParts();
+  parts[0].partNumber = 'CORRECTED';
+  assert.equal(core.partsMatchSample(parts), false);
+  assert.equal(core.partsMatchSample(core.freshParts().slice(1)), false);
+  assert.equal(core.partsMatchSample(core.freshParts().reverse()), false);
+  assert.equal(core.partsMatchSample([{ ...core.freshParts()[0], reviewed: true }, ...core.freshParts().slice(1)]), false);
+  assert.equal(core.partsMatchSample(null), false);
+});
+
 test('a blank manual part is unreviewed and cannot export until it contains a detail', () => {
   const part = core.newPart('new-1');
   assert.equal(part.source, 'Manual entry');
@@ -189,4 +221,27 @@ test('preview exposes accessible demo tabs and explicitly describes capability b
   assert.match(controller, /ArrowLeft/u);
   assert.match(controller, /Home/u);
   assert.match(controller, /End/u);
+});
+
+test('guided sample states explain predetermined data and expose skip and confirmation controls', () => {
+  const html = fs.readFileSync(path.join(demoDirectory, 'index.html'), 'utf8');
+  const controller = fs.readFileSync(path.join(demoDirectory, 'app.js'), 'utf8');
+  for (const id of ['start-parts-walkthrough', 'parts-walkthrough', 'walkthrough-source', 'walkthrough-output', 'walkthrough-next', 'walkthrough-skip', 'walkthrough-close', 'walkthrough-preserved', 'remove-part-dialog', 'cancel-remove-part', 'confirm-remove-part']) assert.ok(html.includes(`id="${id}"`), id);
+  assert.match(html, /predetermined sample values/u);
+  assert.match(html, /does not analyze the image or run OCR/u);
+  assert.match(controller, /reducedMotion\.matches/u);
+  assert.match(controller, /window\.clearTimeout\(walkthroughTimer\)/u);
+});
+
+test('light and dark mark assets use the same original geometry without external references', () => {
+  const dark = fs.readFileSync(path.join(demoDirectory, 'mark-on-dark.svg'), 'utf8');
+  const light = fs.readFileSync(path.join(demoDirectory, 'mark-on-light.svg'), 'utf8');
+  const defaultMark = fs.readFileSync(path.join(demoDirectory, 'mark.svg'), 'utf8');
+  assert.equal(defaultMark, dark);
+  assert.deepEqual([...dark.matchAll(/\bd="([^"]+)"/gu)].map(match => match[1]), [...light.matchAll(/\bd="([^"]+)"/gu)].map(match => match[1]));
+  assert.notEqual(dark, light);
+  for (const svg of [dark, light]) {
+    assert.match(svg, /viewBox="0 0 40 40"/u);
+    assert.doesNotMatch(svg, /<script|<image|href=|onload=|font-family/iu);
+  }
 });

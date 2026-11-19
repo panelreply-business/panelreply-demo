@@ -16,6 +16,8 @@
   let pendingNavigation = null;
   let pendingSave = null;
   let pendingUpload = null;
+  let selectedFile = null;
+  let savingSource = false;
   let createKey = '';
   let ocrStatus = { available: false };
   let ocrResult = null;
@@ -39,6 +41,9 @@
     projects = [];
     pendingSave = null;
     pendingUpload = null;
+    savingSource = false;
+    clearSourceSelection();
+    $('source-progress').hidden = true;
     baseline = '';
     revoke(downloadUrls);
     $('project-form').reset();
@@ -93,8 +98,12 @@
     const saved = Boolean(project?.id);
     const sourceAllowed = saved && !locked && !dirty() && !conflict && project.sources.length < 5;
     $('panel-image').disabled = !sourceAllowed;
-    $('upload-source').disabled = busy || !ready || Boolean(pendingSave) || (!pendingUpload && (!sourceAllowed || !$('panel-image').files.length));
+    $('upload-source').disabled = busy || !ready || Boolean(pendingSave) || (!pendingUpload && (!sourceAllowed || !selectedFile));
     $('upload-source').textContent = pendingUpload ? 'Retry image save' : 'Save image';
+    $('clear-source-selection').disabled = locked;
+    $('source-dropzone').setAttribute('aria-disabled', String(!sourceAllowed));
+    $('source-dropzone').setAttribute('aria-busy', String(savingSource));
+    $('source-progress').hidden = !savingSource;
     $('source-save-help').textContent = unresolved() ? 'Confirm the pending save before continuing.' : !saved ? 'Save the project before adding an image.' : dirty() ? 'Save your changes before uploading an image or extracting text.' : conflict ? 'Reload the saved project before adding images or extracting text.' : project.sources.length >= 5 ? 'This project has five source images. You can still review the saved images and edit parts.' : 'Images stay with this project. Text extraction runs locally when the OCR engine is available.';
     for (const button of $('source-list').querySelectorAll('[data-ocr]')) button.disabled = locked || !saved || dirty() || conflict || !ocrStatus.available;
     for (const button of $('source-list').querySelectorAll('[data-view]')) button.disabled = busy || !ready || expired;
@@ -157,20 +166,39 @@
         row.reviewStatus = 'unreviewed';
         control.closest('tr').querySelector('[data-field="reviewStatus"]').value = 'unreviewed';
       }
-      control.closest('tr').dataset.reviewed = String(row.reviewStatus === 'reviewed');
+      updateRowReview(control.closest('tr'), row);
       updateControls();
     });
     return control;
+  }
+  function updateRowReview(tr, row) {
+    tr.dataset.reviewed = String(row.reviewStatus === 'reviewed');
+    const missing = FIELDS.filter(([field]) => CORE.includes(field) && !String(row[field] || '').trim()).map(([, label]) => label.toLowerCase());
+    const note = tr.querySelector('[data-review-note]');
+    if (note) note.textContent = missing.length ? `Missing ${missing.join(', ')}` : '';
   }
   function renderRows() {
     $('panel-parts-body').replaceChildren();
     rows.forEach((row, index) => {
       const tr = node('tr'); tr.dataset.reviewed = String(row.reviewStatus === 'reviewed');
       const number = node('td'); number.append(node('span', index + 1, 'row-number')); tr.append(number);
-      for (const [field, label, max] of FIELDS) { const td = node('td'); td.append(rowControl(field, label, max, row, index)); tr.append(td); }
+      for (const [field, label, max] of FIELDS) {
+        const td = node('td'); const control = rowControl(field, label, max, row, index); td.append(control);
+        if (field === 'reviewStatus') {
+          const note = node('p', '', 'row-review-note'); note.id = `row-review-note-${index}`; note.dataset.reviewNote = 'true';
+          control.setAttribute('aria-describedby', note.id); td.append(note);
+        }
+        tr.append(td);
+      }
       const td = node('td'); const remove = node('button', 'Remove', 'remove-row'); remove.type = 'button'; remove.setAttribute('aria-label', `Remove row ${index + 1}`);
-      remove.addEventListener('click', () => { rows.splice(index, 1); renderRows(); $('project-save-status').textContent = 'Row removed from the draft. Save to update the project.'; const controls = $('panel-parts-body').querySelectorAll('[data-field="partNumber"]'); (controls[Math.min(index, controls.length - 1)] || $('add-part')).focus(); });
+      remove.addEventListener('click', () => {
+        const containsWork = CORE.some(field => String(row[field] || '').trim()) || String(row.notes || '').trim() || row.sourceImageId || row.reviewStatus === 'reviewed';
+        if (containsWork && !window.confirm(`Remove row ${index + 1} from this draft? Save the project to apply the removal.`)) return;
+        rows.splice(index, 1); renderRows(); $('project-save-status').textContent = 'Row removed from the draft. Save to update the project.';
+        const controls = $('panel-parts-body').querySelectorAll('[data-field="partNumber"]'); (controls[Math.min(index, controls.length - 1)] || $('add-part')).focus();
+      });
       td.append(remove); tr.append(td); $('panel-parts-body').append(tr);
+      updateRowReview(tr, row);
     });
     updateControls();
   }
@@ -189,7 +217,7 @@
     $('project-save-status').textContent = message;
     $('source-status').textContent = ''; $('panel-export-status').textContent = '';
     $('ocr-result').hidden = true; $('ocr-raw-text').textContent = ''; $('ocr-warnings').replaceChildren();
-    $('panel-image').value = '';
+    clearSourceSelection();
     for (const id of ['project-error', 'source-error', 'panel-export-error']) error(id, '');
     renderRows(); renderSources(); renderList();
   }
@@ -292,19 +320,42 @@
     for (let i = 0; i < buffer.length; i += 8192) value += String.fromCharCode(...buffer.subarray(i, i + 8192));
     return btoa(value);
   }
+  function clearSourceSelection() {
+    selectedFile = null;
+    $('panel-image').value = '';
+    $('source-selection-text').textContent = '';
+    $('source-selection').hidden = true;
+    $('source-dropzone').dataset.dragging = 'false';
+  }
+  function chooseSource(files) {
+    if ($('panel-image').disabled) return;
+    const file = files?.[0];
+    error('source-error', '');
+    $('source-status').textContent = '';
+    if (!file) { clearSourceSelection(); updateControls(); return; }
+    if (files.length !== 1 || !['image/png', 'image/jpeg'].includes(file.type) || !file.size || file.size > 2 * 1024 * 1024) {
+      clearSourceSelection();
+      error('source-error', files.length !== 1 ? 'Choose one image at a time.' : 'Choose a PNG or JPEG image no larger than 2 MB.');
+      updateControls(); return;
+    }
+    selectedFile = file;
+    $('source-selection-text').textContent = `${file.name} · ${Math.ceil(file.size / 1024)} KB · Selected on this device. Save, then view the image to check it.`;
+    $('source-selection').hidden = false;
+    updateControls();
+  }
   async function uploadSource() {
     if (busy || pendingSave || !project?.id) return;
     error('source-error', '');
     if (!pendingUpload) {
-      const file = $('panel-image').files[0];
+      const file = selectedFile;
       if (!file) { error('source-error', 'Choose a PNG or JPEG image.'); return; }
       if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 2 * 1024 * 1024 || !file.size) { error('source-error', 'Choose a PNG or JPEG image no larger than 2 MB.'); return; }
       if (dirty() || conflict) { error('source-error', 'Save your changes before uploading an image.'); return; }
-      busy = true; updateControls();
+      busy = true; savingSource = true; updateControls(); $('source-status').textContent = 'Reading selected image…';
       try { pendingUpload = { body: { version: project.version, name: file.name, mime: file.type, dataBase64: await fileBase64(file) }, key: crypto.randomUUID(), method: 'POST' }; }
-      catch (_) { busy = false; error('source-error', 'The image could not be read. Choose the file again.'); updateControls(); return; }
+      catch (_) { busy = false; savingSource = false; $('source-status').textContent = ''; error('source-error', 'The image could not be read. Choose the file again.'); updateControls(); return; }
     }
-    busy = true; updateControls(); $('source-status').textContent = 'Saving source image…';
+    busy = true; savingSource = true; updateControls(); $('source-status').textContent = 'Saving source image…';
     try {
       const result = await api(`/api/panel-projects/${project.id}/sources`, pendingUpload);
       if (expired) return;
@@ -318,7 +369,7 @@
         $('source-status').textContent = pendingUpload ? 'Image save is unconfirmed. Retry the same image to check the result.' : '';
         error('source-error', cause.message);
       }
-    } finally { busy = false; if (!expired) updateControls(); }
+    } finally { busy = false; savingSource = false; if (!expired) updateControls(); }
   }
   async function extractSource(source) {
     if (busy || unresolved() || dirty() || conflict || !ocrStatus.available) return;
@@ -384,14 +435,30 @@
       const id = new URL(window.location.href).searchParams.get('project');
       if (id) await openProject(id);
     }
+    updateEmptyIntent();
   }
+  function updateEmptyIntent() { $('export-empty-help').hidden = Boolean(project) || location.hash !== '#export'; }
   for (const id of ['new-project', 'create-first-project']) $(id).addEventListener('click', () => guarded(newProject));
   $('project-form').addEventListener('submit', saveProject);
   $('retry-project-save').addEventListener('click', saveProject);
   $('project-search').addEventListener('input', renderList);
   for (const id of ['project-name', 'project-notes']) $(id).addEventListener('input', () => { error('project-error', ''); $('project-save-status').textContent = ''; updateControls(); });
   $('add-part').addEventListener('click', () => { if (rows.length >= 200) return; rows.push({ partNumber: '', manufacturer: '', description: '', quantity: 1, reviewStatus: 'unreviewed', sourceImageId: null, notes: '' }); renderRows(); $('panel-parts-body').lastElementChild.querySelector('input').focus(); });
-  $('panel-image').addEventListener('change', updateControls);
+  $('panel-image').addEventListener('change', () => chooseSource($('panel-image').files));
+  $('clear-source-selection').addEventListener('click', () => { clearSourceSelection(); error('source-error', ''); updateControls(); $('panel-image').focus(); });
+  for (const name of ['dragenter', 'dragover']) $('source-dropzone').addEventListener(name, event => {
+    event.preventDefault();
+    const allowed = !$('panel-image').disabled;
+    $('source-dropzone').dataset.dragging = String(allowed);
+    if (event.dataTransfer) event.dataTransfer.dropEffect = allowed ? 'copy' : 'none';
+  });
+  $('source-dropzone').addEventListener('dragleave', event => { if (!$('source-dropzone').contains(event.relatedTarget)) $('source-dropzone').dataset.dragging = 'false'; });
+  $('source-dropzone').addEventListener('drop', event => {
+    event.preventDefault(); $('source-dropzone').dataset.dragging = 'false';
+    if ($('panel-image').disabled) return;
+    $('panel-image').value = '';
+    chooseSource(event.dataTransfer?.files);
+  });
   $('upload-source').addEventListener('click', uploadSource);
   $('add-ocr-rows').addEventListener('click', () => {
     if (!ocrResult || rows.length + ocrResult.candidates.length > 200) return;
@@ -420,6 +487,7 @@
   }));
   window.addEventListener('beforeunload', event => { if (!expired && (dirty() || busy || unresolved())) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('pagehide', () => { revoke(downloadUrls); });
+  window.addEventListener('hashchange', updateEmptyIntent);
   window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
   bootstrap();
 })();

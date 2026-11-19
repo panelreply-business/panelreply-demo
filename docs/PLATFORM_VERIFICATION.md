@@ -2,52 +2,71 @@
 
 Date: 2026-11-19. Scope: draft PR8 on `feature/interactive-dual-product-site`.
 
-## Current checkpoint
+## Verified platform baseline
 
-The first CI run found a marketing layout defect and a browser-fixture error. Corrections are saved for the next run. No merge or deployment is authorized by this record.
+[Run 59](https://github.com/panelreply-business/panelreply-demo/actions/runs/44529305704) passed at commit `5b17352854bd84c5519020666383af93fe9a054a`: 574 checks PASS, zero failures, and three public application checks BLOCKED by intentional owner suspension. The 574 count includes 400 Node/HTTP cases, 165 Chromium cases and nine actual native OCR cases. It excludes the three blocked checks.
 
-| Area | Status | Evidence |
+The next UX refinement is implemented and locally checked below. Its new browser states must pass CI before that refinement is called verified. No merge or deployment is authorized by this record.
+
+| Area | Baseline status | Evidence |
 | --- | --- | --- |
-| Pure Node regression and new platform checks | PASS | 391 cases, 0 failures in the final combined local run on Node 24.22.3. This includes the existing 282-case pure baseline and 109 new design, panel, OCR and client-state cases. |
-| Generated historical demo and CSP hashes | PASS | `node scripts/build-demo.cjs --check` |
-| Actual local Tesseract | PASS | Nine cases, 0 failures: six synthetic labels and three native failure paths. Tesseract 5.5.0/English. 10/10 known fixture fields matched. 2/2 missing/conflicting fields remained blank. |
-| HTTP routes and complete CI regression | PASS | Run 57 passed 400 Node/HTTP cases with 0 failures and 3 intentional offline skips. |
-| Marketing browser flows | FAIL | Run 57 executed 21 methods and reported 5 failed subchecks plus 1 fixture error. Corrections await rerun. |
-| Panel browser flows | BLOCKED | Run 57 stopped before this step. 21 cases are ready for the next run. |
-| Unified platform responsive browser checks | BLOCKED | Run 57 stopped before this step. 18 cases cover 360, 390, 430, 768, 1024 and 1440 px. |
-| Visual screenshot inspection | NOT TESTED | Captures will be taken in the passing CI browser run and reviewed. |
-| Render offline configuration | PASS | Read-only connector inspection shows both services suspended, auto-deploy off and PR previews off. |
-| Public application flows | BLOCKED | Three legacy checks intentionally blocked by owner suspension. |
-| Real job-site OCR accuracy | NOT TESTED | Only synthetic fixture measurements exist. |
-| XLSX, live AI, messaging, booking and hosted customer pilot | NOT IMPLEMENTED | Not activated or claimed by this branch. |
+| Node logic, database, API, real HTTP and security regression | PASS | 400 cases, zero failures in run 59. Three separate public application skips. |
+| Existing demo, intake, inbox, recovery and export browser suites | PASS | 105 Chromium cases: 11 + 42 + 12 + 31 + 9. |
+| Dual-product marketing browser flows | PASS | 21 Chromium cases in run 59. |
+| Private panel projects, images, OCR, CSV and failure paths | PASS | 21 Chromium cases in run 59. |
+| Dashboard and panel responsive/interaction checks | PASS | 18 Chromium cases in run 59. Includes 360, 390, 430, 768, 1024 and 1440 px. |
+| Actual local OCR in CI | PASS | Nine cases, zero failures. Tesseract 5.3.4/English. Six synthetic labels and three native failure paths. 10/10 known fields matched; 2/2 missing/conflicting fields stayed blank. |
+| Generated historical demo and CSP | PASS | `node scripts/build-demo.cjs --check` in CI and local verification. |
+| Baseline screenshot inspection | PASS | Actual Chromium desktop/mobile marketing, inbox, dashboard and panel captures reviewed. A further tablet issue found by code review is recorded below. Screenshot inspection covers captured states only. |
+| Render configuration | PASS | Read-only inspection: both services suspended, auto-deploy off, PR previews off. |
+| Public application flows | BLOCKED | Three legacy checks intentionally blocked by suspension. Separate offline guards confirm both suspended responses. |
+| Real job-site OCR accuracy | NOT TESTED | Synthetic fixture measurements only. |
+| Safari, Firefox, actual phones and assistive-technology audit | NOT TESTED | Current browser evidence is Chromium at the stated viewport sizes. No complete WCAG conformance claim. |
+| Production Core Web Vitals | NOT TESTED | CI loopback navigation timings are not a production performance score. |
+| XLSX, live AI/messaging/booking, customer pilot and hosted operations | NOT IMPLEMENTED | Not activated or claimed by this branch. |
 
-Local HTTP listeners and local Chromium execution are unavailable in this workspace. Those checks run in the existing GitHub Actions workflow with a temporary loopback server and synthetic data. No public listener or customer integration is used.
+Local HTTP listeners and local Chromium execution are unavailable in this execution environment. Real HTTP and browser checks run in the existing GitHub Actions workflow against temporary loopback servers and synthetic data. No public listener or customer integration is used.
 
-## Confirmed defects corrected before first CI
+## UX refinement checkpoint
 
-| Priority | Finding and reproduction | Correction | Verification |
+Implemented after the verified baseline:
+
+- Original panel/reply SVG mark with dark/light variants, reused by website, login and private workspace.
+- Optional guided sample-label walkthrough, predetermined-row reveal, Skip/Escape, reduced-motion behavior and preserved edits on replay.
+- Confirmation before removing edited/reviewed demo rows or populated private project rows.
+- Missing-core-field indicators in the private parts table.
+- Native image selection and drag-and-drop with type/size/count validation, explicit Save, selection clearing and an indeterminate progress state during actual read/save work.
+- Tablet navigation-height correction, full-width phone project fields and project-preserving Exports navigation.
+
+Local verification of this refinement: 397 pure Node checks PASS, zero failures; nine actual Tesseract 5.5.0 cases PASS; generated-demo/CSP check PASS; JavaScript syntax and Python compilation PASS. These local checks are not additional cases to add to a later full CI total.
+
+New browser coverage is implemented but NOT TESTED until the next CI run: 27 marketing cases, 24 panel cases and 19 platform cases. These replace the prior suite counts of 21, 21 and 18 respectively. Existing 105 browser cases remain intact.
+
+## Defects and verification
+
+| Priority | Reproduction | Correction | Current verification |
 | --- | --- | --- | --- |
-| Medium | A whitespace-only notes/parts correction followed by an interrupted PATCH could match a trimmed old response and falsely report saved. | Compare exact saved strings, normalizing only the documented project name trim. Retry the original update when values differ. | Browser regression prepared. |
-| Medium | A saved project could remain in the editor while a retry accepted a different signed-in business in the same browser session. | Pin authenticated frontend requests to the current session, clear stale client state, retain server tenant checks. | PASS in pure API/client-state tests. Real browser regression pending. |
-| Medium | A new-project capacity 409 could be described as a version conflict and offer to reload a nonexistent project. | Only `version_conflict` on a saved project opens conflict recovery. Keep capacity errors editable. | PASS in client-state regression. Browser verification pending. |
-| Medium | A failed initial session load disabled its own retry button. | Retry remains available after the operation finishes, even before initial readiness. | Browser regression prepared. |
-| Low | UI field lengths disagreed with the server's part-number and row-notes limits. | Align128-character part numbers and1000-character row notes. | Browser boundary regression prepared. |
-| Low | Blob-based image previews conflicted with the existing image CSP. | Use authenticated same-origin source URLs and retain the CSP. | Browser source-image regression prepared. |
+| Medium | Change only whitespace in a note/part, interrupt PATCH, then retry. Trimmed comparison could match the old saved data. | Compare exact corrected strings, normalizing only the documented project-name trim. | PASS in run 59 interrupted-update regression. |
+| Medium | Leave business A open, sign in as business B in another tab, then retry/read A's screen. | Pin authenticated frontend requests to the current session, clear stale state, retain independent server tenant checks. | PASS in run 59 API, client-state and browser cases. |
+| Medium | Create a project beyond capacity and receive 409. | Only a `version_conflict` on a saved project opens conflict recovery; quota failures retain an editable draft. | PASS in run 59. |
+| Medium | Fail the first session read before readiness, then retry. | Enable retry after the operation ends even if bootstrap never completed. | PASS in run 59. |
+| Medium | View marketing parts at 360/390/430/768 px. The last header's screen-reader text used the viewport as its positioning container. | Contain the accessible label within the table scroller. Do not hide whole-page overflow. | PASS in runs 58 and 59 at all six requested widths. |
+| Medium | Open any authenticated page at 761–880 px. The desktop sidebar minimum height survived the topbar breakpoint. | Reset sidebar height/min-height at the 880 px breakpoint. | Implemented. New geometry assertions await CI. |
+| Medium | Open `/panels?project=ID`, then choose Exports. The full navigation URL discarded the selected ID. | Use in-page project/export anchors. Explain export selection when arriving from another page. | Implemented. New navigation regression awaits CI. |
+| Low | On phones the project name and notes inherited two columns while losing their full-row spans. | Give panel metadata fields full width and stack them on mobile. | Implemented. Existing responsive cases now assert geometry; CI pending. |
+| Low | Private mobile navigation labels extended outside the visible horizontal strip. | Wrap navigation into a grid with 44 px targets. | PASS in runs 58 and 59; visual captures inspected. |
+| Low | UI limits differed from backend part-number/notes limits; blob image previews conflicted with CSP. | Align field lengths and use authenticated same-origin source image URLs. | PASS in run 59 boundary and image-preview cases. |
 
-## First CI findings
+## CI history and test-fixture corrections
 
-[Run 57](https://github.com/panelreply-business/panelreply-demo/actions/runs/44525448956), commit `1ad5a10472402540e6d3a4722db1a43e6c8462cc`, passed 400 Node/HTTP checks, 105 existing browser cases and 9 native OCR cases. Three public application checks remained intentionally blocked.
+- [Run 57](https://github.com/panelreply-business/panelreply-demo/actions/runs/44525448956), commit `1ad5a10472402540e6d3a4722db1a43e6c8462cc`: 400 Node/HTTP, 105 existing browser and nine native OCR cases passed. The 21-method marketing suite reported five failed subchecks and one fixture error. One responsive method had four failed widths. A second mobile method hit the same overflow. These were not five separate application defects. Panel/platform browser stages did not run after that failure.
+- [Run 58](https://github.com/panelreply-business/panelreply-demo/actions/runs/44526917145), commit `95c6ad4fe4c57ca1a14653ae44ad650fbb3a015d`: marketing 21 and platform 18 passed. Panel 20 passed with one fixture error. The server returned the expected 401, but the test tried to read its response body after navigation released it.
+- [Run 59](https://github.com/panelreply-business/panelreply-demo/actions/runs/44529305704), commit `5b17352854bd84c5519020666383af93fe9a054a`: all 574 executed checks passed, zero failures, three intentional public blocks.
 
-The marketing suite ran 21 methods. One responsive method reported four failed width subchecks, one mobile-control method reported overflow, and one download-fault method errored in its setup. These are not six separate application defects.
+The download-failure fixture was corrected to install its throwing replacement without returning the replacement function to Playwright. The stale-session fixture now captures the real response through `route.fetch()` before forwarding that unchanged response. Neither change weakens an application assertion. The session fixture still requires 401/session_changed, redirect and cleared private state.
 
-- Medium: marketing table accessibility text expanded document width to 909 px at 360/390/430 px and 824 px at 768 px. The last column's absolutely positioned screen-reader label used the viewport as its containing block. Setting the table scroller to `position:relative` contains that label within the existing scrolling area. Page overflow is not hidden. A second reviewer independently matched the failing coordinates to the header layout.
-- Low: the fault-injection assignment returned its replacement function, which Playwright invoked immediately. Wrapping the assignment in a function that returns undefined allows the intended click-path failure check to run.
-- Low: screenshot review found private mobile navigation labels partly outside the visible strip. The navigation now uses a wrapping grid with 44 px targets. New assertions check every navigation item stays within the viewport.
-
-Independent new browser suites now run after a sibling browser failure when Chromium installation succeeded. The workflow still fails when any test fails. This prevents one UI defect from hiding panel and dashboard results.
-
-The updated browser fixes are implemented, not yet verified. This record will be updated with the next run and inspected captures.
+Independent new browser suites run after a sibling failure when Chromium installed successfully. Any failing test still fails the workflow. This exposes more evidence without hiding errors.
 
 ## Review gate
 
-Current result: NO-GO for merge or deployment while new full CI and visual review are pending. Development can continue on the existing draft branch. Both public services must remain suspended. No paid API, account, outbound communication or live calendar has been used.
+The verified platform baseline is suitable for code/design review. The UX refinement remains pending its own full CI and screenshots. A customer pilot or public deployment remains NO-GO. Main and both suspended Render services remain unchanged. Merge and public exposure require separate owner approval.

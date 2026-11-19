@@ -6,6 +6,7 @@ this file. It never starts a public listener or calls a customer/provider.
 import base64
 import json
 import os
+import re
 import unittest
 import uuid
 
@@ -55,6 +56,21 @@ class PlatformVisualTests(PrivateWorkspaceBrowserTests):
             self.assertGreaterEqual(box["x"], -1, item.inner_text())
             self.assertLessEqual(box["x"] + box["width"], width + 1, item.inner_text())
             self.assertGreaterEqual(box["height"], 44)
+        if width <= 880:
+            geometry = self.page.evaluate("""() => {
+                const sidebar = document.querySelector('.sidebar').getBoundingClientRect();
+                const main = document.querySelector('.main-shell').getBoundingClientRect();
+                return { sidebarHeight: sidebar.height, sidebarBottom: sidebar.bottom + scrollY,
+                         mainTop: main.top + scrollY };
+            }""")
+            # Seven navigation links wrap into at most four 44px rows here.
+            # 360px leaves room for the brand, row gaps and padding without
+            # admitting the desktop sidebar's 760px minimum height.
+            self.assertLessEqual(geometry["sidebarHeight"], 360, json.dumps(geometry))
+            self.assertGreaterEqual(geometry["mainTop"], geometry["sidebarBottom"] - 1,
+                                    "Main content overlaps the navigation topbar")
+            self.assertLessEqual(geometry["mainTop"], geometry["sidebarBottom"] + 32,
+                                 "Unexpected blank space follows the navigation topbar")
 
     def test_dashboard_counts_empty_and_saved_records(self):
         self.login()
@@ -148,6 +164,32 @@ class PlatformVisualTests(PrivateWorkspaceBrowserTests):
         self.assertEqual(self.page.locator("#save-project").evaluate("el => getComputedStyle(el).transitionDuration"), "0s")
         self.assert_layout(390)
 
+    def test_panel_navigation_keeps_the_project_and_explains_exports_without_a_selection(self):
+        self.login()
+        project = self.panel_fixture()
+        project_url = self.origin + "/panels?project=" + project["id"]
+        self.page.goto(project_url)
+        expect(self.page.locator("#project-name")).to_have_value(project["name"])
+        self.page.get_by_role("link", name="Exports", exact=True).click()
+        expect(self.page).to_have_url(project_url + "#export")
+        expect(self.page.locator("#project-content")).to_be_visible()
+        expect(self.page.locator("#export-project")).to_be_enabled()
+        self.page.get_by_role("link", name="Saved projects", exact=True).click()
+        expect(self.page).to_have_url(project_url + "#projects")
+        expect(self.page.locator("#project-name")).to_have_value(project["name"])
+        self.page.get_by_role("link", name="Dashboard", exact=True).click()
+        expect(self.page).to_have_url(self.origin + "/dashboard")
+        self.page.get_by_role("link", name="Exports", exact=True).click()
+        expect(self.page).to_have_url(self.origin + "/panels#export")
+        expect(self.page.locator("#project-empty")).to_be_visible()
+        help_text = self.page.locator("#export-empty-help")
+        expect(help_text).to_be_visible()
+        expect(help_text).to_contain_text(re.compile(r"(?:select|choose).*project", re.IGNORECASE))
+        self.page.locator("#project-list button").filter(has_text=project["name"]).click()
+        expect(self.page.locator("#project-name")).to_have_value(project["name"])
+        expect(self.page.locator("#project-content")).to_be_visible()
+        expect(self.page.locator("#export-project")).to_be_enabled()
+
 
 def responsive_dashboard(width):
     def test(self):
@@ -175,6 +217,17 @@ def responsive_panel(width):
         self.page.goto(self.origin + "/panels?project=" + project["id"])
         expect(self.page.locator("#project-name")).to_have_value(project["name"])
         self.assert_layout(width)
+        if width <= 760:
+            grid = self.page.locator(".project-meta-panel .form-grid").bounding_box()
+            name = self.page.locator("#project-name").bounding_box()
+            notes = self.page.locator("#project-notes").bounding_box()
+            for label, field in [("Project name", name), ("Project notes", notes)]:
+                self.assertIsNotNone(field, label)
+                self.assertGreaterEqual(field["width"], grid["width"] - 2,
+                                        label + " must span the mobile form width")
+                self.assertAlmostEqual(field["x"], grid["x"], delta=1, msg=label)
+            self.assertGreaterEqual(notes["y"], name["y"] + name["height"] + 8,
+                                    "Project notes must follow the name in one mobile column")
         expect(self.page.locator("#save-project")).to_be_enabled()
         for selector in ["#save-project", "#add-part", "#export-project"]:
             self.assertGreaterEqual(self.page.locator(selector).bounding_box()["height"], 44)

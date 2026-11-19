@@ -20,6 +20,7 @@
   };
   const mobileNavigation = window.matchMedia('(max-width: 680px)');
   const horizontalTabs = window.matchMedia('(max-width: 960px)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let requests = core.freshRequests();
   let parts = core.freshParts();
   let selectedRequest = requests[0].id;
@@ -28,6 +29,11 @@
   let currentTab = 'intake';
   let exporting = false;
   let partValidationShown = false;
+  let pendingRemoval = null;
+  let walkthroughTimer = null;
+  let walkthroughStage = 'source';
+  let walkthroughRows = [];
+  let walkthroughShown = 0;
   const requiredReviewRows = new Set();
 
   function text(node, value) {
@@ -103,6 +109,8 @@
   });
 
   function applyRoute(focus = true) {
+    if ($('parts-walkthrough').open) $('parts-walkthrough').close();
+    if ($('remove-part-dialog').open) $('remove-part-dialog').close();
     const hash = window.location.hash.slice(1);
     const anchorTarget = ['products', 'workflow'].includes(hash) ? hash : null;
     const route = Object.hasOwn(routeInfo, hash) ? hash : 'home';
@@ -352,6 +360,149 @@
     return svg;
   }
 
+  function focusPartsTable() {
+    const firstInput = $('parts-body').querySelector('input');
+    if (firstInput) firstInput.focus();
+    else $('empty-add-part').focus();
+  }
+
+  function stopWalkthrough() {
+    if (walkthroughTimer !== null) window.clearTimeout(walkthroughTimer);
+    walkthroughTimer = null;
+  }
+
+  function completePreparedRows() {
+    stopWalkthrough();
+    walkthroughStage = 'ready';
+    $('parts-walkthrough').dataset.stage = 'ready';
+    $('walkthrough-output').removeAttribute('aria-busy');
+    $('walkthrough-next').disabled = false;
+    text($('walkthrough-next'), 'Continue to review & edit →');
+    text($('walkthrough-heading'), 'Prepared rows are ready for review.');
+    announce('walkthrough-status', 'Three predetermined rows are shown. Continue to the editable parts table, then use Download CSV when you are ready.');
+    if (document.activeElement === document.body || document.activeElement === $('parts-walkthrough')) $('walkthrough-next').focus({ preventScroll: true });
+  }
+
+  function revealPreparedRow() {
+    if (!$('parts-walkthrough').open || walkthroughStage !== 'loading') return;
+    const part = walkthroughRows[walkthroughShown];
+    if (part) {
+      const row = element('tr');
+      for (const field of ['partNumber', 'manufacturer', 'description']) row.append(element('td', '', part[field]));
+      $('walkthrough-preview-body').append(row);
+      walkthroughShown += 1;
+      $('walkthrough-progress').value = walkthroughShown;
+      text($('walkthrough-progress'), walkthroughShown + ' of 3');
+      text($('walkthrough-progress-text'), walkthroughShown + ' of 3 prepared rows shown');
+    }
+    if (walkthroughShown === walkthroughRows.length) completePreparedRows();
+    else if (reducedMotion.matches) revealPreparedRow();
+    else walkthroughTimer = window.setTimeout(revealPreparedRow, 180);
+  }
+
+  function openWalkthrough() {
+    stopWalkthrough();
+    walkthroughStage = 'source';
+    walkthroughRows = core.freshParts();
+    walkthroughShown = 0;
+    $('parts-walkthrough').dataset.stage = 'source';
+    $('walkthrough-source').hidden = false;
+    $('walkthrough-output').hidden = true;
+    $('walkthrough-output').removeAttribute('aria-busy');
+    $('walkthrough-preview-body').replaceChildren();
+    $('walkthrough-progress').value = 0;
+    text($('walkthrough-progress'), '0 of 3');
+    text($('walkthrough-progress-text'), '0 of 3 prepared rows shown');
+    text($('walkthrough-heading'), 'Start with a sample label.');
+    text($('walkthrough-next'), 'Load prepared sample →');
+    $('walkthrough-next').disabled = false;
+    $('walkthrough-preserved').hidden = core.partsMatchSample(parts);
+    document.querySelectorAll('[data-walkthrough-step]').forEach(step => {
+      if (step.dataset.walkthroughStep === 'source') step.setAttribute('aria-current', 'step');
+      else step.removeAttribute('aria-current');
+    });
+    announce('walkthrough-status', 'Choose Load prepared sample, or skip directly to the editable table.');
+    $('parts-walkthrough').showModal();
+    $('walkthrough-next').focus();
+  }
+
+  $('start-parts-walkthrough').addEventListener('click', openWalkthrough);
+  $('walkthrough-close').addEventListener('click', () => $('parts-walkthrough').close('close'));
+  $('parts-walkthrough').addEventListener('close', stopWalkthrough);
+  $('parts-walkthrough').addEventListener('cancel', stopWalkthrough);
+  $('walkthrough-skip').addEventListener('click', () => {
+    $('parts-walkthrough').close('skip');
+    stopWalkthrough();
+    focusPartsTable();
+    announce('parts-status', 'Walkthrough skipped. Your current parts and request records are unchanged.');
+  });
+  $('walkthrough-next').addEventListener('click', () => {
+    if (walkthroughStage === 'ready') {
+      $('parts-walkthrough').close('review');
+      focusPartsTable();
+      announce('parts-status', 'Review and edit your current rows, then use Download CSV. The walkthrough preserved your parts and request records.');
+      return;
+    }
+    if (walkthroughStage !== 'source') return;
+    walkthroughStage = 'loading';
+    $('parts-walkthrough').dataset.stage = 'demonstration';
+    $('walkthrough-source').hidden = true;
+    $('walkthrough-output').hidden = false;
+    $('walkthrough-output').setAttribute('aria-busy', 'true');
+    text($('walkthrough-heading'), 'Showing predetermined sample values.');
+    $('walkthrough-next').disabled = true;
+    text($('walkthrough-next'), 'Showing sample rows…');
+    document.querySelectorAll('[data-walkthrough-step]').forEach(step => {
+      if (step.dataset.walkthroughStep === 'demonstration') step.setAttribute('aria-current', 'step');
+      else step.removeAttribute('aria-current');
+    });
+    announce('walkthrough-status', 'This short demonstration reveals prepared rows. It does not analyze the label or perform OCR.');
+    if (reducedMotion.matches) revealPreparedRow();
+    else walkthroughTimer = window.setTimeout(revealPreparedRow, 180);
+  });
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches && walkthroughStage === 'loading' && $('parts-walkthrough').open) {
+      stopWalkthrough();
+      revealPreparedRow();
+    }
+  });
+
+  function removePart(id) {
+    const index = parts.findIndex(part => part.id === id);
+    if (index < 0) return;
+    parts = parts.filter(part => part.id !== id);
+    requiredReviewRows.delete(id);
+    renderParts();
+    const nextRow = parts[Math.min(index, parts.length - 1)];
+    if (nextRow) $(partInputId(nextRow, 'partNumber')).focus();
+    else $('empty-add-part').focus();
+    announce('parts-status', 'Sample row removed. ' + parts.length + ' rows remain.');
+  }
+
+  function requestPartRemoval(id) {
+    const part = parts.find(item => item.id === id);
+    if (!part) return;
+    if (!core.partNeedsRemovalConfirmation(part)) {
+      removePart(id);
+      return;
+    }
+    pendingRemoval = id;
+    text($('remove-part-label'), part.partNumber.trim() || part.description.trim() || 'Edited sample row');
+    $('remove-part-dialog').showModal();
+    $('cancel-remove-part').focus();
+  }
+
+  $('cancel-remove-part').addEventListener('click', () => {
+    $('remove-part-dialog').close('keep');
+    announce('parts-status', 'Row kept. Your corrections and review status are unchanged.');
+  });
+  $('confirm-remove-part').addEventListener('click', () => {
+    const id = pendingRemoval;
+    $('remove-part-dialog').close('remove');
+    if (id) removePart(id);
+  });
+  $('remove-part-dialog').addEventListener('close', () => { pendingRemoval = null; });
+
   function renderParts() {
     $('parts-body').replaceChildren(...parts.map((part, index) => {
       const row = element('tr');
@@ -422,15 +573,7 @@
       remove.dataset.removePart = part.id;
       remove.setAttribute('aria-label', 'Remove part row ' + (index + 1));
       remove.append(removeIcon());
-      remove.addEventListener('click', () => {
-        parts = parts.filter(item => item.id !== part.id);
-        requiredReviewRows.delete(part.id);
-        renderParts();
-        const nextRow = parts[Math.min(index, parts.length - 1)];
-        if (nextRow) $(partInputId(nextRow, 'partNumber')).focus();
-        else $('empty-add-part').focus();
-        announce('parts-status', 'Sample row removed. ' + parts.length + ' rows remain.');
-      });
+      remove.addEventListener('click', () => requestPartRemoval(part.id));
       removeCell.append(remove);
       row.append(reviewCell, removeCell);
       return row;

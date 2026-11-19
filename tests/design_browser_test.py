@@ -40,7 +40,7 @@ class DesignBrowserTests(unittest.TestCase):
     def setUpClass(cls):
         cls.directory = TemporaryDirectory(prefix="panelreply-design-browser-")
         source = Path(__file__).resolve().parent.parent / "design-preview"
-        for filename in ("index.html", "styles.css", "demo-core.js", "app.js", "mark.svg", "sample-label.svg"):
+        for filename in ("index.html", "styles.css", "demo-core.js", "app.js", "mark.svg", "mark-on-dark.svg", "mark-on-light.svg", "sample-label.svg"):
             shutil.copy2(source / filename, Path(cls.directory.name) / filename)
         cls.server = ThreadingHTTPServer(("127.0.0.1", 0), partial(QuietHandler, directory=cls.directory.name))
         cls.thread = Thread(target=cls.server.serve_forever, daemon=True)
@@ -348,6 +348,8 @@ class DesignBrowserTests(unittest.TestCase):
         self.assertEqual(rows[4][4], "Manual entry")
         for _ in range(4):
             self.page.locator(".row-remove").first.click()
+            if self.page.locator("#remove-part-dialog").is_visible():
+                self.page.locator("#confirm-remove-part").click()
         expect(self.page.locator("#parts-empty")).to_be_visible()
         expect(self.page.locator("#export")).to_be_disabled()
         expect(self.page.locator("#empty-add-part")).to_be_focused()
@@ -356,6 +358,120 @@ class DesignBrowserTests(unittest.TestCase):
         self.page.locator("#reset-parts").click()
         expect(self.page.locator("#parts-body tr")).to_have_count(3)
         expect(self.page.locator("#parts-errors")).to_be_hidden()
+
+    def test_guided_sample_reveals_predetermined_rows_then_continues_to_edit_and_export(self):
+        self.parts_view()
+        self.page.locator("#start-parts-walkthrough").click()
+        expect(self.page.locator("#parts-walkthrough")).to_be_visible()
+        expect(self.page.locator("#parts-walkthrough")).to_have_attribute("data-stage", "source")
+        expect(self.page.locator("#walkthrough-source")).to_be_visible()
+        expect(self.page.locator("#walkthrough-description")).to_contain_text("predetermined sample values")
+        expect(self.page.locator("#walkthrough-description")).to_contain_text("does not analyze the image or run OCR")
+        expect(self.page.locator("#walkthrough-next")).to_be_focused()
+        state = self.page.evaluate("""() => {
+            document.getElementById('walkthrough-next').click();
+            return {stage: document.getElementById('parts-walkthrough').dataset.stage,
+                    busy: document.getElementById('walkthrough-output').getAttribute('aria-busy'),
+                    disabled: document.getElementById('walkthrough-next').disabled};
+        }""")
+        self.assertEqual(state, {"stage": "demonstration", "busy": "true", "disabled": True})
+        expect(self.page.locator("#parts-walkthrough")).to_have_attribute("data-stage", "ready")
+        expect(self.page.locator("#walkthrough-preview-body tr")).to_have_count(3)
+        expect(self.page.locator("#walkthrough-progress-text")).to_have_text("3 of 3 prepared rows shown")
+        expect(self.page.locator("#walkthrough-source")).to_be_hidden()
+        expect(self.page.locator("#walkthrough-next")).to_be_focused()
+        self.page.locator("#walkthrough-next").click()
+        expect(self.page.locator("#parts-walkthrough")).to_be_hidden()
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_be_focused()
+        self.page.get_by_label("Description row 1", exact=True).fill("Corrected after the guided sample")
+        _, rows = self.download_csv()
+        self.assertEqual(rows[1][2], "Corrected after the guided sample")
+
+    def test_walkthrough_replay_preserves_corrected_parts_review_marks_and_requests(self):
+        self.add_request("Preserve this sample request")
+        self.page.locator("#request-note").fill("Keep this sample note.")
+        self.page.locator("#save-request").click()
+        self.parts_view()
+        self.page.get_by_label("Part number row 1", exact=True).fill("CORRECTED-KEEP")
+        self.page.locator("#sample-part-1-review").click()
+        self.page.locator("#start-parts-walkthrough").click()
+        expect(self.page.locator("#walkthrough-preserved")).to_be_visible()
+        self.page.locator("#walkthrough-next").click()
+        expect(self.page.locator("#parts-walkthrough")).to_have_attribute("data-stage", "ready")
+        expect(self.page.locator("#walkthrough-preview-body")).to_contain_text("DEMO-101")
+        self.page.locator("#walkthrough-next").click()
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_have_value("CORRECTED-KEEP")
+        expect(self.page.locator("#sample-part-1-review")).to_have_attribute("aria-pressed", "true")
+        self.page.locator("#intake-tab").click()
+        expect(self.page.locator("#req-count")).to_have_text("4")
+        expect(self.page.locator("#detail-heading")).to_have_text("Preserve this sample request")
+        expect(self.page.locator("#request-note")).to_have_value("Keep this sample note.")
+
+    def test_walkthrough_skip_cancels_reveal_and_escape_restores_focus(self):
+        self.parts_view()
+        self.page.locator("#start-parts-walkthrough").click()
+        self.page.evaluate("""() => {
+            document.getElementById('walkthrough-next').click();
+            document.getElementById('walkthrough-skip').click();
+        }""")
+        expect(self.page.locator("#parts-walkthrough")).to_be_hidden()
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_be_focused()
+        self.page.wait_for_timeout(650)
+        expect(self.page.locator("#walkthrough-preview-body tr")).to_have_count(0)
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_have_value("DEMO-101")
+        self.page.locator("#start-parts-walkthrough").click()
+        self.page.keyboard.press("Escape")
+        expect(self.page.locator("#parts-walkthrough")).to_be_hidden()
+        expect(self.page.locator("#start-parts-walkthrough")).to_be_focused()
+
+    def test_reduced_motion_reveals_the_sample_without_timed_steps(self):
+        self.page.emulate_media(reduced_motion="reduce")
+        self.parts_view()
+        self.page.locator("#start-parts-walkthrough").click()
+        state = self.page.evaluate("""() => {
+            document.getElementById('walkthrough-next').click();
+            return {stage: document.getElementById('parts-walkthrough').dataset.stage,
+                    rows: document.querySelectorAll('#walkthrough-preview-body tr').length,
+                    disabled: document.getElementById('walkthrough-next').disabled};
+        }""")
+        self.assertEqual(state, {"stage": "ready", "rows": 3, "disabled": False})
+        self.page.locator("#walkthrough-skip").click()
+        expect(self.page.locator("#parts-walkthrough")).to_be_hidden()
+
+    def test_row_removal_confirmation_protects_edits_and_review_marks(self):
+        self.parts_view()
+        self.page.get_by_label("Part number row 1", exact=True).fill("KEEP-UNTIL-CONFIRMED")
+        self.page.locator(".row-remove").first.click()
+        expect(self.page.locator("#remove-part-dialog")).to_be_visible()
+        expect(self.page.locator("#remove-part-label")).to_have_text("KEEP-UNTIL-CONFIRMED")
+        expect(self.page.locator("#cancel-remove-part")).to_be_focused()
+        self.page.locator("#cancel-remove-part").click()
+        expect(self.page.locator("#parts-body tr")).to_have_count(3)
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_have_value("KEEP-UNTIL-CONFIRMED")
+        self.page.locator("#sample-part-2-review").click()
+        self.page.locator("[data-remove-part='sample-part-2']").click()
+        expect(self.page.locator("#remove-part-dialog")).to_be_visible()
+        self.page.keyboard.press("Escape")
+        expect(self.page.locator("#sample-part-2-review")).to_have_attribute("aria-pressed", "true")
+        self.page.locator(".row-remove").first.click()
+        self.page.locator("#confirm-remove-part").click()
+        expect(self.page.locator("#parts-body tr")).to_have_count(2)
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_have_value("DEMO-202")
+        expect(self.page.get_by_label("Part number row 1", exact=True)).to_be_focused()
+
+    def test_guided_dialog_fits_each_requested_viewport(self):
+        self.parts_view()
+        for width in (360, 390, 430, 768, 1024, 1440):
+            with self.subTest(width=width):
+                self.page.set_viewport_size({"width": width, "height": 1000})
+                self.page.locator("#start-parts-walkthrough").click()
+                box = self.page.locator("#parts-walkthrough").bounding_box()
+                self.assertGreaterEqual(box["x"], 0)
+                self.assertLessEqual(box["x"] + box["width"], width)
+                self.page.locator("#walkthrough-next").click()
+                expect(self.page.locator("#parts-walkthrough")).to_have_attribute("data-stage", "ready")
+                self.assert_no_page_overflow()
+                self.page.locator("#walkthrough-skip").click()
 
     def test_download_loading_and_browser_failure_path(self):
         self.parts_view()
@@ -467,18 +583,27 @@ class DesignBrowserTests(unittest.TestCase):
         self.assert_no_page_overflow()
         if os.environ.get("PANELREPLY_EMIT_DESIGN_PREVIEWS") != "1":
             return
-        captures = [("desktop-home", 1440, "home", "intake"), ("desktop-parts", 1440, "demo", "parts"), ("mobile-home", 390, "home", "intake"), ("mobile-parts", 390, "demo", "parts")]
+        captures = [("desktop-home", 1440, "home", "intake"), ("desktop-parts", 1440, "demo", "parts"), ("mobile-home", 390, "home", "intake"), ("mobile-parts", 390, "demo", "parts"), ("desktop-walkthrough", 1440, "demo", "parts"), ("mobile-walkthrough", 390, "demo", "parts")]
         for label, width, route, tab in captures:
             self.page.set_viewport_size({"width": width, "height": 1000})
             self.go(route)
             self.page.locator("#" + tab + "-tab").click()
             self.page.evaluate("window.scrollTo(0, 0)")
-            image = self.page.screenshot(type="jpeg", quality=70, full_page=route == "demo")
+            staged = label.endswith("walkthrough")
+            if staged:
+                self.page.locator("#start-parts-walkthrough").click()
+                self.page.locator("#walkthrough-next").click()
+                expect(self.page.locator("#parts-walkthrough")).to_have_attribute("data-stage", "ready")
+                image = self.page.locator("#parts-walkthrough").screenshot(type="jpeg", quality=70)
+            else:
+                image = self.page.screenshot(type="jpeg", quality=70, full_page=route == "demo")
             print("PANELREPLY_DESIGN_PREVIEW_BEGIN=" + label, flush=True)
             encoded = base64.b64encode(image).decode("ascii")
             for offset in range(0, len(encoded), 10000):
                 print(encoded[offset:offset + 10000], flush=True)
             print("PANELREPLY_DESIGN_PREVIEW_END=" + label, flush=True)
+            if staged:
+                self.page.locator("#walkthrough-close").click()
 
 
 if __name__ == "__main__":

@@ -22,7 +22,8 @@ Continue on `feature/interactive-dual-product-site`, the existing draft [PR8](ht
 
 The branch adds:
 
-- A navy and blue marketing website in `design-preview/` with both products and an interactive synthetic demo.
+- A navy and blue marketing website in `design-preview/` with both products, a shared SVG identity and interactive synthetic demonstrations.
+- A guided sample-label-to-parts walkthrough with Skip, reduced motion and preserved edits. It displays predetermined data and makes no live OCR claim.
 - Product, feature, pricing-preparation, login-information, pilot-preparation and legal-review views without external submission or invented claims.
 - A shared dashboard and navigation for requests, panel scanning, saved projects, exports, settings and account details.
 - Authenticated panel projects with editable parts, quantities, source images, review status and saved CSV exports.
@@ -30,7 +31,7 @@ The branch adds:
 - Optional local Tesseract 5 text extraction. All candidates require review. Missing values stay blank.
 - Browser checks at 360, 390, 430, 768, 1024 and 1440 px, plus failure, isolation and export regressions.
 
-Full CI and screenshot review for the new branch are recorded in [platform verification](docs/PLATFORM_VERIFICATION.md). Do not infer a pass from implementation alone. [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
+The platform baseline passed 574 checks with zero failures in [run 59](https://github.com/panelreply-business/panelreply-demo/actions/runs/44529305704). Three public application checks remain intentionally BLOCKED. Later UX refinements and their verification are tracked separately in [platform verification](docs/PLATFORM_VERIFICATION.md). Do not infer a pass from implementation alone. [Design system and interaction decisions](docs/DESIGN_SYSTEM.md). [Architecture, local setup, limits and remaining gates](docs/PLATFORM_DEVELOPMENT.md) · [OCR options and fixture measurements](docs/OCR_OPTIONS.md)
 
 ## Private workspace
 

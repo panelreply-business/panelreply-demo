@@ -29,7 +29,7 @@ Main's prior baseline is 396 passing checks and three intentionally blocked publ
 
 ## Product surfaces
 
-The marketing homepage introduces intake and panel review, then links to product details, features, pricing preparation, workspace access, pilot preparation and legal-review placeholders. Pricing is not approved. Contact/pilot fields do not transmit information. The demo uses fictional customer and component records, resets in memory and makes no persistence or live OCR claim.
+The marketing homepage introduces intake and panel review, then links to product details, features, pricing preparation, workspace access, pilot preparation and legal-review placeholders. Pricing is not approved. Contact/pilot fields do not transmit information. The demo uses fictional customer and component records, resets in memory and makes no persistence or live OCR claim. An optional guided walkthrough shows prepared rows from a sample label, then returns to the existing editable table. Skip and reduced motion avoid waiting. Replaying the guide never resets corrected rows, review marks or requests. See [design decisions](DESIGN_SYSTEM.md).
 
 The authenticated dashboard links to customer requests, panel scanning, saved projects, exports, business settings and account information. Customer requests and panel records have separate working areas. A callback preference or requested work date is not a booking. No interface action sends a call, SMS, email or calendar invitation.
 
@@ -38,10 +38,12 @@ The authenticated dashboard links to customer requests, panel scanning, saved pr
 1. Sign in using the existing local workspace account.
 2. Open Panel scanning and choose New project.
 3. Enter a project name and optional notes. Add rows manually, or save the project first to attach a source image.
-4. Upload a PNG or JPEG label photograph you are authorized to store. Save existing edits before upload or OCR so a new project version cannot overwrite a draft.
+4. Choose or drop one PNG or JPEG label photograph you are authorized to store, then choose Save image. Selection stays in browser memory until that explicit save. The UI shows the pending operation without inventing a percentage. After saving, use View image to preview the private source. Save existing edits before upload or OCR so a new project version cannot overwrite a draft.
 5. If the local OCR readiness check passes, choose Extract text. Read the raw text, add candidates to the table, and correct each field against the original image.
-6. A row must contain part number, manufacturer and description before it can be marked reviewed. Unknown fields stay blank and unreviewed. Editing a row clears its previous review status.
+6. Missing core fields are identified in the table. A row must contain part number, manufacturer and description before it can be marked reviewed. Unknown fields stay blank and unreviewed. Editing a row clears its previous review status.
 7. Save the project. Reopen it from Saved projects. Export saved CSV to include the current saved corrections.
+
+Removing a populated row requires confirmation and changes only the draft until Save project. Exports and Saved projects links retain the current project. Arriving at Exports without a project explains how to select one.
 
 Saving an image increments the project version. OCR itself does not change saved rows. The export reads saved rows only and tells the user when local draft changes are excluded. Download feedback says the file was prepared, not that the browser definitely wrote it to disk.
 
@@ -53,7 +55,7 @@ Saving an image increments the project version. OCR itself does not change saved
 | Parts | 200 rows per project |
 | Quantity | Integer 1–9999 |
 | Source images | Five per project, PNG/JPEG, maximum 2 MiB each |
-| Dimensions | At most6000px per side and 16 million pixels |
+| Dimensions | At most 6000 px per side and 16 million pixels |
 | Stored panel content | 32 MiB across the local workspace database |
 | Project name / notes | 120 / 2000 characters |
 | Part number / manufacturer / description / row notes | 128 / 120 / 1000 / 1000 characters |

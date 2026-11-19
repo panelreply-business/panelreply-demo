@@ -92,6 +92,21 @@
     return { ...part, [field]: String(value), reviewed: false };
   }
 
+  function partNeedsRemovalConfirmation(part) {
+    if (part.reviewed) return true;
+    const initial = PART_SEED.find(item => item.id === part.id);
+    if (initial) return PART_FIELDS.some(field => String(part[field]) !== initial[field]);
+    return ['partNumber', 'manufacturer', 'description'].some(field => typeof part[field] === 'string' && part[field].trim()) || String(part.quantity) !== '1';
+  }
+
+  function partsMatchSample(parts) {
+    if (!Array.isArray(parts) || parts.length !== PART_SEED.length) return false;
+    return PART_SEED.every((initial, index) => {
+      const part = parts[index];
+      return part.id === initial.id && !part.reviewed && PART_FIELDS.every(field => String(part[field]) === initial[field]);
+    });
+  }
+
   function validatePart(part, options = {}) {
     const errors = {};
     for (const [field, limit] of Object.entries(PART_LIMITS)) {
@@ -126,5 +141,5 @@
     };
   }
 
-  return Object.freeze({ CALLBACK_WINDOWS, REQUEST_STATUSES, PART_FIELDS, PART_LIMITS, freshRequests, freshParts, validDate, validateRequest, filterRequests, requestCounts, validateNote, newPart, editPart, validatePart, safeCsvCell, exportParts });
+  return Object.freeze({ CALLBACK_WINDOWS, REQUEST_STATUSES, PART_FIELDS, PART_LIMITS, freshRequests, freshParts, validDate, validateRequest, filterRequests, requestCounts, validateNote, newPart, editPart, partNeedsRemovalConfirmation, partsMatchSample, validatePart, safeCsvCell, exportParts });
 });

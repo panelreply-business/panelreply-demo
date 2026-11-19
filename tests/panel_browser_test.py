@@ -109,6 +109,92 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.api("GET", "/api/panel-projects", status=401)
         self.api("GET", "/api/panel-ocr", status=401)
 
+    def test_dropped_image_waits_for_save_and_exposes_real_pending_state(self):
+        self.login()
+        project = self.create_panel()
+        self.open_panels(project["id"])
+        data = base64.b64encode((FIXTURES / "complete.png").read_bytes()).decode("ascii")
+        transfer = self.page.evaluate_handle("""encoded => {
+            const transfer = new DataTransfer();
+            transfer.items.add(new File([Uint8Array.from(atob(encoded), c => c.charCodeAt(0))], 'dropped-label.png', {type: 'image/png'}));
+            return transfer;
+        }""", data)
+        self.page.dispatch_event("#source-dropzone", "drop", {"dataTransfer": transfer})
+        transfer.dispose()
+        expect(self.page.locator("#source-selection-text")).to_contain_text("dropped-label.png")
+        expect(self.page.locator("#source-selection-text")).to_contain_text("Selected on this device")
+        self.assertEqual(len(self.saved_panel(project["id"])["sources"]), 0)
+        held = []
+        self.page.route("**/api/panel-projects/*/sources", lambda route: held.append(route))
+        with self.page.expect_request(lambda request: request.url.endswith("/sources") and request.method == "POST"):
+            self.page.locator("#upload-source").click()
+        expect(self.page.locator("#source-status")).to_have_text("Saving source image…")
+        expect(self.page.locator("#source-progress")).to_be_visible()
+        expect(self.page.locator("#source-dropzone")).to_have_attribute("aria-busy", "true")
+        expect(self.page.locator("#clear-source-selection")).to_be_disabled()
+        self.assertEqual(len(held), 1)
+        actual = held[0].fetch()
+        self.assertEqual(actual.status, 201)
+        held[0].fulfill(response=actual)
+        self.page.unroute("**/api/panel-projects/*/sources")
+        expect(self.page.locator("#source-status")).to_contain_text("Source image saved")
+        expect(self.page.locator("#source-progress")).to_be_hidden()
+        expect(self.page.locator("#source-selection")).to_be_hidden()
+        self.page.get_by_role("button", name="View image dropped-label.png", exact=True).click()
+        expect(self.page.locator("#source-list img")).to_be_visible()
+        self.page.wait_for_function("document.querySelector('#source-list img')?.complete && document.querySelector('#source-list img')?.naturalWidth > 0")
+        self.assertTrue(self.page.locator("#source-list img").evaluate("image => image.complete && image.naturalWidth > 0"))
+
+    def test_image_selection_rejects_type_size_and_multiple_files_without_saving(self):
+        self.login()
+        project = self.create_panel()
+        self.open_panels(project["id"])
+        for item in [
+            {"name": "not-an-image.svg", "mimeType": "image/svg+xml", "buffer": b"<svg></svg>"},
+            {"name": "too-large.png", "mimeType": "image/png", "buffer": b"x" * (2 * 1024 * 1024 + 1)},
+            {"name": "empty.png", "mimeType": "image/png", "buffer": b""},
+        ]:
+            self.page.locator("#panel-image").set_input_files(item)
+            expect(self.page.locator("#source-error")).to_contain_text("PNG or JPEG image no larger than 2 MB")
+            expect(self.page.locator("#upload-source")).to_be_disabled()
+            expect(self.page.locator("#source-selection")).to_be_hidden()
+        transfer = self.page.evaluate_handle("""() => {
+            const transfer = new DataTransfer();
+            for (const name of ['one.png', 'two.png']) transfer.items.add(new File(['fixture'], name, {type: 'image/png'}));
+            return transfer;
+        }""")
+        self.page.dispatch_event("#source-dropzone", "drop", {"dataTransfer": transfer})
+        transfer.dispose()
+        expect(self.page.locator("#source-error")).to_contain_text("one image at a time")
+        expect(self.page.locator("#upload-source")).to_be_disabled()
+        self.assertEqual(len(self.saved_panel(project["id"])["sources"]), 0)
+        self.page.locator("#panel-image").set_input_files(str(FIXTURES / "complete.png"))
+        expect(self.page.locator("#source-error")).to_be_hidden()
+        expect(self.page.locator("#upload-source")).to_be_enabled()
+        self.page.locator("#clear-source-selection").click()
+        expect(self.page.locator("#panel-image")).to_be_focused()
+        expect(self.page.locator("#upload-source")).to_be_disabled()
+        self.assertEqual(len(self.saved_panel(project["id"])["sources"]), 0)
+
+    def test_incomplete_row_indicates_missing_fields_and_removal_requires_confirmation(self):
+        self.login()
+        project = self.create_panel(rows=[part(manufacturer="", description="")])
+        self.open_panels(project["id"])
+        expect(self.page.locator(".row-review-note")).to_have_text("Missing manufacturer, description")
+        self.page.get_by_label("Manufacturer row 1", exact=True).fill("SAMPLE COMPONENTS")
+        self.page.get_by_label("Description row 1", exact=True).fill("Corrected component")
+        expect(self.page.locator(".row-review-note")).to_have_text("")
+        self.page.once("dialog", lambda dialog: dialog.dismiss())
+        self.page.get_by_role("button", name="Remove row 1", exact=True).click()
+        expect(self.page.locator("#panel-parts-body tr")).to_have_count(1)
+        self.page.once("dialog", lambda dialog: dialog.accept())
+        self.page.get_by_role("button", name="Remove row 1", exact=True).click()
+        expect(self.page.locator("#panel-parts-body tr")).to_have_count(0)
+        expect(self.page.locator("#add-part")).to_be_focused()
+        self.assertEqual(len(self.saved_panel(project["id"])["rows"]), 1)
+        self.save_panel_ui()
+        self.assertEqual(len(self.saved_panel(project["id"])["rows"]), 0)
+
     def test_manual_parts_save_reopen_edit_and_export_preserve_corrections(self):
         self.login()
         self.open_panels()

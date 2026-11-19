@@ -19,7 +19,9 @@ const ASSETS = Object.freeze({
   '/assets/login.js': ['workspace/login.js', 'application/javascript; charset=utf-8'],
   '/assets/panels.js': ['workspace/panels.js', 'application/javascript; charset=utf-8'],
   '/assets/dashboard.js': ['workspace/dashboard.js', 'application/javascript; charset=utf-8'],
-  '/assets/platform.css': ['workspace/platform.css', 'text/css; charset=utf-8']
+  '/assets/platform.css': ['workspace/platform.css', 'text/css; charset=utf-8'],
+  '/assets/brand-mark.svg': ['design-preview/mark.svg', 'image/svg+xml'],
+  '/assets/brand-mark-light.svg': ['design-preview/mark-on-light.svg', 'image/svg+xml']
 });
 const BASE_HEADERS = Object.freeze({
   'Cache-Control': 'no-store',
