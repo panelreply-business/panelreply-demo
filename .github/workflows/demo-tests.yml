@@ -45,4 +45,8 @@ jobs:
         env:
           PANELREPLY_EMIT_WORKSPACE_PREVIEWS: '1'
         run: python tests/workspace_browser_test.py
+      - name: Verify record export, encrypted restore and password recovery
+        env:
+          PANELREPLY_EMIT_RECOVERY_PREVIEWS: '1'
+        run: python tests/workspace_recovery_browser_test.py
 

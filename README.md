@@ -1,8 +1,8 @@
 # PanelReply / Ringkeep
 
-PanelReply is a contractor intake project. The next stage adds a local, authenticated inbox with saved requests, business settings and a customer-flow preview.
+PanelReply is a contractor intake project with a local, authenticated inbox, saved requests, business settings and a customer-flow preview. The recovery stage adds business-record downloads, encrypted backups and operator password recovery.
 
-[Repository](https://github.com/panelreply-business/panelreply-demo) · [Private workspace setup](docs/PRIVATE_WORKSPACE.md) · [Verification](docs/PRIVATE_WORKSPACE_VERIFICATION.md)
+[Repository](https://github.com/panelreply-business/panelreply-demo) · [Private workspace setup](docs/PRIVATE_WORKSPACE.md) · [Backup and recovery](docs/RECOVERY.md) · [Recovery verification](docs/RECOVERY_VERIFICATION.md)
 
 ## Current status
 
@@ -29,6 +29,9 @@ The standalone workspace adds:
 - Name, US callback number, electrical work, five-digit job ZIP, callback window and requested work date.
 - Persistent phone opt-outs and safety holds that reset, START and status changes cannot remove.
 - Duplicate prevention for save retries and version checks for conflicting edits.
+- A JSON download of the signed-in business's saved profile, requests, conversations and change records.
+- Encrypted local backups and restore into a new directory, with no active sessions or usable passwords restored.
+- Operator password reset for an existing owner, with session revocation and protection against in-flight sign-in races.
 
 [Desktop inbox](docs/evidence/private-inbox-desktop.jpg) · [Mobile preview](docs/evidence/private-customer-preview-mobile.jpg)
 
@@ -37,6 +40,8 @@ The callback window describes when a customer wants a call. The requested work d
 The preview uses explicit field parsing and saved answers. It does not call an AI provider. Questions about hours, coverage or pricing must not overwrite the supplied job details. Unknown business facts stay unknown.
 
 [Setup, behavior, limits and failure handling](docs/PRIVATE_WORKSPACE.md)
+
+Record exports contain customer information and are separate from encrypted backup archives. A restored workspace requires an operator to reset each owner's password before sign-in. The source workspace remains unchanged. See the [recovery guide](docs/RECOVERY.md) for commands, failure cases and the restore drill.
 
 ## Run locally
 
@@ -56,17 +61,17 @@ The earlier static demo remains in `index.html`. The separate optional AI server
 
 ## Verification
 
-The private-workspace candidate passed 313 checks with zero failures in [CI run 44460315464](https://github.com/panelreply-business/panelreply-demo/actions/runs/44460315464). Three public application checks remain BLOCKED by intentional suspension. The desktop inbox and 360-pixel customer preview were inspected from that run.
+The previous private-workspace candidate passed 313 checks with zero failures in [CI run 44460315464](https://github.com/panelreply-business/panelreply-demo/actions/runs/44460315464). The recovery additions require their own complete CI run, recorded in [recovery verification](docs/RECOVERY_VERIFICATION.md). Three public application checks remain BLOCKED by intentional suspension.
 
-The CI workflow checks the generated demo and CSP, pure intake and answer logic, private authentication and SQLite storage, real HTTP routes, existing demo browser behavior and the new private workspace through Chromium. Synthetic fixtures are isolated from real customers. No provider calls or outbound messages are used.
+The CI workflow checks the generated demo and CSP, pure intake and answer logic, private authentication and SQLite storage, real HTTP routes, existing demo browser behavior and the private workspace through Chromium. It also exercises export downloads, encrypted restore into a fresh directory and password recovery. Synthetic fixtures are isolated from real customers. No provider calls or outbound messages are used.
 
 The recurring audit continues to review code and CI, safe external GET checks and accessible Render state. Three application checks are BLOCKED while the public services are intentionally offline. Offline guards must confirm the suspended response rather than report an outage to fix.
 
-[Exact tested revision, results, reproduced defects and remaining gates](docs/PRIVATE_WORKSPACE_VERIFICATION.md)
+[Recovery results and remaining gates](docs/RECOVERY_VERIFICATION.md) · [Prior workspace evidence](docs/PRIVATE_WORKSPACE_VERIFICATION.md)
 
 ## Next gates
 
-- A hosted private-access plan with approved persistent storage, backup and restore verification, password recovery and retention controls.
+- A hosted private-access plan with approved persistent storage, offsite backup and restore objectives, self-service account recovery and retention/deletion controls.
 - Secure API-key choice and approved provider usage before live AI tests.
 - A verified calendar integration before appointment confirmations.
 - Approved contact and messaging integration before any live call, SMS, email or notification test.

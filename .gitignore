@@ -12,5 +12,9 @@ workspace-data/
 *.db
 *.db-wal
 *.db-shm
+*.prbk
+workspace-backups/
+workspace-restored/
+panelreply-records-*.json
 test-results/
 playwright-report/

@@ -36,6 +36,8 @@
   let expired = false;
   let profileConflict = false;
   let leadConflict = false;
+  let exportBusy = false;
+  const exportUrls = new Set();
 
   class RequestError extends Error {
     constructor(status, code, message, fields) { super(message); this.status = status; this.code = code; this.fields = fields; }
@@ -58,6 +60,10 @@
     leadBaseline = '';
     profileBaseline = '';
     selectionSerial += 1;
+    for (const url of exportUrls) URL.revokeObjectURL(url);
+    exportUrls.clear();
+    $('export-status').textContent = '';
+    $('export-records').disabled = true;
     $('requests-list').replaceChildren();
     $('lead-form').reset();
     $('profile-form').reset();
@@ -111,6 +117,47 @@
     $('profile-dirty').hidden = !profileDirty();
     $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict;
     $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict;
+    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy;
+  }
+
+  async function exportRecords() {
+    if (!user || expired || loading || leadSaving || profileSaving || exportBusy) return;
+    exportBusy = true;
+    showError('export-error', '');
+    $('export-status').textContent = 'Preparing a copy of the saved records…';
+    $('export-records').textContent = 'Preparing export…';
+    updateDirty();
+    try {
+      const data = await api('/api/export');
+      if (expired || !user) return;
+      if (data?.format !== 'panelreply-business-export' || data.version !== 1 || data.profile?.business?.id !== user.businessId
+        || !Array.isArray(data.leads) || typeof data.exportedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(data.exportedAt)) {
+        throw new Error('The export response was incomplete. No download was prepared. Try again.');
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      exportUrls.add(url);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `panelreply-records-${data.exportedAt.slice(0, 10)}.json`;
+      link.hidden = true;
+      document.body.append(link);
+      try { link.click(); }
+      finally {
+        link.remove();
+        window.setTimeout(() => { URL.revokeObjectURL(url); exportUrls.delete(url); }, 1000);
+      }
+      // Browser download initiation does not prove the file was written to disk.
+      $('export-status').textContent = 'Export prepared. Check your browser’s downloads. Your unsaved edits remain here.';
+    } catch (cause) {
+      if (!expired) {
+        $('export-status').textContent = '';
+        showError('export-error', cause.message || 'Could not prepare the export. Your edits remain here. Try again.');
+      }
+    } finally {
+      exportBusy = false;
+      if (!expired) { $('export-records').textContent = 'Export records'; updateDirty(); }
+    }
   }
 
   function guarded(action) {
@@ -559,6 +606,7 @@
   $('status-filter').addEventListener('change', renderList);
   for (const button of document.querySelectorAll('[data-count-status]')) button.addEventListener('click', () => { $('status-filter').value = button.dataset.countStatus; renderList(); $('requests-title').scrollIntoView({ block: 'nearest' }); });
   $('refresh-requests').addEventListener('click', () => guarded(refreshRequests));
+  $('export-records').addEventListener('click', exportRecords);
   $('retry-load').addEventListener('click', () => guarded(bootstrap));
   $('lead-form').addEventListener('submit', saveLead);
   $('profile-form').addEventListener('submit', saveProfile);
