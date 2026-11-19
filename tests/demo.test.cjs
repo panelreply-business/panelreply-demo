@@ -185,6 +185,41 @@ test('ordinary text containing stop or cancel is not treated as opt-out', () => 
   }
 });
 
+test('smart-apostrophe opt-outs pause replies and preserve the displayed message', () => {
+  for (const command of ['Don’t text me again', 'Please don’t contact me', 'Don‘t message me']) {
+    const f = fixture();
+    f.send(command);
+    assert.equal(f.state().stopped, true, command);
+    assert.equal(f.messages()[0], command, 'Keep the original customer message');
+    f.send('Install lights');
+    assert.equal(f.state().stage, 0, 'Do not continue intake after opt-out');
+    assert.match(f.messages().at(-1), /without an automated reply/);
+  }
+});
+
+test('commas around polite opt-out wording do not prevent opt-out', () => {
+  for (const command of [
+    'Please stop texting me, please.', 'Please, stop texting me.',
+    'Don’t text me again, please!', 'Stop, please.', 'Remove me from your list, please.'
+  ]) {
+    const f = fixture();
+    f.send(command);
+    assert.equal(f.state().stopped, true, command);
+    assert.equal(f.state().stage, 0);
+    assert.equal(f.messages()[0], command);
+  }
+});
+
+test('polite punctuation and smart apostrophes keep ordinary jobs in intake', () => {
+  for (const message of ['Please, stop by Thursday.', 'Don’t stop work on my panel, please.']) {
+    const f = fixture();
+    f.send(message);
+    assert.equal(f.state().stopped, false, message);
+    assert.equal(f.state().stage, 1);
+    assert.equal(f.state().job, message);
+  }
+});
+
 test('START resumes without a safety hold', () => {
   const f = fixture();
   f.send('STOP');
@@ -263,6 +298,53 @@ test('emergency messages at ZIP and callback stages stop intake', () => {
   }
 });
 
+test('line breaks in hazard descriptions preserve the safety hold at every intake stage', () => {
+  for (const stage of [0, 1, 2]) {
+    for (const message of ['My breaker\nis melting', 'My breaker\r\nis melting', 'My breaker\t is melting']) {
+      const f = fixture();
+      if (stage >= 1) f.send('Install lights');
+      if (stage === 2) f.send('48315');
+      f.send(message);
+      assert.equal(f.state().hold, true, JSON.stringify({ stage, message }));
+      assert.equal(f.state().stage, stage, 'Hazard must not advance intake');
+      assert.ok(f.messages().includes(message), 'Keep the original line breaks');
+      assert.match(f.node('step').textContent, /SAFETY HOLD/);
+    }
+  }
+});
+
+test('multiline hazards after STOP raise a hold without resuming replies', () => {
+  const f = fixture();
+  f.send('STOP');
+  f.send('My breaker\nis melting');
+  assert.equal(f.state().hold, true);
+  assert.equal(f.state().stopped, true);
+  assert.doesNotMatch(f.messages().join(' '), /move away and call 911/);
+  f.send('START');
+  assert.equal(f.state().hold, true);
+  assert.equal(f.state().stopped, true);
+  assert.match(f.messages().at(-1), /does not release the safety hold/);
+});
+
+test('fallen power-line descriptions accept ordinary is, are, has and have wording', () => {
+  for (const message of [
+    'The power line is down in my yard', 'The power lines are down in my yard',
+    'A power line has fallen', 'Power lines have fallen',
+    'The power line is hanging in the yard', 'The power lines are collapsed'
+  ]) {
+    const f = fixture();
+    f.send(message);
+    assert.equal(f.state().hold, true, message);
+    assert.equal(f.state().stage, 0);
+  }
+  for (const message of ['Install a power line for my workshop', 'The power line is overhead']) {
+    const f = fixture();
+    f.send(message);
+    assert.equal(f.state().hold, false, message);
+    assert.equal(f.state().stage, 1);
+  }
+});
+
 test('STOP is honored even if an urgent message arrives afterward', () => {
   const f = fixture();
   f.send('STOP');
@@ -321,3 +403,4 @@ test('user input is placed in textContent, never HTML markup', () => {
   assert.equal(f.messages()[0], input);
   assert.doesNotMatch(script, /\.innerHTML\s*=/);
 });
+
