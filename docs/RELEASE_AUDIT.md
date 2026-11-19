@@ -30,9 +30,11 @@ The demo does not implement durable opt-out, sending, alerting, dispatch, or sto
 | --- | --- | --- |
 | GitHub read/write | PASS | Branch and commits created successfully |
 | Render prior build | PASS | Last recorded deployment was live |
-| Static demo input logic | PASS | Node regression suite passed in GitHub Actions for audit branch; browser behavior not independently tested |
+| Static demo input logic | PASS | 35 Node checks and 11 real Chromium scenarios passed on the corrected branch; see browser retest report |
 | CSP hash and no demo network I/O | PASS | Branch hash tests passed, and CI also validated live script/style CSP hashes; full security review remains required |
-| Browser desktop/mobile layout | NOT TESTED | CSS media query exists; visual QA still required |
+| Browser desktop/mobile layout | PASS for tested Chromium sizes | Real browser layout and overflow checks at 320, 390, 768 and 1280 pixels; other engines and physical devices not tested |
+| Keyboard controls | PASS | Tab order and Enter activation checked in Chromium; screen-reader and full accessibility audit not tested |
+| Published demo behavior | FAIL | Live opt-out, hazard and long-summary failures reproduced; corrected branch has not been deployed |
 | Live website uptime | PASS (point-in-time) | GitHub Actions fetched HTTP 200 from the public demo and robots.txt and verified live CSP on 2026-11-18; not an availability guarantee |
 | Real inbound/missed calls | NOT IMPLEMENTED HERE | No telephony backend in this repository/deployment |
 | Real SMS and per-sender STOP/START | NOT IMPLEMENTED HERE | Needs consent, delivery and suppression records |
@@ -57,11 +59,15 @@ The demo does not implement durable opt-out, sending, alerting, dispatch, or sto
 
 ## Release decision
 
+### Browser retest on November 18
+
+[Browser retest report](BROWSER_RETEST_2026-11-18.md) records four additional finding groups: punctuation in opt-outs, multiline hazards, auxiliary words in power-line hazards, and long-summary overflow. Code corrections and regressions are in this branch. [CI run 44428006237](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428006237) passed 35 unit checks, three live GET smoke checks, and 11 real Chromium scenarios on commit `097f6f8a032be59b2dfb3dc15a225d29056e1557`. This is readiness evidence for reviewing the corrected demo, not for a working customer service. The live deployment still needs an approved update and retest.
+
 **NO-GO for a live customer pilot.** The GitHub changes address the demo, not the missing production service.
 
 Before a pilot:
 
-1. Keep the Node regression suite passing on the PR and manually test desktop/mobile and accessibility.
+1. Keep the Node and real-browser regression suites passing. Complete other-browser, physical-device and screen-reader checks, and retest the published app after an approved deployment.
 2. Decide on the service architecture, database, telephony/SMS provider, AI behavior, and customer onboarding process.
 3. Build persistent consent and opt-out tracking; never assume a missed call alone authorizes SMS.
 4. Implement webhook authentication, tenant isolation, authorization, data retention, rate limits, retries and idempotency.
@@ -70,3 +76,4 @@ Before a pilot:
 7. Exercise failure scenarios, concurrency, message delivery, cancellation, privacy, billing, and recovery before pilot approval.
 
 No production deployment, paid service creation, external customer contact, or real communications were authorized or performed as part of this branch.
+
