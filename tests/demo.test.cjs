@@ -489,6 +489,30 @@ test('enabled AI sends only sample context to the same-origin adapter', async ()
   assert.match(f.node('ai-mode').textContent, /AI extracted/);
 });
 
+test('the sample request keeps the entered AI code while explicit reset clears it', async () => {
+  const requests = [];
+  const f = fixture({ aiEnabled: true, fetch: async (url, options) => {
+    requests.push({ url, options });
+    return okResponse(aiAnswer({ job: 'EV charger installed in the garage', zip: '48315', timing: 'Next week. Call after 4 pm' }));
+  } });
+  f.node('ai-access').value = 'sample-test-access-code';
+  await f.node('example').onclick();
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].url, '/api/intake');
+  assert.equal(requests[0].options.headers.Authorization, 'Bearer sample-test-access-code');
+  assert.deepEqual(JSON.parse(requests[0].options.body).fields, { job: '', zip: '', timing: '' });
+  assert.equal(f.node('ai-access').value, 'sample-test-access-code');
+  assert.equal(f.state().stage, 3);
+  assert.match(f.node('ai-mode').textContent, /AI extracted/);
+  f.reset();
+  assert.equal(f.node('ai-access').value, '');
+  assert.equal(f.messages().length, 0);
+  await f.node('example').onclick();
+  assert.equal(requests.length, 1, 'A sample without a code must not make another AI request');
+  assert.equal(f.state().stage, 3);
+  assert.match(f.node('ai-mode').textContent, /Without it, messages use demo parsing/);
+});
+
 test('failed or fabricated AI output visibly falls back without retrying', async () => {
   for (const response of [
     { ok: false },

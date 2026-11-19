@@ -297,9 +297,13 @@ $('call').onclick = () => {
   event('Demo missed call recorded. No actual call or text took place.', 'system');
 };
 $('example').onclick = () => {
+  // Starting a sample clears the conversation, but keeps the chosen test access.
+  // The explicit Reset tour action still clears the access code.
+  const accessCode = $('ai-access').value;
   reset();
+  $('ai-access').value = accessCode;
   $('call').click();
-  send('I need an EV charger installed in the garage. My ZIP is 48315. Next week. Call after 4 pm.');
+  return send('I need an EV charger installed in the garage. My ZIP is 48315. Next week. Call after 4 pm.');
 };
 $('form').onsubmit = e => {
   e.preventDefault();

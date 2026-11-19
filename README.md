@@ -6,6 +6,8 @@ A contractor intake workspace for turning sample customer messages into a callba
 
 ## Release status
 
+Live AI activation was requested on November 18, 2026. The server adapter is being prepared for a controlled test. The current static website still uses local parsing. [Activation configuration, verification and remaining gates](docs/LIVE_AI_SETUP.md).
+
 The contractor workspace was published on November 18, 2026 at 8:24 PM America/Detroit. The canonical website was then checked through its controls.
 
 | Area | Status |
@@ -195,6 +197,7 @@ The static service cannot execute `server.cjs`. Live AI requires an approved web
 ## Audit records
 
 - [Workspace redesign and 149-check evidence](docs/WORKSPACE_REDESIGN.md)
+- [Live AI activation setup and verification](docs/LIVE_AI_SETUP.md)
 - [AI intake design and earlier test evidence](docs/AI_INTAKE.md)
 - [Release audit](docs/RELEASE_AUDIT.md)
 - [Browser retest and reproduction evidence](docs/BROWSER_RETEST_2026-11-18.md)
