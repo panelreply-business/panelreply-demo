@@ -8,7 +8,7 @@ public deployment, customer contact or real credential is used.
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
+from urllib.request import HTTPRedirectHandler, build_opener
 import base64
 import json
 import os
@@ -25,6 +25,7 @@ from playwright.sync_api import expect, sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 PASSWORD = "Synthetic recovery browser password 2026!"
 NEW_PASSWORD = "Replacement synthetic password 2026!"
+OTHER_NEW_PASSWORD = "Second replacement synthetic password 2026!"
 BACKUP_PASSPHRASE = "Synthetic archive passphrase 2026!"
 OWNER = "recovery-owner@example.test"
 LEAD = {
@@ -40,6 +41,11 @@ LEAD = {
         {"role": "assistant", "text": "No appointment is booked."},
     ],
 }
+
+
+class RefuseRedirects(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 class WorkspaceRecoveryBrowserTests(unittest.TestCase):
@@ -139,15 +145,19 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
             stdin=subprocess.DEVNULL, stdout=handle, stderr=subprocess.STDOUT,
         )
         self.servers.append((process, handle))
+        opener = build_opener(RefuseRedirects())
         deadline = time.monotonic() + 20
         while time.monotonic() < deadline:
             if process.poll() is not None:
                 break
             try:
-                with urlopen(origin + "/login", timeout=0.5) as response:
+                with opener.open(origin + "/login", timeout=0.5) as response:
                     if response.status == 200:
                         return origin
-            except (HTTPError, URLError, OSError):
+            except HTTPError as error:
+                if 300 <= error.code < 400:
+                    raise AssertionError("Private server startup probe must not redirect") from error
+            except (URLError, OSError):
                 pass
             time.sleep(0.1)
         raise AssertionError("Private server failed to start: " +
@@ -177,15 +187,26 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
 
     def api(self, method, route, body=None, status=200, origin=None, context=None, headers=None):
         origin = origin or self.origin
+        self.assertIn(origin, self.allowed_origins)
         context = context or self.context
         request_headers = {"Origin": origin, **(headers or {})}
         if method != "GET" and "X-CSRF-Token" not in request_headers:
-            session = context.request.get(origin + "/api/session")
+            session = context.request.get(origin + "/api/session", max_redirects=0)
             self.assertEqual(session.status, 200, session.text())
             request_headers["X-CSRF-Token"] = session.json()["csrfToken"]
-        response = context.request.fetch(origin + route, method=method, headers=request_headers, data=body)
+        response = context.request.fetch(origin + route, method=method, headers=request_headers,
+                                         data=body, max_redirects=0)
         self.assertEqual(response.status, status, response.text())
         return None if response.status == 204 else response.json()
+
+    def assert_login_rejected(self, username=OWNER, password=PASSWORD, origin=None):
+        origin = origin or self.origin
+        self.page.goto(origin + "/login")
+        self.page.get_by_label("Username", exact=True).fill(username)
+        self.page.get_by_label("Password", exact=True).fill(password)
+        self.page.get_by_role("button", name="Sign in", exact=True).click()
+        expect(self.page.locator("#login-error")).to_contain_text("not accepted")
+        expect(self.page).to_have_url(origin + "/login")
 
     def create_lead(self, context=None, **changes):
         return self.api("POST", "/api/leads", {**LEAD, **changes}, status=201,
@@ -215,7 +236,8 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
     def emit_preview(self, filename):
         if os.environ.get("PANELREPLY_EMIT_RECOVERY_PREVIEWS") != "1":
             return
-        data = self.page.screenshot(type="jpeg", quality=78, full_page=True)
+        self.page.evaluate("() => scrollTo({top: 0, left: 0, behavior: 'instant'})")
+        data = self.page.screenshot(type="jpeg", quality=78, full_page=True, animations="disabled")
         encoded = base64.b64encode(data).decode("ascii")
         print(f"PANELREPLY_RECOVERY_PREVIEW_START:{filename}", flush=True)
         for offset in range(0, len(encoded), 6000):
@@ -253,7 +275,8 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         other_context = self.browser.new_context()
         try:
             result = other_context.request.post(self.origin + "/api/login", headers={"Origin": self.origin},
-                                                data={"username": "other-recovery@example.test", "password": PASSWORD})
+                                                data={"username": "other-recovery@example.test", "password": PASSWORD},
+                                                max_redirects=0)
             self.assertEqual(result.status, 200)
             other = self.create_lead(context=other_context, customerName="Other private customer", phone="+12485550102")
             content = self.download_export()
@@ -313,7 +336,7 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.create_lead()
         self.open_lead()
         self.page.locator("#lead-notes").fill("Keep this edit if downloads are blocked.")
-        self.page.evaluate("URL.createObjectURL = () => { throw new Error('Download preparation blocked.'); }")
+        self.page.evaluate("() => { URL.createObjectURL = () => { throw new Error('Download preparation blocked.'); }; }")
         self.page.get_by_role("button", name="Export records", exact=True).click()
         expect(self.page.locator("#export-error")).to_contain_text("Download preparation blocked")
         expect(self.page.locator("#export-status")).to_be_empty()
@@ -339,9 +362,11 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         other_context = self.browser.new_context()
         try:
             result = other_context.request.post(self.origin + "/api/login", headers={"Origin": self.origin},
-                                                data={"username": "other-restore@example.test", "password": PASSWORD})
+                                                data={"username": "other-restore@example.test", "password": PASSWORD},
+                                                max_redirects=0)
             self.assertEqual(result.status, 200)
             other_lead = self.create_lead(context=other_context, customerName="Other restored business", phone="+17345550103")
+            other_before = self.api("GET", "/api/export", context=other_context)
         finally:
             other_context.close()
         self.api("PATCH", "/api/leads/" + first["id"], {
@@ -364,25 +389,14 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.api("GET", "/api/session", status=401, origin=restored_origin)
         self.api("GET", "/api/session", status=200, origin=self.origin)
         self.allow_error(401)
-        self.page.goto(restored_origin + "/login")
-        self.page.get_by_label("Username", exact=True).fill(OWNER)
-        self.page.get_by_label("Password", exact=True).fill(PASSWORD)
-        self.page.get_by_role("button", name="Sign in", exact=True).click()
-        expect(self.page.locator("#login-error")).to_contain_text("not accepted")
-        expect(self.page).to_have_url(restored_origin + "/login")
+        self.assert_login_rejected(origin=restored_origin)
+        self.assert_login_rejected(username="other-restore@example.test", origin=restored_origin)
         self.command(["scripts/workspace-reset-password.cjs", "--data-dir", str(restored_dir), "--username", OWNER], NEW_PASSWORD)
         self.login(password=NEW_PASSWORD, origin=restored_origin)
         after = self.api("GET", "/api/export", origin=restored_origin)
         self.assertEqual(after["profile"], before["profile"])
         self.assertEqual(after["leads"], before["leads"])
         self.api("GET", "/api/leads/" + other_lead["id"], status=404, origin=restored_origin)
-        source_context = self.browser.new_context()
-        try:
-            original_login = source_context.request.post(self.origin + "/api/login", headers={"Origin": self.origin},
-                                                         data={"username": OWNER, "password": PASSWORD})
-            self.assertEqual(original_login.status, 200, "Recovery must not change source credentials")
-        finally:
-            source_context.close()
         opted = next(item for item in after["leads"] if item["id"] == first["id"])
         self.assertTrue(opted["optedOut"])
         self.assertFalse(opted["contactAllowed"])
@@ -394,6 +408,32 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.assertEqual(resumed["replies"], [])
         self.page.get_by_role("button", name="Open request from Jamie Recovery", exact=True).click()
         expect(self.page.locator("#lead-notes")).to_have_value("Saved before the recovery drill.")
+        self.api("POST", "/api/logout", status=204, origin=restored_origin)
+        # Resetting one restored owner must not reactivate another owner's
+        # archived credentials. Recover each business independently.
+        self.assert_login_rejected(username="other-restore@example.test", origin=restored_origin)
+        self.command([
+            "scripts/workspace-reset-password.cjs", "--data-dir", str(restored_dir),
+            "--username", "other-restore@example.test",
+        ], OTHER_NEW_PASSWORD)
+        self.login(username="other-restore@example.test", password=OTHER_NEW_PASSWORD, origin=restored_origin)
+        other_after = self.download_export()
+        self.assertEqual(other_after["profile"], other_before["profile"])
+        self.assertEqual(other_after["leads"], other_before["leads"])
+        self.assertEqual([item["id"] for item in other_after["leads"]], [other_lead["id"]])
+        self.api("GET", "/api/leads/" + first["id"], status=404, origin=restored_origin)
+        self.page.get_by_role("button", name="Open request from Other restored business", exact=True).click()
+        expect(self.page.locator("#lead-name")).to_have_value("Other restored business")
+        source_context = self.browser.new_context()
+        try:
+            for username in (OWNER, "other-restore@example.test"):
+                original_login = source_context.request.post(
+                    self.origin + "/api/login", headers={"Origin": self.origin},
+                    data={"username": username, "password": PASSWORD}, max_redirects=0,
+                )
+                self.assertEqual(original_login.status, 200, "Recovery must not change source credentials")
+        finally:
+            source_context.close()
 
     def test_operator_password_reset_revokes_browser_session_and_preserves_records(self):
         self.login()

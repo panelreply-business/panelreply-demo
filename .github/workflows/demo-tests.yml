@@ -12,7 +12,8 @@ permissions:
   contents: read
 jobs:
   demo-tests:
-    runs-on: ubuntu-latest
+    # Keep the OS baseline explicit when GitHub moves the latest label.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
