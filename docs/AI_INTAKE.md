@@ -97,16 +97,32 @@ AI can help collect the request. Booking requires the separate transactional wor
 
 ## Evidence and acceptance status
 
-| Area | Status at candidate creation | Evidence or limit |
+[CI run 44432478293](https://github.com/panelreply-business/panelreply-demo/actions/runs/44432478293) passed on November 18, 2026 at 7:52 PM America/New_York. Tested feature revision: `d5a16f9bc4a6499196cabd27243cf33be201db8e`. Chromium version: `151.0.7922.34`. There were 121 passing test cases, no failures and no skips.
+
+| Suite | PASS count |
+| --- | ---: |
+| Browser controller, generated content and CSP logic | 44 |
+| Shared intake parser | 17 |
+| Server configuration, request and provider-response guards | 24 |
+| Real HTTP boundary with a fake provider | 1 |
+| Read-only live Render GET checks | 3 |
+| Existing Chromium flow, access and layout scenarios | 11 |
+| Bundled intake and simulated AI Chromium scenarios | 21 |
+| Total | 121 |
+
+| Area | Status | Evidence or limit |
 | --- | --- | --- |
-| Local parsing, controller and server checks | PASS | Offline tests completed with fake provider responses. Final CI count will be recorded after verification |
-| Real HTTP boundary and Chromium scenarios | NOT TESTED | Prepared for GitHub CI. Local socket/browser permissions prevent running these here |
+| Local parsing, controller and server checks | PASS | 85 offline cases and generated bundle/CSP integrity verified locally and in CI |
+| Real HTTP boundary and Chromium scenarios | PASS | 1 HTTP case and 32 browser scenarios passed on the GitHub runner, using synthetic data and fake provider responses |
+| Live Render availability and static disclosures | PASS | 3 read-only GET checks. These do not establish that this candidate is deployed |
 | Live Render behavior after this change | NOT TESTED | Candidate not deployed |
 | Live model quality and supported model configuration | BLOCKED | API key, model selection, server deployment and cost approval required |
 | Calendar booking, calls/SMS and customer persistence | NOT IMPLEMENTED | No integrations or durable backend exist for these functions |
 | Customer launch | NO-GO | Live AI, booking and production controls remain outside verified coverage |
 
 All model responses used by the automated tests are fixtures. Passing these tests establishes adapter and application behavior for the tested inputs, not OpenAI accuracy or a functioning booking integration.
+
+The first CI attempt, [44432326216](https://github.com/panelreply-business/panelreply-demo/actions/runs/44432326216), passed all 89 Node/HTTP checks but failed one browser assertion. The previous test expected the old ZIP heading after a rejected ZIP+4 input. The candidate correctly requested clarification. The assertion now checks the clarification heading, empty ZIP and five-digit ZIP prompt. The subsequent full run passed both browser suites. No application check was removed or disabled.
 
 ## Defects corrected during this feature review
 

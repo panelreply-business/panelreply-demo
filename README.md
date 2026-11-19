@@ -4,7 +4,7 @@ A sample walkthrough of an electrical contractor intake flow: collect a job desc
 
 This feature branch adds intake from one message and an optional server-side AI adapter. It builds on the safety corrections in PR #1. The published site has not received this branch, and live AI is not activated.
 
-[Open the demo](https://panelreply-demo.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo) · [Corrections and tests — PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1)
+[Open the demo](https://panelreply-demo.onrender.com/) · [Repository](https://github.com/panelreply-business/panelreply-demo) · [Corrections — PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1) · [AI intake candidate — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2)
 
 ## What this project currently does
 
@@ -46,11 +46,11 @@ Status recorded on November 18, 2026:
 | --- | --- |
 | [Published Render site](https://panelreply-demo.onrender.com/) | Serves application commit `100030c7976f60dba483510a233cdc8ce95d5097`. Browser checks found opt-out, hazard and long-message layout defects in that version. |
 | [Draft PR #1](https://github.com/panelreply-business/panelreply-demo/pull/1) | Contains corrections and the automated test suites. Those application changes have not been merged or deployed. |
-| `feature/ai-assisted-intake-20261118` | Adds bundled intake and a gated AI adapter on top of PR #1. See the feature audit for current evidence. Not deployed. |
+| [AI intake candidate — PR #2](https://github.com/panelreply-business/panelreply-demo/pull/2) | Revision `d5a16f9bc4a6499196cabd27243cf33be201db8e` passed 89 Node/HTTP checks and 32 Chromium scenarios: 121 checks, zero failures or skips. Model responses are fixtures. Not deployed. |
 | Tested revision `4a967ca11f9ba3e64988e53ac83b9fe95b44d6ef` | Passed 35 logic checks, 3 live-site GET checks and 11 Chromium browser scenarios: 49 checks, zero failures or skips. |
 | Customer pilot | NO-GO. Production integrations and operational controls remain unimplemented in this inspected repository. |
 
-[Verified passing run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361)
+[Verified PR #1 run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44428320361) · [Verified AI intake candidate run](https://github.com/panelreply-business/panelreply-demo/actions/runs/44432478293)
 
 The live GET checks verify availability, sample disclosures, robots.txt and content security policy integrity. They do not prove the published app contains the corrections. After an approved deployment, retest the published app before marking its behavioral defects resolved.
 
