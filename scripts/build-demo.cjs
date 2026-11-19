@@ -6,7 +6,7 @@ const crypto = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const filename = path.join(root, 'index.html');
 const original = fs.readFileSync(filename, 'utf8');
-const script = '\n' + ['src/intake.js', 'src/demo.js']
+const script = '\n' + ['src/intake.js', 'src/business-info.js', 'src/questions.js', 'src/demo.js']
   .map(file => fs.readFileSync(path.join(root, file), 'utf8').trim()).join('\n\n') + '\n';
 if (/<\/script/i.test(script)) throw new Error('Source must not contain an HTML script closing tag');
 if ((original.match(/<script>/g) || []).length !== 1) throw new Error('Expected one generated inline script');

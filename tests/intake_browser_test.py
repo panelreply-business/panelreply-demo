@@ -171,6 +171,12 @@ class IntakeBrowserTests(unittest.TestCase):
         expect(self.page.locator("#title")).to_have_text("Ready for callback.")
         expect(self.page.locator("#summary")).to_contain_text("No appointment has been booked.")
 
+    def assistant_replies(self):
+        return self.page.locator("#events .event:not(.customer):not(.system)")
+
+    def assert_saved_answer(self):
+        expect(self.page.locator("#ai-mode")).to_contain_text(re.compile(r"saved answer", re.I))
+
     def test_static_demo_collects_bundled_details_without_any_api_request(self):
         expect(self.page.locator("#ai-controls")).to_be_hidden()
         self.send(BUNDLED_MESSAGE)
@@ -189,6 +195,190 @@ class IntakeBrowserTests(unittest.TestCase):
         self.assert_ready()
         expect(self.page.locator("#summary")).to_contain_text("ZIP: 48315")
         expect(self.page.locator("#summary")).to_contain_text("Friday after 4 pm")
+        self.assertEqual(self.api_requests, [])
+
+    def test_hours_question_answers_without_creating_job_or_callback_time(self):
+        self.send("Are you open Friday?")
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        for field in ("job", "zip", "timing"):
+            expect(self.page.locator("#detail-" + field)).to_have_text("Not collected")
+        reply = self.assistant_replies().last
+        expect(reply).to_contain_text(re.compile(r"hours|opening", re.I))
+        expect(reply).to_contain_text(re.compile(r"don.t have|do not have|not.*(?:verified|confirmed|available)|confirm|unknown", re.I))
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_questions_preserve_completed_request_and_do_not_repeat_ready_event(self):
+        self.send(BUNDLED_MESSAGE)
+        self.assert_ready()
+        summary = self.page.locator("#summary").text_content()
+        self.assertIsInstance(summary, str)
+        self.assertIn("ZIP: 48315", summary)
+        self.assertIn("Friday after 4 pm", summary)
+        ready_events = self.page.locator("#events .system").filter(
+            has_text="Sample request ready for contractor review"
+        )
+        ready_count = ready_events.count()
+        for question in ("Are you open Friday?", "Do you service 48084?"):
+            with self.subTest(question=question):
+                previous_replies = self.assistant_replies().count()
+                self.send(question)
+                expect(self.page.locator("#summary")).to_have_text(summary)
+                expect(self.page.locator("#field-count")).to_have_text("3 of 3")
+                expect(ready_events).to_have_count(ready_count)
+                expect(self.assistant_replies()).to_have_count(previous_replies + 1)
+                self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_mixed_job_and_price_question_records_only_the_stated_work(self):
+        self.send("I need an EV charger installed. How much does it cost?")
+        expect(self.page.locator("#detail-job")).to_have_text("I need an EV charger installed")
+        expect(self.page.locator("#detail-zip")).to_have_text("Not collected")
+        expect(self.page.locator("#detail-timing")).to_have_text("Not collected")
+        expect(self.page.locator("#field-count")).to_have_text("1 of 3")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"price|pricing|cost|quote", re.I))
+        self.assertRegex(replies, re.compile(r"don.t have|do not have|not.*(?:verified|confirmed|available)|confirm|unknown", re.I))
+        self.assertNotRegex(replies, r"\$\s*\d")
+        self.assertEqual(self.api_requests, [])
+
+    def test_explicit_job_zip_survives_a_mixed_service_area_question(self):
+        self.send("My ZIP is 48315. Do you serve that area?")
+        expect(self.page.locator("#detail-zip")).to_have_text("48315")
+        expect(self.page.locator("#detail-job")).to_have_text("Not collected")
+        expect(self.page.locator("#detail-timing")).to_have_text("Not collected")
+        expect(self.page.locator("#field-count")).to_have_text("1 of 3")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"coverage|service area|serve|area", re.I))
+        self.assertRegex(replies, re.compile(r"don.t have|do not have|can.t confirm|cannot confirm|not.*(?:verified|confirmed)|confirm|unknown", re.I))
+        self.assertEqual(self.api_requests, [])
+
+    def test_service_area_question_cannot_resolve_an_existing_zip_conflict(self):
+        self.send(BUNDLED_MESSAGE)
+        self.assert_ready()
+        self.send("Actually the job ZIP is 48315 or 48084")
+        expect(self.page.locator("#title")).to_have_text("Clarify the request.")
+        summary = self.page.locator("#summary").text_content()
+        self.assertIsInstance(summary, str)
+        self.assertIn("Conflicting details need confirmation", summary)
+        self.assertIn("ZIP: 48315", summary)
+        self.send("Do you service 48084?")
+        expect(self.page.locator("#title")).to_have_text("Clarify the request.")
+        expect(self.page.locator("#summary")).to_have_text(summary)
+        expect(self.page.locator("#detail-zip")).to_contain_text("needs confirmation")
+        expect(self.page.locator("#field-count")).to_have_text("2 of 3")
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_question_can_recall_the_supplied_zip_without_changing_the_request(self):
+        self.send(BUNDLED_MESSAGE)
+        self.assert_ready()
+        summary = self.page.locator("#summary").text_content()
+        self.assertIsInstance(summary, str)
+        self.assertIn("ZIP: 48315", summary)
+        self.assertIn("EV charger", summary)
+        self.send("What ZIP did I give you?")
+        expect(self.assistant_replies().last).to_contain_text("48315")
+        expect(self.assistant_replies().last).to_contain_text(re.compile(r"ZIP", re.I))
+        expect(self.page.locator("#summary")).to_have_text(summary)
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_unknown_question_gets_a_limitation_without_inventing_request_details(self):
+        self.send("Who won the chess championship?")
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        for field in ("job", "zip", "timing"):
+            expect(self.page.locator("#detail-" + field)).to_have_text("Not collected")
+        expect(self.assistant_replies().last).to_contain_text(
+            re.compile(r"don.t|do not|cannot|can.t|not.*(?:know|answer|available)|outside|only", re.I)
+        )
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_multiple_questions_answer_each_topic_without_collecting_timing(self):
+        self.send("What are your hours? How much does an estimate cost?")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"hours|opening", re.I))
+        self.assertRegex(replies, re.compile(r"price|pricing|cost|quote|estimate", re.I))
+        self.assertNotRegex(replies, r"\$\s*\d")
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_stop_in_a_question_message_prevents_a_saved_answer(self):
+        self.enable_ai()
+        self.send("STOP. What are your hours?")
+        expect(self.page.locator("#title")).to_have_text("Automated replies paused.")
+        expect(self.assistant_replies()).to_have_count(0)
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        expect(self.page.locator("#ai-mode")).not_to_contain_text(re.compile(r"saved answer", re.I))
+        self.assertEqual(self.api_requests, [])
+
+    def test_hazard_in_a_question_message_takes_precedence_over_saved_answers(self):
+        self.enable_ai()
+        self.send("My outlet is sparking. Are you open Friday?")
+        expect(self.page.locator("#title")).to_have_text("Urgent review required.")
+        expect(self.assistant_replies()).to_have_count(1)
+        expect(self.assistant_replies().last).to_contain_text("911")
+        expect(self.page.locator("#detail-timing")).to_have_text("Not collected")
+        expect(self.page.locator("#ai-mode")).not_to_contain_text(re.compile(r"saved answer", re.I))
+        self.assertEqual(self.api_requests, [])
+
+    def test_saved_questions_use_no_provider_even_with_ai_access_configured(self):
+        self.enable_ai()
+        self.send("are you open friday")
+        self.assert_saved_answer()
+        expect(self.assistant_replies().last).to_contain_text(re.compile(r"hours|opening", re.I))
+        self.send("Does this book an appointment?")
+        self.assert_saved_answer()
+        expect(self.assistant_replies().last).to_contain_text(re.compile(r"does not|doesn't|cannot|can't|no appointment", re.I))
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        expect(self.page.locator("#ai-access")).to_have_value(ACCESS_CODE)
+        expect(self.page.locator("#send")).to_be_enabled()
+        self.assertEqual(self.api_requests, [])
+
+    def test_polite_callback_request_remains_a_preference_not_a_business_question(self):
+        self.send("Install lights. My ZIP is 48315.")
+        expect(self.page.locator("#field-count")).to_have_text("2 of 3")
+        self.send("Can you call me Friday after 4 pm?")
+        self.assert_ready()
+        expect(self.page.locator("#detail-timing")).to_contain_text("Friday after 4 pm")
+        expect(self.page.locator("#summary")).to_contain_text("No appointment has been booked.")
+        self.assertEqual(self.api_requests, [])
+
+    def test_question_introduction_does_not_become_electrical_work(self):
+        self.send("I have a question. Do you service 48084?")
+        for field in ("job", "zip", "timing"):
+            expect(self.page.locator("#detail-" + field)).to_have_text("Not collected")
+        expect(self.page.locator("#field-count")).to_have_text("0 of 3")
+        expect(self.assistant_replies().last).to_contain_text(re.compile(r"service area|coverage", re.I))
+        self.assert_saved_answer()
+        self.assertEqual(self.api_requests, [])
+
+    def test_callback_about_service_area_does_not_replace_the_job_zip(self):
+        self.send(BUNDLED_MESSAGE)
+        self.assert_ready()
+        original_job = self.page.locator("#detail-job").text_content()
+        self.assertIsInstance(original_job, str)
+        self.assertIn("EV charger", original_job)
+        self.send("Can you call me tomorrow about whether you serve 48084?")
+        expect(self.page.locator("#detail-job")).to_have_text(original_job)
+        expect(self.page.locator("#detail-zip")).to_have_text("48315")
+        expect(self.page.locator("#detail-timing")).to_contain_text(re.compile(r"tomorrow", re.I))
+        expect(self.page.locator("#detail-timing")).not_to_contain_text(re.compile(r"48084|whether", re.I))
+        expect(self.page.locator("#field-count")).to_have_text("3 of 3")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"service area|coverage", re.I))
+        self.assertEqual(self.api_requests, [])
+
+    def test_explicit_work_after_newline_question_keeps_job_and_zip(self):
+        self.send("What are your hours\nInstall lights in 48315")
+        expect(self.page.locator("#detail-job")).to_have_text("Install lights")
+        expect(self.page.locator("#detail-zip")).to_have_text("48315")
+        expect(self.page.locator("#detail-timing")).to_have_text("Not collected")
+        expect(self.page.locator("#field-count")).to_have_text("2 of 3")
+        replies = "\n".join(self.assistant_replies().all_inner_texts())
+        self.assertRegex(replies, re.compile(r"hours|opening", re.I))
         self.assertEqual(self.api_requests, [])
 
     def test_a_street_address_is_not_a_callback_time(self):

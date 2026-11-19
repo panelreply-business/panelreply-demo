@@ -271,3 +271,217 @@ test('additional explicit opt-out wording blocks bundled intake without false op
     'Please stop by with the text messages printed out.'
   ]) assert.equal(intake.isOptOut(text), false, text);
 });
+
+test('informational questions never become confirmed job, ZIP or timing details', () => {
+  const current = { job: 'Replace the garage light', zip: '48315', timing: 'Friday after 4 pm' };
+  for (const message of [
+    'What are your hours?', 'Are you open Friday?', 'Can you install an EV charger?',
+    'How much does it cost to install an EV charger?', 'Do you service 48084?',
+    'Are you available tomorrow?', 'What time do you close on Friday?',
+    'Does this book an appointment?', 'Do you cover 48084 or 48154?',
+    'Is ZIP 1234 valid?', 'Is ZIP 48315-1234 in your service area?',
+    'Friday?', 'Actually, do you service 48084?'
+  ]) {
+    for (const fields of [empty, current]) {
+      const extracted = intake.extractFields(message, fields);
+      assert.deepEqual(extracted, { job: null, zip: null, timing: null, ambiguous: false }, message);
+      assert.deepEqual(intake.mergeFields(fields, extracted), fields, message);
+    }
+  }
+});
+
+test('questions without a question mark and information requests stay out of intake', () => {
+  for (const message of [
+    'are you open friday', 'do you service 48084', 'how much to install an EV charger',
+    'when can you come tomorrow', 'please tell me your hours',
+    'Explain how booking works', 'I would like to know if you serve 48084',
+    'I’m wondering whether you are available tomorrow',
+    'I was wondering if you service 48084', 'Hi, what are your hours?',
+    'Hi, are you open Friday, after 4 pm', 'Do you cover 48084, 48154',
+    'Are you open on Friday and Saturday'
+  ]) {
+    assert.deepEqual(intake.extractFields(message, empty),
+      { job: null, zip: null, timing: null, ambiguous: false }, message);
+    assert.ok(intake.partitionMessage(message).questions.length, message);
+  }
+});
+
+test('partitioning preserves detail wording and separates mixed questions', () => {
+  const message = 'I need an EV charger installed. My ZIP is 48315. Are you open tomorrow? Call me Friday after 4 pm.';
+  const partition = intake.partitionMessage(message);
+  assert.deepEqual(partition.questions, ['Are you open tomorrow?']);
+  assert.ok(partition.details.includes('I need an EV charger installed.'));
+  assert.ok(partition.details.includes('My ZIP is 48315.'));
+  assert.ok(partition.details.includes('Call me Friday after 4 pm.'));
+  assert.equal(partition.details.includes('tomorrow'), false);
+  assert.deepEqual(intake.extractFields(message, empty), {
+    job: 'I need an EV charger installed', zip: '48315', timing: 'Call me Friday after 4 pm', ambiguous: false
+  });
+});
+
+test('mixed punctuation and conjunctions do not turn questions into fields', () => {
+  for (const message of [
+    'I need an EV charger installed, my ZIP is 48315, are you open tomorrow, and call me Friday after 4 pm',
+    'I need an EV charger installed; my ZIP is 48315; are you open tomorrow; call me Friday after 4 pm',
+    'I need an EV charger installed\nmy ZIP is 48315\nare you open tomorrow\ncall me Friday after 4 pm',
+    'Are you open tomorrow?I need an EV charger installed. My ZIP is 48315. Call me Friday after 4 pm.'
+  ]) {
+    const result = intake.extractFields(message, empty);
+    assert.equal(result.job, 'I need an EV charger installed', message);
+    assert.equal(result.zip, '48315', message);
+    assert.match(result.timing, /^call me Friday after 4 pm$/i, message);
+    assert.equal(result.ambiguous, false, message);
+  }
+  assert.deepEqual(intake.extractFields('I need an EV charger installed in 48315 and are you open tomorrow?', empty), {
+    job: 'I need an EV charger installed', zip: '48315', timing: null, ambiguous: false
+  });
+  assert.deepEqual(intake.extractFields('What are your hours and my ZIP is 48315', empty), {
+    job: null, zip: '48315', timing: null, ambiguous: false
+  });
+});
+
+test('a mixed coverage question cannot replace or conflict with an explicitly supplied job ZIP', () => {
+  for (const message of [
+    'I need lights installed. My ZIP is 48315. Do you serve 48084?',
+    'I need lights installed. Do you serve 48084? My ZIP is 48315.',
+    'I need lights installed in 48315 and do you also serve 48084'
+  ]) {
+    const result = intake.extractFields(message, empty);
+    assert.equal(result.job, 'I need lights installed', message);
+    assert.equal(result.zip, '48315', message);
+    assert.equal(result.ambiguous, false, message);
+  }
+  const question = intake.extractFields('Do you serve 48084 or 48154?', { job: 'Install lights', zip: '48315', timing: 'Friday' });
+  assert.equal(question.zip, null, 'A question cannot provide a ZIP clarification');
+  assert.equal(question.ambiguous, false);
+});
+
+test('polite callback requests remain timing details even when phrased as questions', () => {
+  for (const message of [
+    'Can you call me Friday after 4 pm?', 'Could you please call me Friday after 4 pm?',
+    'Please, can you stop by Thursday?', 'Would you be able to contact me Monday after 5 pm?',
+    'Can you call me Friday after 4 pm, and how much does it cost?'
+  ]) {
+    const result = intake.extractFields(message, empty);
+    assert.equal(result.job, null, message);
+    assert.equal(result.zip, null, message);
+    assert.ok(result.timing, message);
+    assert.match(result.timing, /Friday|Thursday|Monday/, message);
+    assert.doesNotMatch(result.timing, /how much|cost/i, message);
+    assert.equal(result.ambiguous, false, message);
+  }
+});
+
+test('partitioning leaves ordinary messages unchanged and handles absent input', () => {
+  for (const message of [
+    'I need lights installed in 48315. Call me at 4 p.m.',
+    'ZIP 48315 or 48154', 'Not Friday, Monday after 4.',
+    'Job: install a new panel; timing: once I get home',
+    'Do not send me a quote until Friday.', '  Install lights.\n ZIP 48315.  '
+  ]) assert.deepEqual(intake.partitionMessage(message), { details: message, questions: [] });
+  for (const message of [null, undefined, 123, '', '   ']) {
+    assert.deepEqual(intake.partitionMessage(message), { details: '', questions: [] });
+  }
+});
+
+test('fronted question topics are not mistaken for supplied job facts', () => {
+  for (const message of [
+    'Friday, are you open?', '48084, do you serve there?',
+    'For 48084, do you provide service', 'EV chargers, do you install them?',
+    'EV chargers, 48084, are you available Friday?'
+  ]) {
+    assert.equal(intake.partitionMessage(message).details, '', message);
+    assert.deepEqual(intake.extractFields(message, empty),
+      { job: null, zip: null, timing: null, ambiguous: false }, message);
+  }
+  const mixed = intake.extractFields('Install lights, how much would it cost?', empty);
+  assert.equal(mixed.job, 'Install lights');
+  const explicit = intake.extractFields('My ZIP is 48315, are you open Friday?', empty);
+  assert.equal(explicit.zip, '48315');
+  assert.equal(explicit.timing, null);
+});
+
+test('can-light work descriptions and future statements are not modal questions', () => {
+  for (const message of ['Can lights in the kitchen', 'Can light replacement', 'Will install lights tomorrow']) {
+    assert.deepEqual(intake.partitionMessage(message), { details: message, questions: [] });
+    assert.ok(intake.extractFields(message, empty).job, message);
+  }
+  assert.equal(intake.extractFields('Can lights in the kitchen', empty).job, 'Can lights in the kitchen');
+});
+
+test('question introductions do not become jobs or leave detail text for a provider', () => {
+  const current = { job: 'Install lights', zip: '48315', timing: 'Friday after 4 pm' };
+  for (const introduction of [
+    'I have a question', 'I have questions', 'I have a few questions',
+    'I have a couple of questions', 'We have some questions', 'I have one quick question',
+    'I’ve got a question', 'I got a question', 'Quick question', 'Just a question'
+  ]) {
+    for (const message of [introduction, introduction + '. Do you service 48084?']) {
+      assert.equal(intake.partitionMessage(message).details, '', message);
+      const extracted = intake.extractFields(message, current);
+      assert.deepEqual(extracted, { job: null, zip: null, timing: null, ambiguous: false }, message);
+      assert.deepEqual(intake.mergeFields(current, extracted), current, message);
+    }
+  }
+  const mixed = intake.extractFields('I have a question. I need lights installed. My ZIP is 48315. What are your hours?', empty);
+  assert.deepEqual(mixed, { job: 'I need lights installed', zip: '48315', timing: null, ambiguous: false });
+  const statement = 'I have a panel that needs replacing';
+  assert.deepEqual(intake.partitionMessage(statement), { details: statement, questions: [] });
+});
+
+test('callback requests keep the requested time but exclude an embedded coverage question', () => {
+  const current = { job: 'Install lights', zip: '48315', timing: 'Monday after 4 pm' };
+  for (const message of [
+    'Can you call me tomorrow about whether you serve 48084?',
+    'Can you call me Friday after 4 pm to tell me if you serve 48084?',
+    'Could you please call me tomorrow to let me know whether you cover 48084?'
+  ]) {
+    const partition = intake.partitionMessage(message);
+    assert.match(partition.details, /tomorrow|Friday after 4 pm/, message);
+    assert.doesNotMatch(partition.details, /48084|whether|serve|cover/i, message);
+    assert.match(partition.questions.join(' '), /48084/, message);
+    const extracted = intake.extractFields(message, current);
+    assert.equal(extracted.job, null, message);
+    assert.equal(extracted.zip, null, message);
+    assert.match(extracted.timing, /tomorrow|Friday after 4 pm/, message);
+    assert.doesNotMatch(extracted.timing, /48084|whether|serve|cover/i, message);
+    assert.equal(extracted.ambiguous, false, message);
+    const merged = intake.mergeFields(current, extracted);
+    assert.equal(merged.job, current.job, message);
+    assert.equal(merged.zip, current.zip, message);
+  }
+  const conditional = 'Can you call me Friday if you can?';
+  assert.deepEqual(intake.partitionMessage(conditional), { details: conditional, questions: [] });
+  const withoutTime = 'Can you call me to tell me whether you are open Friday?';
+  assert.equal(intake.partitionMessage(withoutTime).details, '');
+  assert.deepEqual(intake.extractFields(withoutTime, current),
+    { job: null, zip: null, timing: null, ambiguous: false });
+});
+
+test('imperative job clauses after a question separator remain supplied details', () => {
+  for (const [message, job] of [
+    ['What are your hours\nInstall lights in 48315. Call me Friday.', 'Install lights'],
+    ['What are your hours; replace the kitchen light. ZIP 48315. Call me Friday.', 'replace the kitchen light'],
+    ['Do you service 48084\nPlease repair the outlet. My ZIP is 48315. Call me Friday.', 'Please repair the outlet']
+  ]) {
+    assert.deepEqual(intake.extractFields(message, empty),
+      { job, zip: '48315', timing: 'Call me Friday', ambiguous: false }, message);
+  }
+  for (const question of ['Do you install panels and repair lights', 'Do you install panels, repair lights']) {
+    assert.equal(intake.partitionMessage(question).details, '', question);
+    assert.deepEqual(intake.extractFields(question, empty),
+      { job: null, zip: null, timing: null, ambiguous: false }, question);
+  }
+});
+
+test('original opt-out and hazard messages take precedence over question partitioning', () => {
+  for (const message of [
+    'Are you open Friday? STOP. My ZIP is 48315.',
+    'I need lights installed. What should I do about a melting outlet?',
+    'Do you serve 48084? Please do not send me more texts.'
+  ]) {
+    assert.ok(intake.isOptOut(message) || intake.isUrgent(message), message);
+    assert.deepEqual(intake.extractFields(message, empty),
+      { job: null, zip: null, timing: null, ambiguous: false }, message);
+  }
+});
