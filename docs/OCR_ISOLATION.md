@@ -8,6 +8,10 @@ The required worker policy and native verifier are implemented. Policy/adapter u
 
 The six native deny tests are NOT TESTED locally. The script is prepared for an authorized Linux CI runner that permits unprivileged user namespaces. A passing result on CI would apply to that runner. The intended hosting environment still needs its own verified boundary before customer uploads.
 
+CI run 67 also returned BLOCKED with zero native deny cases. Its `isolation_unavailable` reason and null engine version establish that the first wrapped engine-version probe failed. They do not establish a host namespace denial. The packages installed successfully, but the adapter discarded the failure stderr. A worker configuration, mount, loader or seccomp problem remains possible. [Run 67 evidence](evidence/ocr-isolation-run67.json) preserves that indeterminate result.
+
+The CI verifier now observes the same readiness attempt and retains at most 4 KiB of stderr per fixed probe stage, plus exit code/signal and safe launch error codes. It runs no extra command or retry. Explicit namespace-denial messages may confirm a host blocker. Known launcher/configuration errors and `SIGSYS` return FAIL. Other unavailable states remain BLOCKED with the cause marked unconfirmed. No generic `isolation_unavailable` result alone establishes an external blocker.
+
 The existing private local application continues to use resource limits by default. A process limit is not OS isolation. No public service or integration was enabled.
 
 ## Explicit mode

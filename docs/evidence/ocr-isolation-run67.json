@@ -1,0 +1,27 @@
+{
+  "format": "panelreply-ocr-isolation-ci-evidence",
+  "version": 1,
+  "workflowRunNumber": 67,
+  "observedAt": "2026-11-20T01:28:15Z",
+  "testedMergeCommit": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+  "status": "BLOCKED",
+  "reason": "isolation_unavailable",
+  "engineVersion": null,
+  "nativeDenyCases": 0,
+  "nativeDenyBehavior": "NOT TESTED",
+  "failureStage": "engine_version",
+  "cause": "indeterminate",
+  "confirmedExternalHostBlocker": false,
+  "prerequisiteInstall": {
+    "status": "PASS",
+    "runner": "Ubuntu 24.04.5 x64",
+    "bubblewrap": "0.9.0-1ubuntu0.3",
+    "tesseract": "5.3.4-1build5",
+    "pillow": "10.2.0-1ubuntu1.5",
+    "englishAndOsdModels": "installed"
+  },
+  "interpretation": "The first required-mode version probe failed before an engine version was parsed. The adapter discarded stderr and mapped all exceptions there to one reason. This does not distinguish namespace denial from worker configuration, loader, mount, seccomp or launch defects.",
+  "privilegedRetry": false,
+  "unconfinedFallback": false,
+  "followup": "Observe bounded stderr and exit metadata from the same readiness invocation on the next authorized CI run. No second probe, alternative command or host policy change."
+}

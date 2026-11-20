@@ -1,0 +1,266 @@
+{
+  "source": {
+    "headCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+    "ciRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+    "tree": "45080aa913b4b22f176e0989ae0e1c6e57868ce7",
+    "runId": 44653806457,
+    "runNumber": 67,
+    "jobId": 136014982565
+  },
+  "measurement": {
+    "status": "PASS",
+    "date": "2026-11-20T01:30:50.644Z",
+    "scope": "One local synthetic storage/recovery drill. Not HTTP load, user concurrency, hardware sizing or production capacity.",
+    "sourceSha256": {
+      "harness": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c",
+      "store": "f448cb1da7e1b881420bacda08bb97c4bc3764127a761940c779a8ad78206c58",
+      "backup": "a8749ab6bb4abf7784081331110e3d39b48afdd2993bceaf50e4db1dc69a1437"
+    },
+    "workload": {
+      "businesses": 2,
+      "projects": 204,
+      "requests": 301,
+      "maximumRowsInProject": 200,
+      "sourceImages": 5,
+      "repeatedSaves": 100,
+      "repeatedCsvExports": 100,
+      "listPasses": 20,
+      "reopenCycles": 5,
+      "sessionsBeforeBackup": 5
+    },
+    "unexpectedErrors": 0,
+    "expectedRejections": [
+      "project_limit",
+      "source_limit",
+      "invalid_input"
+    ],
+    "checks": [
+      {
+        "check": "project/row/image capacity boundaries",
+        "status": "PASS"
+      },
+      {
+        "check": "repeated saves, exports, listing and reopen preserve saved values",
+        "status": "PASS"
+      },
+      {
+        "check": "encrypted restore retains canonical records, private image bytes, flags and exports",
+        "status": "PASS"
+      },
+      {
+        "check": "restored sessions removed, old credentials rejected and operator reset restores one owner",
+        "status": "PASS"
+      },
+      {
+        "check": "tenant boundaries remain after recovery",
+        "status": "PASS"
+      }
+    ],
+    "latency": {
+      "createProject": {
+        "operations": 204,
+        "p50Ms": 0.32,
+        "p95Ms": 0.49,
+        "maxMs": 2.596
+      },
+      "createRequest": {
+        "operations": 300,
+        "p50Ms": 0.244,
+        "p95Ms": 0.389,
+        "maxMs": 10.959
+      },
+      "attachImage": {
+        "operations": 5,
+        "p50Ms": 1.206,
+        "p95Ms": 5.449,
+        "maxMs": 5.449
+      },
+      "save200RowProject": {
+        "operations": 100,
+        "p50Ms": 1.05,
+        "p95Ms": 1.606,
+        "maxMs": 1.855
+      },
+      "export200RowsCsv": {
+        "operations": 100,
+        "p50Ms": 0.352,
+        "p95Ms": 0.638,
+        "maxMs": 0.821
+      },
+      "list240Requests": {
+        "operations": 20,
+        "p50Ms": 6.437,
+        "p95Ms": 8.696,
+        "maxMs": 10.081
+      },
+      "list200Projects": {
+        "operations": 20,
+        "p50Ms": 0.969,
+        "p95Ms": 3.061,
+        "maxMs": 3.154
+      },
+      "reopenDatabase": {
+        "operations": 5,
+        "p50Ms": 1.461,
+        "p95Ms": 2.058,
+        "maxMs": 2.058
+      },
+      "encryptedBackup": {
+        "operations": 1,
+        "p50Ms": 233.214,
+        "p95Ms": 233.214,
+        "maxMs": 233.214
+      },
+      "authenticatedRestore": {
+        "operations": 1,
+        "p50Ms": 208.028,
+        "p95Ms": 208.028,
+        "maxMs": 208.028
+      }
+    },
+    "elapsedMs": 1772,
+    "process": {
+      "node": "v22.23.4",
+      "platform": "linux",
+      "cpuUserMs": 1668,
+      "cpuSystemMs": 135,
+      "rssBeforeBytes": 49876992,
+      "rssAfterBytes": 102486016,
+      "peakRssKiB": 132860
+    },
+    "storage": {
+      "initialDirectoryBytes": 218176,
+      "populatedDirectoryBytes": 1357272,
+      "restoredDirectoryBytes": 1044480,
+      "encryptedArchiveBytes": 1044560,
+      "counts": {
+        "businesses": 2,
+        "users": 2,
+        "leads": 301,
+        "messages": 301,
+        "audit": 618,
+        "optOuts": 1,
+        "panelProjects": 204,
+        "panelSources": 5,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 1,
+        "assistantUsage": 0
+      }
+    },
+    "integrity": {
+      "sourceUnchanged": true,
+      "businessA": {
+        "before": "e0f78fb792de7bd22dfc52f265d891b89cf584852cd75d238cffa2c5ad2f0eb9",
+        "after": "e0f78fb792de7bd22dfc52f265d891b89cf584852cd75d238cffa2c5ad2f0eb9",
+        "tables": {
+          "businesses": {
+            "rows": 1,
+            "sha256": "2c17ef93fd436a55dc705b995f8a623bbc9c16207c9771fddb2cf6c1e827993f"
+          },
+          "users": {
+            "rows": 1,
+            "sha256": "6a13e75aee6d2bf6af2d5d7bb1c4e246d2732a56f5a6dfddcbd87584d3053dd0"
+          },
+          "leads": {
+            "rows": 241,
+            "sha256": "4fc4aca7897b8dcd3d9632e3db4695c90ecf6a44f930e7307f63bdeea8443ee9"
+          },
+          "messages": {
+            "rows": 241,
+            "sha256": "14addc38a78b4358954ff422093020e14772dee8f18f5e1dd8a96d85b41b6c66"
+          },
+          "audit": {
+            "rows": 554,
+            "sha256": "d62c9fbc3aad0e3d35908e775ef9b3642157d7b8b15891ea00c1ca467e23d592"
+          },
+          "suppression": {
+            "rows": 1,
+            "sha256": "64d8863554c3fb19121ab235f15c0efe71b09d92c7cca0360d5198698309a06d"
+          },
+          "panel_projects": {
+            "rows": 200,
+            "sha256": "96648687f5bb5245734bf1eca1916aacd84da9eb8a2dacd72f7d00faf2594ca0"
+          },
+          "panel_sources": {
+            "rows": 5,
+            "sha256": "30d86a462536822a3de7a539832ff5ddb42e0be04df29089b88039b2d9fd1c66"
+          },
+          "record_deletions": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "deletion_operations": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "safety_holds": {
+            "rows": 1,
+            "sha256": "37336119d03375948c75f13a1ec7182288556273a3a0defa8744a474c92a8ae1"
+          },
+          "assistant_usage": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        }
+      },
+      "businessB": {
+        "before": "3e28614c10684da1c4ccd2293090d9d07b731a837d9714cd0ac1015a3ddde618",
+        "after": "3e28614c10684da1c4ccd2293090d9d07b731a837d9714cd0ac1015a3ddde618",
+        "tables": {
+          "businesses": {
+            "rows": 1,
+            "sha256": "a87fb9c5eea82a9fb5ed6a83e236fbcbef303a44af501d8a3326dd3fb2039cb8"
+          },
+          "users": {
+            "rows": 1,
+            "sha256": "1be51dc45fcb1a544c07b3adab7ede4ee43b05ff9617281dc9d116101b10a5e6"
+          },
+          "leads": {
+            "rows": 60,
+            "sha256": "c9a500f7d5fbda6fa9b2f561ab09568cc9fc20f90b3dc4157a52e68e11f3bd66"
+          },
+          "messages": {
+            "rows": 60,
+            "sha256": "f87dc849f9700422b09a70080a5dbab11f3cce1356149bf2d5c841ce693ee168"
+          },
+          "audit": {
+            "rows": 64,
+            "sha256": "aadd5520d2c5bc0588b4708286309af5694d6832a87e8a583981d34ea7c45570"
+          },
+          "suppression": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "panel_projects": {
+            "rows": 4,
+            "sha256": "0f04e8fc75c87b4db15114fae2fd92b4598dddf465b0142d14cdc6c58e51310f"
+          },
+          "panel_sources": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "record_deletions": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "deletion_operations": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "safety_holds": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "assistant_usage": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        }
+      },
+      "csvSha256": "123b75618bee66555cbc1288a1e3fcdb67ea69b03f0e3b1ebfe4faf260450207",
+      "restoredSessions": 0,
+      "passwordsDisabledBeforeReset": 2
+    }
+  }
+}

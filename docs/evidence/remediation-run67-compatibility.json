@@ -1,0 +1,235 @@
+{
+  "runId": 44653806457,
+  "runNumber": 67,
+  "candidateCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+  "scope": "GitHub completed compatibility logs read without local browser execution. Engine automation is not physical devices or actual Safari.",
+  "recordedAt": "2026-11-20T01:43:13.590210+00:00",
+  "jobs": [
+    {
+      "id": 136014982512,
+      "name": "Private workflows (firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "browser": "firefox",
+      "versions": [
+        "153.0"
+      ],
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44653806457/job/136014982512",
+      "logFile": "ci-run67-firefox.log",
+      "logSha256": "ac4d16ad7f089dc20242f2fd6c5fe27cbb857161720363c7c47d3fa81617ea26",
+      "logBytes": 91399,
+      "totals": {
+        "tests": 131,
+        "pass": 131,
+        "fail": 0,
+        "error": 0,
+        "skipped": 0
+      },
+      "suiteResults": {
+        "DesignBrowserTests": {
+          "tests": 27,
+          "pass": 27,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "PrivateWorkspaceBrowserTests": {
+          "tests": 31,
+          "pass": 31,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "PanelWorkspaceBrowserTests": {
+          "tests": 24,
+          "pass": 24,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "WorkspaceRecoveryBrowserTests": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "PlatformVisualTests": {
+          "tests": 19,
+          "pass": 19,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "AssistantBrowserTests": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "XlsxBrowserTests": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "LifecycleBrowserTests": {
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        }
+      },
+      "runSummaries": [
+        {
+          "tests": 27,
+          "seconds": 34.646
+        },
+        {
+          "tests": 31,
+          "seconds": 58.5
+        },
+        {
+          "tests": 24,
+          "seconds": 42.396
+        },
+        {
+          "tests": 9,
+          "seconds": 35.92
+        },
+        {
+          "tests": 19,
+          "seconds": 35.373
+        },
+        {
+          "tests": 4,
+          "seconds": 12.313
+        },
+        {
+          "tests": 7,
+          "seconds": 13.238
+        },
+        {
+          "tests": 10,
+          "seconds": 19.833
+        }
+      ]
+    },
+    {
+      "id": 136014982438,
+      "name": "Private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "browser": "webkit",
+      "versions": [
+        "26.5"
+      ],
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44653806457/job/136014982438",
+      "logFile": "ci-run67-webkit.log",
+      "logSha256": "76eda22d7e235a547ea82b366f65c78dcfdb351404d7414d88d0c78328178b24",
+      "logBytes": 173697,
+      "totals": {
+        "tests": 131,
+        "pass": 131,
+        "fail": 0,
+        "error": 0,
+        "skipped": 0
+      },
+      "suiteResults": {
+        "DesignBrowserTests": {
+          "tests": 27,
+          "pass": 27,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "PrivateWorkspaceBrowserTests": {
+          "tests": 31,
+          "pass": 31,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "PanelWorkspaceBrowserTests": {
+          "tests": 24,
+          "pass": 24,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "WorkspaceRecoveryBrowserTests": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "PlatformVisualTests": {
+          "tests": 19,
+          "pass": 19,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "AssistantBrowserTests": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "XlsxBrowserTests": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        },
+        "LifecycleBrowserTests": {
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "error": 0,
+          "skipped": 0
+        }
+      },
+      "runSummaries": [
+        {
+          "tests": 27,
+          "seconds": 35.924
+        },
+        {
+          "tests": 31,
+          "seconds": 41.777
+        },
+        {
+          "tests": 24,
+          "seconds": 33.47
+        },
+        {
+          "tests": 9,
+          "seconds": 18.204
+        },
+        {
+          "tests": 19,
+          "seconds": 26.71
+        },
+        {
+          "tests": 4,
+          "seconds": 9.884
+        },
+        {
+          "tests": 7,
+          "seconds": 9.769
+        },
+        {
+          "tests": 10,
+          "seconds": 14.457
+        }
+      ]
+    }
+  ]
+}

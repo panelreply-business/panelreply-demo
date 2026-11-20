@@ -96,7 +96,7 @@ node --test tests/data-lifecycle.test.cjs tests/panel-store.test.cjs tests/works
 
 `tests/data-lifecycle.test.cjs` covers four deletion operations, ownership, version races, exact retries, rollback, same-phone restrictions, schema-2 migration, newer and older archive behavior, metadata corruption, a terminated writer and three terminated-restore stages. Existing store, backup, recovery-auth and concurrency tests cover saved fields/transcripts, persistence, image bytes, exports, password/session recovery, corrupt archive rejection and independent businesses.
 
-[Data reliability verification](DATA_RELIABILITY_VERIFICATION.md) records the 138-case focused data run, the added usage recovery checks, the 20-case independent follow-up and the final 1,116-case applicable offline suite. All those reported final runs passed with zero failures and zero skipped tests. The counts overlap and must not be added together.
+[Data reliability verification](DATA_RELIABILITY_VERIFICATION.md) records the 138-case focused data run, the added usage recovery checks, the 20-case independent follow-up and the final 1,117-case applicable offline suite. All those reported final runs passed with zero failures and zero skipped tests. The counts overlap and must not be added together.
 
 That verification record also discloses two prior actual local listener attempts during shutdown testing, outside the delegated no-network instruction. They are excluded from offline evidence. The shutdown case now belongs to the CI/HTTP-gated file, which the permitted local suite excludes. It was not relaunched after the correction.
 

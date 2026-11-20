@@ -12,6 +12,8 @@ Independent review found corrections that needed field-specific permission, dele
 
 The final applicable local run passed 1,117 checks with zero failures or skips, including the transcript-limit and monotonic-clock regressions. [Hash-bound local evidence](evidence/remediation-local-verification.json) records the source files and executed log. Actual browser, concurrent HTTP and restricted-worker evidence must come from the committed CI candidate. Until then those rows remain NOT TESTED or BLOCKED in the [release matrix](RELEASE_ACCEPTANCE.md).
 
+The first remediation candidate [4b26ace](https://github.com/panelreply-business/panelreply-demo/commit/4b26aceee1c2ff069ba6f3ce28e539fa492bd343) passed 1,609 application checks in [run67](https://github.com/panelreply-business/panelreply-demo/actions/runs/44653806457), with zero application failures or skips. The bounded HTTP drill passed nine workflow groups and completed 516 responses without unexpected errors. Both suspension guards passed. The separate OCR accuracy gate remains FAIL at 277/310. Required-worker readiness was BLOCKED with an indeterminate startup cause. Screenshot inspection then found a deletion-dialog contrast gap. The follow-up fixes that contrast, adds a computed-style browser regression, records bounded diagnostics from the same readiness attempt, and publishes the measured OCR hashes in CI. Follow-up integration evidence is pending.
+
 No passing aggregate will override the outstanding OCR, real-model, representative-photo or selected-host recovery gates. Public release remains NO-GO.
 
 ---

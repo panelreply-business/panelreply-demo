@@ -30,6 +30,46 @@ class LifecycleBrowserTests(PanelWorkspaceBrowserTests):
         self.dialog().get_by_role("button", name="Delete", exact=True).click()
         expect(self.dialog()).not_to_be_visible()
 
+    def assert_dialog_contrast(self, selectors):
+        ratios = self.dialog().evaluate("""(dialog, selectors) => {
+            const rgba = color => {
+                const values = color.match(/[\\d.]+/g).map(Number);
+                return [...values.slice(0, 3), values.length > 3 ? values[3] : 1];
+            };
+            const over = (front, back) => front.slice(0, 3).map((value, i) => value * front[3] + back[i] * (1 - front[3]));
+            const luminance = rgb => rgb.map(channel => {
+                const value = channel / 255;
+                return value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4;
+            }).reduce((sum, value, i) => sum + value * [.2126, .7152, .0722][i], 0);
+            return selectors.map(selector => {
+                const element = dialog.querySelector(selector);
+                if (!element || !element.textContent.trim()) throw new Error('Missing contrast text: ' + selector);
+                const chain = [];
+                for (let node = element; node; node = node.parentElement) chain.unshift(node);
+                let background = [255, 255, 255];
+                for (const node of chain) background = over(rgba(getComputedStyle(node).backgroundColor), background);
+                const foreground = over(rgba(getComputedStyle(element).color), background);
+                const a = luminance(foreground), b = luminance(background);
+                return {selector, ratio: (Math.max(a, b) + .05) / (Math.min(a, b) + .05)};
+            });
+        }""", selectors)
+        for item in ratios:
+            self.assertGreaterEqual(item["ratio"], 4.5, json.dumps(item))
+
+    def test_confirmation_and_failed_deletion_text_contrast(self):
+        self.login()
+        saved = self.create_panel()
+        self.open_panels(saved["id"])
+        self.page.locator("#delete-project").click()
+        self.dialog().get_by_label("Type DELETE to confirm").fill("DELETE")
+        self.assert_dialog_contrast(["h2", "#delete-confirm-description", ".muted", "label", ".button-secondary", ".button-danger"])
+        self.page.route("**/api/panel-projects/" + saved["id"], lambda route: route.abort() if route.request.method == "DELETE" else route.continue_())
+        self.dialog().get_by_role("button", name="Delete", exact=True).click()
+        expect(self.dialog().locator(".notice.error")).to_be_visible()
+        expect(self.dialog().get_by_role("status")).to_contain_text("Deletion is unconfirmed")
+        self.assert_dialog_contrast([".muted", ".form-status", ".notice.error", ".button-danger"])
+        self.assertEqual(self.saved_panel(saved["id"]), saved)
+
     def test_confirmation_cancel_keyboard_and_no_early_delete(self):
         self.login(keyboard=True)
         saved = self.create_panel()

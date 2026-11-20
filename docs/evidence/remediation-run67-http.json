@@ -1,0 +1,278 @@
+{
+  "source": {
+    "headCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+    "ciRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+    "tree": "45080aa913b4b22f176e0989ae0e1c6e57868ce7",
+    "runId": 44653806457,
+    "runNumber": 67,
+    "jobId": 136014982588
+  },
+  "measurement": {
+    "status": "PASS",
+    "scope": "Synthetic CI loopback only. Same Node process runs HTTP server and clients. Native OCR child CPU/RSS excluded from these process totals. Not hosted capacity or an SLA.",
+    "node": "v22.23.4",
+    "platform": "linux",
+    "clients": 12,
+    "businesses": 2,
+    "seededProjects": 220,
+    "seededRequests": 300,
+    "checks": [
+      {
+        "check": "12 authenticated HTTP clients in two isolated businesses",
+        "status": "PASS"
+      },
+      {
+        "check": "480 concurrent list/save/export operations preserve each saved version",
+        "status": "PASS"
+      },
+      {
+        "check": "optimistic write conflicts and OCR backpressure preserve records",
+        "status": "PASS"
+      },
+      {
+        "check": "foreign-tenant HTTP export denied",
+        "status": "PASS"
+      },
+      {
+        "check": "HTTP save completes after separate SQLite write-lock contention",
+        "status": "PASS"
+      },
+      {
+        "check": "interrupted HTTP body is inert and same-key retry creates one request",
+        "status": "PASS"
+      },
+      {
+        "check": "expired HTTP session denied and fresh authentication succeeds",
+        "status": "PASS"
+      },
+      {
+        "check": "in-process HTTP/store restart and encrypted restore preserve all logical tables and source images",
+        "status": "PASS"
+      },
+      {
+        "check": "restored sessions denied until explicit owner password recovery",
+        "status": "PASS"
+      }
+    ],
+    "controlledRejections": [
+      {
+        "operation": "8 simultaneous writers at one saved version",
+        "outcomes": {
+          "saved": 1,
+          "stale": 7
+        }
+      },
+      {
+        "operation": "4 simultaneous native OCR requests",
+        "outcomes": {
+          "processed": 1,
+          "busy": 3
+        }
+      }
+    ],
+    "http": {
+      "completed": 516,
+      "statuses": {
+        "200": 502,
+        "201": 1,
+        "401": 2,
+        "404": 1,
+        "409": 7,
+        "429": 3
+      },
+      "unexpectedErrors": 0,
+      "unexpectedErrorRate": 0,
+      "timings": {
+        "authentication": {
+          "count": 14,
+          "p50Ms": 189.655,
+          "p95Ms": 287.663,
+          "p99Ms": 287.663,
+          "maxMs": 287.663
+        },
+        "projectList": {
+          "count": 96,
+          "p50Ms": 39.718,
+          "p95Ms": 63.808,
+          "p99Ms": 69.932,
+          "maxMs": 69.932
+        },
+        "requestList": {
+          "count": 96,
+          "p50Ms": 55.027,
+          "p95Ms": 83.973,
+          "p99Ms": 86.333,
+          "maxMs": 86.333
+        },
+        "save": {
+          "count": 96,
+          "p50Ms": 48.159,
+          "p95Ms": 75.66,
+          "p99Ms": 78.198,
+          "maxMs": 78.198
+        },
+        "csv200Rows": {
+          "count": 96,
+          "p50Ms": 19.553,
+          "p95Ms": 26.528,
+          "p99Ms": 26.845,
+          "maxMs": 26.845
+        },
+        "xlsx200Rows": {
+          "count": 96,
+          "p50Ms": 46.842,
+          "p95Ms": 69.479,
+          "p99Ms": 75.824,
+          "maxMs": 75.824
+        },
+        "versionRace": {
+          "count": 8,
+          "p50Ms": 9.027,
+          "p95Ms": 14.744,
+          "p99Ms": 14.744,
+          "maxMs": 14.744
+        },
+        "ocrStatus": {
+          "count": 1,
+          "p50Ms": 110.343,
+          "p95Ms": 110.343,
+          "p99Ms": 110.343,
+          "maxMs": 110.343
+        },
+        "concurrentOcr": {
+          "count": 4,
+          "p50Ms": 9.512,
+          "p95Ms": 198.486,
+          "p99Ms": 198.486,
+          "maxMs": 198.486
+        },
+        "tenantBoundary": {
+          "count": 1,
+          "p50Ms": 1.389,
+          "p95Ms": 1.389,
+          "p99Ms": 1.389,
+          "maxMs": 1.389
+        },
+        "databaseContention": {
+          "count": 1,
+          "p50Ms": 434.92,
+          "p95Ms": 434.92,
+          "p99Ms": 434.92,
+          "maxMs": 434.92
+        },
+        "interruptedRetry": {
+          "count": 2,
+          "p50Ms": 1.442,
+          "p95Ms": 5.819,
+          "p99Ms": 5.819,
+          "maxMs": 5.819
+        },
+        "expiredSession": {
+          "count": 1,
+          "p50Ms": 1.425,
+          "p95Ms": 1.425,
+          "p99Ms": 1.425,
+          "maxMs": 1.425
+        },
+        "freshSession": {
+          "count": 1,
+          "p50Ms": 9.891,
+          "p95Ms": 9.891,
+          "p99Ms": 9.891,
+          "maxMs": 9.891
+        },
+        "afterRestart": {
+          "count": 1,
+          "p50Ms": 9.309,
+          "p95Ms": 9.309,
+          "p99Ms": 9.309,
+          "maxMs": 9.309
+        },
+        "restoredOldSession": {
+          "count": 1,
+          "p50Ms": 1.55,
+          "p95Ms": 1.55,
+          "p99Ms": 1.55,
+          "maxMs": 1.55
+        },
+        "recoveredHttpRead": {
+          "count": 1,
+          "p50Ms": 11.082,
+          "p95Ms": 11.082,
+          "p99Ms": 11.082,
+          "maxMs": 11.082
+        }
+      }
+    },
+    "durationMs": 5200.755,
+    "processCpuMicros": {
+      "user": 5413986,
+      "system": 379745
+    },
+    "sampledPeakRssBytes": 231485440,
+    "sampleIntervalMs": 20,
+    "processHighWaterRssBytes": 231485440,
+    "databaseBytes": {
+      "empty": 259376,
+      "seeded": 5045920,
+      "beforeRestart": 4052472,
+      "restored": 946176
+    },
+    "recovery": {
+      "restartScope": "HTTP server and database reopened in the same Node process; not an OS process or hosted restart",
+      "inProcessServiceRestartMs": 14.626,
+      "backupMs": 234.237,
+      "restoreMs": 217.82
+    },
+    "integrity": {
+      "businesses": {
+        "rows": 2,
+        "hash": "6d8238166bdcb6d6505ea344d3bc8d2815db8e5caf6557850da94051ef83449a"
+      },
+      "users": {
+        "rows": 2,
+        "hash": "fc6e36ea8aefc85d1f513c751b976556b4b822062b44100705401d2dfde1976b"
+      },
+      "leads": {
+        "rows": 301,
+        "hash": "e9cdc453b27fd9e7aa53faf18b8a3b5060554da1b24ce7bfb824b9bd73cd79af"
+      },
+      "messages": {
+        "rows": 301,
+        "hash": "d3fec4db75aedaa10e309e1cd668e01d45d8d23af1cd4504724154d61dead161"
+      },
+      "audit": {
+        "rows": 620,
+        "hash": "72991f8868aa3bd091c19fdcce19256e021cfd66d8d622477644fe9e444a7dc9"
+      },
+      "suppression": {
+        "rows": 0,
+        "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "panel_projects": {
+        "rows": 220,
+        "hash": "9df0caa68e8d0b016e2dd984d65d0e2182b0ca080594939cc1311d21c20e423d"
+      },
+      "panel_sources": {
+        "rows": 1,
+        "hash": "e2928ae72b102306e7bfe46a4bb2dd783f9f479baeefccdb6e9e8df6eafae5a0"
+      },
+      "record_deletions": {
+        "rows": 0,
+        "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "deletion_operations": {
+        "rows": 0,
+        "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "safety_holds": {
+        "rows": 0,
+        "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "assistant_usage": {
+        "rows": 0,
+        "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    }
+  }
+}

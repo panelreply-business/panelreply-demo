@@ -1,0 +1,85 @@
+{
+  "format": "panelreply-remediation-ci",
+  "runId": 44653806457,
+  "runNumber": 67,
+  "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44653806457",
+  "status": "completed",
+  "conclusion": "success",
+  "headCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+  "ciMergeRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+  "tree": "45080aa913b4b22f176e0989ae0e1c6e57868ce7",
+  "main": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+  "mainWasMerged": false,
+  "counts": {
+    "nodeHttp": 1125,
+    "chromium": 196,
+    "firefox": 131,
+    "webkit": 131,
+    "nativeOcr": 17,
+    "independentWorkbookReader": 9,
+    "applicationPass": 1609,
+    "applicationFail": 0,
+    "applicationSkipped": 0,
+    "publicSuspensionPass": 2,
+    "publicApplicationBlocked": 3
+  },
+  "scope": "Historical first remediation candidate. All application suites pass. Screenshot review subsequently found a contrast gap. Follow-up code and new regression require their own CI evidence. A completed workflow does not make OCR quality or native isolation pass.",
+  "separateGates": {
+    "syntheticOcr": {
+      "result": "FAIL",
+      "exact": 277,
+      "total": 310
+    },
+    "requiredWorker": {
+      "result": "BLOCKED",
+      "nativeDenyCases": 0,
+      "cause": "Indeterminate in this run because readiness stderr was not captured."
+    },
+    "realModel": "BLOCKED"
+  },
+  "jobs": [
+    {
+      "id": 136014982000,
+      "name": "Synthetic OCR measurements",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136014982286,
+      "name": "Required public suspension",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136014982438,
+      "name": "Private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136014982512,
+      "name": "Private workflows (firefox)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136014982565,
+      "name": "demo-tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136014982588,
+      "name": "Synthetic concurrent HTTP workload",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136014982664,
+      "name": "Restricted OCR worker verification",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "countPolicy": "334 fake scenarios overlap Node tests. The 310-image benchmark, 9-group HTTP workload and 5-group storage drill are separate measurements, not additions to the application count."
+}

@@ -154,7 +154,16 @@ jobs:
           const fs = require('node:fs');
           const path = require('node:path');
           const r = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'panelreply-ocr-results.json')));
-          console.log(JSON.stringify({ accuracyGate: r.accuracyGate, overall: r.overall, scope: r.scope }));
+          console.log(JSON.stringify({
+            format: 'panelreply-ci-ocr-evidence',
+            engine: r.engine, engineModuleSha256: r.engineModuleSha256,
+            pipelineSources: r.pipelineSources, pipelineSha256: r.pipelineSha256,
+            datasetSha256: r.datasetSha256, pillowVersion: r.pillowVersion, fonts: r.fonts,
+            accuracyGate: r.accuracyGate, overall: r.overall, byCondition: r.byCondition,
+            elapsedMs: r.elapsedMs, nativeProcess: r.nativeProcess, nodeProcess: r.nodeProcess,
+            results: r.results.map(({ id, actual, exact, error, reviewViolation }) => ({ id, actual, exact, error, reviewViolation })),
+            scope: r.scope
+          }));
           if (r.accuracyGate !== 'PASS') console.log('::warning::Synthetic OCR has nonexact cases. Measurement completion is not an accuracy pass or release approval.');
           NODE
 

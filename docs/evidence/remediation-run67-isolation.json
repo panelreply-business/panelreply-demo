@@ -1,0 +1,26 @@
+{
+  "source": {
+    "headCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+    "ciRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+    "tree": "45080aa913b4b22f176e0989ae0e1c6e57868ce7",
+    "runId": 44653806457,
+    "runNumber": 67,
+    "jobId": 136014982664
+  },
+  "measurement": {
+    "status": "BLOCKED",
+    "reason": "isolation_unavailable",
+    "cases": 0,
+    "engine": {
+      "available": false,
+      "engine": "tesseract",
+      "version": null,
+      "language": "eng",
+      "reason": "isolation_unavailable"
+    },
+    "nativeDenyBehavior": "NOT TESTED",
+    "privilegedRetry": false,
+    "scope": "The required worker could not start. No security policy or host namespace setting was changed and no unconfined fallback ran."
+  },
+  "interpretation": "Required-mode readiness failed before native deny cases. The first run discarded stderr, so it does not prove a host-policy cause. Follow-up diagnostics are required. No fallback or host change ran."
+}

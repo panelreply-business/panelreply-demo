@@ -10,6 +10,7 @@ const path = require('node:path');
 const { spawn } = require('node:child_process');
 const { createOcrService, LIMITS } = require('../workspace/ocr.cjs');
 const { isolationSupported } = require('../workspace/ocr-isolation.cjs');
+const { createReadinessDiagnostics } = require('./ocr-isolation-diagnostics.cjs');
 const IMAGE = fs.readFileSync(path.join(__dirname, '../tests/fixtures/panels/complete.png'));
 const HEADER = 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext';
 const TSV = HEADER + '\n5\t1\t1\t1\t1\t1\t0\t0\t1\t1\t95\tPART NUMBER: ISOLATION-OK\n';
@@ -81,13 +82,16 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  const readiness = createOcrService({ isolation: 'required' });
+  const diagnostics = createReadinessDiagnostics();
+  const readiness = createOcrService({ isolation: 'required', spawnProcess: diagnostics.spawnProcess });
   const engine = await readiness.getOcrStatus();
   await readiness.shutdown();
   if (!engine.available) {
-    output({ status: 'BLOCKED', reason: engine.reason, cases: 0, engine, nativeDenyBehavior: 'NOT TESTED', privilegedRetry: false,
-      scope: 'The required worker could not start. No security policy or host namespace setting was changed and no unconfined fallback ran.' });
-    process.exitCode = 2;
+    const diagnostic = diagnostics.snapshot(engine.reason);
+    const status = diagnostic.classification.status;
+    output({ status, reason: engine.reason, cases: 0, engine, diagnostic, nativeDenyBehavior: 'NOT TESTED', privilegedRetry: false,
+      scope: 'Required readiness failed. Only an explicit namespace-denial diagnostic establishes an external host blocker. No policy change or unconfined fallback ran.' });
+    process.exitCode = status === 'FAIL' ? 1 : 2;
     return;
   }
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-isolation-synthetic-'));

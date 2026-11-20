@@ -34,9 +34,15 @@ The unchanged local baseline was reproduced: 638 Node/SQLite/in-process API chec
 
 Counts above overlap. Do not add focused checks, scenario comparisons or repeated workload operations to a test-suite total.
 
-## Verification still running
+## First committed integration run
 
-The combined local Node suite is complete. The browser/HTTP CI run, native isolation check and committed-source evidence publication remain pending at this checkpoint. Implemented code does not receive a final verification claim before those results arrive.
+Candidate [4b26ace](https://github.com/panelreply-business/panelreply-demo/commit/4b26aceee1c2ff069ba6f3ce28e539fa492bd343), tree `45080aa913b4b22f176e0989ae0e1c6e57868ce7`, completed [run67](https://github.com/panelreply-business/panelreply-demo/actions/runs/44653806457). GitHub's temporary PR test ref `35da1355e4f156b2654a6b8f947b73dd758f6d2f` had the identical tree. Main was not merged.
+
+The run passed 1,609 application cases: 1,125 Node/HTTP, 196 Chromium, 131 Firefox, 131 WebKit, 17 native OCR/resource and nine independent workbook-reader cases. There were no application failures or skips. The HTTP workload separately passed nine workflow groups with 516 responses and zero unexpected errors. Both public-suspension guards passed. Three public application checks remained intentionally BLOCKED.
+
+The strict OCR quality gate remained FAIL at 277/310. Required-worker readiness remained BLOCKED, with zero native deny cases. Its first report discarded stderr and could not distinguish a host restriction from a configuration error. It is not proof of either cause.
+
+[Run67 evidence](evidence/remediation-run67-verification.json) preserves these results. The first screenshot review then found a medium contrast defect in the deletion dialog: inherited light-panel text colors produced 2.72:1 retention text and 2.06:1 status text on navy. The follow-up scopes those colors to the existing light-blue foreground, adds actual computed-style browser assertions for normal/error states, records bounded startup diagnostics from the same required readiness attempt and publishes the measured OCR hashes/metrics in CI. That follow-up still needs its own committed integration run.
 
 ## Execution boundary disclosure
 

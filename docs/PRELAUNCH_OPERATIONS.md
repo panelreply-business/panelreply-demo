@@ -38,7 +38,7 @@ Render's documentation says free web services lose local files on restart, redep
 
 A Render persistent disk is attached to one service instance and cannot support multiple instances or zero-downtime deployment. Only its mount path persists. Render documents daily disk snapshots retained for seven days and cautions against using disk snapshots as custom-database recovery. Application-consistent encrypted database backups remain necessary. [Disk documentation](https://render.com/docs/disks).
 
-Recommended next infrastructure design, after owner approval: retain one application instance and SQLite for the first controlled evaluation, behind reviewed private access, with an owner-only durable data directory and an independent encrypted backup destination. Keep OCR in a separate restricted process/container with no network and only required binaries/language files. Process ceilings in the current branch limit work but do not constitute a security sandbox.
+Recommended next infrastructure design, after owner approval: retain one application instance and SQLite for the first controlled evaluation, behind reviewed private access, with an owner-only durable data directory and an independent encrypted backup destination. Keep OCR in a restricted process/container with no network and only required binaries/language files. The branch now includes an opt-in required bubblewrap/seccomp worker with no unconfined fallback. Process ceilings alone do not establish isolation. The selected host still needs the [native isolation gate](OCR_ISOLATION.md), dependency policy and recovery checks.
 
 The existing `workspaceConfig` intentionally rejects a public listener. This proposal does not change it. A future hosted entry point must be a separate reviewed change with exact HTTPS origin, secure cookies, trusted-proxy rules, TLS termination and an end-to-end authentication test. Merely changing PORT or adding a disk does not make the workspace deployable.
 
@@ -58,7 +58,7 @@ Monthly cost model:
 | Support | Onboarding and recovery minutes per business, support hours and incident responsibility |
 | Margin | Proposed price less all direct usage/support costs under expected and high-usage cases |
 
-For a proposed provider, calculate input/output cost using its current quoted unit rates and measured token counts. Test a high-usage scenario at ten times expected volume. Refuse new provider calls before the approved cap, count failed attempts and enforce the allowance durably. Current process-local assistant limits reset on restart and are not a spending control.
+For a proposed provider, calculate input/output cost using its current quoted unit rates and measured token counts. Test a high-usage scenario at ten times expected volume. Refuse new provider calls before the approved cap, count failed attempts and enforce the allowance durably. The current branch adds [durable business reservations and attempt limits](ASSISTANT_USAGE.md), including failed attempts and restart preservation. Those reservations are not measured invoices. The actual model, pricing, token-cost upper bound and owner-approved spending policy remain unverified.
 
 No model, storage, monitoring or communication service was purchased for this work. Local synthetic timings are not a hosting quote or an SLA.
 

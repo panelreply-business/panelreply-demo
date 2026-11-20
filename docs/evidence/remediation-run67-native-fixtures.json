@@ -1,0 +1,106 @@
+{
+  "source": {
+    "headCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+    "ciRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+    "tree": "45080aa913b4b22f176e0989ae0e1c6e57868ce7",
+    "runId": 44653806457,
+    "runNumber": 67,
+    "jobId": 136014982565
+  },
+  "measurement": {
+    "status": "PASS",
+    "engine": "tesseract",
+    "version": "5.3.4",
+    "language": "eng",
+    "cases": 9,
+    "fixtureCases": 6,
+    "nativeFailureCases": 3,
+    "failures": 0,
+    "knownFields": 10,
+    "matchedFields": 10,
+    "emptyFields": 2,
+    "preservedEmptyFields": 2,
+    "results": [
+      {
+        "file": "complete.png",
+        "status": "PASS",
+        "durationMs": 195,
+        "candidates": 1,
+        "fieldMatches": {
+          "partNumber": true,
+          "manufacturer": true,
+          "description": true
+        }
+      },
+      {
+        "file": "complete.jpg",
+        "status": "PASS",
+        "durationMs": 197,
+        "candidates": 1,
+        "fieldMatches": {
+          "partNumber": true,
+          "manufacturer": true,
+          "description": true
+        }
+      },
+      {
+        "file": "missing-manufacturer.png",
+        "status": "PASS",
+        "durationMs": 170,
+        "candidates": 1,
+        "fieldMatches": {
+          "partNumber": true,
+          "manufacturer": true,
+          "description": true
+        }
+      },
+      {
+        "file": "conflicting-parts.png",
+        "status": "PASS",
+        "durationMs": 195,
+        "candidates": 1,
+        "fieldMatches": {
+          "partNumber": true,
+          "manufacturer": true,
+          "description": true
+        }
+      },
+      {
+        "file": "unlabelled.png",
+        "status": "PASS",
+        "durationMs": 338,
+        "candidates": 0,
+        "fieldMatches": {}
+      },
+      {
+        "file": "blank.png",
+        "status": "PASS",
+        "durationMs": 135,
+        "candidates": 0,
+        "fieldMatches": {}
+      }
+    ],
+    "failurePathResults": [
+      {
+        "test": "timeout reaps every native OCR pipeline child",
+        "status": "PASS",
+        "code": "OCR_TIMEOUT",
+        "observedChildren": 1,
+        "processAliveAfterReturn": false
+      },
+      {
+        "test": "cancel reaps every native OCR pipeline child",
+        "status": "PASS",
+        "code": "OCR_CANCELLED",
+        "observedChildren": 2,
+        "processAliveAfterReturn": false
+      },
+      {
+        "test": "structurally valid but undecodable pixels return a generic error",
+        "status": "PASS",
+        "code": "OCR_FAILED"
+      }
+    ],
+    "scope": "Synthetic printed text only. These measurements do not establish accuracy on real panel photographs or electrical specifications."
+  }
+}
