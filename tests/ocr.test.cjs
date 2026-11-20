@@ -42,17 +42,18 @@ function tinyPng({ width = 1, height = 1, extra = [], depth = 8, colorType = 2 }
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', header), ...extra, chunk('IDAT', zlib.deflateSync(Buffer.from([0, 255, 255, 255]))), chunk('IEND')]);
 }
 
-function fakeSpawner({ recognize, normalize, normalizerProbe, probe, version = 'tesseract 5.5.0\n', languages = 'List of available languages in private-path (1):\neng\n', spawnError, killDelay = 0 } = {}) {
+function fakeSpawner({ recognize, normalize, normalizerProbe, probe, isolationProbe, isolationVersion = 'bubblewrap 0.12.0\n', version = 'tesseract 5.5.0\n', languages = 'List of available languages in private-path (1):\neng\n', spawnError, killDelay = 0 } = {}) {
   const calls = [];
   function spawnProcess(binary, args, options) {
     const processArgs = [...args];
+    const isIsolationVersion = args.at(-2) === '/usr/bin/bwrap' && args.at(-1) === '--version';
     const isNormalizer = args.includes('/usr/bin/python3');
-    args = isNormalizer ? args.slice(args.indexOf('/usr/bin/python3') + 4) : args.slice(args.indexOf('/usr/bin/tesseract') + 1);
+    args = isIsolationVersion ? ['--version'] : isNormalizer ? args.slice(args.indexOf('/usr/bin/python3') + 4) : args.slice(args.indexOf('/usr/bin/tesseract') + 1);
     const child = new EventEmitter();
     child.pid = spawnError ? undefined : 12345;
     child.stdout = new PassThrough();
     child.stderr = new PassThrough();
-    const call = { binary, args, processArgs, options, child, isNormalizer, input: [], kills: [], closed: false };
+    const call = { binary, args, processArgs, options, child, isNormalizer, isIsolationVersion, input: [], kills: [], closed: false };
     child.stdin = new Writable({ write(data, encoding, callback) { call.input.push(Buffer.from(data)); callback(); } });
     call.seccomp = [];
     child.stdio = [child.stdin, child.stdout, child.stderr];
@@ -72,6 +73,7 @@ function fakeSpawner({ recognize, normalize, normalizerProbe, probe, version = '
     };
     child.stdin.on('finish', () => queueMicrotask(() => {
       if (spawnError) return child.emit('error', Object.assign(new Error('PRIVATE PATH OR SECRET'), { code: spawnError }));
+      if (isIsolationVersion) return isolationProbe ? isolationProbe(call) : call.finish(isolationVersion);
       if (isNormalizer) {
         if (args[0] === '--probe') return normalizerProbe ? normalizerProbe(call) : call.finish(JSON.stringify({ method: 'median3-isolated-noise', pillowVersion: '11.1.0' }));
         if (normalize) return normalize(call);
@@ -708,13 +710,20 @@ test('shutdown cancels and reaps active normalization without starting an OCR en
   assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
 });
 
-test('required isolation wraps all probes and native stages without an unconfined fallback', async () => {
+test('required isolation checks the fixed dependency version before wrapping engine probes or image stages', async () => {
   const fake = fakeSpawner();
   const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
   assert.equal((await service.getOcrStatus()).isolation, 'bubblewrap-seccomp');
   const result = await service.recognizeImage(tinyPng());
   assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
-  for (const call of fake.calls) {
+  const versionProbe = fake.calls[0];
+  assert.equal(versionProbe.binary, '/usr/bin/prlimit');
+  assert.deepEqual(versionProbe.processArgs, ['--as=1073741824:1073741824', '--cpu=10:10', '--core=0:0', '--fsize=0:0', '--nofile=64:64', '--', '/usr/bin/bwrap', '--version']);
+  assert.deepEqual(versionProbe.options, { shell: false, cwd: '/', env: { PATH: '/usr/bin:/bin', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8', OMP_THREAD_LIMIT: '1', OMP_NUM_THREADS: '1' }, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+  assert.equal(versionProbe.input.length, 0);
+  assert.equal(versionProbe.closed, true);
+  assert.equal(fake.calls.filter(call => call.isIsolationVersion).length, 1);
+  for (const call of fake.calls.slice(1)) {
     assert.equal(call.processArgs[6], '/usr/bin/bwrap');
     assert.equal(call.processArgs.includes('--unshare-net'), true);
     assert.equal(call.processArgs.includes('--unshare-user'), true);
@@ -726,16 +735,122 @@ test('required isolation wraps all probes and native stages without an unconfine
 });
 
 test('a rejected isolation launcher fails closed without a privileged or resource-only retry', async () => {
-  const fake = fakeSpawner({ spawnError: 'ENOENT' });
+  const fake = fakeSpawner({ probe: call => call.finish('', 1) });
   const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
   const status = await service.getOcrStatus();
   assert.equal(status.available, false);
   assert.equal(status.reason, 'isolation_unavailable');
   await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
-  assert.equal(fake.calls.length, 1);
-  assert.equal(fake.calls[0].processArgs[6], '/usr/bin/bwrap');
+  assert.equal(fake.calls.length, 2);
+  assert.equal(fake.calls[0].isIsolationVersion, true);
+  assert.equal(fake.calls[1].processArgs[6], '/usr/bin/bwrap');
   assert.throws(() => createOcrService({ isolation: 'try-then-unconfined' }), /Invalid local OCR service options/);
   await service.shutdown();
+});
+
+test('required isolation rejects vulnerable, prerelease and malformed versions before namespace setup', async () => {
+  for (const isolationVersion of ['bubblewrap 0.9.0\n', 'bubblewrap 0.11.99\n', 'bubblewrap 0.12.0-rc1\n', 'bubblewrap 0.12.0+vendor\n', 'bubblewrap 0.12\n', 'bubblewrap 00.12.0\n', 'bubblewrap 0.12.0\n\n', 'bubblewrap 0.12.0\nPRIVATE EXTRA OUTPUT', 'PRIVATE INVALID OUTPUT', '']) {
+    const fake = fakeSpawner({ isolationVersion });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    try {
+      const status = await service.getOcrStatus();
+      assert.equal(status.available, false);
+      assert.equal(status.reason, 'isolation_dependency_unsupported');
+      assert.equal(JSON.stringify(status).includes('PRIVATE'), false);
+      await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
+      assert.equal(fake.calls.length, 1);
+      assert.equal(fake.calls[0].isIsolationVersion, true);
+      assert.equal(fake.calls[0].processArgs.some(arg => arg.startsWith('--unshare') || arg.includes('bind')), false);
+      assert.equal(fake.calls[0].closed, true);
+    } finally { await service.shutdown(); }
+  }
+});
+
+test('required isolation accepts the fixed upstream release and later stable numeric versions', async () => {
+  for (const isolationVersion of ['bubblewrap 0.12.0\n', 'bubblewrap 0.12.1\r\n', 'bubblewrap 0.13.0', 'bubblewrap 1.0.0\n']) {
+    const fake = fakeSpawner({ isolationVersion });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    try {
+      assert.equal((await service.getOcrStatus()).available, true);
+      assert.equal(fake.calls.length, 4);
+      assert.equal(fake.calls[0].isIsolationVersion, true);
+      assert.equal(fake.calls[0].closed, true);
+      assert.ok(fake.calls.slice(1).every(call => call.processArgs.includes('--unshare-user')));
+    } finally { await service.shutdown(); }
+  }
+});
+
+test('a missing or failed isolation version read cannot reach the namespace launcher', async () => {
+  for (const options of [{ spawnError: 'ENOENT' }, { isolationProbe: call => call.finish('', 1) }, { isolationProbe: call => call.finish(Buffer.from([0xff])) }]) {
+    const fake = fakeSpawner(options);
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    try {
+      assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unavailable');
+      await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
+      assert.equal(fake.calls.length, 1);
+      assert.equal(fake.calls[0].isIsolationVersion, true);
+    } finally { await service.shutdown(); }
+  }
+});
+
+test('the isolation version read bounds combined stdout and stderr and reaps an oversized child', async () => {
+  for (const isolationProbe of [call => call.child.stdout.write(Buffer.alloc(1025, 65)), call => { call.child.stdout.write('bubblewrap 0.12.0\n'); call.child.stderr.write(Buffer.alloc(1024, 65)); }]) {
+    const fake = fakeSpawner({ isolationProbe, killDelay: 10 });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    try {
+      assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unavailable');
+      assert.equal(fake.calls.length, 1);
+      assert.deepEqual(fake.calls[0].kills, ['SIGKILL']);
+      assert.equal(fake.calls[0].closed, true);
+    } finally { await service.shutdown(); }
+  }
+});
+
+test('the isolation version deadline kills and reaps the probe before returning unavailable', async () => {
+  const fake = fakeSpawner({ isolationProbe: () => {}, killDelay: 10 });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', statusTimeoutMs: 10 });
+  try {
+    assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unavailable');
+    assert.equal(fake.calls.length, 1);
+    assert.deepEqual(fake.calls[0].kills, ['SIGKILL']);
+    assert.equal(fake.calls[0].closed, true);
+  } finally { await service.shutdown(); }
+});
+
+test('shutdown cancels and reaps an in-flight isolation version read without starting namespaces', async () => {
+  const fake = fakeSpawner({ isolationProbe: () => {}, killDelay: 10 });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+  const pending = service.getOcrStatus();
+  await new Promise(resolve => setImmediate(resolve));
+  await service.shutdown();
+  assert.equal((await pending).reason, 'isolation_dependency_unavailable');
+  assert.equal(fake.calls.length, 1);
+  assert.deepEqual(fake.calls[0].kills, ['SIGKILL']);
+  assert.equal(fake.calls[0].closed, true);
+});
+
+test('readiness refresh rechecks the isolation dependency and rejects a downgraded version', async () => {
+  let clock = 0, probes = 0;
+  const fake = fakeSpawner({ isolationProbe: call => call.finish(probes++ === 0 ? 'bubblewrap 0.12.0\n' : 'bubblewrap 0.9.0\n') });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', now: () => clock });
+  try {
+    assert.equal((await service.getOcrStatus()).available, true);
+    clock += LIMITS.statusCacheMs + 1;
+    assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unsupported');
+    await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
+    assert.equal(fake.calls.length, 5);
+    assert.equal(fake.calls.at(-1).isIsolationVersion, true);
+  } finally { await service.shutdown(); }
+});
+
+test('resource-limits mode does not query or require Bubblewrap', async () => {
+  const fake = fakeSpawner({ isolationProbe: () => { throw new Error('Unexpected dependency query'); } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  try {
+    assert.equal((await service.getOcrStatus()).available, true);
+    assert.equal((await service.recognizeImage(tinyPng())).candidates[0].partNumber, 'DEMO-1234');
+    assert.equal(fake.calls.some(call => call.processArgs.includes('/usr/bin/bwrap')), false);
+  } finally { await service.shutdown(); }
 });
 
 test('default readiness age and shared recognition deadline do not depend on the host wall clock', async () => {

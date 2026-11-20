@@ -1,0 +1,90 @@
+{
+  "format": "panelreply-remediation-ci-verification",
+  "run": 68,
+  "runId": 44656230988,
+  "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44656230988",
+  "sourceCommit": "91c5553fbe4ac97fcfcf8991da7c0c6cca41fbf7",
+  "sourceTree": "a19cc8e7ea5bd5cd81ac0c6a4bd36f770ca1c633",
+  "conclusion": "failure",
+  "createdAt": "2026-11-20T01:48:05Z",
+  "completedAt": "2026-11-20T01:58:14Z",
+  "application": {
+    "tests": 1618,
+    "pass": 1617,
+    "fail": 1,
+    "skipped": 0,
+    "nodeHttp": {
+      "tests": 1131,
+      "pass": 1131,
+      "fail": 0
+    },
+    "chromium": {
+      "tests": 197,
+      "pass": 196,
+      "fail": 1
+    },
+    "firefox": {
+      "tests": 132,
+      "pass": 132,
+      "fail": 0
+    },
+    "webkit": {
+      "tests": 132,
+      "pass": 132,
+      "fail": 0
+    },
+    "nativeOcrResource": {
+      "tests": 17,
+      "pass": 17,
+      "fail": 0
+    },
+    "independentWorkbookReaders": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0
+    }
+  },
+  "failure": {
+    "suite": "tests/lifecycle_browser_test.py",
+    "test": "test_confirmation_and_failed_deletion_text_contrast",
+    "stage": "tearDown",
+    "message": "Unexpected console error: Failed to load resource: net::ERR_FAILED",
+    "cause": "The new fixture intentionally aborted its DELETE request to verify failed-deletion text contrast, but did not annotate the resulting expected Chromium console error. Both normal/error contrast assertions passed.",
+    "correction": "Annotate that exact expected message in this test, record and require the single targeted DELETE, cap the expected message at one occurrence, and retain all other console/script/external-request checks.",
+    "verification": "NOT TESTED on the follow-up commit yet"
+  },
+  "suspension": {
+    "pass": 2,
+    "fail": 0,
+    "publicApplicationBlocked": 3
+  },
+  "httpWorkload": {
+    "workflowGroups": 9,
+    "responses": 516,
+    "unexpectedErrors": 0
+  },
+  "syntheticOcr": {
+    "exact": 277,
+    "total": 310,
+    "accuracyGate": "FAIL",
+    "nativeErrors": 0,
+    "reviewViolations": 0
+  },
+  "requiredIsolation": {
+    "status": "BLOCKED",
+    "nativeDenyCases": 0,
+    "reason": "isolation_unavailable",
+    "diagnostic": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+    "confirmedExternalBlocker": false
+  },
+  "scope": "Application executions do not include repeated AI scenarios, workload operations, OCR measurement images or suspension checks. This failed run is preserved, not suppressed by a later rerun.",
+  "sourceLogs": {
+    "ci-run68-demo-summary.log": "7d862ffa603a7cba24dca09dd308945cb4efd96cafc3e28f2f4603981dd41f79",
+    "ci-run68-firefox.log": "cc483dd44a1e9f6875dcd4efce2ebd34b0fc34086d925e5784ff360bb71101fc",
+    "ci-run68-http.log": "dda2a0ed61a5857247f5c119635e3fdc48ad42583c067eaf668f8e8246ae6f89",
+    "ci-run68-isolation.log": "7355466e1ddd15911c443b3a2f5b5f47bb20e1c7d7926d618a776dd9fe28f55c",
+    "ci-run68-ocr.log": "ff410703105b3d25df852cc2904ef6a1337b04111688044892c7f56f0cdb9543",
+    "ci-run68-suspension.log": "3624c8ff426f67b960e58604e9a938abd41efc25ea652f2fa07d553841f381ce",
+    "ci-run68-webkit.log": "9e42c1992ded2ff886c771d263a6f0d08d8e00d9d793a46972e7e508f92b6336"
+  }
+}

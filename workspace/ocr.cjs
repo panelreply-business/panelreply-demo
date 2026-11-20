@@ -263,6 +263,7 @@ function parseTsv(tsv) {
 }
 
 const BINARY = '/usr/bin/tesseract';
+const ISOLATION_BINARY = '/usr/bin/bwrap';
 const NORMALIZER_BINARY = '/usr/bin/python3';
 const NORMALIZER_SCRIPT = path.join(__dirname, 'ocr-preprocess.py');
 const NORMALIZER_METHOD = 'median3-isolated-noise';
@@ -278,6 +279,13 @@ const OCR_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '-
 const ORIENTATION_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '1', 'tsv']);
 const CHILD_ENV = Object.freeze({ PATH: '/usr/bin:/bin', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8', OMP_THREAD_LIMIT: '1', OMP_NUM_THREADS: '1' });
 
+function supportedIsolationVersion(output) {
+  // CVE-2026-87766 is fixed upstream in 0.12.0. Reject prerelease, vendor,
+  // malformed and ambiguous banners rather than inferring a backported fix.
+  const match = /^bubblewrap (0|[1-9][0-9]{0,5})\.(0|[1-9][0-9]{0,5})\.(0|[1-9][0-9]{0,5})\r?\n?$/.exec(output);
+  return Boolean(match && match[0] === output && (Number(match[1]) > 0 || Number(match[2]) >= 12));
+}
+
 function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.recognitionTimeoutMs, statusTimeoutMs = LIMITS.statusTimeoutMs, now = () => performance.now(), isolation = 'resource-limits' } = {}) {
   // Injection exists for isolated process-failure tests, not HTTP callers or application settings.
   if (typeof spawnProcess !== 'function' || typeof now !== 'function' || !Number.isInteger(recognitionTimeoutMs) || recognitionTimeoutMs < 1 || recognitionTimeoutMs > LIMITS.recognitionTimeoutMs || !Number.isInteger(statusTimeoutMs) || statusTimeoutMs < 1 || statusTimeoutMs > LIMITS.statusTimeoutMs || !['resource-limits', 'required'].includes(isolation)) throw new TypeError('Invalid local OCR service options.');
@@ -286,7 +294,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
   const lifetime = new AbortController();
   const pendingProcesses = new Set();
 
-  function runProcess(args, { input, signal, timeoutMs, maxOutputBytes, outputBudget, normalizer = false, binaryOutput = false } = {}) {
+  function runProcess(args, { input, signal, timeoutMs, maxOutputBytes, outputBudget, normalizer = false, binaryOutput = false, isolationVersionProbe = false } = {}) {
     signal = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
     if (signal?.aborted) return Promise.reject(new OcrError('OCR_CANCELLED'));
     let markSettled;
@@ -317,7 +325,10 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         // an unsupported host fail closed, never fall back to unbounded OCR.
         const executable = normalizer ? NORMALIZER_BINARY : BINARY;
         const fixedArgs = normalizer ? ['-I', '-B', NORMALIZER_SCRIPT, ...args] : args;
-        const command = isolation === 'required' ? restrictedInvocation(executable, fixedArgs) : { binary: executable, args: fixedArgs };
+        // The version-only read must precede all namespace/mount setup. It has
+        // fixed arguments, no input, and the same process/output/time bounds.
+        const command = isolationVersionProbe ? { binary: ISOLATION_BINARY, args: ['--version'] }
+          : isolation === 'required' ? restrictedInvocation(executable, fixedArgs) : { binary: executable, args: fixedArgs };
         filter = command.seccomp;
         child = spawnProcess(PROCESS_BINARY, [...PROCESS_PREFIX, command.binary, ...command.args], { shell: false, cwd: '/', env: { ...CHILD_ENV }, stdio: filter ? ['pipe', 'pipe', 'pipe', 'pipe'] : ['pipe', 'pipe', 'pipe'], windowsHide: true });
       } catch (error) {
@@ -355,7 +366,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       timer = setTimeout(() => stop('OCR_TIMEOUT'), timeoutMs);
       signal?.addEventListener('abort', cancel, { once: true });
       if (signal?.aborted) cancel();
-      try { if (filter) child.stdio[3].end(filter); child.stdin.end(input); }
+      try { if (filter) child.stdio[3].end(filter); child.stdin.end(isolationVersionProbe ? undefined : input); }
       catch { stop('OCR_FAILED'); }
     });
   }
@@ -368,6 +379,15 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
     statusPromise = (async () => {
       let version = null;
       try {
+        if (isolation === 'required') {
+          let dependencyVersion;
+          try {
+            dependencyVersion = await runProcess([], { isolationVersionProbe: true, timeoutMs: statusTimeoutMs, maxOutputBytes: 1024 });
+          } catch {
+            return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'isolation_dependency_unavailable' };
+          }
+          if (!supportedIsolationVersion(dependencyVersion)) return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'isolation_dependency_unsupported' };
+        }
         const output = await runProcess(['--version'], { timeoutMs: statusTimeoutMs, maxOutputBytes: 16 * 1024 });
         const match = output.match(/^tesseract (\d+\.\d+(?:\.[A-Za-z0-9.+-]+)?)/m);
         version = match?.[1]?.slice(0, 40) || null;

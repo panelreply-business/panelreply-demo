@@ -14,15 +14,17 @@ The strict all-image extraction gate remains FAIL. These are synthetic stress me
 | Known descriptions: exact / missing / wrong | 210 / 15 / 4 of 229 | 229 / 0 / 0 of 229 |
 | Blank-field false positives | 0/263 | 0/263 |
 | Native errors / review violations | 0 / 0 | 0 / 0 |
-| Median / p95 / maximum image time | 245 / 394 / 823 ms | 365 / 845 / 1,410 ms |
-| Total run time | 79,771 ms | 132,691 ms |
+| Median / p95 / maximum image time | 245 / 394 / 823 ms | 325 / 827 / 1,919 ms |
+| Total run time | 79,771 ms | 120,492 ms |
 | Largest observed native child RSS/high-water | 39,526,400 bytes | 73,342,976 bytes |
 
-Native memory was sampled from the spawned children's Linux `/proc` status every 10 ms. This is an observed lower bound, not an exact kernel peak or the sum of concurrent descendants. All 314 baseline child processes and 663 current child processes had samples and closed. The two current OCR passes and normalizer run sequentially. Node parent memory/CPU remain separate in the reports. Timings shared a development machine with other tests. They are not controlled performance comparisons or hosting guarantees. The extra image check and occasional orientation pass add work.
+Native memory was sampled from the spawned children's Linux `/proc` status every 10 ms. This is an observed lower bound, not an exact kernel peak or the sum of concurrent descendants. All 314 baseline child processes and 660 current child processes had samples and closed. The two current OCR passes and normalizer run sequentially. Node parent memory/CPU remain separate in the reports. Timings shared a development machine with other tests. They are not controlled performance comparisons or hosting guarantees. The extra image check and occasional orientation pass add work.
 
 Both runs used Tesseract 5.5.0. The normalizer uses fixed `/usr/bin/python3` with system Pillow 11.1.0. Dataset generation used Pillow 13.0.0 and the original recorded fonts. The manifest SHA-256 remains `9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601`. Every original image hash was checked before recognition and checked again after the final run. The generator and input files were not changed.
 
-The frozen pipeline SHA-256 is `dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5`. Its definition and individual source hashes are recorded in the evidence. The engine-module hash recorded by the running benchmark matches the final source.
+The frozen pipeline SHA-256 is `6ea83a79dde4d68f4edb26717bedfb0aa1261684f848e6dd29ceddf4550e6fdd`. Its definition and individual source hashes are recorded in the evidence. The engine-module hash recorded by the running benchmark matches the final source.
+
+This final measurement follows a required-isolation dependency gate for [CVE-2026-87766](https://ubuntu.com/security/CVE-2026-87766). Required mode now rejects Bubblewrap versions older than upstream 0.12.0 before namespace setup. Its only preliminary read is fixed, bounded `bwrap --version`. The benchmark used the unchanged ordinary resource-limits mode. All 310 extraction, raw-text, warning, review and processing results match the preceding pipeline exactly. The [previous comparison](evidence/ocr-remediation-pre-version-gate.json) and [previous full case outcomes](evidence/ocr-remediation-after-310.json) remain preserved. The version gate does not establish working OS isolation.
 
 ### Changes retained
 
@@ -55,18 +57,18 @@ The remaining cases fall into five groups, assigning each image to one group: 18
 
 ### Verification and evidence
 
-- 72 OCR, benchmark-accounting and isolation-policy/adapter unit tests PASS, zero failures or skips.
+- 88 OCR, benchmark-accounting, isolation-policy/adapter and diagnostic-observer unit tests PASS, zero failures or skips. The dependency-gate tests use mocked children and do not execute native isolation.
 - Nine native fixture/failure cases PASS, zero failures.
 - Eight native resource/lifecycle cases PASS, zero failures or blocked cases. These include limits on the normalizer, actual normalizer cancellation, and actual orientation-fallback cancellation.
 - Local OS isolation is BLOCKED by the host namespace restriction. The required worker and six-case native verifier are prepared. No local retry, privileged fallback or hosting change was made. See [restricted worker policy](OCR_ISOLATION.md).
-- Real photographs are NOT TESTED. Revised Tesseract 5.3.4 CI results must be recorded separately. Historical CI reproduced the 253-case baseline, which does not establish the revised pipeline's cross-version behavior.
+- Real photographs are NOT TESTED. The revised Tesseract 5.3.4 CI measurement is recorded separately below, with its distinct font/manifest hashes.
 
-[Remediation summary, all 57 failure investigations, experiments and native-test reports](evidence/ocr-remediation.json). [Full baseline case outcomes](evidence/ocr-remediation-baseline-310.json). [Full current case outcomes](evidence/ocr-remediation-after-310.json).
+[Remediation summary, all 57 failure investigations, experiments and native-test reports](evidence/ocr-remediation.json). [Full baseline case outcomes](evidence/ocr-remediation-baseline-310.json). [Full current case outcomes](evidence/ocr-remediation-version-gate-310.json).
 
 To repeat against a trusted baseline checkout without editing it:
 
 ```bash
-node --test tests/ocr.test.cjs tests/ocr-benchmark.test.cjs tests/ocr-isolation.test.cjs
+node --test tests/ocr.test.cjs tests/ocr-benchmark.test.cjs tests/ocr-isolation.test.cjs tests/ocr-isolation-diagnostics.test.cjs
 node scripts/test-ocr-fixtures.cjs
 node scripts/test-ocr-resource-limits.cjs
 node scripts/benchmark-ocr.cjs /tmp/panelreply-ocr-benchmark /tmp/ocr-before.json /path/to/baseline/workspace/ocr.cjs
@@ -74,6 +76,16 @@ node scripts/benchmark-ocr.cjs /tmp/panelreply-ocr-benchmark /tmp/ocr-after.json
 ```
 
 Use the unchanged generator, recorded Pillow/fonts and matching manifest/image hashes. Runtime prerequisites are Tesseract 5, `eng`, `osd` for orientation, util-linux `prlimit`, and fixed `/usr/bin/python3` with Pillow. These are local test/runtime dependencies. No provider service is activated.
+
+## CI cross-version measurement
+
+[Run68, job136023013605](https://github.com/panelreply-business/panelreply-demo/actions/runs/44656230988/job/136023013605) ran the preceding production pipeline hash `dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5` with Tesseract5.3.4 and system Pillow10.2.0. Its generator used Pillow13.0.0. It reported 277/310 exact cases, zero native errors and zero review violations. Every compact per-image extraction result matched the local final result.
+
+The CI manifest hash is `7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e`. It differs from the local unchanged-input benchmark because the recorded font binary hashes differ. This is a separately generated dataset with the same scenario IDs. It must not be described as the identical local image set. The local 253-to-277 comparison above still uses unchanged image hashes throughout.
+
+CI latency measured 175 ms median, 359 ms p95 and 683 ms maximum, with 61,226 ms for the full measurement. The 10 ms sampler observed 81,207,296 bytes peak native RSS. All 660 observed native processes closed. That sampled memory figure is an observed lower bound and does not sum simultaneous descendants. Different runners and native dependencies prevent treating CI/local timing differences as a product speed improvement.
+
+[CI source, engine, font, manifest, field and process measurements](evidence/remediation-run68-ocr.json). [Per-image cross-version comparison](evidence/remediation-run68-ocr-comparison.json). The strict quality gate remains FAIL and real photographs remain NOT TESTED.
 
 ## Historical 2026-11-19 verification
 

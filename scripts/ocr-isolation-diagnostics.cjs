@@ -4,10 +4,11 @@
 // retry, or expose production stderr. Readiness uses no image/customer input.
 const { spawn } = require('node:child_process');
 const MAX_STDERR_BYTES = 4096;
-const MAX_RECORDS = 3;
+const MAX_RECORDS = 4;
 const ERROR_CODES = new Set(['ENOENT', 'EACCES', 'EAGAIN', 'ENOEXEC', 'EMFILE', 'ENFILE']);
 
 function fixedStage(args) {
+  if (args.at(-2) === '/usr/bin/bwrap' && args.at(-1) === '--version') return 'isolation_version';
   if (args.at(-1) === '--version') return 'engine_version';
   if (args.at(-1) === '--list-langs') return 'engine_languages';
   if (args.at(-1) === '--probe' && args.includes('/usr/bin/python3')) return 'normalizer_probe';
@@ -15,6 +16,7 @@ function fixedStage(args) {
 }
 
 function classify(records, reason) {
+  if (['isolation_dependency_unsupported', 'isolation_dependency_unavailable'].includes(reason)) return { kind: reason, confirmedExternalBlocker: false, status: 'FAIL' };
   const failed = records.find(row => row.spawnErrorCode || row.signal || row.exitCode !== 0);
   if (!failed) return { kind: 'readiness_contract_unconfirmed', confirmedExternalBlocker: false, status: 'BLOCKED' };
   const stderr = failed.stderr;

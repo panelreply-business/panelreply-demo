@@ -10,7 +10,7 @@ The six native deny tests are NOT TESTED locally. The script is prepared for an 
 
 CI run 67 also returned BLOCKED with zero native deny cases. Its `isolation_unavailable` reason and null engine version establish that the first wrapped engine-version probe failed. They do not establish a host namespace denial. The packages installed successfully, but the adapter discarded the failure stderr. A worker configuration, mount, loader or seccomp problem remains possible. [Run 67 evidence](evidence/ocr-isolation-run67.json) preserves that indeterminate result.
 
-The CI verifier now observes the same readiness attempt and retains at most 4 KiB of stderr per fixed probe stage, plus exit code/signal and safe launch error codes. It runs no extra command or retry. Explicit namespace-denial messages may confirm a host blocker. Known launcher/configuration errors and `SIGSYS` return FAIL. Other unavailable states remain BLOCKED with the cause marked unconfirmed. No generic `isolation_unavailable` result alone establishes an external blocker.
+The CI verifier observes the same readiness attempt and retains at most 4 KiB of stderr per fixed stage, with at most four records, plus exit code/signal and safe launch error codes. The observer adds no command or retry. Explicit namespace-denial messages may confirm a host blocker. Known dependency, launcher/configuration errors and `SIGSYS` return FAIL. Other unavailable states remain BLOCKED with the cause marked unconfirmed. No generic `isolation_unavailable` result alone establishes an external blocker.
 
 The existing private local application continues to use resource limits by default. A process limit is not OS isolation. No public service or integration was enabled.
 
@@ -22,7 +22,11 @@ The internal factory accepts:
 const service = createOcrService({ isolation: 'required' });
 ```
 
-This option is not accepted from HTTP input. It wraps readiness, pixel normalization, initial OCR and orientation fallback. It never retries without isolation. Missing bubblewrap, unsupported architecture, denied namespaces, failed seccomp setup or a failed engine probe make OCR unavailable. Manual entry remains available. A successful readiness response only means the configured worker can launch its fixed dependencies. It does not replace the native deny tests.
+This option is not accepted from HTTP input. Before any namespace or mount invocation, it reads only `/usr/bin/bwrap --version` through the existing process limits, with no image input, a 1 KiB combined stdout/stderr limit and the existing readiness deadline. It requires a stable numeric upstream version of at least 0.12.0. Older, prerelease, vendor-suffixed and malformed banners fail closed with `isolation_dependency_unsupported`. Missing, failed, oversized or timed-out reads fail with `isolation_dependency_unavailable`. The dependency check repeats when the readiness cache expires. It does not prove the installed binary's authenticity or successful OS isolation.
+
+The gate addresses [CVE-2026-87766](https://ubuntu.com/security/CVE-2026-87766), a sandbox-setup symlink flaw fixed upstream in 0.12.0. Ubuntu's [USN-8779-2](https://ubuntu.com/security/notices/USN-8779-2) states that its 0.9.0-1ubuntu0.3 update reverted the fix. Existing run 67/68 evidence remains historical evidence for that older dependency. No package or host policy was changed by this gate.
+
+After the version gate passes, required mode wraps engine readiness, pixel normalization, initial OCR and orientation fallback. It never retries without isolation. Unsupported architecture, denied namespaces, failed seccomp setup or a failed engine probe make OCR unavailable. Manual entry remains available. A successful readiness response only means the configured worker can launch its fixed dependencies. It does not replace the native deny tests.
 
 The existing `resource-limits` mode remains explicit in the factory implementation. Changing application hosting or deployment configuration is outside this change.
 
@@ -56,7 +60,7 @@ The verifier uses only checked-in synthetic labels and a newly created synthetic
 5. Cancellation leaves neither the wrapper nor its recorded namespace child alive when the operation returns.
 6. Timeout leaves neither process alive when the operation returns.
 
-The canary is deleted after the tests. A dependency or namespace restriction returns `BLOCKED`, exit 2, with zero deny cases claimed. Failed assertions return `FAIL`, exit 1. All six cases must pass to return `PASS`, exit 0. CI must preserve the result JSON and distinguish BLOCKED from PASS.
+The canary is deleted after the tests. Rejected dependency versions and known dependency/configuration errors return `FAIL`, exit 1, with zero deny cases claimed. Namespace restrictions and indeterminate startup failures return `BLOCKED`, exit 2. Failed assertions return `FAIL`, exit 1. All six cases must pass to return `PASS`, exit 0. CI must preserve the result JSON and distinguish BLOCKED from PASS.
 
 ## Primary implementation references
 

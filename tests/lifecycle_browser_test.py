@@ -63,12 +63,24 @@ class LifecycleBrowserTests(PanelWorkspaceBrowserTests):
         self.page.locator("#delete-project").click()
         self.dialog().get_by_label("Type DELETE to confirm").fill("DELETE")
         self.assert_dialog_contrast(["h2", "#delete-confirm-description", ".muted", "label", ".button-secondary", ".button-danger"])
-        self.page.route("**/api/panel-projects/" + saved["id"], lambda route: route.abort() if route.request.method == "DELETE" else route.continue_())
+        failure_message = "Failed to load resource: net::ERR_FAILED"
+        self.expected_console_errors.add(failure_message)
+        failed_deletes = []
+        def fail_delete(route):
+            if route.request.method == "DELETE":
+                failed_deletes.append(route.request.url)
+                route.abort("failed")
+            else:
+                route.continue_()
+        self.page.route(self.origin + "/api/panel-projects/" + saved["id"], fail_delete)
         self.dialog().get_by_role("button", name="Delete", exact=True).click()
         expect(self.dialog().locator(".notice.error")).to_be_visible()
         expect(self.dialog().get_by_role("status")).to_contain_text("Deletion is unconfirmed")
         self.assert_dialog_contrast([".muted", ".form-status", ".notice.error", ".button-danger"])
         self.assertEqual(self.saved_panel(saved["id"]), saved)
+        self.assertEqual(failed_deletes, [self.origin + "/api/panel-projects/" + saved["id"]])
+        self.assertEqual([message for message in self.console_errors if message != failure_message], [])
+        self.assertLessEqual(len(self.console_errors), 1)
 
     def test_confirmation_cancel_keyboard_and_no_early_delete(self):
         self.login(keyboard=True)

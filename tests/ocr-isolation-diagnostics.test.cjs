@@ -35,7 +35,7 @@ test('only explicit namespace errors establish a confirmed host blocker', () => 
   for (const stderr of ['bwrap: Creating new namespace failed: Operation not permitted', 'bwrap: No permissions to create new namespace, likely because the kernel does not allow it', 'bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted']) {
     assert.deepEqual(classify([record(stderr)]), { kind: 'host_namespace_denied', confirmedExternalBlocker: true, status: 'BLOCKED' });
   }
-  for (const stderr of ['Operation not permitted', '', 'bwrap: Could not set up seccomp: Permission denied']) {
+  for (const stderr of ['Operation not permitted', '', 'bwrap: Could not set up seccomp: Permission denied', 'bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted']) {
     assert.equal(classify([record(stderr)]).confirmedExternalBlocker, false);
     assert.equal(classify([record(stderr)]).status, 'BLOCKED');
   }
@@ -67,6 +67,7 @@ test('synchronous and asynchronous launch errors retain safe codes without error
 });
 
 test('stage names are fixed and unexpected arguments or terminal controls cannot leak into the report', () => {
+  assert.equal(fixedStage(['/usr/bin/bwrap', '--version']), 'isolation_version');
   assert.equal(fixedStage(['/usr/bin/tesseract', '--list-langs']), 'engine_languages');
   assert.equal(fixedStage(['/usr/bin/python3', '-I', '-B', '/app/ocr-preprocess.py', '--probe']), 'normalizer_probe');
   const child = fakeChild(), observer = createReadinessDiagnostics({ spawnProcess: () => child });
@@ -95,4 +96,24 @@ test('successful process exits or missing exit evidence never prove readiness or
   child.stderr.write('bwrap: Creating new namespace failed: Operation not permitted');
   child.emit('close', 1, null);
   assert.equal(observer.snapshot().classification.confirmedExternalBlocker, false);
+});
+
+test('a rejected dependency version is a prerequisite failure even when the version command exits zero', () => {
+  for (const reason of ['isolation_dependency_unsupported', 'isolation_dependency_unavailable']) {
+    assert.deepEqual(classify([record('', { stage: 'isolation_version', exitCode: 0 })], reason), { kind: reason, confirmedExternalBlocker: false, status: 'FAIL' });
+  }
+});
+
+test('the observer retains all four fixed readiness stages after adding the version gate', () => {
+  const children = [];
+  const observer = createReadinessDiagnostics({ spawnProcess: () => { const child = fakeChild(); children.push(child); return child; } });
+  for (const args of [['/usr/bin/bwrap', '--version'], ['/usr/bin/bwrap', '--', '/usr/bin/tesseract', '--version'], ['/usr/bin/bwrap', '--', '/usr/bin/tesseract', '--list-langs'], ['/usr/bin/bwrap', '--', '/usr/bin/python3', '-I', '-B', '/app/ocr-preprocess.py', '--probe']]) {
+    observer.spawnProcess('/usr/bin/prlimit', args, {});
+    children.at(-1).emit('close', 0, null);
+  }
+  const report = observer.snapshot();
+  assert.equal(report.observedInvocations, 4);
+  assert.equal(report.maxRecords, 4);
+  assert.deepEqual(report.records.map(row => row.stage), ['isolation_version', 'engine_version', 'engine_languages', 'normalizer_probe']);
+  assert.equal(report.records.every(row => row.closed), true);
 });

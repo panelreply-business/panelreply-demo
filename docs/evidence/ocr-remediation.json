@@ -5,11 +5,16 @@
   "scope": "Synthetic stress set only. Not a real-photo accuracy or hosting readiness claim.",
   "baselineCommit": "36b2bf30990eb164f6327e1eaa71e1386432da4f",
   "datasetSha256": "9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601",
-  "inputHashesAfterRun": "PASS:all 310 original input SHA256 values rechecked unchanged",
+  "inputHashesAfterRun": {
+    "status": "PASS",
+    "cases": 310,
+    "manifestSha256": "9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601",
+    "allImageHashesMatched": true
+  },
   "pipelineSources": [
     {
       "file": "ocr.cjs",
-      "sha256": "c3b78025817d8853801c01ffc1fa8bbe7cd22211d1e303f723eebd3aa7e22b44"
+      "sha256": "f25ac85c7009598637c0814f9d67ef35031ecba3a49912e8c4fd3fa9c8aa49f4"
     },
     {
       "file": "ocr-preprocess.py",
@@ -20,7 +25,7 @@
       "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
     }
   ],
-  "pipelineSha256": "dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5",
+  "pipelineSha256": "6ea83a79dde4d68f4edb26717bedfb0aa1261684f848e6dd29ceddf4550e6fdd",
   "pipelineHashDefinition": "SHA256 of UTF8 JSON.stringify(pipelineSources) in the displayed order. The benchmark recorded these hashes before the final native run. They were rechecked unchanged after the run.",
   "baseline": {
     "engine": {
@@ -100,7 +105,7 @@
       },
       "orientationAvailable": true
     },
-    "engineModuleSha256": "c3b78025817d8853801c01ffc1fa8bbe7cd22211d1e303f723eebd3aa7e22b44",
+    "engineModuleSha256": "f25ac85c7009598637c0814f9d67ef35031ecba3a49912e8c4fd3fa9c8aa49f4",
     "overall": {
       "cases": 310,
       "exactCases": 277,
@@ -136,23 +141,23 @@
         }
       },
       "latencyMs": {
-        "median": 365,
-        "p95": 845,
-        "max": 1410
+        "median": 325,
+        "p95": 827,
+        "max": 1919
       }
     },
-    "elapsedMs": 132691,
+    "elapsedMs": 120492,
     "nodeProcess": {
-      "rssBeforeBytes": 40562688,
-      "rssAfterBytes": 66232320,
-      "cpuUserMs": 3353,
-      "cpuSystemMs": 1921,
+      "rssBeforeBytes": 40431616,
+      "rssAfterBytes": 65777664,
+      "cpuUserMs": 4763,
+      "cpuSystemMs": 2833,
       "scope": "Node parent only. Does not measure native child CPU or peak RSS."
     },
     "nativeProcess": {
-      "processes": 663,
-      "processesWithSamples": 663,
-      "samples": 12791,
+      "processes": 660,
+      "processesWithSamples": 660,
+      "samples": 11272,
       "sampledPeakResidentBytes": 73342976,
       "allClosed": true,
       "samplingIntervalMs": 10,
@@ -703,7 +708,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "n\n2 <\nwr\nZa\n_\n2 =z\nzy\nO a\n935\nGZo\nWi OF\nJF +\nQUE\ngiz\nS §\nss LW .,\nmS 2\n=)\nare\n=or\n= 3 5\n=~ ZH\nctw\n&Ssa",
+        "rawText": "n\n2 <\nwr\nZa\n_\n2 =z\nzy\nO a\n935\nGZo\nWi OF\nJF +\nQUE\ngiz\nS \u00a7\nss LW .,\nmS 2\n=)\nare\n=or\n= 3 5\n=~ ZH\nctw\n&Ssa",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -1003,7 +1008,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "nw =\n58\nut <<\nZ\nOm\nam\n2 <\nGUL\n—\na <o\nuy 2 x\nQF ¢\n2° OG\n2f Y\nasta",
+        "rawText": "nw =\n58\nut <<\nZ\nOm\nam\n2 <\nGUL\n\u2014\na <o\nuy 2 x\nQF \u00a2\n2\u00b0 OG\n2f Y\nasta",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -1107,7 +1112,7 @@
           "manufacturer": "FICTIONAL COMPONENTS",
           "description": ""
         },
-        "rawText": "P/N: SAMPLE-2042 : |\nMFR: FICTIONAL COMPONENTS\n‘DESC: SYNTHETIC LABEL ALPHA",
+        "rawText": "P/N: SAMPLE-2042 : |\nMFR: FICTIONAL COMPONENTS\n\u2018DESC: SYNTHETIC LABEL ALPHA",
         "mismatchedFields": [
           "partNumber",
           "description"
@@ -1255,7 +1260,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "17a)\nyw\nCc\ngo ©\nvec\no 2\nQa 6\nNn EG\n+ 0\nao 08\nxa — 2\n1 ©\noer\nao o\n5 oe\na od\no£ €\nci a\naa sg\nce > 2\n5 oo 6\nPEG\no\nSES",
+        "rawText": "17a)\nyw\nCc\ngo \u00a9\nvec\no 2\nQa 6\nNn EG\n+ 0\nao 08\nxa \u2014 2\n1 \u00a9\noer\nao o\n5 oe\na od\no\u00a3 \u20ac\nci a\naa sg\nce > 2\n5 oo 6\nPEG\no\nSES",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -1302,7 +1307,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "~ part number: sample-2042\n_ manufacturer: fictional components\n‘description: synthetic label alpha wes",
+        "rawText": "~ part number: sample-2042\n_ manufacturer: fictional components\n\u2018description: synthetic label alpha wes",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -1349,7 +1354,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "nn\nkK\ntz\nrt uw\na <\nz&\nJi\na ©\n<x N\nji 3a +\n<s\nose\nEo i\nFUE\n5 i =\n<¢ =.\nnay\n. WwW 3s:\n55%\nEGE\na\nzw\n62D\nDZ &\nosf",
+        "rawText": "nn\nkK\ntz\nrt uw\na <\nz&\nJi\na \u00a9\n<x N\nji 3a +\n<s\nose\nEo i\nFUE\n5 i =\n<\u00a2 =.\nnay\n. WwW 3s:\n55%\nEGE\na\nzw\n62D\nDZ &\nosf",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -1497,7 +1502,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "Tp)\n=\nnie\n6 5\nac\n5 a\nS a\nsai\n23 ¢\nkK\nSF\noUE\note2\nss LL\naw =\naT Zz\nap oO\n=OeF-\nD> gt\n=~ Zz\nTp)\nCaw\na =a",
+        "rawText": "Tp)\n=\nnie\n6 5\nac\n5 a\nS a\nsai\n23 \u00a2\nkK\nSF\noUE\note2\nss LL\naw =\naT Zz\nap oO\n=OeF-\nD> gt\n=~ Zz\nTp)\nCaw\na =a",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -1952,7 +1957,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "nn\n2 <\nuw +\nZa\n—\nOz\n-\nco\nVig\nopm a\na So\nIb OF\nOFS\nTiS\no\nOg &\nss LW .,\nmS 2\n=)\nof oO\n=or\nSih\nZz\n2 O\n=~ ZH\ncat\nEso",
+        "rawText": "nn\n2 <\nuw +\nZa\n\u2014\nOz\n-\nco\nVig\nopm a\na So\nIb OF\nOFS\nTiS\no\nOg &\nss LW .,\nmS 2\n=)\nof oO\n=or\nSih\nZz\n2 O\n=~ ZH\ncat\nEso",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -2666,7 +2671,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "(Tp)\n2 <\nuw +\nZa\n—\n2 =z\n=\nS a\nVig\nsa J\nmm LO\nz-~\n36%\nkK\nSOE\nVi 2\nxXx ©\nss LW .,\nmS 2\naFe\n=or\nD>aete\nwe\n-5 6\n=~ ZH\nctw\n&Ssa",
+        "rawText": "(Tp)\n2 <\nuw +\nZa\n\u2014\n2 =z\n=\nS a\nVig\nsa J\nmm LO\nz-~\n36%\nkK\nSOE\nVi 2\nxXx \u00a9\nss LW .,\nmS 2\naFe\n=or\nD>aete\nwe\n-5 6\n=~ ZH\nctw\n&Ssa",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -2815,7 +2820,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "t\nGa\nsoa\n<q\n<u\nim WwW\nN\nN <<\n+t Oa\nOw CO\nN FY\nwm 2 re\naw WwW\na>trz\nSs 2Z2E\naq-ée\nOe a\n. uo\naw s\nWW a\nap oO\n=ok&-\nDot\n=~ ZH\nCaw\na =a",
+        "rawText": "t\nGa\nsoa\n<q\n<u\nim WwW\nN\nN <<\n+t Oa\nOw CO\nN FY\nwm 2 re\naw WwW\na>trz\nSs 2Z2E\naq-\u00e9e\nOe a\n. uo\naw s\nWW a\nap oO\n=ok&-\nDot\n=~ ZH\nCaw\na =a",
         "mismatchedFields": [
           "partNumber",
           "manufacturer",
@@ -2866,7 +2871,7 @@
           "manufacturer": "INVENTED ZETA LAB",
           "description": ""
         },
-        "rawText": "PART NUMBER: SAMPLE-2042.\nMANUFACTURER: INVENTED ZETA LAB\n‘DESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "rawText": "PART NUMBER: SAMPLE-2042.\nMANUFACTURER: INVENTED ZETA LAB\n\u2018DESCRIPTION: SYNTHETIC LABEL ALPHA",
         "mismatchedFields": [
           "partNumber",
           "description"
@@ -2912,7 +2917,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "<x\nx\na\n|\nx\n—\nLL\n~ 2\n3 5\nx VY\nwe i\noF\n< 2\nYH\ncz\nma O\n=e\n5 2a\n=a\nO\nzo\n£4",
+        "rawText": "<x\nx\na\n|\nx\n\u2014\nLL\n~ 2\n3 5\nx VY\nwe i\noF\n< 2\nYH\ncz\nma O\n=e\n5 2a\n=a\nO\nzo\n\u00a34",
         "mismatchedFields": [
           "partNumber",
           "description"
@@ -3008,7 +3013,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "iva)\n=\nna\nZa\n—\nOz\n5 a\nS a\na\n—\nae\nOb\n-— +r\nYE\nwe\nx mh\nWo,\ncz\nPo\nOke\nqo\nLe\nSO\nWN\nctw\n= QA",
+        "rawText": "iva)\n=\nna\nZa\n\u2014\nOz\n5 a\nS a\na\n\u2014\nae\nOb\n-\u2014 +r\nYE\nwe\nx mh\nWo,\ncz\nPo\nOke\nqo\nLe\nSO\nWN\nctw\n= QA",
         "mismatchedFields": [
           "manufacturer",
           "description"
@@ -3252,7 +3257,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "Tp)\n=\ni >\n5 3\n—\nac\n5 a\nS a\noqownw =\novr 2 LI\noo <\na\nww O\na ao oe-\naOagoct\nZ=Zicts\nqiqieé€\nNN Xe H\nss oss LL\naaad =\nuu SZ\noof O\n=2OF\nDDdDaee\n225 5\nee en\n&isa",
+        "rawText": "Tp)\n=\ni >\n5 3\n\u2014\nac\n5 a\nS a\noqownw =\novr 2 LI\noo <\na\nww O\na ao oe-\naOagoct\nZ=Zicts\nqiqie\u00e9\u20ac\nNN Xe H\nss oss LL\naaad =\nuu SZ\noof O\n=2OF\nDDdDaee\n225 5\nee en\n&isa",
         "mismatchedFields": [
           "manufacturer",
           "description"
@@ -3398,7 +3403,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "n\n=\no UT\nSO 2\n<tIs 1\ntf oO w\nanNO ®\nSoa gs\now <=\nSEBS\nw 2ZOF\naw pf wW\nS 2-6\nse\nca\ncaeoaes\nao Peo\nSFEE\nOOF\nDaeawewe\nZzueuL Ee\ne220\nq_itiatuw\na 222A",
+        "rawText": "n\n=\no UT\nSO 2\n<tIs 1\ntf oO w\nanNO \u00ae\nSoa gs\now <=\nSEBS\nw 2ZOF\naw pf wW\nS 2-6\nse\nca\ncaeoaes\nao Peo\nSFEE\nOOF\nDaeawewe\nZzueuL Ee\ne220\nq_itiatuw\na 222A",
         "mismatchedFields": [
           "partNumber",
           "description"
@@ -3493,7 +3498,7 @@
       },
       "before": {
         "actual": null,
-        "rawText": "n\n20\n<9\not wu >\nto <a\ni a eo)\n<x a a\n<u = 4\nfr Ww Oo wW\nN @ O a\na atin <x\nsei2sa3\naeFUA ZY\nmw Z2e wy OF\nJaw wH ae\na >tfaocz\nS255\nqi-—~€d¢d <\nHe Ande a\noo W. og\nele gv -\nLu Zu =\n=) =)\noFOE@Me_E OC\n=oOokrFazOE\nDaee2odage\n25a 25 0\ne23E 29\nq_itiwagxtw\na 2=2aaszka",
+        "rawText": "n\n20\n<9\not wu >\nto <a\ni a eo)\n<x a a\n<u = 4\nfr Ww Oo wW\nN @ O a\na atin <x\nsei2sa3\naeFUA ZY\nmw Z2e wy OF\nJaw wH ae\na >tfaocz\nS255\nqi-\u2014~\u20acd\u00a2d <\nHe Ande a\noo W. og\nele gv -\nLu Zu =\n=) =)\noFOE@Me_E OC\n=oOokrFazOE\nDaee2odage\n25a 25 0\ne23E 29\nq_itiwagxtw\na 2=2aaszka",
         "mismatchedFields": []
       },
       "after": {
@@ -3539,7 +3544,7 @@
         {
           "file": "complete.png",
           "status": "PASS",
-          "durationMs": 340,
+          "durationMs": 356,
           "candidates": 1,
           "fieldMatches": {
             "partNumber": true,
@@ -3550,7 +3555,7 @@
         {
           "file": "complete.jpg",
           "status": "PASS",
-          "durationMs": 394,
+          "durationMs": 353,
           "candidates": 1,
           "fieldMatches": {
             "partNumber": true,
@@ -3561,7 +3566,7 @@
         {
           "file": "missing-manufacturer.png",
           "status": "PASS",
-          "durationMs": 400,
+          "durationMs": 311,
           "candidates": 1,
           "fieldMatches": {
             "partNumber": true,
@@ -3572,7 +3577,7 @@
         {
           "file": "conflicting-parts.png",
           "status": "PASS",
-          "durationMs": 380,
+          "durationMs": 562,
           "candidates": 1,
           "fieldMatches": {
             "partNumber": true,
@@ -3583,14 +3588,14 @@
         {
           "file": "unlabelled.png",
           "status": "PASS",
-          "durationMs": 821,
+          "durationMs": 737,
           "candidates": 0,
           "fieldMatches": {}
         },
         {
           "file": "blank.png",
           "status": "PASS",
-          "durationMs": 305,
+          "durationMs": 278,
           "candidates": 0,
           "fieldMatches": {}
         }
@@ -3698,13 +3703,58 @@
       "scope": "Local Linux process limits and lifecycle. Resource ceilings are not an OS security sandbox or a production hosting approval."
     }
   },
-  "crossVersion": "Local engine 5.5.0 and system Pillow 11.1.0. Prior CI 5.3.4 reproduced baseline 253/310. Revised 5.3.4 CI result must be measured separately before claiming equivalence.",
+  "crossVersion": "Run 68 measured the prior dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5 pipeline using Tesseract 5.3.4 and system Pillow 10.2.0 on a separately generated, font-distinct manifest. Its 277/310 extraction results matched the previous local run. This final local version-gated source still returns identical extraction results on the unchanged local dataset with Tesseract 5.5.0 and Pillow 11.1.0. Current-source CI verification is reported separately.",
   "deadlineClock": "Monotonic performance.now(), independent of host wall-clock changes.",
   "localUnitVerification": {
     "status": "PASS",
-    "cases": 72,
+    "cases": 88,
     "failures": 0,
     "skipped": 0,
-    "scope": "OCR adapter/parser, benchmark accounting, required-isolation policy and injected adapter tests. No native isolation claim."
+    "scope": "OCR adapter/parser, benchmark accounting, isolation policy, mocked required-mode version gate and bounded diagnostic observer. No native isolation claim.",
+    "logSha256": "c830e223bf0f202ab8c7706bd8bb6fac8708ca0b20ffc4521eaff93468bf01bf"
+  },
+  "priorComparison": {
+    "file": "ocr-remediation-pre-version-gate.json",
+    "sha256": "aa577abbb3d79a8e023cb9d3039101b8fd7503a1cf8d20d91dabbb1c6a31c840",
+    "pipelineSha256": "dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5",
+    "fullCaseResults": "ocr-remediation-after-310.json"
+  },
+  "versionGateVerification": {
+    "status": "PASS",
+    "mode": "mocked required-isolation dependency gate",
+    "minimumUpstreamVersion": "0.12.0",
+    "fixedVersionRead": "/usr/bin/prlimit [fixed limits] -- /usr/bin/bwrap --version",
+    "inputBytes": 0,
+    "maxCombinedOutputBytes": 1024,
+    "maxReadinessMs": 2000,
+    "namespaceSetupBeforeAcceptedVersion": false,
+    "prereleaseVendorMalformedBanners": "REJECTED",
+    "missingFailedOversizedTimedOutReads": "REJECTED",
+    "cacheRefreshRechecksVersion": true,
+    "knownVulnerableVersion": "0.9.0-1ubuntu0.3",
+    "reference": "https://ubuntu.com/security/CVE-2026-87766",
+    "actualRequiredIsolation": "NOT TESTED",
+    "hostPolicyChanged": false,
+    "packagesInstalledLocally": false
+  },
+  "comparisonToPreviousFinal": {
+    "status": "PASS",
+    "sameDataset": true,
+    "cases": 310,
+    "changedExtractionOrReviewCases": 0,
+    "comparedFields": [
+      "expected",
+      "actual",
+      "exact",
+      "error",
+      "reviewViolation",
+      "rawText",
+      "warnings",
+      "candidateWarnings",
+      "processing"
+    ],
+    "previousPipelineSha256": "dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5",
+    "currentPipelineSha256": "6ea83a79dde4d68f4edb26717bedfb0aa1261684f848e6dd29ceddf4550e6fdd",
+    "currentCaseResults": "ocr-remediation-version-gate-310.json"
   }
 }
