@@ -8,9 +8,13 @@ PanelReply is preparing two local programs for electrical contractors: callback 
 
 Run daily checks through December 20, 2026, then review each program for real-world testing. December 31 is the first release target. The owner has not chosen which program releases first or the second release date. Test totals do not replace each program's quality and operating gates.
 
-## Engineering remediation checkpoint
+## Independent program checkpoint
 
-The current remediation preserves the website and existing private workspace. It adds 334 synthetic conversation scenarios, durable assistant usage accounting, safe record deletion, schema-3 recovery, measured OCR improvements and integration checks. [Current remediation verification](docs/REMEDIATION_VERIFICATION.md) distinguishes executed local evidence from pending full CI. [Usage and configuration](docs/ASSISTANT_USAGE.md) · [Deletion and retention](docs/DATA_LIFECYCLE.md).
+Current development adds separate callback and spreadsheet processes, product-bound data and backups, separate browser journeys and an exact-source platform counter. [Development progress](docs/DEVELOPMENT_PROGRESS.md) and the two product acceptance records above contain the current decision. The completed [run75 checkpoint](docs/evidence/independent-products-run75.json) preserves 24,370 product case/platform passes and two Intel macOS WebKit failures. Corrections need verification before those platform gates can pass. Distinct cases, platform repetitions, generated cases and harness checks are reported separately.
+
+## Historical engineering remediation checkpoint
+
+The earlier remediation preserves the website and existing private workspace. It adds 334 synthetic conversation scenarios, durable assistant usage accounting, safe record deletion, schema-3 recovery, measured OCR improvements and integration checks. [Remediation verification](docs/REMEDIATION_VERIFICATION.md) preserves that earlier source's evidence. [Usage and configuration](docs/ASSISTANT_USAGE.md) · [Deletion and retention](docs/DATA_LIFECYCLE.md).
 
 The historical run66 results below remain preserved. They do not verify the newly changed code. Actual AI model quality, real-photograph accuracy and hosted operations remain separate gates.
 

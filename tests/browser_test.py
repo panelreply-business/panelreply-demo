@@ -172,13 +172,24 @@ class DemoBrowserTests(unittest.TestCase):
         expect(self.page.locator("#events img")).to_have_count(0)
 
     def test_keyboard_access_to_every_control(self):
-        self.page.locator("#example").focus()
-        expect(self.page.locator("#example")).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator(".skip-link")).to_be_focused()
+        for selector in ('nav a[href="#workspace"]', 'nav a[href="#workflow"]',
+                         'nav a[href="#connections"]', '#example'):
+            self.page.keyboard.press("Tab")
+            expect(self.page.locator(selector)).to_be_focused()
         controls = ["call", "reply", "send", "stop", "restart", "reset", "summary-details > summary", "callback"]
         for identifier in controls:
             self.page.keyboard.press("Tab")
             selector = "#" + identifier
             expect(self.page.locator(selector)).to_be_focused()
+        faq_summaries = self.page.locator(".faq-item > summary")
+        expect(faq_summaries).to_have_count(2)
+        for summary in faq_summaries.all():
+            self.page.keyboard.press("Tab")
+            expect(summary).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator('footer a[href="#workspace"]')).to_be_focused()
         self.page.get_by_role("button", name="Run the sample request", exact=True).click()
         expect(self.page.locator("#title")).to_have_text("Ready for callback.")
         self.page.locator("#summary-details > summary").focus()
