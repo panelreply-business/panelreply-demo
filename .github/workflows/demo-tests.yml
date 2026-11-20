@@ -234,7 +234,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, windows-2022, macos-15]
+        os: [ubuntu-24.04, windows-2022, macos-15-intel]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -261,7 +261,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2022, macos-15]
+        os: [windows-2022, macos-15-intel]
         browser: [chromium, firefox, webkit]
         include:
           # Chromium's existing baseline already covers all 92 static methods.

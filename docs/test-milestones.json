@@ -35,7 +35,7 @@
       "match": {
         "os": "darwin",
         "suite": "node-portable",
-        "architecture": "arm64"
+        "architecture": "x86_64"
       },
       "minimumCases": 6938
     },
@@ -113,7 +113,7 @@
         "browserEngine": "chromium",
         "browserChannel": "bundled",
         "profile": "desktop",
-        "architecture": "arm64"
+        "architecture": "x86_64"
       },
       "minimumCases": 92
     },
@@ -125,7 +125,7 @@
         "browserEngine": "firefox",
         "browserChannel": "bundled",
         "profile": "desktop",
-        "architecture": "arm64"
+        "architecture": "x86_64"
       },
       "minimumCases": 92
     },
@@ -137,7 +137,7 @@
         "browserEngine": "webkit",
         "browserChannel": "bundled",
         "profile": "desktop",
-        "architecture": "arm64"
+        "architecture": "x86_64"
       },
       "minimumCases": 92
     },
@@ -378,6 +378,15 @@
         "suite": "spreadsheet"
       },
       "minimumCases": 7
+    },
+    {
+      "id": "apple-silicon-macos",
+      "kind": "manual",
+      "description": "Apple silicon macOS remains unverified after ARM64 CI jobs received no assigned runner. Intel results cannot close this gate.",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64"
+      }
     }
   ],
   "releaseDecision": "Independent for callback and spreadsheet. Numeric targets never override product release gates.",

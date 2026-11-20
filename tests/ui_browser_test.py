@@ -15,7 +15,6 @@ import json
 import os
 import re
 import shutil
-import sys
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
@@ -299,13 +298,17 @@ class WorkspaceBrowserTests(unittest.TestCase):
         expect(self.page.locator("#request-state")).to_have_text("Not started")
 
     def test_skip_link_and_workspace_navigation_have_real_targets(self):
-        # WebKit on Windows/macOS uses the alternate Tab chord to include
-        # links. Keep actual keyboard navigation and every focus assertion.
-        # https://github.com/microsoft/playwright/issues/5609
-        links_chord = "Alt+Tab" if os.environ.get("PANELREPLY_BROWSER") == "webkit" and sys.platform in {"win32", "darwin"} else "Tab"
-        self.page.keyboard.press(links_chord)
+        self.page.keyboard.press("Tab")
         skip_link = self.page.locator(".skip-link")
-        expect(skip_link).to_be_focused()
+        try:
+            expect(skip_link).to_be_focused()
+        except AssertionError as failure:
+            focus = self.page.evaluate("""() => ({
+                documentFocused: document.hasFocus(),
+                activeElement: document.activeElement?.outerHTML.slice(0, 1000),
+                skipLinkTabIndex: document.querySelector('.skip-link')?.tabIndex
+            })""")
+            raise AssertionError(f"{failure}\nFirst Tab focus: {json.dumps(focus)}") from failure
         expect(skip_link).to_be_visible()
         target = skip_link.get_attribute("href")
         self.assertTrue(target and target.startswith("#"))

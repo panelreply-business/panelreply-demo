@@ -50,7 +50,7 @@ The reports distinguish reaching the numeric threshold from completing required 
 
 The initial automated matrix includes three OS families, three browser engines, explicit Chrome/Edge channels on Windows/Linux and separate phone/tablet emulation. Actual Safari, physical iPhone/iPad/Android and private product journeys on untested client OSes remain NOT TESTED until evidence exists. Do not claim “all platforms passed” from Linux browser engines or viewport resizing.
 
-The fixed CI runners are Ubuntu 24.04 x86_64, Windows Server 2022 x86_64 and macOS 15 ARM64. The macOS 14 label was replaced after checking the [official runner inventory](https://github.com/actions/runner-images/blob/main/README.md) and [retirement announcement](https://github.com/actions/runner-images/issues/13518). Actual OS and architecture remain part of every evidence report.
+The fixed CI runners are Ubuntu 24.04 x86_64, Windows Server 2022 x86_64 and macOS 15 Intel. The macOS 14 label was replaced after checking the [official runner inventory](https://github.com/actions/runner-images/blob/main/README.md) and [retirement announcement](https://github.com/actions/runner-images/issues/13518). The initial macOS 15 ARM64 jobs in runs73/74 remained queued without an assigned runner. Their cause is unconfirmed and they provide no pass evidence. The follow-up uses the ordinary `macos-15-intel` standard public-repository runner listed in [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), without using a paid larger runner. Apple silicon macOS remains an explicit unverified requirement; Intel results cannot close it. Actual OS and architecture remain part of every evidence report.
 
 ## Independent release gates
 
