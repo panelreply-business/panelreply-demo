@@ -1,6 +1,6 @@
 # PanelReply dual-product development
 
-Date: 2026-11-19. Branch: `feature/interactive-dual-product-site`. Review: [draft PR8](https://github.com/panelreply-business/panelreply-demo/pull/8).
+Updated: November 19, 2026 (America/New_York). Branch: `feature/interactive-dual-product-site`. Review: [draft PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Current engineering evidence is in [remediation verification](REMEDIATION_VERIFICATION.md).
 
 ## Repository assessment
 
@@ -19,13 +19,13 @@ Main's prior baseline is 396 passing checks and three intentionally blocked publ
 | Unified workspace | Add `/dashboard` and `/panels` behind the same session. No signup, second owner database or alternative authentication. |
 | Dashboard | Read actual business-scoped request and project summaries. Missing data stays unavailable rather than showing invented zeroes. |
 | Panel projects | Store versioned project rows and source image BLOBs in the existing private SQLite database. Atomic snapshots therefore cover both products and images. |
-| Schema migration | Validate schema 1, then add schema 2 tables and indexes in one transaction. Existing intake tables and data stay intact. Read-only recovery operations accept schema 1 and schema 2 without migrating. |
+| Schema migration | Validate schema 1 or 2, then migrate transactionally to schema 3. Existing intake and panel data stay intact. Schema 3 adds deletion receipts/tombstones, safety restrictions and usage accounting. Read-only recovery accepts schemas 1, 2 and 3 without migrating. |
 | Session changes | Frontends pin requests to the current session with an optional `X-Workspace-Session` header using the existing CSRF value. A stale tab receives 401 before adopting another session's data. Cookie authentication remains mandatory. |
 | Image rendering | Use authenticated same-origin source URLs. Keep the existing CSP: no inline scripts, no third-party scripts, no remote resources and no `blob:` image allowance. |
-| OCR | Optional local Tesseract 5 with English data. Results are candidates, never automatic confirmation. No paid OCR provider or remote upload. See [OCR comparison and measurements](OCR_OPTIONS.md). |
+| OCR | Optional local Tesseract 5, English data and fixed Python/Pillow normalization. OSD data enables bounded orientation fallback. Results are candidates, never automatic confirmation. No paid OCR provider or remote upload. See [OCR comparison and measurements](OCR_OPTIONS.md). |
 | Spreadsheet format | Implement CSV first. UTF-8 BOM, CRLF, quote escaping and formula-prefix neutralization support spreadsheet import. Exact corrected field strings are retained apart from documented formula protection. |
 | XLSX | A bounded dependency-free OOXML writer exports saved projects with explicit text cells, numeric quantities and no formulas or external relationships. Independent reader and native spreadsheet limits are documented in [XLSX verification](XLSX_EXPORT.md). |
-| Deployment | No new deployment, automatic deployment, public preview, domain or live integration. Both existing Render services are required to remain suspended. The current pre-launch audit found a conflicting active state. See [development progress](DEVELOPMENT_PROGRESS.md); do not change service state without owner approval. |
+| Deployment | No new deployment, automatic deployment, public preview, domain or live integration. Both existing Render services are suspended following the separately approved correction. Auto-deploy and previews remain off. Do not change their state without separate owner approval. |
 
 ## Product surfaces
 
@@ -79,7 +79,7 @@ These are local development limits. They are not a hosted service plan or commer
 
 Use the existing [private workspace setup](PRIVATE_WORKSPACE.md). Node 22.18 or later is required. The private server binds to 127.0.0.1 and rejects a public origin.
 
-For OCR, install Tesseract 5 and English language data on an approved local Linux development machine. The current adapter uses `/usr/bin/tesseract` behind `/usr/bin/prlimit` from util-linux. Readiness fails closed if either executable is absent. It does not automatically install packages or activate a provider at application startup. If the executable is unavailable, the UI reports that OCR is unavailable. Other operating systems or executable paths require a reviewed adapter change.
+For OCR, use an approved local Linux development machine with Tesseract 5, English language data, util-linux and system Pillow for fixed `/usr/bin/python3`. OSD language data enables the orientation fallback. The adapter runs the fixed normalizer and `/usr/bin/tesseract` behind `/usr/bin/prlimit`. Readiness fails closed if required executables or normalization dependencies are absent. It does not install packages or activate a provider at startup. Missing support leaves manual entry and exports available. Other operating systems or executable paths require a reviewed adapter change. The optional required-isolation mode also needs a supported unprivileged bubblewrap host and the [native isolation checks](OCR_ISOLATION.md).
 
 The design website can be reviewed from the checked-out branch using a local-only static server:
 
@@ -93,14 +93,14 @@ Open `http://127.0.0.1:8080`. This command is for local review. It does not auth
 
 Uploaded images are private BLOBs, not files under a public directory. All image, project, OCR, CSV and XLSX requests require the existing authenticated business scope. The database retains owner-only filesystem permissions. It is not encrypted at rest by this change. Encrypted backups cover intake, projects and images together and retain the restore password-reset requirement.
 
-Before opening an existing database with the new branch, take an encrypted backup and keep the original archive. Normal startup migrates schema 1 to schema 2. A schema 2 database must be used with schema 2-capable code. Do not point older main/recovery code at the upgraded database as a rollback. To revert, restore a pre-migration archive into a fresh directory with the matching code and follow the existing password-reset process.
+Before opening an existing database with the new branch, take an encrypted backup and keep the original archive. Normal startup migrates schema 1 or 2 to schema 3. Use schema-3-capable code with the upgraded database. Do not point older main/recovery code at it as a rollback. To revert, restore a pre-migration archive into a fresh directory with matching code, reset passwords and reconcile restrictions, deletions and usage events that occurred after that snapshot before re-enabling access.
 
-Project/image deletion, automatic retention and offsite backup are NOT IMPLEMENTED. Keep development data synthetic or explicitly authorized. A customer pilot needs an approved retention/deletion process, storage plan, restore objectives and resource isolation before accepting live documents.
+Explicit request, conversation, project and source-image deletion is implemented with ownership, version and retry checks. The private UI requires typed confirmation. See [data lifecycle and retention options](DATA_LIFECYCLE.md). Automatic expiry and offsite backup are not active. Keep development data synthetic or explicitly authorized. A customer pilot still needs approved retention, storage and recovery policies and verified host isolation before accepting live documents.
 
 The existing JSON business-record export keeps its intake/profile contract. Per-project CSV and XLSX exports cover panel rows. Encrypted backups cover both modules and source images. These three outputs serve different purposes and are not interchangeable.
 
 ## Remaining product gates
 
-This branch targets the first development milestone and a local authenticated panel workflow. It is not full commercial readiness. Pending gates include authorized real-photo OCR benchmarking, hosted private access and storage, host isolation beyond the implemented native process limits, deletion/retention, offsite restore drills, account recovery operations, reviewed legal text, pricing and any approved live integrations. No appointment is confirmed until an actual calendar integration is implemented and verified.
+This branch contains the design milestone and local authenticated workflows. It is not full commercial readiness. Pending gates include real-model evaluation, authorized real-photo OCR benchmarking, hosted private access and storage, selected-host isolation, approved automatic-retention policy, offsite restore drills, account recovery operations, reviewed legal text, pricing and any approved live integrations. No appointment is confirmed until an actual calendar integration is implemented and verified.
 
 The owner must approve a merge into main and any later public exposure separately.

@@ -1,12 +1,16 @@
 'use strict';
 
 const { spawn } = require('node:child_process');
+const path = require('node:path');
+const { performance } = require('node:perf_hooks');
+const { isolationSupported, restrictedInvocation } = require('./ocr-isolation.cjs');
 
 const LIMITS = Object.freeze({
   imageBytes: 2 * 1024 * 1024,
   imageDimension: 6000,
   imagePixels: 16_000_000,
   processOutputBytes: 512 * 1024,
+  normalizedImageBytes: 8 * 1024 * 1024,
   rawTextCharacters: 20_000,
   recognitionTimeoutMs: 15_000,
   statusTimeoutMs: 2000,
@@ -259,33 +263,37 @@ function parseTsv(tsv) {
 }
 
 const BINARY = '/usr/bin/tesseract';
+const NORMALIZER_BINARY = '/usr/bin/python3';
+const NORMALIZER_SCRIPT = path.join(__dirname, 'ocr-preprocess.py');
+const NORMALIZER_METHOD = 'median3-isolated-noise';
 const PROCESS_BINARY = '/usr/bin/prlimit';
 const PROCESS_PREFIX = Object.freeze([
   `--as=${LIMITS.nativeAddressSpaceBytes}:${LIMITS.nativeAddressSpaceBytes}`,
   `--cpu=${LIMITS.nativeCpuSeconds}:${LIMITS.nativeCpuSeconds}`,
   '--core=0:0', '--fsize=0:0',
   `--nofile=${LIMITS.nativeOpenFiles}:${LIMITS.nativeOpenFiles}`,
-  '--', BINARY,
+  '--',
 ]);
 const OCR_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '6', 'tsv']);
+const ORIENTATION_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '1', 'tsv']);
 const CHILD_ENV = Object.freeze({ PATH: '/usr/bin:/bin', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8', OMP_THREAD_LIMIT: '1', OMP_NUM_THREADS: '1' });
 
-function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.recognitionTimeoutMs, statusTimeoutMs = LIMITS.statusTimeoutMs, now = Date.now } = {}) {
+function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.recognitionTimeoutMs, statusTimeoutMs = LIMITS.statusTimeoutMs, now = () => performance.now(), isolation = 'resource-limits' } = {}) {
   // Injection exists for isolated process-failure tests, not HTTP callers or application settings.
-  if (typeof spawnProcess !== 'function' || typeof now !== 'function' || !Number.isInteger(recognitionTimeoutMs) || recognitionTimeoutMs < 1 || recognitionTimeoutMs > LIMITS.recognitionTimeoutMs || !Number.isInteger(statusTimeoutMs) || statusTimeoutMs < 1 || statusTimeoutMs > LIMITS.statusTimeoutMs) throw new TypeError('Invalid local OCR service options.');
+  if (typeof spawnProcess !== 'function' || typeof now !== 'function' || !Number.isInteger(recognitionTimeoutMs) || recognitionTimeoutMs < 1 || recognitionTimeoutMs > LIMITS.recognitionTimeoutMs || !Number.isInteger(statusTimeoutMs) || statusTimeoutMs < 1 || statusTimeoutMs > LIMITS.statusTimeoutMs || !['resource-limits', 'required'].includes(isolation)) throw new TypeError('Invalid local OCR service options.');
   let activeRecognition = false, processingImage = false, statusCache = null, statusPromise = null;
-  let closed = false, shutdownPromise = null;
+  let closed = false, shutdownPromise = null, orientationAvailable = false;
   const lifetime = new AbortController();
   const pendingProcesses = new Set();
 
-  function runProcess(args, { input, signal, timeoutMs, maxOutputBytes } = {}) {
+  function runProcess(args, { input, signal, timeoutMs, maxOutputBytes, outputBudget, normalizer = false, binaryOutput = false } = {}) {
     signal = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
     if (signal?.aborted) return Promise.reject(new OcrError('OCR_CANCELLED'));
     let markSettled;
     const settled = new Promise(resolve => { markSettled = resolve; });
     pendingProcesses.add(settled);
     return new Promise((resolve, reject) => {
-      let child, timer, outputBytes = 0, terminalError = null, finished = false;
+      let child, timer, filter, outputBytes = 0, terminalError = null, finished = false;
       const chunks = [];
       const finish = (error, output) => {
         if (finished) return;
@@ -307,7 +315,11 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       try {
         // prlimit execs the fixed engine in the same process. Missing limits or
         // an unsupported host fail closed, never fall back to unbounded OCR.
-        child = spawnProcess(PROCESS_BINARY, [...PROCESS_PREFIX, ...args], { shell: false, cwd: '/', env: { ...CHILD_ENV }, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+        const executable = normalizer ? NORMALIZER_BINARY : BINARY;
+        const fixedArgs = normalizer ? ['-I', '-B', NORMALIZER_SCRIPT, ...args] : args;
+        const command = isolation === 'required' ? restrictedInvocation(executable, fixedArgs) : { binary: executable, args: fixedArgs };
+        filter = command.seccomp;
+        child = spawnProcess(PROCESS_BINARY, [...PROCESS_PREFIX, command.binary, ...command.args], { shell: false, cwd: '/', env: { ...CHILD_ENV }, stdio: filter ? ['pipe', 'pipe', 'pipe', 'pipe'] : ['pipe', 'pipe', 'pipe'], windowsHide: true });
       } catch (error) {
         finish(new OcrError(error?.code === 'ENOENT' ? 'OCR_UNAVAILABLE' : 'OCR_FAILED'));
         return;
@@ -321,7 +333,8 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         if (terminalError) return finish(terminalError);
         if (code !== 0) return finish(new OcrError('OCR_FAILED'));
         try {
-          const output = new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks));
+          const bytes = Buffer.concat(chunks);
+          const output = binaryOutput ? bytes : new TextDecoder('utf-8', { fatal: true }).decode(bytes);
           finish(null, output);
         } catch { finish(new OcrError('OCR_OUTPUT_INVALID')); }
       });
@@ -329,7 +342,8 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         if (finished || terminalError) return;
         const chunk = Buffer.isBuffer(data) ? data : Buffer.from(data);
         outputBytes += chunk.length;
-        if (outputBytes > maxOutputBytes) return stop('OCR_OUTPUT_LIMIT');
+        if (outputBudget) outputBudget.bytes += chunk.length;
+        if ((outputBudget?.bytes ?? outputBytes) > maxOutputBytes) return stop('OCR_OUTPUT_LIMIT');
         if (retain) chunks.push(chunk);
       };
       child.stdout.on('data', data => consume(data, true));
@@ -337,16 +351,18 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       child.stdout.on('error', () => stop('OCR_FAILED'));
       child.stderr.on('error', () => stop('OCR_FAILED'));
       child.stdin.on('error', () => stop('OCR_FAILED'));
+      if (filter) child.stdio[3].on('error', () => stop('OCR_FAILED'));
       timer = setTimeout(() => stop('OCR_TIMEOUT'), timeoutMs);
       signal?.addEventListener('abort', cancel, { once: true });
       if (signal?.aborted) cancel();
-      try { child.stdin.end(input); }
+      try { if (filter) child.stdio[3].end(filter); child.stdin.end(input); }
       catch { stop('OCR_FAILED'); }
     });
   }
 
   async function getOcrStatus() {
     if (closed) return { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'service_shutdown' };
+    if (isolation === 'required' && !isolationSupported()) return { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'isolation_unsupported' };
     if (statusCache && (now() - statusCache.at < LIMITS.statusCacheMs || processingImage)) return { ...statusCache.value };
     if (statusPromise) return { ...await statusPromise };
     statusPromise = (async () => {
@@ -357,10 +373,19 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         version = match?.[1]?.slice(0, 40) || null;
         if (!version || !version.startsWith('5.')) return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'engine_unsupported' };
         const languages = await runProcess(['--list-langs'], { timeoutMs: statusTimeoutMs, maxOutputBytes: 16 * 1024 });
+        orientationAvailable = /^osd\s*$/m.test(languages);
         if (!/^eng\s*$/m.test(languages)) return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'language_unavailable' };
-        return { available: true, engine: 'tesseract', version, language: 'eng' };
+        let normalizer;
+        try {
+          normalizer = JSON.parse(await runProcess(['--probe'], { normalizer: true, timeoutMs: statusTimeoutMs, maxOutputBytes: 1024 }));
+          if (normalizer.method !== NORMALIZER_METHOD || !/^\d+\.\d+\.\d+$/.test(normalizer.pillowVersion)) throw new Error('normalizer unavailable');
+        } catch {
+          return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'normalizer_unavailable' };
+        }
+        return { available: true, engine: 'tesseract', version, language: 'eng', normalizer: { method: NORMALIZER_METHOD, pillowVersion: normalizer.pillowVersion }, orientationAvailable,
+          ...(isolation === 'required' ? { isolation: 'bubblewrap-seccomp' } : {}) };
       } catch (error) {
-        return { available: false, engine: 'tesseract', version, language: 'eng', reason: error.code === 'OCR_UNAVAILABLE' ? 'engine_unavailable' : 'engine_check_failed' };
+        return { available: false, engine: 'tesseract', version, language: 'eng', reason: isolation === 'required' ? 'isolation_unavailable' : error.code === 'OCR_UNAVAILABLE' ? 'engine_unavailable' : 'engine_check_failed' };
       }
     })();
     try {
@@ -383,9 +408,50 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       if (signal?.aborted || closed) fail('OCR_CANCELLED');
       if (!status.available) fail('OCR_UNAVAILABLE');
       processingImage = true;
-      const input = image.mime === 'image/png' ? pngRecognitionBytes(sourceBytes) : sourceBytes;
-      const tsv = await runProcess(OCR_ARGS, { input, signal, timeoutMs: recognitionTimeoutMs, maxOutputBytes: LIMITS.processOutputBytes });
-      return { engine: 'tesseract', engineVersion: status.version, ...parseTsv(tsv), durationMs: Math.max(0, now() - start) };
+      let input = image.mime === 'image/png' ? pngRecognitionBytes(sourceBytes) : sourceBytes;
+      // Both passes share one wall deadline, output budget and recognition slot.
+      // The fallback only replaces a result with no labelled candidates, never
+      // fills individual missing fields or silently reconciles different values.
+      const deadline = now() + recognitionTimeoutMs;
+      const outputBudget = { bytes: 0 };
+      const normalized = await runProcess([], { normalizer: true, binaryOutput: true, input, signal,
+        timeoutMs: recognitionTimeoutMs, maxOutputBytes: LIMITS.normalizedImageBytes + 1024 });
+      const separator = normalized.indexOf(10);
+      if (separator < 1 || separator > 1024) fail('OCR_OUTPUT_INVALID');
+      let normalization;
+      try { normalization = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(normalized.subarray(0, separator))); }
+      catch { fail('OCR_OUTPUT_INVALID'); }
+      if (normalization.method !== NORMALIZER_METHOD || normalization.pillowVersion !== status.normalizer.pillowVersion || typeof normalization.applied !== 'boolean'
+        || !Number.isSafeInteger(normalization.isolatedNoisePixels) || normalization.isolatedNoisePixels < 0 || normalization.isolatedNoisePixels > image.width * image.height
+        || normalization.imagePixels !== image.width * image.height || normalization.thresholdPixels !== Math.max(32, Math.ceil(image.width * image.height / 1000))
+        || normalization.applied !== (normalization.isolatedNoisePixels >= normalization.thresholdPixels)) fail('OCR_OUTPUT_INVALID');
+      const normalizedBytes = normalized.subarray(separator + 1);
+      if (normalization.applied) {
+        if (!normalizedBytes.length || normalizedBytes.length > LIMITS.normalizedImageBytes
+          || !normalizedBytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) fail('OCR_OUTPUT_INVALID');
+        let dimensions;
+        try { dimensions = inspectPng(normalizedBytes); } catch { fail('OCR_OUTPUT_INVALID'); }
+        if (dimensions.width !== image.width || dimensions.height !== image.height) fail('OCR_OUTPUT_INVALID');
+        input = pngRecognitionBytes(normalizedBytes);
+      } else if (normalizedBytes.length) fail('OCR_OUTPUT_INVALID');
+      const recognizePass = async args => {
+        const remaining = deadline - now();
+        if (remaining <= 0) fail('OCR_TIMEOUT');
+        return parseTsv(await runProcess(args, { input, signal, timeoutMs: remaining, maxOutputBytes: LIMITS.processOutputBytes, outputBudget }));
+      };
+      let result = await recognizePass(OCR_ARGS);
+      let passes = 1, orientationFallbackUsed = false;
+      if (orientationAvailable && result.candidates.length === 0 && result.rawText) {
+        const oriented = await recognizePass(ORIENTATION_ARGS);
+        passes += 1;
+        if (oriented.candidates.length) {
+          result = oriented;
+          orientationFallbackUsed = true;
+          result.warnings.push('Automatic orientation fallback was used. Compare every character with the original source image.');
+        }
+      }
+      return { engine: 'tesseract', engineVersion: status.version, ...result,
+        processing: { passes, orientationFallbackUsed, normalization }, durationMs: Math.max(0, Math.round(now() - start)) };
     } finally { activeRecognition = false; processingImage = false; }
   }
 

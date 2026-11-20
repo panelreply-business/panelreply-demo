@@ -2,7 +2,15 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { readResidentBytes } = require('../scripts/ocr-process-metrics.cjs');
 const { metrics, percentile } = require('../scripts/benchmark-ocr.cjs');
+
+test('native process sampler reports resident high-water bytes and absent samples explicitly', () => {
+  assert.equal(readResidentBytes('Name:\ttesseract\nVmRSS:\t1000 kB\nVmHWM:\t1200 kB\n'), 1200 * 1024);
+  assert.equal(readResidentBytes('VmRSS:\t1400 kB\nVmHWM:\t1200 kB\n'), 1400 * 1024);
+  assert.equal(readResidentBytes('Name:\tprlimit\n'), 0);
+  assert.equal(readResidentBytes('VmRSS: PRIVATE INVALID kB\n'), 0);
+});
 
 test('benchmark distinguishes exact, missed and wrong known values from false positives', () => {
   const result = metrics([

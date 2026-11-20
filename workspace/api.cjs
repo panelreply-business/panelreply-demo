@@ -7,6 +7,7 @@ const { StoreError, object, normalizePhone, FACT_KEYS } = require('./store.cjs')
 const { PreviewError } = require('./conversation.cjs');
 const intake = require('../src/intake.js');
 const panels = require('./panels.cjs');
+const { validateUsagePolicy, usageRequestHash, SYNTHETIC_POLICY } = require('./usage.cjs');
 
 // Accommodates valid bounded transcripts even when JSON escapes Unicode.
 const MAX_BODY_BYTES = 192 * 1024;
@@ -15,6 +16,7 @@ const ROOT = path.resolve(__dirname, '..');
 const ASSETS = Object.freeze({
   '/assets/styles.css': ['workspace/styles.css', 'text/css; charset=utf-8'],
   '/assets/app.js': ['workspace/app.js', 'application/javascript; charset=utf-8'],
+  '/assets/deletion.js': ['workspace/deletion.js', 'application/javascript; charset=utf-8'],
   '/assets/preview.js': ['workspace/preview.js', 'application/javascript; charset=utf-8'],
   '/assets/login.js': ['workspace/login.js', 'application/javascript; charset=utf-8'],
   '/assets/panels.js': ['workspace/panels.js', 'application/javascript; charset=utf-8'],
@@ -97,10 +99,12 @@ async function readJson(req, maxBytes = MAX_BODY_BYTES) {
   } catch (_) { throw new StoreError(400, 'invalid_json', 'Send a valid JSON object.'); }
 }
 
-function createWorkspaceApp({ store, origin, previewMessage, conversationProvider = null, allowExternalProvider = false, recognizeImage, getOcrStatus } = {}) {
+function createWorkspaceApp({ store, origin, previewMessage, conversationProvider = null, allowExternalProvider = false, assistantUsagePolicy, recognizeImage, getOcrStatus } = {}) {
   if (!store) throw new Error('A workspace store is required.');
   const originUrl = validateOrigin(origin);
   const auth = createAuth(store, { secure: originUrl.protocol === 'https:' });
+  const usagePolicy = validateUsagePolicy(assistantUsagePolicy || SYNTHETIC_POLICY, { external: conversationProvider?.kind === 'external' });
+  if (conversationProvider && ['reserveAssistantUsage', 'finishAssistantUsage', 'getAssistantUsage'].some(name => typeof store[name] !== 'function')) throw new Error('A provider requires durable workspace usage accounting.');
   const assistant = require('./assistant.cjs').createConversationOrchestrator({ provider: conversationProvider, allowExternal: allowExternalProvider });
   function send(res, status, body, extra = {}, head = false) {
     const serialized = body === undefined ? '' : JSON.stringify(body);
@@ -184,6 +188,7 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
         const { mode, liveEnabled } = assistant.status();
         return send(res, 200, { mode, liveEnabled });
       }
+      if (req.method === 'GET' && route === '/api/assistant/usage') return send(res, 200, store.getAssistantUsage(session.user));
       if (req.method === 'GET' && route === '/api/profile') return send(res, 200, store.getProfile(session.user));
       if (req.method === 'GET' && route === '/api/leads') return send(res, 200, { leads: store.listLeads(session.user) });
       if (req.method === 'GET' && route === '/api/panel-projects') return send(res, 200, { projects: store.listPanelProjects(session.user) });
@@ -222,6 +227,7 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
           'Cross-Origin-Resource-Policy': 'same-origin'
         });
       }
+      const conversationDelete = /^\/api\/leads\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/conversation$/.exec(route);
       const match = /^\/api\/leads\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/.exec(route);
       if (req.method === 'GET' && match) return send(res, 200, { lead: store.getLead(session.user, match[1]) });
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) mutationRequired(req, session);
@@ -229,6 +235,18 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
         assistant.cancel(session.token);
         auth.logout(currentMutationSession(req, session));
         return send(res, 204, undefined, { 'Set-Cookie': auth.cookie('', true) });
+      }
+      if (req.method === 'DELETE' && (match || conversationDelete)) {
+        const id = (match || conversationDelete)[1];
+        const method = conversationDelete ? 'deleteLeadConversation' : 'deleteLead';
+        const receipt = await withMutationBody(req, session, (input, current) => store[method](current.user, id, input, req.headers['idempotency-key']), 2048);
+        return send(res, 200, { receipt });
+      }
+      if (req.method === 'DELETE' && panelMatch && (!panelMatch[2] || (panelMatch[2] === 'sources' && panelMatch[3] && !panelMatch[4]))) {
+        const receipt = await withMutationBody(req, session, (input, current) => panelMatch[3]
+          ? store.deletePanelSource(current.user, panelMatch[1], panelMatch[3], input, req.headers['idempotency-key'])
+          : store.deletePanelProject(current.user, panelMatch[1], input, req.headers['idempotency-key']), 2048);
+        return send(res, 200, { receipt });
       }
       if (req.method === 'PATCH' && route === '/api/profile') {
         const result = await withMutationBody(req, session, (input, current) => store.updateProfile(current.user, input));
@@ -292,10 +310,21 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
         res.once('close', cancel);
         if (req.aborted || res.destroyed || res.writableEnded) controller.abort();
         try {
-        async function runPreview(suppressed) {
+        async function runPreview(suppressed, safetyHeld = false) {
           let result;
           try { result = await preview(input.message, input.state, profile, {
-            suppressed, signal: controller.signal, scope: current.session.token,
+            suppressed, safetyHeld, signal: controller.signal, scope: current.session.token,
+            usage: {
+              reserve({ fingerprint, inputBytes, outputTokenLimit }) {
+                const activeSession = currentMutationSession(req, current.session);
+                return store.reserveAssistantUsage(activeSession.user, usageRequestHash(activeSession.token, fingerprint), { inputBytes, outputTokenLimit }, usagePolicy);
+              },
+              finish(id, status) {
+                // Accounting must finish even when the browser session expired.
+                // The actor is the server-captured owner of this reservation.
+                return store.finishAssistantUsage(current.session.user, id, status);
+              }
+            },
             isCurrent: () => {
               try { currentMutationSession(req, current.session); return true; }
               catch (_) { return false; }
@@ -315,14 +344,46 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
           return result;
         }
         const phoneBefore = knownPhone(input.state);
-        const wasSuppressed = !!phoneBefore && store.isSuppressed(current.session.user, phoneBefore);
-        let result = await runPreview(wasSuppressed);
+        // Inspect deterministic extraction before allowing a provider call. A
+        // known restriction also applies when the phone first appears in this
+        // message, rather than arriving in the previous browser draft.
+        const conversation = require('./conversation.cjs');
+        let localState;
+        try { localState = conversation.previewMessage(input.message, input.state, profile).state; }
+        catch (error) {
+          if (error instanceof PreviewError && error.code === 'conversation_limit') {
+            // A valid but full transcript must not discard a new STOP/hazard.
+            // The first call already validated the entire state and message.
+            // Re-evaluate only the contact/control effect without appending to
+            // that transcript, retain the original 413, and never call a provider.
+            const validated = conversation.validateState(input.state);
+            const control = conversation.previewMessage(input.message, { ...validated, conversation: [] }, profile).state;
+            if (control.stopped || control.hold) {
+              const actor = currentMutationSession(req, current.session).user;
+              if (!req.aborted && !res.destroyed && !res.writableEnded) {
+                const restrictedPhones = [...new Set([knownPhone(validated), knownPhone(control)].filter(Boolean))];
+                for (const phone of restrictedPhones) {
+                  if (control.stopped) store.suppressPhone(actor, phone);
+                  if (control.hold) store.holdPhone(actor, phone);
+                }
+                assistant.cancel(current.session.token);
+              }
+            }
+          }
+          throw error;
+        }
+        const localPhone = knownPhone(localState);
+        const phones = [...new Set([phoneBefore, localPhone].filter(Boolean))];
+        const wasSuppressed = phones.some(phone => store.isSuppressed(current.session.user, phone));
+        const wasSafetyHeld = phones.some(phone => store.isSafetyHeld(current.session.user, phone));
+        let result = await runPreview(wasSuppressed, wasSafetyHeld);
         const phoneAfter = knownPhone(result.state);
-        if (phoneAfter && !wasSuppressed && store.isSuppressed(current.session.user, phoneAfter)) result = await runPreview(true);
+        if (phoneAfter && ((!wasSuppressed && store.isSuppressed(current.session.user, phoneAfter)) || (!wasSafetyHeld && store.isSafetyHeld(current.session.user, phoneAfter)))) result = await runPreview(store.isSuppressed(current.session.user, phoneAfter), store.isSafetyHeld(current.session.user, phoneAfter));
         const resultingPhone = knownPhone(result.state);
         const optOutHistory = result.state.conversation.some(item => item.role === 'customer' && intake.isOptOut(item.text));
         if (resultingPhone && (result.state.stopped || optOutHistory)) store.suppressPhone(currentMutationSession(req, current.session).user, resultingPhone);
-        if (resultingPhone && store.isSuppressed(current.session.user, resultingPhone) && !result.state.stopped) result = await runPreview(true);
+        if (resultingPhone && result.state.hold) store.holdPhone(currentMutationSession(req, current.session).user, resultingPhone);
+        if (resultingPhone && ((store.isSuppressed(current.session.user, resultingPhone) && !result.state.stopped) || (store.isSafetyHeld(current.session.user, resultingPhone) && !result.state.hold))) result = await runPreview(store.isSuppressed(current.session.user, resultingPhone), store.isSafetyHeld(current.session.user, resultingPhone));
         return send(res, 200, result);
         } finally {
           req.removeListener('aborted', cancel);

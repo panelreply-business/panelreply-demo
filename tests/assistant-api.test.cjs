@@ -16,14 +16,14 @@ const ORIGIN = 'http://127.0.0.1:10001';
 const HASH = hashPassword('Synthetic assistant API password 2026!');
 const emptyOutput = () => ({ changes: [], clarify: [], answerTopics: [], intent: 'continue' });
 const defer = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return { promise, resolve }; };
-async function fixture(t, generate = async () => emptyOutput()) {
+async function fixture(t, generate = async () => emptyOutput(), options = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-assistant-api-'));
   let clock = Date.now();
   const store = openStore({ dataDir: dir, now: () => clock });
   const passwordHash = await HASH;
   const actor = store.createBusinessOwner({ businessName: 'Synthetic Assistant', username: 'assistant@example.test', passwordHash });
   const other = store.createBusinessOwner({ businessName: 'Other Synthetic Assistant', username: 'other-assistant@example.test', passwordHash });
-  const app = createWorkspaceApp({ store, origin: ORIGIN, conversationProvider: { kind: 'fake', generate } });
+  const app = createWorkspaceApp({ store, origin: ORIGIN, conversationProvider: { kind: 'fake', generate }, ...options });
   const login = (user = actor) => { const token = crypto.randomBytes(32).toString('base64url'); store.createSession(user.id, digest(token)); return { cookie: app.auth.cookie(token).split(';')[0], 'x-csrf-token': csrfFor(token), 'x-workspace-session': csrfFor(token) }; };
   t.after(() => { app.close(); store.close(); fs.rmSync(dir, { recursive: true, force: true }); });
   return { app, store, actor, other, login, expire: () => { clock += 31 * 60 * 1000; }, revoke: () => store.resetOwnerPassword({ username: actor.username, passwordHash }) };
@@ -146,4 +146,44 @@ test('a response disconnected before listeners attach never starts the provider'
   const f = await fixture(t, async () => { calls++; return emptyOutput(); });
   await request(f, { headers: f.login(), input: { message: 'I need a panel upgrade', state: null }, observe: (_, res) => { res.destroyed = true; } });
   assert.equal(calls, 0); assert.deepEqual(f.store.listLeads(f.actor), []);
+});
+
+test('durable usage summary is private and a generated attempt is counted exactly once', async t => {
+  let calls = 0; const f = await fixture(t, async () => { calls++; return emptyOutput(); }), headers = f.login();
+  const input = { message: 'I need an EV charger installed', state: null };
+  assert.equal((await request(f, { method: 'GET', url: '/api/assistant/usage' })).status, 401);
+  assert.equal((await request(f, { headers, input })).status, 200);
+  assert.equal((await request(f, { headers, input })).status, 200);
+  assert.equal(calls, 1);
+  const usage = await request(f, { method: 'GET', url: '/api/assistant/usage', headers });
+  assert.equal(usage.status, 200); assert.equal(usage.body.lifetimeAttempts, 1); assert.equal(usage.body.statuses.succeeded, 1);
+  assert.equal((await request(f, { method: 'GET', url: '/api/assistant/usage', headers: f.login(f.other) })).body.lifetimeAttempts, 0);
+  for (const text of [input.message, headers.cookie, f.actor.id]) assert.equal(JSON.stringify(usage.body).includes(text), false);
+});
+
+test('durable server allowance blocks provider calls across new sessions without changing the draft', async t => {
+  let calls = 0;
+  const { SYNTHETIC_POLICY } = require('../workspace/usage.cjs');
+  const f = await fixture(t, async () => { calls++; return emptyOutput(); }, { assistantUsagePolicy: { ...SYNTHETIC_POLICY, perMinute: 1, perDay: 1, lifetimeAttempts: 1 } });
+  await request(f, { headers: f.login(), input: { message: 'I need a panel upgrade', state: null } });
+  const state = { customerName: 'Synthetic Existing', phone: '+15865550101', job: 'Existing scope', zip: '48315' };
+  const result = await request(f, { headers: f.login(), input: { message: 'I need an EV charger', state } });
+  assert.equal(result.status, 200); assert.equal(result.body.assistance.mode, 'unavailable');
+  assert.equal(result.body.state.job, state.job); assert.equal(calls, 1); assert.equal(f.store.getAssistantUsage(f.actor).lifetimeAttempts, 1);
+});
+
+for (const restriction of ['suppressPhone', 'holdPhone']) test('a known ' + restriction + ' in the first message prevents provider disclosure', async t => {
+  let calls = 0; const f = await fixture(t, async () => { calls++; return emptyOutput(); });
+  f.store[restriction](f.actor, '+15865550101');
+  const response = await request(f, { headers: f.login(), input: { message: 'My name is Synthetic Person. My phone is 586-555-0101. I need an EV charger. ZIP 48315.', state: null } });
+  assert.equal(response.status, 200); assert.equal(response.body.state[restriction === 'holdPhone' ? 'hold' : 'stopped'], true);
+  assert.equal(calls, 0); assert.equal(f.store.getAssistantUsage(f.actor).lifetimeAttempts, 0);
+});
+
+test('an unsaved hazard persists the phone restriction across fresh preview sessions', async t => {
+  let calls = 0; const f = await fixture(t, async () => { calls++; return emptyOutput(); });
+  const held = await request(f, { headers: f.login(), input: { message: 'The panel is smoking. My phone is 586-555-0101.', state: null } });
+  assert.equal(held.status, 200); assert.equal(held.body.state.hold, true); assert.equal(f.store.isSafetyHeld(f.actor, '+15865550101'), true);
+  const next = await request(f, { headers: f.login(), input: { message: 'My phone is 586-555-0101. I need an EV charger.', state: null } });
+  assert.equal(next.status, 200); assert.equal(next.body.state.hold, true); assert.equal(calls, 0); assert.deepEqual(f.store.listLeads(f.actor), []);
 });

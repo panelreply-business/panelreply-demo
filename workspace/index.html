@@ -7,7 +7,7 @@
   <title>Request inbox · PanelReply</title><link rel="icon" type="image/svg+xml" href="/assets/brand-mark.svg">
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="stylesheet" href="/assets/platform.css">
-  <script src="/assets/app.js" defer></script>
+  <script src="/assets/deletion.js" defer></script><script src="/assets/app.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -76,6 +76,7 @@
                 </fieldset>
                 <div class="form-footer"><p id="lead-status" class="form-status" role="status" aria-live="polite"></p><span id="lead-dirty" class="dirty-label" hidden>Unsaved changes</span><button id="save-lead" type="submit" class="button button-primary">Save changes</button></div>
               </form>
+              <section class="record-deletion" aria-labelledby="request-deletion-title"><h3 id="request-deletion-title">Remove saved records</h3><p class="muted small-text">Save or discard edits before deleting. Deletion requires confirmation. Contact restrictions remain.</p><div class="button-row"><button id="delete-conversation" type="button" class="button button-danger button-small" disabled>Delete conversation</button><button id="delete-lead" type="button" class="button button-danger button-small" disabled>Delete request</button></div></section>
               <div class="record-history"><details><summary>Conversation<span id="conversation-count" class="summary-count"></span></summary><ol id="lead-conversation" class="history-list conversation-history"></ol></details><details><summary>Activity<span id="audit-count" class="summary-count"></span></summary><ol id="lead-audit" class="history-list audit-history"></ol></details></div>
             </div>
           </section>

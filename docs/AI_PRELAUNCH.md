@@ -36,9 +36,9 @@ const assistantForTest = createConversationOrchestrator({
 
 `previewMessage(message, state, profile, options)` retains the existing `{state, replies}` contract and adds `assistance: {mode, code}`. Modes are `deterministic`, `fake-provider`, `external-provider` and `unavailable`.
 
-`options.scope` comes from the authenticated server session. It is never sent to the provider. `options.signal` cancels work on disconnection. `options.isCurrent` rechecks that the request still belongs to the active session. `cancel(scope)` discards a pending turn or reset. `close()` cancels all pending generation and prevents new provider work.
+`options.scope` comes from the authenticated server session. It is never sent to the provider. `options.safetyHeld` and `options.suppressed` come from the authenticated business storage and are evaluated before generation. `options.signal` cancels work on disconnection. `options.isCurrent` rechecks that the request still belongs to the active session. `cancel(scope)` discards a pending turn or reset. `close()` cancels all pending generation and prevents new provider work.
 
-External mode also requires an explicit `allowExternal: true` constructor argument. No environment variable automatically enables it. The production entry point does not supply a provider or this argument. Provider selection, secrets, usage budgets, data handling and any actual external call require separate owner approval.
+External mode also requires an explicit `allowExternal: true` constructor argument. `workspace/assistant-config.cjs` prepares the approved server injection. It requires explicit execution and data-transfer approval, a server-supplied credential and model, an injected fetch implementation, and a complete durable usage policy. Normal server startup supplies no configuration. Environment variables cannot enable the provider. Provider selection, secrets, approved spending limits, data handling and any actual external call require separate owner approval.
 
 ### Disabled Responses transport
 
@@ -85,68 +85,130 @@ The fixture flow preserves a 200-amp panel-upgrade request while collecting ZIP 
 - Cache keys include the validated fields, transcript and approved facts. Sessions do not share cached results.
 - An adapter that ignores cancellation retains its active slot until it settles. A timeout cannot silently create unlimited background calls.
 
-These in-memory limits reset on process restart and are not a durable usage or spending ceiling. A hosted live provider needs persistent per-business budgets and transport-level resource controls before customer use.
+The authenticated API now adds a durable ledger in `workspace/usage.cjs`, through the existing store and backup schema. It binds each reservation to the server-authenticated business and actor. A request hash includes the session scope and context fingerprint. Database transactions enforce configured per-minute, per-day, lifetime, concurrent and monetary-reservation limits. Attempts and their reserved allowance remain recorded after failures, cancellation, timeouts and restarts. A repeated recorded request cannot silently create a second attempt after its in-memory cache has been lost.
+
+The orchestrator receives a trusted per-run `options.usage` object:
+
+```js
+{
+  reserve({ fingerprint, inputBytes, outputTokenLimit }) { return { id } },
+  finish(id, status) { /* synchronous durable settlement */ }
+}
+```
+
+Local safety/consent controls, cache hits, identical pending retries and process-limit rejections create no new reservation. The ledger receives a fingerprint, byte count and 2,048-token output allowance, not the conversation, credentials or business facts. A failed reservation prevents generation. A failed settlement discards the proposed result. An abort-ignoring adapter retains its active slot and unsettled reservation until it actually exits. The caller can receive a timeout before that settlement occurs.
+
+The ledger records `succeeded`, `failed`, `cancelled` and `timeout` outcomes. A reservation cancelled before the scheduled generation starts still consumes its allowance. This conservative accounting does not refund failed work. Reserved monetary allowance is an operator-configured upper bound, not measured billing or an assertion about current model prices. The owner must approve and validate the policy against the selected provider before any real call. Root integration tests cover the database, authenticated API and restart behavior separately from the component hook tests below.
 
 ## Executed component and evaluation evidence
 
-Local checks for this work:
+This remediation was verified locally on November 20, 2026. The original 49 fixtures remain unchanged. The separate `tests/fixtures/assistant/remediation-corpus.json` adds 285 cases. Each added case has an ID, category, intent, risk and synthetic-data source. The additions cover distinct request scopes, field roles, state transitions, trust-boundary violations and failure branches. They are not generated permutations of a single successful sentence.
 
-| Check | Result |
-| --- | --- |
-| `tests/workspace-assistant.test.cjs` | 94 PASS, 0 FAIL |
-| `tests/assistant-evaluation.test.cjs` | 49 named conversation scenarios PASS, 0 FAIL |
-| Existing `tests/workspace-conversation.test.cjs` | 34 PASS, 0 FAIL |
-| Combined three-file run | 177 PASS, 0 FAIL |
-| `tests/assistant-adversarial.test.cjs` from independent review | 11 PASS, 0 FAIL |
-| `tests/assistant-provider.test.cjs` using mock HTTP only | 31 PASS, 0 FAIL |
-| `tests/assistant-api.test.cjs` independently reviewed initial integration | 9 PASS, 0 FAIL in an in-process HTTP-handler/real-SQLite fixture |
+| Check | Status | Measured result |
+| --- | --- | --- |
+| Seven-file focused regression run | PASS | 646 tests, 0 failures, 0 skipped |
+| Expanded conversation evaluation | PASS | 334 scenarios, 374 turns, 0 failing scenarios |
+| Exact six-field comparisons | PASS | 2,196 comparisons |
+| Prior-context preservation | PASS | 331 provider-context comparisons |
+| Clarification turns | PASS | 22 assertions |
+| Rejected/unavailable proposal turns | PASS | 115 assertions that prior fields remain unchanged |
+| Other explicit protection/reply checks | PASS | 129 assertions |
+| Provider calls in the evaluation | PASS | 333 local fake calls, 0 real calls |
+| Generated demo and CSP | PASS | Regenerated root `index.html`, source/hash check passed |
+| Actual model extraction and answer quality | BLOCKED | No authorized real-provider evaluation |
 
-The API tests exercise authentication, Origin, CSRF, session pins, normal save/idempotency, session expiry/revocation during generation, simultaneous STOP/safety holds, tenant-scoped context, changed business facts and disconnected requests. They do not open a real HTTP listener. The root verification record tracks subsequent integration changes and CI/browser results.
+The 646 tests include `workspace-assistant`, `assistant-provider`, `assistant-adversarial`, `assistant-evaluation`, `workspace-conversation`, `intake` and `demo`. The 334 evaluation scenarios are included in that total. They must not be added again. The Responses transport still has 31 mock HTTP cases. An external-mode wording test uses an in-memory function only. Its provider kind label does not make it a real network test.
 
-The latest seven-file focused run passed 323 cases with zero failures. It combined the assistant, provider, adversarial, evaluation, existing conversation, existing demo and intake suites. This includes the shared hazard corrections and generated demo/CSP check. It is not an additional 323 cases to add to a full CI total.
-
-Run the standalone evaluation with:
+Reproduce this boundary with:
 
 ```bash
+node --test --test-reporter=tap tests/workspace-assistant.test.cjs tests/assistant-provider.test.cjs tests/assistant-adversarial.test.cjs tests/assistant-evaluation.test.cjs tests/workspace-conversation.test.cjs tests/intake.test.cjs tests/demo.test.cjs
 node scripts/evaluate-assistant.cjs
+node scripts/build-demo.cjs --check
 ```
 
-The checked-in corpus is `tests/fixtures/assistant/corpus.json`. The executed run contained 49 scenarios and 52 turns, 312 exact field checks, 47 context checks, six clarification cases and six invalid-output recovery cases. It made 47 deterministic fake calls and zero real-provider calls. The evaluator emits its measured elapsed time, but that timing measures local orchestration, not model latency.
+The evaluator reports each passing scenario and each individual failure with its ID and category. It rejects duplicate IDs and duplicate new fixture definitions. Each case has explicit expected fields, clarification flags, safety/consent state and assistance mode. Selected cases additionally assert provider call counts, error codes, required replies and forbidden claims. Malformed-output cases test recovery on the following turn. Cancellation/session cases assert that the original draft remains unchanged. Mode, limits and timing in these reports describe local synthetic execution only.
 
-The corpus includes panel upgrades, EV chargers, lighting, generators, troubleshooting, outlet work, multiple jobs, normal smoke-detector work, bundled contact details, corrections for all six fields, invalid phones, conflicting names/ZIPs/dates, all eleven business-question categories, handoff, summaries, injection attempts, malformed/empty responses, STOP and electrical hazards. Adversarial field provenance, timeouts, rate/cap behavior, cancellation, late responses, resets, session changes and retries are covered by the component suite.
+### Added scenario coverage
 
-These results verify the contract and deterministic protections against predefined responses. They do not measure a language model's field extraction accuracy, contextual relevance, repetition rate or production reliability. The requested 300–500 model-quality scenarios remain a later evaluation target. Increasing the fake corpus with trivial wording variations would not establish that evidence.
+| Category | Added cases |
+| --- | ---: |
+| Electrical service scopes | 30 |
+| Preserving all supplied work details | 8 |
+| Multi-turn field context | 18 |
+| Corrections | 19 |
+| Conflicts | 14 |
+| Negation | 8 |
+| Missing or wrong-role information | 12 |
+| Multiple work requests | 11 |
+| Approved, absent and unrelated business answers | 38 |
+| Scheduling and recalled details | 16 |
+| Human review and summaries | 13 |
+| Electrical safety | 14 |
+| Consent and opt-outs | 13 |
+| Message and output injection | 22 |
+| Malformed output followed by recovery | 30 |
+| Provider, session, retry and limit failures | 11 |
+| Input bounds | 5 |
+| Mode disclosure | 3 |
+| Total added | 285 |
 
-## Defects found while building the boundary
+The 49 preserved cases cover the original panel upgrade, EV, lighting, generator, outlet, fan, detector, bundled information, correction, business answer, handoff, injection and control paths. Existing component tests cover actual simultaneous pending requests, cross-business cache separation, resets, stale sessions and late results. New component tests cover durable-hook reservation/settlement, pending and completed retry deduplication, storage failures, timeout/cancellation, stored safety holds and STOP flag tampering.
 
-| Finding | Correction | Regression |
-| --- | --- | --- |
-| The no-booking disclosure followed the missing-field question, so a short next reply lost its single-field context. | Keep the targeted question as the final assistant message. | Context-only name and timing follow-up tests. |
-| A fallback parser's existing issue could block a valid later natural-language correction. | Separate fresh-message ambiguity from unresolved prior issues. Preserve unrelated issues. | Natural name correction and direct confirmation tests. |
-| A pending provider could return business facts that were revoked during generation. | API checks profile version before returning the result. | Changed-business-facts API regression. |
-| Five independently reproduced proposals used real text for the wrong field or converted negation into a positive request. | Bind recognized values to the independent parser, anchor name/phone cues to their value and reject negated/unavailable clauses. | Five independent adversarial grounding cases. |
-| Explicit fire, excessive heat and water around electrical parts could miss the existing hazard detector. | Add bounded electrical-component patterns before generation. Regenerate the static demo and CSP. | Four independent provider-bypass tests, eight positive and six routine-negative shared-parser tests. |
-| A valid compressed provider response could fail a wire-length comparison against decoded Fetch bytes. | Apply exact Content-Length equality only to identity encoding and retain the decoded stream-size bound for every encoding. | Independent compressed-response regression. |
-| An abort-ignoring transport could return a new response stream after timeout cleanup finished. | Cancel the late body before acquiring its reader. | Independent late-response cancellation regression. |
+These results verify application orchestration and deterministic protections against predefined responses. They do not measure a language model's extraction accuracy, contextual relevance, repetition rate, real latency or production reliability. Meeting the synthetic scenario target does not complete the AI product.
 
-The conversation-composition and field-grounding issues were found and fixed before committing this boundary. The hazard phrases were confirmed omissions in the existing shared detector. The new patterns preserve routine panel upgrades, fire-alarm/smoke-detector work, water-heater circuits and hot-tub controls. Finite keyword tests do not establish recognition of every possible hazard description.
+## Confirmed remediation defects and verification
+
+| Severity | Reproduction | Correction | Verification |
+| --- | --- | --- | --- |
+| Medium | A proposed job retained `panel upgrade` but dropped the supplied rating or another electrical work clause. | Compare all independently recognized electrical-work content against the proposal. Incomplete scope is rejected with prior values retained. | Eight scope-omission cases and multiple-request cases. |
+| Medium | Valid requests for plural `outlets` or `circuits` failed the singular electrical-word gate. | Accept the supported electrical nouns in singular and plural form. | Distinct outdoor-outlet and kitchen-circuit cases. |
+| Medium | A provider omitted business answer topics, handoff or summary intent. | Compose supported questions and explicit review requests from the message using deterministic application wording. | Approved-answer omission, human-review and summary cases. |
+| Medium | The provider selected a business topic, handoff or summary unrelated to the message. | Validate topic/intent relevance before accepting a proposal. | Unrelated-topic, false-handoff and unsolicited-summary cases. |
+| Medium | `Will saving my request book an appointment?` returned only the privacy answer. | Process every recognized question topic, including privacy and booking, without one suppressing the others. | Named mixed-question regression and corpus case. |
+| High | Clearing only the draft STOP flag left an unchanged STOP in history but could resume assistance. | Re-derive the last STOP/START control from customer history. Stored phone restrictions remain independently authoritative. | Flag-tampering case plus START and stored-suppression regressions. |
+| High | A caller with a stored phone safety hold cleared client fields/history. | Apply the authenticated API's `safetyHeld` guard before generation. | Deterministic hold, START and zero-provider/zero-reservation component checks. Store/API tests cover durable lookup. |
+| High | `The wire is glowing` or `I smell burnt plastic at the outlet` missed the shared hazard guard. | Add bounded component/odor phrases before any provider call. | Two corpus cases, three direct parser cases and routine-negative regressions. |
+| High | `Do not call me` did not trigger contact suppression. | Recognize explicit calling withdrawal alongside existing messaging withdrawal. | Calling opt-out corpus, four direct parser cases and zero-provider/zero-reservation checks. |
+| Medium | `The circuit label number is 48315` became a job ZIP. | Exclude equipment/account identifiers before accepting an unlabelled five-digit location. Explicit ZIP labels remain supported. | Wrong-role corpus, four identifier cases and mixed equipment/ZIP regression. |
+
+The first expanded run exposed eight failing scenarios. Seven were implementation failures across the fixes above, including two plural-scope cases. The eighth fixture had 501 characters while claiming to test the 500-character boundary. Its input was corrected to exactly 500, with the existing size limit retained. The final expanded run passes all 334 cases. Broader tests preserve routine detector/fire-alarm work, water-heater circuits, hot-tub controls and callback timing restrictions.
+
+Prior boundary fixes remain covered: sole-field follow-up ordering, explicit correction of unresolved issues, profile-version changes during generation, grounded negation, compressed-response lengths and cancellation of a late provider body. These finite tests do not establish recognition of every possible hazard or phrase.
+
+## First real-provider evaluation procedure
+
+Status: BLOCKED until the owner explicitly authorizes this evaluation. No step below was executed against a real provider during this remediation.
+
+1. Obtain approval for the provider, exact model identifier, synthetic data transfer, maximum number of attempts, maximum monetary allowance and evaluation window. Review the provider's current prices, model/schema support and data controls using its official documentation. Do not infer authorization from approval of code changes or the synthetic suite.
+2. Supply the credential through a server-only secret source. Do not put it in Git, a browser form, fixture, screenshot or test report. Keep both Render services suspended. Use the existing local/private workspace with an isolated synthetic business and temporary authorized data directory.
+3. Prepare the configuration through `prepareExternalAssistant` with explicit execution/data-transfer approvals, the selected model, an injected fetch implementation and the owner-approved usage policy. Use the fixed Responses endpoint. Keep tools, automatic retries and live customer integrations disabled. The output-token ceiling remains 2,048 and the timeout cannot exceed 15 seconds.
+4. Run the deterministic component, API and corpus suites first. Test the configured limit with fake transport, including restart and duplicate-attempt rejection. Confirm zero external calls before the approved evaluation begins. Check that no real customer records or other business data can enter the test context.
+5. Run one approved synthetic smoke request through the authenticated API. Verify the real response envelope, strict output shape, field evidence, model compatibility, cancellation behavior and durable reservation. If schema/authentication/model errors occur, stop and classify the failure. Do not repeatedly retry paid calls while guessing configuration.
+6. After the smoke check, execute a bounded selection of genuinely model-facing conversations from the corpus. Start with a panel upgrade collected across turns, bundled EV details, explicit correction, conflicting ZIPs, approved/unknown pricing, a scheduling question and multiple work items. Expand only within the approved allowance. Provider-output corruption fixtures remain injected transport tests, not prompts that pretend to measure model quality.
+7. Compare all six fields, ambiguity flags, required answers and forbidden claims for each turn. Inspect the preserved history and ensure safety/STOP cases make zero provider calls. Record individual scenario IDs, exact model identifier, code revision, timestamp, attempts, reservation totals and measured real latency. Never label the reserved allowance as the actual provider bill. Record actual provider usage/cost only if independently available and verified.
+8. Keep any failed scenario as a regression fixture, document its input and expected behavior, fix application defects where feasible, and re-run affected synthetic tests before another approved real call. Do not weaken evidence grounding, safety, consent, session or tenant checks to increase model pass rates.
+9. End the evaluation by removing the injected configuration and confirming normal deterministic mode. Report PASS/FAIL for executed real cases, BLOCKED for approval-dependent cases, and NOT TESTED for cases not run. A smoke pass proves only that specific request/model/configuration combination. Owner review is still required before any live customer integration, deployment or spending expansion.
+
+The synthetic evaluator intentionally cannot activate a real transport through an environment variable or command-line switch. Its `realProviderCalls` value is zero by construction. A future approved real evaluation must use a separately reviewed runner and the same authenticated API/configuration boundary, with its own evidence record.
 
 ## Remaining acceptance gates
 
-| Gate | Status |
-| --- | --- |
-| Default deterministic workspace | Implemented, existing tests retained |
-| Strict orchestration, context and fake-provider failure handling | Component and in-process API evidence above |
-| Actual HTTP and browser flow for the new adapter | PASS in run66: four synthetic-provider scenarios in each of Chromium, Firefox and WebKit against the real private HTTP/SQLite server |
-| Concrete Responses transport | Implemented and verified through 31 mock HTTP cases, not activated |
-| Real-provider/model selection and credentials | Not activated, approval required |
-| Actual model response quality | BLOCKED by real-provider authorization |
-| Expanded 300–500 meaningful scenario target | Not complete; the current corpus has 49 curated scenarios and must not be inflated through trivial variants |
-| Durable per-business cost limits and hosted provider operations | NOT IMPLEMENTED |
-| Live messaging, calendar booking and real human handoff delivery | NOT IMPLEMENTED, separate approval and integrations required |
+| Gate | Status | Evidence or blocker |
+| --- | --- | --- |
+| Deterministic workspace, strict output and context protections | PASS | Focused tests and unchanged original fixtures |
+| At least 300 meaningful synthetic conversations | PASS | 334 scenarios, 0 failures |
+| Responses transport | PASS | 31 mock HTTP cases, inactive by default |
+| Durable usage hook in the orchestrator | PASS | Reservation, settlement, deduplication, cancellation and failure tests |
+| Durable database/API usage enforcement | PASS | Root integration evidence is recorded in the acceptance matrix and remediation report |
+| Full updated application regression and browser checks | NOT TESTED | Pending the root integration run for this remediation revision |
+| Actual provider/model compatibility | BLOCKED | Owner-approved real call required |
+| Actual model quality and real latency | BLOCKED | Authorized representative real-provider evaluation required |
+| Hosted operations and approved spending policy | BLOCKED | Selected host, budgets and owner approval required |
+| Live messaging, calendar booking and human handoff delivery | BLOCKED | Separate approved integrations required |
 
-The current assistant can record a request for human review in the draft. It does not contact a person. Free-text generation and provider-suggested actions are intentionally excluded from the trusted output path. This is a prepared conversational integration boundary, not a live-AI launch claim.
+The draft can record a request for contractor review. It does not contact a person. Callback windows and requested work dates remain preferences. Free-text generation and provider-suggested tools/actions remain excluded from the trusted output path. This is prepared and tested application infrastructure, not a live-AI launch.
 
-## Final integration checkpoint
+## Historical integration checkpoint
 
-[Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) verified source 17223d6. The final in-process assistant API suite has ten passing cases, including a connection already aborted before handler setup. All four synthetic conversation browser scenarios pass in each engine. These counts overlap the full regression record. Actual provider calls remain zero.
+[Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) verified the earlier source revision `17223d6`. Its four synthetic conversation browser scenarios passed in Chromium, Firefox and WebKit against the private HTTP/SQLite server. That historical result does not verify the new remediation revision. Current root-run CI, HTTP and browser evidence must be recorded separately.

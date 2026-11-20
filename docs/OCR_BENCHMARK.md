@@ -1,5 +1,84 @@
 # OCR benchmark and resource verification
 
+## 2026-11-20 remediation result
+
+The current pipeline exactly matched 277 of the same 310 synthetic images. The verified `36b2bf30990eb164f6327e1eaa71e1386432da4f` baseline matched 253. All 57 original nonexact cases were inspected. Twenty-four now match exactly. Thirty-three still need manual correction. None of the 253 previously exact images regressed. All 263 expected blank fields stayed blank. No native execution error or automatic-review violation occurred.
+
+The strict all-image extraction gate remains FAIL. These are synthetic stress measurements, not 310 passing OCR tests or a real-photo accuracy claim.
+
+| Measurement | Reproduced baseline | Current pipeline |
+| --- | --- | --- |
+| Images matching every expected field | 253/310 | 277/310 |
+| Known part numbers: exact / missing / wrong | 177 / 13 / 29 of 219 | 197 / 1 / 21 of 219 |
+| Known manufacturers: exact / missing / wrong | 190 / 19 / 10 of 219 | 206 / 5 / 8 of 219 |
+| Known descriptions: exact / missing / wrong | 210 / 15 / 4 of 229 | 229 / 0 / 0 of 229 |
+| Blank-field false positives | 0/263 | 0/263 |
+| Native errors / review violations | 0 / 0 | 0 / 0 |
+| Median / p95 / maximum image time | 245 / 394 / 823 ms | 365 / 845 / 1,410 ms |
+| Total run time | 79,771 ms | 132,691 ms |
+| Largest observed native child RSS/high-water | 39,526,400 bytes | 73,342,976 bytes |
+
+Native memory was sampled from the spawned children's Linux `/proc` status every 10 ms. This is an observed lower bound, not an exact kernel peak or the sum of concurrent descendants. All 314 baseline child processes and 663 current child processes had samples and closed. The two current OCR passes and normalizer run sequentially. Node parent memory/CPU remain separate in the reports. Timings shared a development machine with other tests. They are not controlled performance comparisons or hosting guarantees. The extra image check and occasional orientation pass add work.
+
+Both runs used Tesseract 5.5.0. The normalizer uses fixed `/usr/bin/python3` with system Pillow 11.1.0. Dataset generation used Pillow 13.0.0 and the original recorded fonts. The manifest SHA-256 remains `9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601`. Every original image hash was checked before recognition and checked again after the final run. The generator and input files were not changed.
+
+The frozen pipeline SHA-256 is `dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5`. Its definition and individual source hashes are recorded in the evidence. The engine-module hash recorded by the running benchmark matches the final source.
+
+### Changes retained
+
+1. Conditional noise normalization. A fixed local Python/Pillow helper counts isolated bright/dark pixels that differ from their eight neighbors. It applies a 3×3 median filter only when at least `max(32, ceil(imagePixels/1000))` isolated pixels are present. The rule uses pixels, not fixture IDs, expected text or known parts. It activated on 16 noisy images in this set. Eleven previously nonexact noisy cases now match. Other images retain their original recognition bytes after existing PNG metadata removal.
+2. Orientation fallback. If the first PSM 6 pass returns nonempty text without any explicit labelled candidate and `osd` is installed, one PSM 1 pass may replace that whole result. It never merges fields, replaces an existing partial/ambiguous candidate or repairs characters. This recovered 13 additional exact quarter-turn images. Fourteen fallback results had candidates, one still contained a character error. The fallback was attempted 34 times, including unlabelled inputs that correctly stayed unlabelled.
+3. Shared limits. Normalization and both recognition passes share one monotonic 15-second wall deadline and one active-request slot. OCR text passes share 512 KiB of stdout plus stderr. Normalized PNG output has a separate 8 MiB plus 1 KiB header cap. Each child keeps the 1 GiB address-space, 10-second CPU, 64-descriptor and zero regular-file/core-output limits. Ten CPU seconds is a per-child limit, not a claimed ten-second aggregate CPU budget. Cancellation/shutdown kill and reap the active stage before releasing the slot.
+
+Original stored bytes never change. The normalizer returns only a temporary pixel copy. Candidates remain unreviewed and the OCR adapter still does not save rows or replace manual edits. If the fixed Python/Pillow helper is missing or fails its readiness contract, OCR is unavailable. There is no silent fallback to a different measured pipeline.
+
+### Experiments rejected
+
+All 57 failures plus 18 deterministic passing controls were used for screening. The full set was then used to check the promising change. Screening alone was insufficient.
+
+| Experiment | Screening outcome | Decision |
+| --- | --- | --- |
+| Sauvola thresholding | One gain and one regression | Rejected |
+| Adaptive Otsu | Nine gains and one regression | Rejected as a global default |
+| 2× scaling | Ten gains and two regressions | Rejected as a global default |
+| Unconditional 3×3 median filter | Thirteen gains and no loss among the 18 screening controls | Full set fell to 252/310, with 14 regressions and one false-positive manufacturer. Rejected |
+| Median filter plus 2× scaling | Twelve gains and one regression | Rejected |
+| Auto-contrast | No change | Not retained |
+| Dictionary disabling | No change | Not retained |
+| Character substitution, punctuation stripping or catalogue repair | Would alter recognized values without source evidence | Not retained |
+
+The selected noise detector avoided the unconditional filter's control regressions in the full replay. That threshold has not been validated on real panel photographs. No claim is made for glare, wear, camera perspective, handwriting or other unmeasured inputs. [Tesseract's image-quality guidance](https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html) and [segmentation options](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html) informed the experiments. The measured results determined what was retained.
+
+### Remaining 33 cases
+
+The remaining cases fall into five groups, assigning each image to one group: 18 confusable-character cases, five abbreviated-label recognition failures, seven downsample punctuation cases, two other part-number punctuation cases and one letter-case difference. Some images have more than one incorrect field. Do not remove punctuation, substitute `I/1` or `O/0`, or guess a manufacturer to make these cases pass. All remain review-and-correction work.
+
+### Verification and evidence
+
+- 72 OCR, benchmark-accounting and isolation-policy/adapter unit tests PASS, zero failures or skips.
+- Nine native fixture/failure cases PASS, zero failures.
+- Eight native resource/lifecycle cases PASS, zero failures or blocked cases. These include limits on the normalizer, actual normalizer cancellation, and actual orientation-fallback cancellation.
+- Local OS isolation is BLOCKED by the host namespace restriction. The required worker and six-case native verifier are prepared. No local retry, privileged fallback or hosting change was made. See [restricted worker policy](OCR_ISOLATION.md).
+- Real photographs are NOT TESTED. Revised Tesseract 5.3.4 CI results must be recorded separately. Historical CI reproduced the 253-case baseline, which does not establish the revised pipeline's cross-version behavior.
+
+[Remediation summary, all 57 failure investigations, experiments and native-test reports](evidence/ocr-remediation.json). [Full baseline case outcomes](evidence/ocr-remediation-baseline-310.json). [Full current case outcomes](evidence/ocr-remediation-after-310.json).
+
+To repeat against a trusted baseline checkout without editing it:
+
+```bash
+node --test tests/ocr.test.cjs tests/ocr-benchmark.test.cjs tests/ocr-isolation.test.cjs
+node scripts/test-ocr-fixtures.cjs
+node scripts/test-ocr-resource-limits.cjs
+node scripts/benchmark-ocr.cjs /tmp/panelreply-ocr-benchmark /tmp/ocr-before.json /path/to/baseline/workspace/ocr.cjs
+node scripts/benchmark-ocr.cjs /tmp/panelreply-ocr-benchmark /tmp/ocr-after.json
+```
+
+Use the unchanged generator, recorded Pillow/fonts and matching manifest/image hashes. Runtime prerequisites are Tesseract 5, `eng`, `osd` for orientation, util-linux `prlimit`, and fixed `/usr/bin/python3` with Pillow. These are local test/runtime dependencies. No provider service is activated.
+
+## Historical 2026-11-19 verification
+
+The earlier results below are preserved for traceability. The current measurements above supersede their extraction counts and runtime dependency description.
+
 Date: 2026-11-19. This extends the six clean-label fixtures. It does not establish real-job-site accuracy or authorize customer images.
 
 ## Result

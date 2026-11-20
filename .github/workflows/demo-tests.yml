@@ -38,7 +38,7 @@ jobs:
       - name: Install the local OCR engine and English data
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng util-linux
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil bubblewrap
       - name: Verify actual OCR and native failure handling on synthetic images
         run: |
           node scripts/test-ocr-fixtures.cjs
@@ -86,6 +86,11 @@ jobs:
       - name: Verify provider-assisted synthetic conversations through the browser
         if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
         run: python tests/assistant_browser_test.py
+      - name: Verify confirmed deletion, retries, stale sessions and responsive dialogs
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
+        env:
+          PANELREPLY_EMIT_LIFECYCLE_PREVIEWS: '1'
+        run: python tests/lifecycle_browser_test.py
       - name: Verify saved XLSX downloads and binary failure recovery
         if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
         run: python tests/xlsx_browser_test.py
@@ -112,12 +117,12 @@ jobs:
         run: |
           python -m pip install -r tests/browser-requirements.txt -r tests/prelaunch-requirements.txt
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng util-linux
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil bubblewrap
           python -m playwright install --with-deps ${{ matrix.browser }}
       - name: Verify marketing, private workflows, recovery and exports
         run: |
           result=0
-          for suite in tests/design_browser_test.py tests/workspace_browser_test.py tests/panel_browser_test.py tests/workspace_recovery_browser_test.py tests/platform_visual_browser_test.py tests/assistant_browser_test.py tests/xlsx_browser_test.py; do
+          for suite in tests/design_browser_test.py tests/workspace_browser_test.py tests/panel_browser_test.py tests/workspace_recovery_browser_test.py tests/platform_visual_browser_test.py tests/assistant_browser_test.py tests/xlsx_browser_test.py tests/lifecycle_browser_test.py; do
             python "$suite" || result=1
           done
           exit "$result"
@@ -138,7 +143,7 @@ jobs:
         run: |
           python -m pip install -r tests/prelaunch-requirements.txt
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng util-linux fonts-dejavu-core
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil bubblewrap fonts-dejavu-core
       - name: Generate and measure 310 unique synthetic label conditions
         run: |
           python tests/fixtures/panels-benchmark/generate.py "$RUNNER_TEMP/panelreply-ocr-benchmark"
@@ -152,6 +157,47 @@ jobs:
           console.log(JSON.stringify({ accuracyGate: r.accuracyGate, overall: r.overall, scope: r.scope }));
           if (r.accuracyGate !== 'PASS') console.log('::warning::Synthetic OCR has nonexact cases. Measurement completion is not an accuracy pass or release approval.');
           NODE
+
+  ocr-isolation:
+    name: Restricted OCR worker verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install fixed worker prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil bubblewrap
+      - name: Verify isolation or report the host restriction
+        run: |
+          result=0
+          node scripts/test-ocr-isolation.cjs || result=$?
+          if [ "$result" -eq 2 ]; then
+            echo '::warning::OCR isolation BLOCKED on this host. No fallback or privileged retry. This job is not isolation acceptance.'
+          elif [ "$result" -ne 0 ]; then
+            exit "$result"
+          fi
+
+  http-workload:
+    name: Synthetic concurrent HTTP workload
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install native OCR for bounded concurrent requests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil bubblewrap
+      - name: Measure HTTP clients, contention, native OCR and restart recovery
+        env:
+          PANELREPLY_HTTP_STRESS: '1'
+        run: node scripts/http-workload.cjs
 
   public-suspension:
     name: Required public suspension

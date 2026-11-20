@@ -27,28 +27,31 @@ function corruptPixelStream(buffer) {
 
 async function verifyNativeStop(bytes, mode) {
   const controller = new AbortController();
-  let child = null, code = null;
+  const children = [];
+  let code = null;
   const service = createOcrService({
     recognitionTimeoutMs: mode === 'timeout' ? 5 : 15_000,
     spawnProcess: (binary, args, options) => {
       const spawned = spawn(binary, args, options);
-      if (args.includes('stdin')) {
-        child = spawned;
-        if (mode === 'cancel') spawned.once('spawn', () => controller.abort());
+      const normalization = args.some(value => value.endsWith('/ocr-preprocess.py')) && !args.includes('--probe');
+      if (args.includes('stdin') || normalization) {
+        children.push(spawned);
+        if (mode === 'cancel' && args.includes('stdin')) spawned.once('spawn', () => controller.abort());
       }
       return spawned;
     },
   });
   try { await service.recognizeImage(bytes, { signal: controller.signal }); }
   catch (error) { code = error.code; }
-  let alive = true;
-  if (child?.pid) {
-    try { process.kill(child.pid, 0); }
-    catch (error) { if (error.code === 'ESRCH') alive = false; }
-  }
+  const alive = children.some(child => {
+    if (!child.pid) return false;
+    try { process.kill(child.pid, 0); return true; }
+    catch (error) { if (error.code === 'ESRCH') return false; throw error; }
+  });
   const expected = mode === 'timeout' ? 'OCR_TIMEOUT' : 'OCR_CANCELLED';
-  const pass = code === expected && child?.signalCode === 'SIGKILL' && !alive;
-  return { test: `${mode} reaps the native OCR child`, status: pass ? 'PASS' : 'FAIL', code, processAliveAfterReturn: alive };
+  const pass = code === expected && children.some(child => child.signalCode === 'SIGKILL') && !alive;
+  await service.shutdown();
+  return { test: `${mode} reaps every native OCR pipeline child`, status: pass ? 'PASS' : 'FAIL', code, observedChildren: children.length, processAliveAfterReturn: alive };
 }
 
 // This CLI uses only checked-in synthetic fixtures and the local Tesseract binary.

@@ -1,16 +1,16 @@
 # Local OCR decision and verification
 
-Date: 2026-11-19. Scope: the existing private, local PanelReply workspace.
+Updated: 2026-11-20. Scope: the existing private, local PanelReply workspace. Earlier six-fixture measurements remain historical below.
 
 ## Decision
 
-Pre-launch follow-up: [310-image benchmark, corrected ambiguity defects, native resource ceilings and shutdown verification](OCR_BENCHMARK.md). The earlier six-fixture measurements below remain historical. Broader synthetic extraction does not pass an all-fields accuracy gate, and real-photo quality remains unverified.
+Pre-launch follow-up: [310-image benchmark and measured remediation](OCR_BENCHMARK.md). The same fixed inputs improved from 253 to 277 exact images, with no previously exact image regression or blank-field false positive. Thirty-three images remain nonexact. Broader synthetic extraction does not pass an all-fields accuracy gate, and real-photo quality remains unverified. [Required worker isolation](OCR_ISOLATION.md) is implemented as an explicit internal mode but native OS proof is BLOCKED in the current local environment.
 
-Use an optional Tesseract 5 executable installed on the same machine as the private workspace. The Node adapter adds no application package, provider account, API key or per-image API charge. It uses the machine's CPU and memory. Public demos and paid services remain disconnected.
+Use optional Tesseract 5 and a fixed local Python/Pillow pixel-normalization helper on the same machine as the private workspace. The Node adapter adds no npm package, provider account, API key or per-image API charge. It requires installed `/usr/bin/python3` and Pillow in addition to Tesseract, English model data and `prlimit`. OSD model data enables the bounded orientation fallback. It uses the machine's CPU and memory. Public demos and paid services remain disconnected.
 
 The implementation reads printed text and prepares review candidates from explicit labels. It does not identify electrical compatibility, certify ratings, fill missing specifications, identify a manufacturer from a logo, or verify that a component can be installed. A person must compare every value with its source.
 
-The marketing demonstration remains synthetic. Real OCR belongs to the authenticated workspace and is available only when the local engine and English model pass the readiness check.
+The marketing demonstration remains synthetic. Real OCR belongs to the authenticated workspace and is available only when the local engine, English model and fixed normalizer pass readiness. Missing normalization dependencies fail closed rather than silently selecting a different pipeline.
 
 ## Options compared
 
@@ -46,7 +46,8 @@ inspectImage(buffer)
 // { mime: 'image/png' | 'image/jpeg', width, height, bytes }
 
 await getOcrStatus()
-// { available, engine: 'tesseract', version: string | null, language: 'eng', reason? }
+// { available, engine: 'tesseract', version: string | null, language: 'eng',
+//   normalizer?: { method, pillowVersion }, orientationAvailable?, reason? }
 
 await recognizeImage(buffer, { signal })
 // {
@@ -54,11 +55,14 @@ await recognizeImage(buffer, { signal })
 //   candidates: [{ partNumber, manufacturer, description,
 //     confidence: { partNumber, manufacturer, description },
 //     reviewStatus: 'unreviewed', warnings: [] }],
-//   warnings: [], durationMs
+//   warnings: [], durationMs,
+//   processing: { passes, orientationFallbackUsed,
+//     normalization: { method, pillowVersion, applied, isolatedNoisePixels,
+//       thresholdPixels, imagePixels } }
 // }
 ```
 
-`parseTsv` supports isolated parser tests. `createOcrService` supports injected process-failure tests. Neither receives arbitrary executable names, filenames, command options or environment variables from HTTP input.
+`parseTsv` supports isolated parser tests. `createOcrService` supports injected process-failure tests and an internal `isolation: 'required'` option. Neither receives arbitrary executable names, filenames, command options, isolation options or environment variables from HTTP input. Required isolation has no unconfined fallback. Its successful readiness response also includes `isolation: 'bubblewrap-seccomp'`; readiness is not a substitute for the native deny tests.
 
 ### Input and process bounds
 
@@ -69,17 +73,18 @@ await recognizeImage(buffer, { signal })
 | Dimensions | 1–6000 pixels per side and no more than 16 million pixels |
 | PNG validation |Signature, chunk lengths, CRCs, dimensions, header format, palette structure, image data and final end marker. Animation and unknown critical chunks rejected |
 | JPEG validation |SOI/EOI markers, segment lengths, scan structure and frame dimensions. Supported formats are 8-bit baseline or progressive grayscale/RGB JPEG |
-| Native decoding |Tesseract performs the actual pixel decode. Structurally valid but undecodable pixels fail with a generic error |
+| Native decoding |The fixed Pillow helper checks decoded pixels before Tesseract. Structurally valid but undecodable pixels fail with a generic error |
 | PNG metadata |Only header, palette, transparency, image data and end chunks reach the native decoder. Compressed metadata is omitted. The saved private source is not changed |
-| Invocation |Fixed `/usr/bin/prlimit` executes fixed `/usr/bin/tesseract`, `shell:false`, stdin image bytes and stdout TSV. Missing resource limiter fails closed |
-| OCR arguments |`stdin stdout -l eng --oem 1 --psm 6 tsv` |
+| Invocation |Fixed `/usr/bin/prlimit` executes fixed `/usr/bin/python3 -I -B` with the repository normalizer script, then fixed `/usr/bin/tesseract`, `shell:false`, stdin bytes and bounded stdout. Missing dependencies fail closed |
+| OCR arguments |First pass `stdin stdout -l eng --oem 1 --psm 6 tsv`. One optional PSM 1 orientation pass only when the first pass has nonempty unlabelled text and OSD is available |
+| Noise normalization |3×3 median filter only when the isolated-pixel rule is met. No scaling, catalogue lookup, field repair or source overwrite. Unchanged input for other images |
 | Child environment |Only fixed PATH, locale and single-thread settings. No inherited provider credentials or caller-supplied environment |
 | Working directory |Filesystem root, not a customer-controlled upload directory |
 | Concurrency |One active recognition per Node application process. Additional calls receive 429 |
-| OCR duration | 15 seconds after readiness. Timeout or cancellation sends SIGKILL and awaits child close before releasing the slot |
-| Readiness |Fixed `--version` and `--list-langs` probes, at most 2 seconds and 16 KiB output each. Requires Tesseract 5 and `eng`. Result cached 60 seconds |
-| Process output | 512 KiB combined stdout and stderr. Stderr is counted and discarded, never returned or logged |
-| Native ceilings |1 GiB address space, 10 CPU seconds, 64 open files, zero core-dump bytes and zero regular-file output. Applied to readiness and recognition |
+| OCR duration | One monotonic 15-second deadline after readiness covers normalization and every OCR pass. Timeout or cancellation sends SIGKILL and awaits child close before releasing the slot |
+| Readiness |Fixed Tesseract `--version` and `--list-langs` probes, at most 2 seconds and 16 KiB output each, followed by the fixed normalizer `--probe`, at most 2 seconds and 1 KiB. Requires Tesseract 5, `eng` and the normalizer contract. Result cached 60 seconds |
+| Process output | 512 KiB combined stdout/stderr shared across OCR passes. Normalized pixels have a separate 8 MiB plus 1 KiB header cap. Stderr is counted and discarded, never returned or logged |
+| Native ceilings |Each child: 1 GiB address space, 10 CPU seconds, 64 open files, zero core-dump bytes and zero regular-file output. Applied to readiness, normalization and recognition. The CPU ceiling is per child; the wall deadline spans the full recognition pipeline |
 | Shutdown |Idempotent asynchronous shutdown cancels native work, waits for close, and rejects later recognition |
 | Text |At most 20,000 characters. Excess output fails explicitly |
 | Fields |Part number 120 characters, manufacturer 120, description 500. Overlong values remain in bounded raw text and require manual entry |
@@ -88,7 +93,7 @@ Readiness has no provider dependency. Missing or unsupported engines return `ava
 
 Source bytes are copied before asynchronous work. Caller changes to the original Buffer cannot replace the validated input while readiness runs. No temporary image or OCR text file is written by the adapter.
 
-The address-space and CPU ceilings are enforced by Linux process limits. They are not a security sandbox. A future hosted service still needs an approved worker/container isolation boundary and native dependency patch policy before accepting untrusted public uploads. This phase exposes no public upload service.
+The address-space and CPU ceilings are enforced by Linux process limits. They are not a security sandbox. The new required worker policy uses bubblewrap namespaces, read-only runtime mounts and a seccomp filter. Local execution is blocked by the host policy, so it is not claimed as verified OS isolation. A future hosted service still needs the [native isolation gate](OCR_ISOLATION.md) and dependency patch policy on its actual host before accepting untrusted public uploads. This phase exposes no public upload service.
 
 ### Extraction and confidence
 
@@ -133,7 +138,7 @@ The backend allows up to 5 images per project, 200 projects per business and 200
 
 Encrypted backup version 2 includes image BLOBs and panel rows together. Version 1 and version 2 restore remain supported. Restored credentials are disabled and sessions are excluded.
 
-This milestone has no project/source deletion endpoint or automatic retention expiry. Source images remain in the private database and its backups until an operator uses a future documented deletion/retention process. A customer pilot needs an approved deletion and backup-retention policy. The source image may contain metadata even though PNG metadata is stripped from the bytes passed to OCR.
+Current deletion, expiry and backup-retention behavior is documented in [Data lifecycle](DATA_LIFECYCLE.md). Removing an active source must not be confused with removing it from an earlier backup artifact. A customer pilot still needs an approved retention policy. The source image may contain metadata even though PNG metadata is stripped from the temporary bytes passed to OCR.
 
 ## Reproduction and verification
 
@@ -148,9 +153,9 @@ node scripts/test-ocr-fixtures.cjs
 
 The first command uses fake process adapters and needs no Tesseract installation. The second executes the local binary and requires Tesseract 5 plus English model data. If either is absent it prints BLOCKED and exits 2. It does not report a skipped OCR execution as PASS.
 
-For a disposable Ubuntu CI runner, install the OS packages `tesseract-ocr` and `tesseract-ocr-eng` before the second command. This is a test dependency, not permission to modify production or resume a service. No runtime package installer or model download is built into the application.
+For a disposable Ubuntu CI runner, install `tesseract-ocr`, `tesseract-ocr-eng`, `tesseract-ocr-osd`, `python3-pil` and util-linux before the native commands. Required isolation tests additionally need a non-setuid bubblewrap and an authorized host that permits unprivileged namespaces. These are test dependencies, not permission to modify production or resume a service. No runtime installer or model download is built into the application.
 
-### Measured local result
+### Historical six-fixture local result
 
 Tesseract 5.5.0, Leptonica 1.84.1, English data. No provider calls, HTTP listener or browser process.
 

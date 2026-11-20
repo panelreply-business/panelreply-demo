@@ -1,6 +1,24 @@
 # PanelReply development progress
 
-Authoritative checkpoint: November 19, 2026, America/New_York. Continue the existing feature/interactive-dual-product-site branch and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Preserve the completed redesign, intake, recovery and panel work. Do not create a duplicate branch or implementation.
+## Current engineering remediation
+
+The final remediation directive is being executed on the same branch and draft PR8. No website redesign, merge, deployment, paid service or customer integration is involved. Both Render services still report suspended, auto-deploy off and previews off in the fresh read-only checks.
+
+[Remediation verification](REMEDIATION_VERIFICATION.md) is the current detailed checkpoint. The earlier run66 report below remains historical evidence for source 17223d6. It does not verify the new source.
+
+The candidate adds 334 curated synthetic AI scenarios, durable usage accounting, explicit provider configuration preparation, tenant/version/idempotency-aware deletion and schema-3 recovery. OCR has improved from 253 to 277 exact images on the unchanged 310-image set, with no regression among previously exact cases. The remaining 33 nonexact images keep that quality gate FAIL. Real AI quality remains BLOCKED.
+
+Independent review found corrections that needed field-specific permission, deletion retries that could lose an earlier uncertain outcome, timeout accounting misclassification, and STOP/safety persistence lost at the transcript limit. Reproduction and regression evidence is recorded in the [defect register](PRELAUNCH_DEFECTS.md).
+
+The final applicable local run passed 1,117 checks with zero failures or skips, including the transcript-limit and monotonic-clock regressions. [Hash-bound local evidence](evidence/remediation-local-verification.json) records the source files and executed log. Actual browser, concurrent HTTP and restricted-worker evidence must come from the committed CI candidate. Until then those rows remain NOT TESTED or BLOCKED in the [release matrix](RELEASE_ACCEPTANCE.md).
+
+No passing aggregate will override the outstanding OCR, real-model, representative-photo or selected-host recovery gates. Public release remains NO-GO.
+
+---
+
+## Historical pre-remediation checkpoint
+
+The following November 19, 2026 report is retained as historical evidence for source 17223d6 and documentation checkpoint 36b2bf3. Its unfinished-work list describes that earlier source. The current remediation section and release matrix supersede it. Continue the existing feature/interactive-dual-product-site branch and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8).
 
 ## Current decision
 

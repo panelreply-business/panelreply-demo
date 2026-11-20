@@ -18,6 +18,44 @@ const ENABLED = process.env.CI === 'true' || process.env.WORKSPACE_HTTP_TESTS ==
 const PASSWORD = 'http-fixture-password-2026';
 const LEAD = { customerName: 'HTTP Fixture', phone: '248-555-0123', job: 'Install a garage light', zip: '48315', callbackWindow: 'Friday after 4 pm', requestedWorkDate: '', contactPermission: 'requested_callback', conversation: [{ role: 'customer', text: 'Please call me about installing a light.' }] };
 let passwordHash;
+
+test('HTTP: server shutdown cancels pending assistance, settles accounting and closes storage once', { skip: !ENABLED, timeout: 15000 }, async t => {
+  const net = require('node:net');
+  const { digest } = require('../workspace/store.cjs');
+  const { csrfFor, createAuth } = require('../workspace/auth.cjs');
+  const { PreviewError } = require('../workspace/conversation.cjs');
+  const { startWorkspace } = require('../workspace-server.cjs');
+  const probe = net.createServer(); probe.listen(0, '127.0.0.1'); await once(probe, 'listening');
+  const port = probe.address().port; await new Promise(resolve => probe.close(resolve));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-shutdown-review-')), dataDir = path.join(root, 'source');
+  let startedResolve, aborted = false;
+  const started = new Promise(resolve => { startedResolve = resolve; });
+  const workspace = startWorkspace({ PORT: String(port), WORKSPACE_DATA_DIR: dataDir }, { conversationProvider: { kind: 'fake', generate: (_context, { signal }) => new Promise((resolve, reject) => {
+    signal.addEventListener('abort', () => { aborted = true; reject(new PreviewError(409, 'assistant_cancelled', 'Synthetic shutdown')); }, { once: true });
+    startedResolve();
+  }) } });
+  t.after(async () => { await workspace.close(); fs.rmSync(root, { recursive: true, force: true }); });
+  await once(workspace.server, 'listening');
+  passwordHash ||= hashPassword(PASSWORD);
+  const actor = workspace.store.createBusinessOwner({ businessName: 'Shutdown Synthetic Business', username: 'shutdown-owner', passwordHash: await passwordHash });
+  const token = crypto.randomBytes(32).toString('base64url'); workspace.store.createSession(actor.id, digest(token));
+  const body = JSON.stringify({ message: 'I need a panel upgrade', state: null });
+  const response = new Promise((resolve, reject) => {
+    const req = http.request(workspace.config.origin + '/api/preview', { method: 'POST', headers: { origin: workspace.config.origin, 'content-type': 'application/json', 'content-length': Buffer.byteLength(body), cookie: createAuth(workspace.store).cookie(token).split(';')[0], 'x-csrf-token': csrfFor(token) } }, res => {
+      const chunks = []; res.on('data', chunk => chunks.push(chunk)); res.on('end', () => resolve({ status: res.statusCode, body: JSON.parse(Buffer.concat(chunks).toString()) }));
+    });
+    req.on('error', reject); req.end(body);
+  });
+  await started;
+  const firstClose = workspace.close(); assert.equal(workspace.close(), firstClose);
+  const result = await response; await firstClose;
+  assert.equal(aborted, true); assert.equal(result.status, 409); assert.equal(result.body.error.code, 'assistant_cancelled');
+  assert.equal(workspace.server.listening, false);
+  assert.throws(() => workspace.store.getProfile(actor));
+  const reopened = openStore({ dataDir, create: false });
+  try { assert.equal(reopened.getAssistantUsage(actor).lifetimeAttempts, 1); assert.deepEqual(reopened.getAssistantUsage(actor).statuses, { cancelled: 1 }); }
+  finally { reopened.close(); }
+});
 async function fixture(t) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-http-'));
   let store = openStore({ dataDir });

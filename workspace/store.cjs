@@ -7,6 +7,8 @@ const crypto = require('node:crypto');
 const intake = require('../src/intake.js');
 const { assertPrivateDirectory, assertUnusedPath, existingDatabasePath } = require('./file-safety.cjs');
 const panels = require('./panels.cjs');
+const { USAGE_TABLE_SQL, USAGE_INDEX_SQL, USAGE_AUTO_INDEXES, USAGE_SCHEMA_COLUMNS, createUsageLedger } = require('./usage.cjs');
+const { LIFECYCLE_TABLE_SQL, LIFECYCLE_INDEX_SQL, LIFECYCLE_AUTO_INDEXES, LIFECYCLE_COLUMNS, createLifecycle, phoneHash } = require('./lifecycle.cjs');
 
 const FACT_KEYS = Object.freeze(['services', 'pricing', 'estimates', 'hours', 'serviceArea', 'contact', 'qualifications', 'emergencyAvailability', 'permits', 'warranty', 'financing']);
 const STATUSES = Object.freeze(['new', 'needs_review', 'contacted', 'closed']);
@@ -116,6 +118,8 @@ function ensurePrivateDirectory(dataDir) {
 }
 
 const SCHEMA_COLUMNS = Object.freeze({
+  ...LIFECYCLE_COLUMNS,
+  assistant_usage: USAGE_SCHEMA_COLUMNS,
   businesses: ['id', 'name', 'version', 'facts_json', 'created_at'],
   users: ['id', 'business_id', 'username', 'password_hash', 'created_at'],
   sessions: ['token_hash', 'user_id', 'created_at', 'last_seen', 'expires_at'],
@@ -151,15 +155,16 @@ const PANEL_INDEX_SQL = Object.freeze({
   panel_sources_project: 'CREATE INDEX panel_sources_project ON panel_sources(project_id, business_id, created_at)'
 });
 const PANEL_AUTO_INDEXES = ['sqlite_autoindex_panel_projects_1', 'sqlite_autoindex_panel_projects_2', 'sqlite_autoindex_panel_projects_3', 'sqlite_autoindex_panel_sources_1', 'sqlite_autoindex_panel_sources_2'];
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 const SCHEMAS = Object.freeze({
   1: Object.freeze({ tables: TABLE_SQL, indexes: INDEX_SQL, autoIndexes: AUTO_INDEXES }),
-  2: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES]) })
+  2: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES]) }),
+  3: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL, ...LIFECYCLE_TABLE_SQL, ...USAGE_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL, ...LIFECYCLE_INDEX_SQL, ...USAGE_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES, ...LIFECYCLE_AUTO_INDEXES, ...USAGE_AUTO_INDEXES]) })
 });
 function normalizeSchemaSql(sql) { return sql.trim().replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').toLowerCase(); }
 function assertWorkspaceSchema(db) {
   const fail = (code = 'unsupported_schema') => {
-    const message = code === 'invalid_database' ? 'The workspace database integrity check failed.' : 'Use an existing workspace database with supported schema version 1 or 2.';
+    const message = code === 'invalid_database' ? 'The workspace database integrity check failed.' : 'Use an existing workspace database with supported schema version 1, 2 or 3.';
     throw Object.assign(new Error(message), { code });
   };
   const version = db.prepare('PRAGMA user_version').get().user_version;
@@ -195,10 +200,10 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     // Existing databases must exactly match a supported schema before changing
     // pragmas or DDL. Recovery opens never initialize or migrate a database.
     if (!create || !isEmpty) assertWorkspaceSchema(db);
-    db.exec('PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000;');
+    db.exec('PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA secure_delete=ON; PRAGMA busy_timeout=3000;');
     if (create) {
       db.exec('PRAGMA journal_mode=WAL;');
-      if (isEmpty || version === 1) {
+      if (isEmpty || version < SCHEMA_VERSION) {
         db.exec('BEGIN IMMEDIATE');
         try {
           // Another startup may have migrated while this connection waited for
@@ -206,10 +211,31 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
           const lockedVersion = db.prepare('PRAGMA user_version').get().user_version;
           const lockedEmpty = lockedVersion === 0 && db.prepare('SELECT count(*) AS n FROM sqlite_schema').get().n === 0;
           if (!lockedEmpty) assertWorkspaceSchema(db);
-          if (lockedEmpty || lockedVersion === 1) {
-            const tables = lockedEmpty ? SCHEMAS[2].tables : PANEL_TABLE_SQL;
-            const indexes = lockedEmpty ? SCHEMAS[2].indexes : PANEL_INDEX_SQL;
-            db.exec([...Object.values(tables), ...Object.values(indexes), 'PRAGMA user_version=2'].join(';\n') + ';');
+          if (lockedEmpty || lockedVersion < SCHEMA_VERSION) {
+            const prior = lockedEmpty ? { tables: {}, indexes: {} } : SCHEMAS[lockedVersion];
+            const tables = Object.entries(SCHEMAS[SCHEMA_VERSION].tables).filter(([name]) => !Object.hasOwn(prior.tables, name)).map(([, sql]) => sql);
+            const indexes = Object.entries(SCHEMAS[SCHEMA_VERSION].indexes).filter(([name]) => !Object.hasOwn(prior.indexes, name)).map(([, sql]) => sql);
+            db.exec([...tables, ...indexes].join(';\n') + ';');
+            // A migration must preserve existing safety holds before deletion
+            // becomes available. These digests contain no transcript or name.
+            const migrationTime = now();
+            if (!Number.isSafeInteger(migrationTime) || migrationTime < 0 || migrationTime > 8640000000000000) throw new Error('Check the workspace clock before migrating.');
+            for (const row of db.prepare('SELECT business_id,data_json FROM leads').iterate()) {
+              const data = JSON.parse(row.data_json);
+              if (data.safetyHold === true) db.prepare('INSERT OR IGNORE INTO safety_holds VALUES (?,?,?)').run(row.business_id, phoneHash(row.business_id, normalizePhone(data.phone)), migrationTime);
+            }
+            // Older versions held individual records only. Bring another saved
+            // request at the same contact point under review as part of this
+            // single migration, without changing its customer fields or notes.
+            for (const row of db.prepare('SELECT id,business_id,version,data_json FROM leads').all()) {
+              const data = JSON.parse(row.data_json);
+              if (data.safetyHold || !db.prepare('SELECT 1 FROM safety_holds WHERE business_id=? AND phone_hash=?').get(row.business_id, phoneHash(row.business_id, normalizePhone(data.phone)))) continue;
+              data.safetyHold = true;
+              db.prepare("UPDATE leads SET data_json=?,status='needs_review',version=version+1,updated_at=? WHERE id=? AND business_id=?").run(JSON.stringify(data), migrationTime, row.id, row.business_id);
+              const actor = db.prepare('SELECT id FROM users WHERE business_id=? ORDER BY rowid LIMIT 1').get(row.business_id);
+              if (actor) db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)').run(crypto.randomUUID(), row.business_id, row.id, actor.id, 'safety.held', row.version + 1, migrationTime, JSON.stringify({ source: 'migration', fields: ['safetyHold', 'status'] }));
+            }
+            db.exec('PRAGMA user_version=' + SCHEMA_VERSION);
           }
           assertWorkspaceSchema(db);
           db.exec('COMMIT');
@@ -245,6 +271,19 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
       addAudit(actor, row.id, 'contact.opted_out', row.version + 1, { source, fields: ['status', 'contactPermission'] });
     }
     return true;
+  }
+  function addSafetyHold(actor, phone, source, currentLeadId = '') {
+    if (schemaVersion < 3) return false;
+    const inserted = lifecycle.preserveSafetyHold(actor, phone);
+    const affected = db.prepare("SELECT id,version,data_json FROM leads WHERE business_id=? AND json_extract(data_json,'$.phone')=? AND id<>?").all(actor.businessId, phone, currentLeadId);
+    for (const row of affected) {
+      const data = JSON.parse(row.data_json);
+      if (data.safetyHold) continue;
+      data.safetyHold = true;
+      db.prepare("UPDATE leads SET data_json=?,status='needs_review',version=version+1,updated_at=? WHERE id=? AND business_id=?").run(JSON.stringify(data), now(), row.id, actor.businessId);
+      addAudit(actor, row.id, 'safety.held', row.version + 1, { source, fields: ['safetyHold', 'status'] });
+    }
+    return inserted;
   }
   function materializeLead(row, actor) {
     if (!row) throw new StoreError(404, 'not_found', 'The request was not found.');
@@ -353,6 +392,16 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         return true;
       });
     },
+    holdPhone(actor, phone) {
+      getActor(actor);
+      if (schemaVersion < 3) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before recording a safety hold.');
+      const normalized = normalizePhone(phone);
+      return tx(() => {
+        const inserted = addSafetyHold(actor, normalized, 'preview');
+        if (inserted) addAudit(actor, null, 'safety.held', 0, { source: 'preview' });
+        return true;
+      });
+    },
     getProfile(actor) {
       getActor(actor);
       const row = db.prepare('SELECT * FROM businesses WHERE id = ?').get(actor.businessId);
@@ -395,6 +444,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
       const valid = validateLeadInput(input);
       const requestHash = digest(JSON.stringify(valid));
       return tx(() => {
+        lifecycle.assertNotDeleted(actor, 'lead', idempotencyKey);
         const prior = db.prepare('SELECT * FROM leads WHERE business_id = ? AND idempotency_key = ?').get(actor.businessId, idempotencyKey);
         if (prior) {
           if (prior.request_hash !== requestHash) throw new StoreError(409, 'idempotency_conflict', 'This retry identifier belongs to different request details.');
@@ -402,9 +452,10 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         }
         const flags = evidence(valid);
         const { conversation: transcript, ...data } = valid;
-        data.notes = ''; data.safetyHold = flags.safetyHold;
+        data.notes = ''; data.safetyHold = flags.safetyHold || lifecycle.isSafetyHeld(actor, valid.phone);
+        if (data.safetyHold) addSafetyHold(actor, valid.phone, 'lead');
         if (flags.optedOut) addSuppression(actor, valid.phone, 'lead');
-        const needsReview = flags.safetyHold || suppressed(actor.businessId, valid.phone) || valid.contactPermission !== 'requested_callback';
+        const needsReview = data.safetyHold || suppressed(actor.businessId, valid.phone) || valid.contactPermission !== 'requested_callback';
         const id = crypto.randomUUID(), time = now();
         db.prepare('INSERT INTO leads VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)').run(id, actor.businessId, idempotencyKey, requestHash, JSON.stringify(data), needsReview ? 'needs_review' : 'new', time, time);
         const statement = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?, ?)');
@@ -428,7 +479,12 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         const { conversation: transcript, ...data } = valid;
         const flags = evidence(valid);
         data.notes = Object.hasOwn(input, 'notes') ? text(input.notes, 'notes', 2000) : existing.notes;
-        data.safetyHold = existing.safetyHold || flags.safetyHold;
+        data.safetyHold = existing.safetyHold || flags.safetyHold || lifecycle.isSafetyHeld(actor, valid.phone);
+        if (data.safetyHold) {
+          // Keep both contact points restricted when an already held record is corrected.
+          if (existing.safetyHold) addSafetyHold(actor, existing.phone, 'lead', id);
+          addSafetyHold(actor, valid.phone, 'lead', id);
+        }
         if (flags.optedOut) addSuppression(actor, valid.phone, 'lead', id);
         const optedOut = suppressed(actor.businessId, valid.phone);
         if (data.safetyHold && input.status !== 'needs_review') throw new StoreError(409, 'safety_review_required', 'This request has a safety hold and must remain under review.');
@@ -459,6 +515,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
       if (valid.rows.some(row => row.sourceImageId !== null)) throw new StoreError(400, 'source_not_found', 'Save a project before attaching its source images.', ['sourceImageId']);
       const requestHash = digest(JSON.stringify(valid));
       return tx(() => {
+        lifecycle.assertNotDeleted(actor, 'panel_project', idempotencyKey);
         const prior = db.prepare('SELECT * FROM panel_projects WHERE business_id=? AND idempotency_key=?').get(actor.businessId, idempotencyKey);
         if (prior) {
           if (prior.request_hash !== requestHash) throw new StoreError(409, 'idempotency_conflict', 'This retry identifier belongs to different panel project details.');
@@ -493,6 +550,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
       const requestHash = digest(JSON.stringify({ name: valid.name, mime: valid.mime, hash: digest(valid.bytes) }));
       return tx(() => {
         const project = store.getPanelProject(actor, id);
+        lifecycle.assertNotDeleted(actor, 'panel_source', idempotencyKey, id);
         const prior = db.prepare('SELECT id,request_hash FROM panel_sources WHERE project_id=? AND business_id=? AND idempotency_key=?').get(id, actor.businessId, idempotencyKey);
         if (prior) {
           if (prior.request_hash !== requestHash) throw new StoreError(409, 'idempotency_conflict', 'This retry identifier belongs to a different source image.');
@@ -517,8 +575,20 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     },
     exportPanelProject(actor, id) {
       return panels.exportProjectCsv(store.getPanelProject(actor, id));
-    }
+    },
+    isSafetyHeld(actor, phone) { getActor(actor); return lifecycle.isSafetyHeld(actor, normalizePhone(phone)); },
+    deleteLead(...args) { return lifecycle.deleteLead(...args); },
+    deleteLeadConversation(...args) { return lifecycle.deleteLeadConversation(...args); },
+    deletePanelProject(...args) { return lifecycle.deletePanelProject(...args); },
+    deletePanelSource(...args) { return lifecycle.deletePanelSource(...args); },
+    reserveAssistantUsage(...args) { requireUsageSchema(); return usage.reserve(...args); },
+    finishAssistantUsage(...args) { requireUsageSchema(); return usage.finish(...args); },
+    getAssistantUsage(...args) { requireUsageSchema(); return usage.summary(...args); }
   };
+  const schemaVersion = db.prepare('PRAGMA user_version').get().user_version;
+  function requireUsageSchema() { if (schemaVersion < 3) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before using assistance.'); }
+  const usage = createUsageLedger({ db, tx, now, getActor, StoreError });
+  const lifecycle = createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 3 });
   return store;
 }
 

@@ -16,13 +16,17 @@ function workspaceConfig(env = process.env) {
   return { port, origin, host: '127.0.0.1', dataDir: env.WORKSPACE_DATA_DIR };
 }
 
-function startWorkspace(env = process.env, { conversationProvider = null } = {}) {
+function startWorkspace(env = process.env, { conversationProvider = null, assistantConfiguration = null } = {}) {
   const config = workspaceConfig(env);
+  if (conversationProvider && assistantConfiguration) throw new Error('Choose one explicit assistant configuration.');
+  if (conversationProvider && (conversationProvider.kind !== 'fake' || typeof conversationProvider.generate !== 'function')) throw new Error('Use approved configuration for an external assistant.');
+  const assistantOptions = require('./workspace/assistant-config.cjs').resolveAssistantConfiguration(assistantConfiguration);
   const store = openStore({ dataDir: config.dataDir });
   const ocr = require('./workspace/ocr.cjs').createOcrService();
-  // Only an explicit in-process test adapter can be injected. Environment
-  // variables, saved profiles and browser input cannot activate a provider.
-  const app = createWorkspaceApp({ store, origin: config.origin, conversationProvider, recognizeImage: ocr.recognizeImage, getOcrStatus: ocr.getOcrStatus });
+  // Normal startup remains deterministic. An external adapter additionally
+  // needs explicit approved configuration and durable bounded reservations.
+  // Environment variables, profiles and browser input cannot activate it.
+  const app = createWorkspaceApp({ store, origin: config.origin, conversationProvider, ...assistantOptions, recognizeImage: ocr.recognizeImage, getOcrStatus: ocr.getOcrStatus });
   const server = http.createServer({ maxHeaderSize: 16 * 1024, requestTimeout: 20000, headersTimeout: 10000, keepAliveTimeout: 5000 }, app.handler);
   let storeClosed = false;
   const closeStore = () => { if (!storeClosed) { storeClosed = true; store.close(); } };
@@ -32,7 +36,7 @@ function startWorkspace(env = process.env, { conversationProvider = null } = {})
     close();
     process.exitCode = 1;
   });
-  server.listen(config.port, config.host, () => console.log('Private workspace listening at ' + config.origin + '. AI and booking are disabled.'));
+  server.listen(config.port, config.host, () => console.log('Private workspace listening at ' + config.origin + '. Assistant mode: ' + (assistantOptions.allowExternalProvider ? 'approved external' : conversationProvider ? 'synthetic' : 'deterministic') + '. Booking is disabled.'));
   let closePromise = null;
   const close = () => {
     if (closePromise) return closePromise;

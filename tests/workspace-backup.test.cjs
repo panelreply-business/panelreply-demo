@@ -11,7 +11,8 @@ const { spawnSync } = require('node:child_process');
 const { DatabaseSync } = require('node:sqlite');
 const { openStore, digest } = require('../workspace/store.cjs');
 const { hashPassword, createAuth } = require('../workspace/auth.cjs');
-const { createEncryptedBackup, restoreEncryptedBackup, BackupError, MAX_DATABASE_BYTES, MAX_ARCHIVE_BYTES, HEADER_BYTES, TAG_BYTES, RESTORE_DISABLED_PASSWORD } = require('../workspace/backup.cjs');
+const { createEncryptedBackup, restoreEncryptedBackup, validateDatabase, BackupError, MAX_DATABASE_BYTES, MAX_ARCHIVE_BYTES, HEADER_BYTES, TAG_BYTES, RESTORE_DISABLED_PASSWORD } = require('../workspace/backup.cjs');
+const { SYNTHETIC_POLICY, INPUT_BYTES } = require('../workspace/usage.cjs');
 const { parseArgs, readPassphrase } = require('../scripts/workspace-backup.cjs');
 const resetPassword = require('../scripts/workspace-reset-password.cjs');
 
@@ -19,7 +20,7 @@ const PASSWORD = 'Synthetic-owner-password-2026!';
 const NEW_PASSWORD = 'Replacement-synthetic-password-2026!';
 const PASSPHRASE = 'Synthetic-backup-passphrase-2026!';
 const PASSWORD_HASH = hashPassword(PASSWORD);
-const TABLES = ['businesses', 'users', 'sessions', 'login_attempts', 'leads', 'messages', 'audit', 'suppression'];
+const TABLES = ['businesses', 'users', 'sessions', 'login_attempts', 'leads', 'messages', 'audit', 'suppression', 'panel_projects', 'panel_sources', 'record_deletions', 'deletion_operations', 'safety_holds', 'assistant_usage'];
 
 function request(overrides = {}) {
   return { customerName: 'Jamie Backup Fixture', phone: '+15865550101', job: 'Install a garage EV charger', zip: '48315', callbackWindow: 'Monday after 4 pm', requestedWorkDate: 'Friday', contactPermission: 'requested_callback', conversation: [{ role: 'customer', text: 'Please call me Monday about an EV charger.' }], ...overrides };
@@ -87,13 +88,86 @@ function rewriteAuthenticatedArchive(f, mutate) {
   key.fill(0); replacementKey.fill(0); plaintext.fill(0); replacement.fill(0);
 }
 
+test('encrypted restore preserves pending, failed and succeeded usage without refunding reservations', async t => {
+  const f = await fixture(t), input = { inputBytes: 512, outputTokenLimit: 2048 };
+  const policy = { ...SYNTHETIC_POLICY, perAttemptReserveMicros: 5, dailyReserveLimitMicros: 20, lifetimeReserveLimitMicros: 25 };
+  const pendingHash = digest('synthetic pending attempt');
+  const pending = f.store.reserveAssistantUsage(f.alice, pendingHash, input, policy);
+  const failed = f.store.reserveAssistantUsage(f.alice, digest('synthetic failed attempt'), input, policy);
+  f.store.finishAssistantUsage(f.alice, failed.id, 'failed');
+  const succeeded = f.store.reserveAssistantUsage(f.bob, digest('synthetic successful attempt'), input, policy);
+  f.store.finishAssistantUsage(f.bob, succeeded.id, 'succeeded');
+  const before = snapshots(f.store.filename);
+  const archived = await create(f); assert.equal(archived.counts.assistantUsage, 3);
+  const restoredResult = await restore(f); assert.equal(restoredResult.counts.assistantUsage, 3);
+  let recovered = openStore({ dataDir: f.restored, create: false });
+  try {
+    assert.deepEqual(snapshots(recovered.filename).assistant_usage, before.assistant_usage);
+    recovered.close(); recovered = openStore({ dataDir: f.restored, create: false });
+    assert.deepEqual(snapshots(recovered.filename).assistant_usage, before.assistant_usage);
+    assert.deepEqual(recovered.getAssistantUsage(f.alice).statuses, { failed: 1, pending: 1 });
+    assert.equal(recovered.getAssistantUsage(f.alice).lifetimeAttempts, 2); assert.equal(recovered.getAssistantUsage(f.alice).lifetimeReservedMicros, 10);
+    assert.deepEqual(recovered.getAssistantUsage(f.bob).statuses, { succeeded: 1 }); assert.equal(recovered.getAssistantUsage(f.bob).lifetimeReservedMicros, 5);
+    assert.throws(() => recovered.reserveAssistantUsage(f.alice, pendingHash, input, policy), { code: 'assistant_attempt_recorded' });
+    assert.throws(() => recovered.finishAssistantUsage(f.bob, pending.id, 'succeeded'), { code: 'assistant_usage_not_found' });
+    assert.deepEqual(snapshots(recovered.filename).assistant_usage, before.assistant_usage);
+    assert.equal(recovered.findUser(f.alice.username).password_hash, RESTORE_DISABLED_PASSWORD);
+  } finally { recovered.close(); }
+  assert.deepEqual(snapshots(f.store.filename), before);
+});
+
+test('backup record validation rejects malformed or cross-business usage metadata', async t => {
+  const f = await fixture(t);
+  f.store.reserveAssistantUsage(f.alice, digest('synthetic validation attempt'), { inputBytes: 512, outputTokenLimit: 2048 }, SYNTHETIC_POLICY);
+  const before = snapshots(f.store.filename), db = new DatabaseSync(f.store.filename);
+  const mutations = [
+    () => db.prepare('UPDATE assistant_usage SET actor_id=?').run(f.bob.id),
+    () => db.prepare("UPDATE assistant_usage SET id='invalid-id'").run(),
+    () => db.prepare("UPDATE assistant_usage SET request_hash='untrusted text'").run(),
+    () => db.prepare("UPDATE assistant_usage SET status='refunded'").run(),
+    () => db.prepare('UPDATE assistant_usage SET input_bytes=0').run(),
+    () => db.prepare('UPDATE assistant_usage SET input_bytes=?').run(INPUT_BYTES + 1),
+    () => db.prepare('UPDATE assistant_usage SET output_token_limit=999999').run(),
+    () => db.prepare('UPDATE assistant_usage SET reserved_micros=-1').run(),
+    () => db.prepare('UPDATE assistant_usage SET reserved_micros=1000000001').run(),
+    () => db.prepare('UPDATE assistant_usage SET created_at=-1').run(),
+    () => db.prepare('UPDATE assistant_usage SET expires_at=created_at+60001').run(),
+    () => db.prepare('UPDATE assistant_usage SET finished_at=created_at').run(),
+    () => db.prepare("UPDATE assistant_usage SET status='failed'").run(),
+    () => db.prepare("UPDATE assistant_usage SET status='failed',finished_at=created_at-1").run()
+  ];
+  try {
+    for (const mutate of mutations) { db.exec('BEGIN'); try { mutate(); assert.throws(() => validateDatabase(db), failure('invalid_database')); } finally { db.exec('ROLLBACK'); } }
+  } finally { db.close(); }
+  assert.deepEqual(snapshots(f.store.filename), before);
+});
+
+test('authenticated archives with invalid usage metadata cannot publish a restored database', async t => {
+  const f = await fixture(t);
+  f.store.reserveAssistantUsage(f.alice, digest('synthetic authenticated archive attempt'), { inputBytes: 512, outputTokenLimit: 2048 }, SYNTHETIC_POLICY);
+  const before = snapshots(f.store.filename);
+  await create(f); const originalArchive = fs.readFileSync(f.archive);
+  const mutations = [
+    db => db.prepare('UPDATE assistant_usage SET actor_id=?').run(f.bob.id),
+    db => db.prepare("UPDATE assistant_usage SET status='failed'").run(),
+    db => db.prepare('UPDATE assistant_usage SET reserved_micros=-1').run(),
+    db => db.prepare('UPDATE assistant_usage SET expires_at=created_at').run()
+  ];
+  for (const mutate of mutations) {
+    fs.writeFileSync(f.archive, originalArchive); rewriteAuthenticatedArchive(f, mutate);
+    await assert.rejects(restore(f), failure('invalid_database'));
+    assert.equal(fs.existsSync(f.restored), false); assert.deepEqual(temporaryNames(f.directory), []);
+    assert.deepEqual(snapshots(f.store.filename), before);
+  }
+});
+
 test('encrypted backup roundtrip preserves tenant records, opt-outs, holds and idempotency', async t => {
   const f = await fixture(t);
   const expectedAlice = f.store.listLeads(f.alice), expectedBob = f.store.listLeads(f.bob), expectedProfile = f.store.getProfile(f.alice);
   const created = await create(f);
   assert.equal(created.format, 'panelreply-encrypted-backup');
   assert.equal(created.sessionsIncluded, false);
-  assert.deepEqual(created.counts, { businesses: 2, users: 2, leads: 3, messages: 3, audit: 7, optOuts: 1, panelProjects: 0, panelSources: 0 });
+  assert.deepEqual(created.counts, { businesses: 2, users: 2, leads: 3, messages: 3, audit: 7, optOuts: 1, panelProjects: 0, panelSources: 0, deletedRecords: 0, deletionOperations: 0, safetyHolds: 1, assistantUsage: 0 });
   const result = await restore(f);
   assert.deepEqual(result.counts, created.counts);
   assert.equal(result.passwordResetRequired, true);

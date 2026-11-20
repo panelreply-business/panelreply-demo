@@ -8,7 +8,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const { DatabaseSync } = require('node:sqlite');
-const { openStore, SCHEMAS, assertWorkspaceSchema, digest } = require('../workspace/store.cjs');
+const { openStore, SCHEMAS, SCHEMA_VERSION, assertWorkspaceSchema, digest } = require('../workspace/store.cjs');
 const panels = require('../workspace/panels.cjs');
 const { hashPassword, createAuth } = require('../workspace/auth.cjs');
 const { createEncryptedBackup, restoreEncryptedBackup, validateDatabase, RESTORE_DISABLED_PASSWORD, HEADER_BYTES, TAG_BYTES } = require('../workspace/backup.cjs');
@@ -174,7 +174,7 @@ test('source filenames in CSV receive the same formula protection', async t => {
   assert.match(f.store.exportPanelProject(f.alice, p.id), /"'=formula.png"/);
 });
 
-test('schema 1 migration preserves owner, intake, holds and sessions and adds only panel schema', async t => {
+test('schema 1 migration preserves owner, intake, holds and sessions and adds the current panel and lifecycle schema', async t => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-migration-')), dataDir = path.join(base, 'legacy');
   t.after(() => fs.rmSync(base, { recursive: true, force: true }));
   const filename = makeLegacy(dataDir);
@@ -191,7 +191,7 @@ test('schema 1 migration preserves owner, intake, holds and sessions and adds on
     assert.deepEqual(migrated.session(digest('migration-session')), owner);
     assert.deepEqual(migrated.listPanelProjects(owner), []);
   } finally { migrated.close(); }
-  db = new DatabaseSync(filename); assert.equal(assertWorkspaceSchema(db), 2); db.close();
+  db = new DatabaseSync(filename); assert.equal(assertWorkspaceSchema(db), SCHEMA_VERSION); db.close();
 });
 
 test('startup rejects a forged schema 1 before migration or modifying records', async t => {
@@ -204,27 +204,27 @@ test('startup rejects a forged schema 1 before migration or modifying records', 
   assert.deepEqual(fs.readFileSync(filename), before);
 });
 
-test('schema 2 validates exact constraints and refuses a cross-business source link', async t => {
+test('current schema validates exact constraints and refuses a cross-business source link', async t => {
   const f = await fixture(t), p = f.store.createPanelProject(f.alice, project(), crypto.randomUUID()).project;
   const upload = f.store.addPanelSource(f.alice, p.id, source(1), crypto.randomUUID());
   const db = new DatabaseSync(f.store.filename);
   try {
-    assert.equal(assertWorkspaceSchema(db), 2);
+    assert.equal(assertWorkspaceSchema(db), SCHEMA_VERSION);
     assert.throws(() => db.prepare('UPDATE panel_sources SET business_id=? WHERE id=?').run(f.bob.businessId, upload.source.id), /FOREIGN KEY/);
   } finally { db.close(); }
 });
 
-test('encrypted schema 2 backup preserves projects and source bytes and disables restored credentials', async t => {
+test('encrypted current-schema backup preserves projects and source bytes and disables restored credentials', async t => {
   const f = await fixture(t), key = crypto.randomUUID(), p = f.store.createPanelProject(f.alice, project(), key).project;
   const uploaded = f.store.addPanelSource(f.alice, p.id, source(1), crypto.randomUUID());
   const saved = f.store.updatePanelProject(f.alice, p.id, { version: 2, ...project({ rows: [row({ sourceImageId: uploaded.source.id, reviewStatus: 'reviewed', partNumber: 'Corrected-77' })] }) });
   f.store.createSession(f.alice.id, digest('backup-panel-session'));
   const archive = path.join(f.base, 'panels.prbk'), restoredDir = path.join(f.base, 'restored');
   const created = await createEncryptedBackup({ dataDir: f.dataDir, outputFile: archive, passphrase: PASSPHRASE });
-  assert.equal(created.schemaVersion, 2); assert.equal(created.counts.panelProjects, 1); assert.equal(created.counts.panelSources, 1);
-  assert.equal(fs.readFileSync(archive).readUInt16BE(10), 2);
+  assert.equal(created.schemaVersion, SCHEMA_VERSION); assert.equal(created.counts.panelProjects, 1); assert.equal(created.counts.panelSources, 1);
+  assert.equal(fs.readFileSync(archive).readUInt16BE(10), SCHEMA_VERSION);
   const result = await restoreEncryptedBackup({ backupFile: archive, dataDir: restoredDir, passphrase: PASSPHRASE });
-  assert.equal(result.schemaVersion, 2); assert.equal(result.passwordResetRequired, true);
+  assert.equal(result.schemaVersion, SCHEMA_VERSION); assert.equal(result.passwordResetRequired, true);
   const restored = openStore({ dataDir: restoredDir, create: false });
   try {
     assert.deepEqual(restored.getPanelProject(f.alice, p.id), saved);
@@ -260,7 +260,7 @@ test('schema 1 archives restore without migration and later startup upgrades saf
   assert.deepEqual(recovery.getProfile(owner), expected); recovery.close();
   const migrated = openStore({ dataDir: target });
   assert.deepEqual(migrated.getProfile(owner), expected); assert.deepEqual(migrated.listPanelProjects(owner), []); migrated.close();
-  db = new DatabaseSync(path.join(target, 'workspace.sqlite')); assert.equal(assertWorkspaceSchema(db), 2); db.close();
+  db = new DatabaseSync(path.join(target, 'workspace.sqlite')); assert.equal(assertWorkspaceSchema(db), SCHEMA_VERSION); db.close();
 });
 
 test('backup validation rejects altered image bytes and dangling row source references', async t => {
@@ -327,7 +327,7 @@ test('an authenticated archive with a mismatched declared schema cannot publish 
   const decrypt = crypto.createDecipheriv('aes-256-gcm', key, header.subarray(48, 60), { authTagLength: TAG_BYTES });
   decrypt.setAAD(header); decrypt.setAuthTag(original.subarray(original.length - TAG_BYTES));
   const plaintext = Buffer.concat([decrypt.update(original.subarray(HEADER_BYTES, original.length - TAG_BYTES)), decrypt.final()]);
-  header.writeUInt16BE(1, 10); // Supported header, but the actual database remains schema 2.
+  header.writeUInt16BE(1, 10); // Supported header, but the actual database remains the current schema.
   crypto.randomBytes(12).copy(header, 48);
   const encrypt = crypto.createCipheriv('aes-256-gcm', key, header.subarray(48, 60), { authTagLength: TAG_BYTES });
   encrypt.setAAD(header);

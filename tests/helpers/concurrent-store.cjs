@@ -29,6 +29,11 @@ if (!isMainThread) {
       else if (task.operation === 'createLead') result = store.createLead(task.actor, task.input, task.key);
       else if (task.operation === 'updateProject') result = store.updatePanelProject(task.actor, task.id, task.input);
       else if (task.operation === 'addSource') result = store.addPanelSource(task.actor, task.id, task.input, task.key);
+      else if (task.operation === 'updateLead') result = store.updateLead(task.actor, task.id, task.input);
+      else if (task.operation === 'deleteLead') result = store.deleteLead(task.actor, task.id, task.input, task.key);
+      else if (task.operation === 'deleteConversation') result = store.deleteLeadConversation(task.actor, task.id, task.input, task.key);
+      else if (task.operation === 'deleteProject') result = store.deletePanelProject(task.actor, task.id, task.input, task.key);
+      else if (task.operation === 'deleteSource') result = store.deletePanelSource(task.actor, task.id, task.sourceId, task.input, task.key);
       else throw new Error('UNSUPPORTED_TEST_OPERATION');
       parentPort.postMessage({ type: 'result', ok: true, result });
     } catch (error) { parentPort.postMessage({ type: 'result', ok: false, code: error.code || error.message }); }

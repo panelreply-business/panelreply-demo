@@ -375,3 +375,191 @@ test('strict state validation remains independent of model output', async () => 
   await assert.rejects(a.previewMessage('Hi', { ...seed(), tenantId: 'another-business' }, {}, opts()), error => error.code === 'invalid_input');
   assert.equal(a.status().attempted, 0);
 });
+
+function usageRecorder() {
+  const reserved = [], finished = [];
+  return {
+    reserved, finished,
+    hooks: {
+      reserve(input) { reserved.push(structuredClone(input)); return { id: 'reservation-' + reserved.length }; },
+      finish(id, status) { finished.push({ id, status }); }
+    }
+  };
+}
+
+test('actor-bound usage reserves bounded metadata once and never enters provider context', async () => {
+  const usage = usageRecorder();
+  const a = fake(context => {
+    assert.doesNotMatch(JSON.stringify(context), /reservation|fingerprint|private-session|usage/);
+    return proposal();
+  });
+  await a.previewMessage('Hello', seed(), {}, { ...opts('private-session'), usage: usage.hooks });
+  assert.equal(usage.reserved.length, 1);
+  assert.deepEqual(Object.keys(usage.reserved[0]).sort(), ['fingerprint', 'inputBytes', 'outputTokenLimit']);
+  assert.match(usage.reserved[0].fingerprint, /^[a-f0-9]{64}$/);
+  assert.ok(usage.reserved[0].inputBytes > 0 && usage.reserved[0].inputBytes <= 96 * 1024);
+  assert.equal(usage.reserved[0].outputTokenLimit, 2048);
+  assert.deepEqual(usage.finished, [{ id: 'reservation-1', status: 'succeeded' }]);
+});
+
+test('pending and completed identical retries share a durable reservation', async () => {
+  const usage = usageRecorder(), started = deferred(), release = deferred();
+  const a = fake(() => { started.resolve(); return release.promise; });
+  const options = { ...opts(), usage: usage.hooks };
+  const first = a.previewMessage('Hello', seed(), {}, options);
+  await started.promise;
+  const second = a.previewMessage('Hello', seed(), {}, options);
+  assert.equal(usage.reserved.length, 1);
+  release.resolve(proposal());
+  const [one, two] = await Promise.all([first, second]);
+  const cached = await a.previewMessage('Hello', seed(), {}, options);
+  assert.deepEqual(one, two);
+  assert.deepEqual(cached, one);
+  assert.equal(usage.reserved.length, 1);
+  assert.equal(usage.finished.length, 1);
+});
+
+for (const kind of ['limit', 'storage']) test('usage ' + kind + ' failure prevents provider invocation', async () => {
+  const a = fake(() => { throw new Error('must not be called'); });
+  let finished = 0;
+  const usage = {
+    reserve() { const error = new Error('private ledger diagnostics'); if (kind === 'limit') error.code = 'assistant_usage_limit'; throw error; },
+    finish() { finished++; }
+  };
+  const before = seed(), result = await a.previewMessage('Actually ZIP 48084', before, {}, { ...opts(), usage });
+  assert.equal(result.assistance.code, kind === 'limit' ? 'assistant_usage_limit' : 'assistant_usage_unavailable');
+  assert.deepEqual(fields(result.state), fields(before));
+  assert.doesNotMatch(JSON.stringify(result), /private ledger diagnostics/);
+  assert.equal(a.status().attempted, 0);
+  assert.equal(finished, 0);
+});
+
+for (const malformed of [[], {}, { reserve() { return { id: '' }; }, finish() {} }, { reserve() { return { id: 3 }; }, finish() {} }]) {
+  test('malformed usage interface fails closed: ' + JSON.stringify(malformed), async () => {
+    const a = fake(() => { throw new Error('must not run'); });
+    const result = await a.previewMessage('Hello', seed(), {}, { ...opts(), usage: malformed });
+    assert.equal(result.assistance.code, 'assistant_usage_unavailable');
+    assert.equal(a.status().attempted, 0);
+  });
+}
+
+test('failed proposals and failed transports retain their usage reservations', async () => {
+  const usage = usageRecorder();
+  let count = 0;
+  const a = fake(() => { if (++count === 1) return { reply: 'untrusted reply' }; if (count === 2) throw new Error('outage'); return proposal(); });
+  const options = { ...opts(), usage: usage.hooks };
+  assert.equal((await a.previewMessage('First', seed(), {}, options)).assistance.code, 'invalid_assistant_output');
+  assert.equal((await a.previewMessage('Second', seed(), {}, options)).assistance.code, 'assistant_unavailable');
+  assert.equal((await a.previewMessage('Third', seed(), {}, options)).assistance.mode, 'fake-provider');
+  assert.deepEqual(usage.finished.map(row => row.status), ['failed', 'failed', 'succeeded']);
+  assert.equal(usage.reserved.length, 3);
+});
+
+test('usage settlement failure discards a validated correction and does not cache it', async () => {
+  const usage = usageRecorder();
+  usage.hooks.finish = () => { throw new Error('private storage diagnosis'); };
+  const a = fake(() => proposal([change('zip', '48084', 'Actually ZIP 48084', 'correct')]));
+  const options = { ...opts(), usage: usage.hooks };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const result = await a.previewMessage('Actually ZIP 48084', seed(), {}, options);
+    assert.equal(result.assistance.code, 'assistant_usage_unavailable');
+    assert.equal(result.state.zip, '48315');
+    assert.doesNotMatch(JSON.stringify(result), /private storage diagnosis/);
+  }
+  assert.equal(usage.reserved.length, 2);
+  assert.equal(a.status().active, 0);
+});
+
+test('timed-out abort-ignoring provider retains its active slot and unsettled usage until it exits', async () => {
+  const usage = usageRecorder(), release = deferred();
+  const a = fake(() => release.promise, { timeoutMs: 10, maxConcurrent: 1 });
+  const result = await a.previewMessage('Hello', seed(), {}, { ...opts(), usage: usage.hooks });
+  assert.equal(result.assistance.code, 'assistant_timeout');
+  assert.equal(a.status().active, 1);
+  assert.equal(usage.finished.length, 0);
+  const blocked = await a.previewMessage('Another request', seed(), {}, { ...opts('other'), usage: usage.hooks });
+  assert.equal(blocked.assistance.code, 'assistant_limit');
+  assert.equal(usage.reserved.length, 1);
+  release.resolve(proposal());
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(a.status().active, 0);
+  assert.deepEqual(usage.finished, [{ id: 'reservation-1', status: 'timeout' }]);
+});
+
+test('disconnected generation settles as cancelled after actual provider exit', async () => {
+  const usage = usageRecorder(), started = deferred(), release = deferred(), control = new AbortController();
+  const a = fake(() => { started.resolve(); return release.promise; });
+  const waiting = a.previewMessage('Hello', seed(), {}, { ...opts(), usage: usage.hooks, signal: control.signal });
+  const rejected = assert.rejects(waiting, error => error.code === 'assistant_cancelled');
+  await started.promise;
+  control.abort();
+  await rejected;
+  assert.equal(usage.finished.length, 0);
+  release.resolve(proposal());
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(usage.finished, [{ id: 'reservation-1', status: 'cancelled' }]);
+});
+
+test('session expiry after a reservation prevents generation and records cancellation', async () => {
+  const usage = usageRecorder();
+  let current = true;
+  const reserve = usage.hooks.reserve;
+  usage.hooks.reserve = input => { current = false; return reserve(input); };
+  let calls = 0;
+  const a = fake(() => { calls++; return proposal(); });
+  await assert.rejects(a.previewMessage('Hello', seed(), {}, { ...opts(), usage: usage.hooks, isCurrent: () => current }), error => error.code === 'assistant_cancelled');
+  assert.equal(calls, 0);
+  assert.deepEqual(usage.finished, [{ id: 'reservation-1', status: 'cancelled' }]);
+});
+
+for (const [label, message, settings] of [
+  ['STOP', 'STOP', {}], ['calling opt-out', 'Do not call me', {}],
+  ['hazard', 'The wire is glowing', {}], ['stored hold', 'Actually ZIP 48084', { safetyHeld: true }],
+  ['stored opt-out', 'START', { suppressed: true }]
+]) test('local ' + label + ' gate creates no usage reservation', async () => {
+  const usage = usageRecorder(), a = fake(() => { throw new Error('must not run'); });
+  const result = await a.previewMessage(message, seed(), {}, { ...opts(), ...settings, usage: usage.hooks });
+  assert.equal(result.assistance.mode, 'deterministic');
+  assert.equal(usage.reserved.length, 0);
+  assert.equal(usage.finished.length, 0);
+});
+
+test('server safety hold survives cleared client fields, cleared history and START', async () => {
+  const state = { ...blankState(), hold: false, stopped: true };
+  const local = previewMessage('START', state, {}, { safetyHeld: true });
+  assert.equal(local.state.hold, true);
+  assert.equal(local.state.stopped, true);
+  assert.deepEqual(local.replies, []);
+  const a = fake(() => { throw new Error('must not run'); });
+  const assisted = await a.previewMessage('Hello', blankState(), {}, { ...opts(), safetyHeld: true });
+  assert.equal(assisted.state.hold, true);
+  assert.match(assisted.replies.join(' '), /safety hold/);
+  assert.equal(a.status().attempted, 0);
+});
+
+test('editing only a STOP flag cannot resume an unchanged unknown-phone transcript', async () => {
+  const state = { ...blankState(), stopped: false, conversation: [{ role: 'customer', text: 'STOP' }] };
+  const a = fake(() => { throw new Error('must not run'); });
+  const stopped = await a.previewMessage('Hello', state, {}, opts());
+  assert.equal(stopped.state.stopped, true);
+  assert.deepEqual(stopped.replies, []);
+  const resumed = await a.previewMessage('START', stopped.state, {}, opts());
+  assert.equal(resumed.state.stopped, false);
+  assert.equal(a.status().attempted, 0);
+});
+
+test('supported mixed privacy and appointment questions answer both topics when omitted by provider', async () => {
+  const a = fake(() => proposal());
+  const result = await a.previewMessage('Will saving my request book an appointment?', seed(), {}, opts());
+  assert.match(result.replies.join(' '), /does not check a calendar/);
+  assert.match(result.replies.join(' '), /Save request stores/);
+  assert.match(result.replies.join(' '), /No external AI provider/);
+});
+
+test('external-mode wording is exercised with an in-memory adapter, without any HTTP call', async () => {
+  const a = createConversationOrchestrator({ allowExternal: true, provider: { kind: 'external', generate: () => proposal() } });
+  const result = await a.previewMessage('Are you an AI and do you store my messages?', seed(), {}, opts());
+  assert.match(result.replies.join(' '), /configured AI provider/);
+  assert.match(result.replies.join(' '), /sends the message, draft, conversation and approved business facts/);
+  assert.doesNotMatch(result.replies.join(' '), /No AI provider receives|No external AI provider|predefined local responses/);
+});

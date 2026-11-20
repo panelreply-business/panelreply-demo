@@ -22,6 +22,7 @@
   let ocrStatus = { available: false };
   let ocrResult = null;
   const downloadUrls = new Set();
+  const deletion = window.PanelReplyDeletion.create({ api, onChange: updateControls, onDeleted: deletedPanelRecord });
 
   class ApiError extends Error {
     constructor(message, status = 0, code = 'network_error') { super(message); this.status = status; this.code = code; }
@@ -33,6 +34,7 @@
   function revoke(set) { for (const url of set) URL.revokeObjectURL(url); set.clear(); }
   function expire() {
     expired = true;
+    deletion.expire();
     ready = false;
     csrfToken = '';
     identity = null;
@@ -81,7 +83,7 @@
   function dirty() { return Boolean(project && baseline && JSON.stringify(draft()) !== baseline); }
   function unresolved() { return Boolean(pendingSave || pendingUpload); }
   function updateControls() {
-    const locked = busy || !ready || expired || unresolved();
+    const locked = busy || !ready || expired || unresolved() || deletion.isOpen();
     $('new-project').disabled = locked;
     $('create-first-project').disabled = locked;
     $('retry-panel-load').disabled = busy || expired || unresolved();
@@ -96,6 +98,8 @@
     $('project-conflict').hidden = !conflict;
     $('project-dirty').hidden = !dirty();
     const saved = Boolean(project?.id);
+    $('delete-project').disabled = locked || !saved || dirty() || conflict;
+    for (const button of $('source-list').querySelectorAll('[data-delete-source]')) button.disabled = locked || !saved || dirty() || conflict;
     const sourceAllowed = saved && !locked && !dirty() && !conflict && project.sources.length < 5;
     $('panel-image').disabled = !sourceAllowed;
     $('upload-source').disabled = busy || !ready || Boolean(pendingSave) || (!pendingUpload && (!sourceAllowed || !selectedFile));
@@ -118,7 +122,7 @@
     $('parts-empty').hidden = rows.length > 0;
   }
   function guarded(action) {
-    if (busy || unresolved()) { appError('Wait for the current operation, or retry the unconfirmed save before leaving.'); return; }
+    if (busy || unresolved() || deletion.isOpen()) { appError('Wait for the current operation, or retry the unconfirmed save before leaving.'); return; }
     if (!dirty()) { action(); return; }
     pendingNavigation = action;
     $('panel-navigation-guard').hidden = false;
@@ -303,6 +307,32 @@
     }
     finally { busy = false; if (!expired) updateControls(); }
   }
+  function beginPanelDeletion(source = null) {
+    if (!project?.id || busy || !ready || expired || unresolved() || dirty() || conflict) return;
+    deletion.request({
+      kind: source ? 'panel_source' : 'panel_project', id: source ? source.id : project.id,
+      ...(source ? { parentId: project.id } : {}), version: project.version,
+      url: `/api/panel-projects/${project.id}${source ? '/sources/' + source.id : ''}`,
+      title: source ? 'Delete source image?' : 'Delete panel project?',
+      description: source ? 'Remove this saved image. Corrected part values remain. Rows linked to this image return to Needs review without a source image.' : 'Remove this project, its parts and all saved source images from the active workspace.'
+    });
+  }
+  async function deletedPanelRecord(operation) {
+    if (expired) return;
+    const id = operation.parentId || operation.id;
+    projects = projects.filter(item => item.id !== id);
+    project = null; rows = []; baseline = ''; conflict = false; ocrResult = null;
+    $('project-form').reset(); $('panel-parts-body').replaceChildren(); $('source-list').replaceChildren();
+    $('ocr-raw-text').textContent = ''; $('ocr-warnings').replaceChildren(); $('ocr-result').hidden = true;
+    clearSourceSelection(); $('project-content').hidden = true; $('project-empty').hidden = false; renderList();
+    if (operation.kind === 'panel_source') {
+      await openProject(id);
+      if (!expired && project?.id === id) { refreshSummary(project); $('source-status').textContent = 'Image deleted. Linked rows need review.'; }
+    } else {
+      const url = new URL(location.href); url.searchParams.delete('project'); window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      $('panel-load-status').textContent = 'Project deletion confirmed.'; $('new-project').focus();
+    }
+  }
   function renderSources() {
     $('source-list').replaceChildren();
     for (const source of project.sources) {
@@ -313,7 +343,9 @@
       view.addEventListener('click', () => viewSource(source, view, li));
       const extract = node('button', 'Extract text', 'button button-secondary button-small'); extract.type = 'button'; extract.dataset.ocr = source.id; extract.setAttribute('aria-label', `Extract text ${source.name}`);
       extract.addEventListener('click', () => extractSource(source));
-      actions.append(view, extract); header.append(info, actions); li.append(header); $('source-list').append(li);
+      const remove = node('button', 'Delete image', 'button button-danger button-small'); remove.type = 'button'; remove.dataset.deleteSource = source.id; remove.setAttribute('aria-label', `Delete image ${source.name}`);
+      remove.addEventListener('click', () => beginPanelDeletion(source));
+      actions.append(view, extract, remove); header.append(info, actions); li.append(header); $('source-list').append(li);
     }
     updateControls();
   }
@@ -480,6 +512,7 @@
     $('project-save-status').textContent = 'Unreviewed candidates added to the draft. Check the fields, then save.';
     $('panel-parts-body').lastElementChild?.querySelector('input')?.focus();
   });
+  $('delete-project').addEventListener('click', () => beginPanelDeletion());
   $('export-project').addEventListener('click', () => exportProject('csv'));
   $('export-project-xlsx').addEventListener('click', () => exportProject('xlsx'));
   $('reload-project').addEventListener('click', () => guarded(() => openProject(project.id)));
@@ -497,7 +530,7 @@
     catch (cause) { if (!expired) appError(`Could not sign out. ${cause.message}`); }
     finally { busy = false; if (!expired) updateControls(); }
   }));
-  window.addEventListener('beforeunload', event => { if (!expired && (dirty() || busy || unresolved())) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', event => { if (!expired && (dirty() || busy || unresolved() || deletion.isPending())) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('pagehide', () => { revoke(downloadUrls); });
   window.addEventListener('hashchange', updateEmptyIntent);
   window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });

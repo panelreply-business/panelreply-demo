@@ -26,7 +26,7 @@ function client(script, options = {}) {
     let id = '', content = '';
     const element = {
       tagName: tag.toUpperCase(), children: [], parentNode: null, value: '', checked: false,
-      files: [], hidden: false, disabled: false, dataset: {}, listeners: new Map(), style: {},
+      files: [], hidden: false, disabled: false, open: false, showModal() { this.open = true; }, close() { this.open = false; }, dataset: {}, listeners: new Map(), style: {},
       classList: { add: value => classes.add(value), remove: value => classes.delete(value), toggle(value, force) { const next = force ?? !classes.has(value); if (next) classes.add(value); else classes.delete(value); return next; } },
       append(...items) {
         for (const item of items) {
@@ -97,9 +97,11 @@ function client(script, options = {}) {
     return { status, ok: status >= 200 && status < 300, json: async () => structuredClone(data), headers: new Map() };
   };
   const source = fs.readFileSync(path.join(__dirname, '../workspace', script), 'utf8');
-  const context = { document, window, location, URL, fetch, crypto: webcrypto, setTimeout, clearTimeout, Intl, Date, Blob, TextEncoder, console };
+  const context = { document, window, location, history: window.history, URL, fetch, crypto: webcrypto, setTimeout, clearTimeout, Intl, Date, Blob, TextEncoder, console };
   if (options.failSession) state.failSession = true;
-  vm.runInNewContext(source, context, { filename: script });
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../workspace/deletion.js'), 'utf8'), context, { filename: 'deletion.js' });
+  vm.runInContext(source, context, { filename: script });
   return { element, state, calls, redirects, window };
 }
 

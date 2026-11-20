@@ -42,17 +42,21 @@ function tinyPng({ width = 1, height = 1, extra = [], depth = 8, colorType = 2 }
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', header), ...extra, chunk('IDAT', zlib.deflateSync(Buffer.from([0, 255, 255, 255]))), chunk('IEND')]);
 }
 
-function fakeSpawner({ recognize, probe, version = 'tesseract 5.5.0\n', languages = 'List of available languages in private-path (1):\neng\n', spawnError, killDelay = 0 } = {}) {
+function fakeSpawner({ recognize, normalize, normalizerProbe, probe, version = 'tesseract 5.5.0\n', languages = 'List of available languages in private-path (1):\neng\n', spawnError, killDelay = 0 } = {}) {
   const calls = [];
   function spawnProcess(binary, args, options) {
     const processArgs = [...args];
-    args = args.slice(args.indexOf('/usr/bin/tesseract') + 1);
+    const isNormalizer = args.includes('/usr/bin/python3');
+    args = isNormalizer ? args.slice(args.indexOf('/usr/bin/python3') + 4) : args.slice(args.indexOf('/usr/bin/tesseract') + 1);
     const child = new EventEmitter();
     child.pid = spawnError ? undefined : 12345;
     child.stdout = new PassThrough();
     child.stderr = new PassThrough();
-    const call = { binary, args, processArgs, options, child, input: [], kills: [], closed: false };
+    const call = { binary, args, processArgs, options, child, isNormalizer, input: [], kills: [], closed: false };
     child.stdin = new Writable({ write(data, encoding, callback) { call.input.push(Buffer.from(data)); callback(); } });
+    call.seccomp = [];
+    child.stdio = [child.stdin, child.stdout, child.stderr];
+    if (options.stdio.length === 4) child.stdio.push(new Writable({ write(data, encoding, callback) { call.seccomp.push(Buffer.from(data)); callback(); } }));
     call.finish = (output = '', code = 0) => {
       if (call.closed) return;
       call.closed = true;
@@ -68,6 +72,13 @@ function fakeSpawner({ recognize, probe, version = 'tesseract 5.5.0\n', language
     };
     child.stdin.on('finish', () => queueMicrotask(() => {
       if (spawnError) return child.emit('error', Object.assign(new Error('PRIVATE PATH OR SECRET'), { code: spawnError }));
+      if (isNormalizer) {
+        if (args[0] === '--probe') return normalizerProbe ? normalizerProbe(call) : call.finish(JSON.stringify({ method: 'median3-isolated-noise', pillowVersion: '11.1.0' }));
+        if (normalize) return normalize(call);
+        const image = inspectImage(Buffer.concat(call.input));
+        return call.finish(JSON.stringify({ method: 'median3-isolated-noise', pillowVersion: '11.1.0', applied: false,
+          isolatedNoisePixels: 0, thresholdPixels: Math.max(32, Math.ceil(image.width * image.height / 1000)), imagePixels: image.width * image.height }) + '\n');
+      }
       if (probe && args[0].startsWith('--')) return probe(call);
       if (args[0] === '--version') return call.finish(version);
       if (args[0] === '--list-langs') return call.finish(languages);
@@ -215,15 +226,15 @@ test('readiness uses only fixed binary probes and caches a successful result', a
   const fake = fakeSpawner();
   const service = createOcrService({ spawnProcess: fake.spawnProcess, now: () => clock });
   const [first, concurrent] = await Promise.all([service.getOcrStatus(), service.getOcrStatus()]);
-  assert.deepEqual(first, { available: true, engine: 'tesseract', version: '5.5.0', language: 'eng' });
+  assert.deepEqual(first, { available: true, engine: 'tesseract', version: '5.5.0', language: 'eng', normalizer: { method: 'median3-isolated-noise', pillowVersion: '11.1.0' }, orientationAvailable: false });
   assert.deepEqual(first, concurrent);
   first.available = false;
   assert.equal((await service.getOcrStatus()).available, true);
-  assert.equal(fake.calls.length, 2);
+  assert.equal(fake.calls.length, 3);
   clock += LIMITS.statusCacheMs + 1;
   assert.equal((await service.getOcrStatus()).available, true);
-  assert.equal(fake.calls.length, 4);
-  assert.deepEqual(fake.calls.map(call => call.args[0]), ['--version', '--list-langs', '--version', '--list-langs']);
+  assert.equal(fake.calls.length, 6);
+  assert.deepEqual(fake.calls.map(call => call.args[0]), ['--version', '--list-langs', '--probe', '--version', '--list-langs', '--probe']);
 });
 
 test('expired readiness is rechecked before the next recognition', async () => {
@@ -245,7 +256,7 @@ test('recognition uses shell-free stdin with fixed args and no inherited credent
   assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
   for (const call of fake.calls) {
     assert.equal(call.binary, '/usr/bin/prlimit');
-    assert.deepEqual(call.processArgs.slice(0, 7), ['--as=1073741824:1073741824', '--cpu=10:10', '--core=0:0', '--fsize=0:0', '--nofile=64:64', '--', '/usr/bin/tesseract']);
+    assert.deepEqual(call.processArgs.slice(0, 7), ['--as=1073741824:1073741824', '--cpu=10:10', '--core=0:0', '--fsize=0:0', '--nofile=64:64', '--', call.isNormalizer ? '/usr/bin/python3' : '/usr/bin/tesseract']);
     assert.equal(call.options.shell, false);
     assert.equal(call.options.cwd, '/');
     assert.deepEqual(Object.keys(call.options.env).sort(), ['LANG', 'LC_ALL', 'OMP_NUM_THREADS', 'OMP_THREAD_LIMIT', 'PATH']);
@@ -482,4 +493,263 @@ test('unexpected native crash releases the slot only after close and permits ret
   await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_FAILED', 422));
   assert.equal((await service.recognizeImage(tinyPng())).candidates[0].partNumber, 'DEMO-1234');
   await service.shutdown();
+});
+
+test('orientation fallback uses a second fixed pass only after unlabelled text and preserves source bytes', async () => {
+  const bytes = tinyPng(), original = Buffer.from(bytes);
+  const fake = fakeSpawner({ languages: 'eng\nosd\n', recognize: call => call.finish(call.args.includes('6') ? tsv(['ROTATED TEXT']) : tsv(['PART NUMBER: O0-I1', 'DESCRIPTION: SOURCE LABEL'])) });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const result = await service.recognizeImage(bytes);
+  assert.equal(result.processing.passes, 2);
+  assert.equal(result.processing.orientationFallbackUsed, true);
+  assert.equal(result.candidates[0].partNumber, 'O0-I1');
+  assert.equal(result.candidates[0].manufacturer, '');
+  assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+  assert.match(result.warnings.join(' '), /orientation fallback/);
+  assert.deepEqual(fake.calls.at(-1).args, ['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '1', 'tsv']);
+  assert.deepEqual(Buffer.concat(fake.calls.at(-1).input), original);
+  assert.deepEqual(bytes, original);
+  await service.shutdown();
+});
+
+test('orientation never replaces an existing partial or ambiguous candidate', async () => {
+  for (const lines of [['PART NUMBER: O0-11'], ['PART NUMBER: A', 'PART NUMBER: B', 'MANUFACTURER: C', 'MANUFACTURER: D']]) {
+    const fake = fakeSpawner({ languages: 'eng\nosd\n', recognize: call => call.finish(tsv(lines)) });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    const result = await service.recognizeImage(tinyPng());
+    assert.equal(result.processing.passes, 1);
+  assert.equal(result.processing.orientationFallbackUsed, false);
+    assert.equal(fake.calls.filter(call => call.args[0] === 'stdin').length, 1);
+    assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+    await service.shutdown();
+  }
+});
+
+test('orientation fallback is unavailable without OSD and is unnecessary for blank text', async () => {
+  for (const options of [{ languages: 'eng\n', text: tsv(['UNLABELLED TEXT']) }, { languages: 'eng\nosd\n', text: HEADER + '\n' }]) {
+    const fake = fakeSpawner({ languages: options.languages, recognize: call => call.finish(options.text) });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    const result = await service.recognizeImage(tinyPng());
+    assert.equal(result.processing.passes, 1);
+  assert.equal(result.processing.orientationFallbackUsed, false);
+    assert.deepEqual(result.candidates, []);
+    await service.shutdown();
+  }
+});
+
+test('unsuccessful orientation preserves the original unlabelled text for manual entry', async () => {
+  const fake = fakeSpawner({ languages: 'eng\nosd\n', recognize: call => call.finish(tsv([call.args.includes('6') ? 'FIRST READING' : 'OTHER READING'])) });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const result = await service.recognizeImage(tinyPng());
+  assert.equal(result.rawText, 'FIRST READING');
+  assert.deepEqual(result.candidates, []);
+  assert.equal(result.processing.passes, 2);
+  assert.equal(result.processing.orientationFallbackUsed, false);
+  await service.shutdown();
+});
+
+test('recognition passes share one text output limit including discarded stderr', async () => {
+  const fake = fakeSpawner({ languages: 'eng\nosd\n', recognize: call => {
+    call.child.stderr.write(Buffer.alloc(300 * 1024, 65));
+    call.finish(tsv(['UNLABELLED']));
+  } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_OUTPUT_LIMIT', 422));
+  assert.deepEqual(fake.calls.at(-1).kills, ['SIGKILL']);
+  assert.equal(fake.calls.at(-1).closed, true);
+  await service.shutdown();
+});
+
+test('second pass cannot obtain a new recognition wall deadline', async () => {
+  let clock = 0;
+  const fake = fakeSpawner({ languages: 'eng\nosd\n', recognize: call => {
+    clock += 20;
+    call.finish(tsv(['UNLABELLED']));
+  } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, now: () => clock, recognitionTimeoutMs: 20 });
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_TIMEOUT', 504));
+  assert.equal(fake.calls.filter(call => call.args[0] === 'stdin').length, 1);
+  await service.shutdown();
+});
+
+test('cancellation during orientation retains the slot and reaps the second process', async () => {
+  let started;
+  const ready = new Promise(resolve => { started = resolve; });
+  const fake = fakeSpawner({ languages: 'eng\nosd\n', killDelay: 20, recognize: call => {
+    if (call.args.includes('6')) call.finish(tsv(['UNLABELLED']));
+    else started();
+  } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const controller = new AbortController();
+  const pending = service.recognizeImage(tinyPng(), { signal: controller.signal });
+  const rejected = assert.rejects(pending, isError('OCR_CANCELLED', 499));
+  await ready;
+  controller.abort();
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_BUSY', 429));
+  await rejected;
+  assert.equal(fake.calls.at(-1).closed, true);
+  assert.deepEqual(fake.calls.at(-1).kills, ['SIGKILL']);
+  await service.shutdown();
+});
+
+test('failed orientation returns a generic failure instead of claiming recovered fields', async () => {
+  const fake = fakeSpawner({ languages: 'eng\nosd\n', recognize: call => {
+    if (call.args.includes('6')) call.finish(tsv(['UNLABELLED']));
+    else { call.child.stderr.write('PRIVATE worker failure'); call.finish('', 1); }
+  } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_FAILED', 422));
+  await service.shutdown();
+});
+
+test('missing or unsupported pixel normalizer fails readiness without unnormalized OCR fallback', async () => {
+  for (const output of ['', 'PRIVATE invalid JSON', '{"method":"unknown","pillowVersion":"11.1.0"}']) {
+    const fake = fakeSpawner({ normalizerProbe: call => call.finish(output, output ? 0 : 1) });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    const status = await service.getOcrStatus();
+    assert.equal(status.available, false);
+    assert.equal(status.reason, 'normalizer_unavailable');
+    await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
+    assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+    assert.equal(JSON.stringify(status).includes('PRIVATE'), false);
+    await service.shutdown();
+  }
+});
+
+test('normalizer uses only the fixed installed interpreter and fixed isolated script', async () => {
+  const fake = fakeSpawner();
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const result = await service.recognizeImage(tinyPng());
+  const normalizerCalls = fake.calls.filter(call => call.isNormalizer);
+  assert.equal(normalizerCalls.length, 2);
+  for (const call of normalizerCalls) {
+    assert.deepEqual(call.processArgs.slice(6, 10), ['/usr/bin/python3', '-I', '-B', path.join(__dirname, '../workspace/ocr-preprocess.py')]);
+    assert.equal(call.options.shell, false);
+    assert.equal(call.options.cwd, '/');
+  }
+  assert.equal(result.processing.normalization.applied, false);
+  assert.equal(result.processing.normalization.isolatedNoisePixels, 0);
+  assert.deepEqual(Buffer.concat(fake.calls.at(-1).input), tinyPng());
+  await service.shutdown();
+});
+
+test('conditional normalization sends bounded pixel output to OCR and never changes source bytes', async () => {
+  const source = tinyPng({ width: 200, height: 200, extra: [chunk('tEXt', Buffer.from('source metadata'))] });
+  const original = Buffer.from(source), normalized = tinyPng({ width: 200, height: 200 });
+  const header = { method: 'median3-isolated-noise', pillowVersion: '11.1.0', applied: true, isolatedNoisePixels: 50, thresholdPixels: 40, imagePixels: 40000 };
+  const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), normalized])) });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const result = await service.recognizeImage(source);
+  assert.deepEqual(result.processing.normalization, header);
+  assert.deepEqual(Buffer.concat(fake.calls.at(-1).input), normalized);
+  assert.equal(Buffer.concat(fake.calls.find(call => call.isNormalizer && !call.args.length).input).includes(Buffer.from('source metadata')), false);
+  assert.deepEqual(source, original);
+  assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+  await service.shutdown();
+});
+
+test('invalid normalizer metadata or inconsistent pixel output is rejected before OCR', async () => {
+  const base = { method: 'median3-isolated-noise', pillowVersion: '11.1.0', applied: false, isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 1 };
+  const invalid = [Buffer.from('PRIVATE unreadable'), Buffer.from(JSON.stringify({ ...base, pillowVersion: '1.0.0' }) + '\n'),
+    Buffer.from(JSON.stringify({ ...base, applied: true }) + '\n'), Buffer.from(JSON.stringify({ ...base, isolatedNoisePixels: 2 }) + '\n'),
+    Buffer.concat([Buffer.from(JSON.stringify(base) + '\n'), tinyPng()])];
+  for (const output of invalid) {
+    const fake = fakeSpawner({ normalize: call => call.finish(output) });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_OUTPUT_INVALID', 422));
+    assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+    await service.shutdown();
+  }
+});
+
+test('normalizer may not change dimensions or pass invalid PNG bytes to the engine', async () => {
+  const header = { method: 'median3-isolated-noise', pillowVersion: '11.1.0', applied: true, isolatedNoisePixels: 50, thresholdPixels: 40, imagePixels: 40000 };
+  for (const bytes of [Buffer.from('not pixels'), tinyPng(), Buffer.from([])]) {
+    const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), bytes])) });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    await assert.rejects(service.recognizeImage(tinyPng({ width: 200, height: 200 })), isError('OCR_OUTPUT_INVALID', 422));
+    assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+    await service.shutdown();
+  }
+});
+
+test('normalizer output overflow terminates and reaps the process before any OCR starts', async () => {
+  const fake = fakeSpawner({ normalize: call => call.child.stdout.write(Buffer.alloc(LIMITS.normalizedImageBytes + 1025, 65)) });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_OUTPUT_LIMIT', 422));
+  assert.deepEqual(fake.calls.at(-1).kills, ['SIGKILL']);
+  assert.equal(fake.calls.at(-1).closed, true);
+  assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+  await service.shutdown();
+});
+
+test('normalization consumes the same wall deadline as recognition', async () => {
+  let clock = 0;
+  const header = { method: 'median3-isolated-noise', pillowVersion: '11.1.0', applied: false, isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 1 };
+  const fake = fakeSpawner({ normalize: call => { clock += 20; call.finish(JSON.stringify(header) + '\n'); } });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, now: () => clock, recognitionTimeoutMs: 20 });
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_TIMEOUT', 504));
+  assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+  await service.shutdown();
+});
+
+test('shutdown cancels and reaps active normalization without starting an OCR engine', async () => {
+  let started;
+  const ready = new Promise(resolve => { started = resolve; });
+  const fake = fakeSpawner({ normalize: () => started(), killDelay: 20 });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const pending = service.recognizeImage(tinyPng());
+  const rejected = assert.rejects(pending, isError('OCR_CANCELLED', 499));
+  await ready;
+  await service.shutdown();
+  await rejected;
+  assert.equal(fake.calls.at(-1).closed, true);
+  assert.deepEqual(fake.calls.at(-1).kills, ['SIGKILL']);
+  assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+});
+
+test('required isolation wraps all probes and native stages without an unconfined fallback', async () => {
+  const fake = fakeSpawner();
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+  assert.equal((await service.getOcrStatus()).isolation, 'bubblewrap-seccomp');
+  const result = await service.recognizeImage(tinyPng());
+  assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+  for (const call of fake.calls) {
+    assert.equal(call.processArgs[6], '/usr/bin/bwrap');
+    assert.equal(call.processArgs.includes('--unshare-net'), true);
+    assert.equal(call.processArgs.includes('--unshare-user'), true);
+    assert.equal(call.processArgs.includes('--share-net'), false);
+    assert.deepEqual(call.options.stdio, ['pipe', 'pipe', 'pipe', 'pipe']);
+    assert.ok(Buffer.concat(call.seccomp).length > 0);
+  }
+  await service.shutdown();
+});
+
+test('a rejected isolation launcher fails closed without a privileged or resource-only retry', async () => {
+  const fake = fakeSpawner({ spawnError: 'ENOENT' });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+  const status = await service.getOcrStatus();
+  assert.equal(status.available, false);
+  assert.equal(status.reason, 'isolation_unavailable');
+  await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
+  assert.equal(fake.calls.length, 1);
+  assert.equal(fake.calls[0].processArgs[6], '/usr/bin/bwrap');
+  assert.throws(() => createOcrService({ isolation: 'try-then-unconfined' }), /Invalid local OCR service options/);
+  await service.shutdown();
+});
+
+test('default readiness age and shared recognition deadline do not depend on the host wall clock', async () => {
+  const wallClock = Date.now;
+  const fake = fakeSpawner();
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  try {
+    Date.now = () => { throw new Error('Host wall clock must not measure elapsed OCR time'); };
+    const result = await service.recognizeImage(tinyPng());
+    assert.equal(result.candidates[0].partNumber, 'DEMO-1234');
+    assert.ok(Number.isInteger(result.durationMs) && result.durationMs >= 0);
+    assert.equal((await service.getOcrStatus()).available, true);
+  } finally {
+    Date.now = wallClock;
+    await service.shutdown();
+  }
 });

@@ -4,11 +4,17 @@ PanelReply is a software platform for electrical contractors. It combines custom
 
 [Repository](https://github.com/panelreply-business/panelreply-demo) · [Draft platform PR8](https://github.com/panelreply-business/panelreply-demo/pull/8) · [Platform guide](docs/PLATFORM_DEVELOPMENT.md) · [Platform verification](docs/PLATFORM_VERIFICATION.md) · [Private workspace setup](docs/PRIVATE_WORKSPACE.md) · [Backup and recovery](docs/RECOVERY.md) · [Recovery verification](docs/RECOVERY_VERIFICATION.md)
 
+## Engineering remediation checkpoint
+
+The current remediation preserves the website and existing private workspace. It adds 334 synthetic conversation scenarios, durable assistant usage accounting, safe record deletion, schema-3 recovery, measured OCR improvements and integration checks. [Current remediation verification](docs/REMEDIATION_VERIFICATION.md) distinguishes executed local evidence from pending full CI. [Usage and configuration](docs/ASSISTANT_USAGE.md) · [Deletion and retention](docs/DATA_LIFECYCLE.md).
+
+The historical run66 results below remain preserved. They do not verify the newly changed code. Actual AI model quality, real-photograph accuracy and hosted operations remain separate gates.
+
 ## Current status
 
 Both public Render services are suspended. After the November 19 audit found them active, the owner explicitly approved restoring suspension. Render confirmed the AI service suspended at 7:28:44 PM EST and the static service at 7:29:45 PM EST. The GET-only checks passed at 7:30 PM EST with HTTP 503, Render's owner-suspension message and no application markup from either URL. Auto-deploy and PR previews remain off. [Suspension evidence](docs/evidence/public-suspension-2026-11-19.json). Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
 
-Current pre-launch work and evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Operations and business proposal](docs/PRELAUNCH_OPERATIONS.md). The current application/test source at [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683): 645 Node/HTTP, 186 Chromium, 121 Firefox, 121 WebKit, 14 native OCR/resource and nine independent workbook-reader cases. Attempt 1 failed because both suspension guards failed. Attempt 2 succeeded after rerunning only the suspension job: two PASS, zero FAIL and three policy-BLOCKED checks. The 1,096 application results carried forward and were not rerun. The separate 310-image OCR benchmark still has 57 nonexact cases. No real-model quality claim or release approval follows from these counts.
+Current evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Remediation verification](docs/REMEDIATION_VERIFICATION.md). Historical source [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 application checks in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). Attempt 1 failed the two suspension guards. After separately approved suspension, attempt 2 reran only that job: two PASS, zero FAIL and three policy-BLOCKED checks. Its 1,096 application results carried forward without re-execution. That checkpoint measured 253/310 exact synthetic OCR images. Current remediation measurements and code verification are recorded separately above. No real-model quality claim or release approval follows from these counts.
 
 - Public static URL: https://panelreply-demo.onrender.com/
 - Public server URL: https://panelreply-ai.onrender.com/
@@ -29,7 +35,7 @@ The branch adds:
 - Product, feature, pricing-preparation, login-information, pilot-preparation and legal-review views without external submission or invented claims.
 - A shared dashboard and navigation for requests, panel scanning, saved projects, exports, settings and account details.
 - Authenticated panel projects with editable parts, quantities, source images, review status and saved CSV and XLSX exports.
-- Private source-image storage in the existing SQLite database, with schema 1-to-schema 2 migration and recovery compatibility.
+- Private source-image storage in the existing SQLite database, with transactional schema-1/2-to-3 startup migration and older-archive recovery compatibility.
 - Optional local Tesseract 5 text extraction with bounded native resources. All candidates require review. Missing values stay blank. The expanded synthetic benchmark still has nonexact cases.
 - Provider-independent conversational assistance with strict field grounding, cancellation, error handling and synthetic integration tests. The concrete external transport remains disabled.
 - Independent spreadsheet readback, concurrent database workers and a bounded backup/restore workload. See the current pre-launch evidence for limits.

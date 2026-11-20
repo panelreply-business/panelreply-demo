@@ -38,6 +38,7 @@
   let leadConflict = false;
   let exportBusy = false;
   const exportUrls = new Set();
+  const deletion = window.PanelReplyDeletion.create({ api, onChange: updateDirty, onDeleted: deletedLead });
 
   class RequestError extends Error {
     constructor(status, code, message, fields) { super(message); this.status = status; this.code = code; this.fields = fields; }
@@ -52,6 +53,7 @@
 
   function clearSession() {
     expired = true;
+    deletion.expire();
     csrfToken = '';
     user = null;
     leads = [];
@@ -80,6 +82,7 @@
     if (csrfToken) headers['X-Workspace-Session'] = csrfToken;
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
     if (method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
+    if (options.key) headers['Idempotency-Key'] = options.key;
     let response;
     try {
       response = await fetch(path, { method, credentials: 'same-origin', cache: 'no-store', headers, body: options.body === undefined ? undefined : JSON.stringify(options.body) });
@@ -114,11 +117,16 @@
   function profileDirty() { return Boolean(profile && profileBaseline && JSON.stringify(profileDraft()) !== profileBaseline); }
   function hasDirty() { return leadDirty() || profileDirty(); }
   function updateDirty() {
+    const deleting = deletion.isOpen();
+    const deleteLocked = deleting || !selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict;
+    $('delete-lead').disabled = deleteLocked;
+    $('delete-conversation').disabled = deleteLocked || !selected?.conversation?.length;
+    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests;
     $('lead-dirty').hidden = !leadDirty();
     $('profile-dirty').hidden = !profileDirty();
-    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict;
-    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict;
-    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy;
+    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting;
+    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting;
+    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting;
   }
 
   async function exportRecords() {
@@ -163,7 +171,7 @@
 
   function guarded(action) {
     if (expired) return;
-    if (leadSaving || profileSaving) {
+    if (leadSaving || profileSaving || deletion.isOpen()) {
       showAppError('A save is still in progress. Wait for its result before leaving this view.');
       return;
     }
@@ -427,6 +435,40 @@
     }
   }
 
+  function beginLeadDeletion(kind) {
+    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict) return;
+    const conversationOnly = kind === 'lead_conversation';
+    deletion.request({
+      kind, id: selected.id, version: selected.version,
+      url: `/api/leads/${encodeURIComponent(selected.id)}${conversationOnly ? '/conversation' : ''}`,
+      title: conversationOnly ? 'Delete conversation?' : 'Delete customer request?',
+      description: conversationOnly
+        ? 'Remove the saved conversation from this request. Request fields and contact restrictions stay in place.'
+        : 'Remove this request, its notes and saved conversation from the active workspace.'
+    });
+  }
+  async function deletedLead(operation) {
+    if (expired) return;
+    if (operation.kind === 'lead') {
+      leads = leads.filter(item => item.id !== operation.id);
+      selected = null; leadBaseline = ''; leadConflict = false; selectionSerial += 1;
+      $('lead-form').reset(); $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      $('lead-detail').hidden = true; $('request-empty').hidden = false;
+      const url = new URL(location.href); url.searchParams.delete('lead'); history.replaceState(null, '', url.pathname + url.search);
+      renderList(); $('list-status').textContent = 'Request deletion confirmed.';
+      $('request-search').focus(); updateDirty();
+      return;
+    }
+    // Clear deleted text immediately, even if the follow-up read fails.
+    if (selected?.id === operation.id) {
+      selected = null; leadBaseline = ''; $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      $('lead-detail').hidden = true; $('request-empty').hidden = false;
+    }
+    $('list-status').textContent = 'Conversation deletion confirmed. Loading the remaining request…';
+    await selectLead(operation.id);
+    if (!expired && selected?.id === operation.id) $('lead-status').textContent = 'Conversation deleted. Contact restrictions remain.';
+  }
+
   async function saveLead(event) {
     event.preventDefault();
     if (!selected || leadSaving || leadLoading || refreshingRequests || leadConflict || !$('lead-form').reportValidity()) return;
@@ -610,6 +652,8 @@
   $('refresh-requests').addEventListener('click', () => guarded(refreshRequests));
   $('export-records').addEventListener('click', exportRecords);
   $('retry-load').addEventListener('click', () => guarded(bootstrap));
+  $('delete-lead').addEventListener('click', () => beginLeadDeletion('lead'));
+  $('delete-conversation').addEventListener('click', () => beginLeadDeletion('lead_conversation'));
   $('lead-form').addEventListener('submit', saveLead);
   $('profile-form').addEventListener('submit', saveProfile);
   $('lead-form').addEventListener('input', event => { event.target.removeAttribute('aria-invalid'); $('lead-status').textContent = ''; updateDirty(); });
@@ -618,7 +662,7 @@
   $('profile-form').addEventListener('change', () => { $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
   $('reload-lead').addEventListener('click', () => guarded(() => { if (selected) selectLead(selected.id); }));
   $('reload-profile').addEventListener('click', () => guarded(loadProfile));
-  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving)) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving || deletion.isPending())) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
   bootstrap();
 })();

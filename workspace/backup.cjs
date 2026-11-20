@@ -8,6 +8,8 @@ const { DatabaseSync, backup } = require('node:sqlite');
 const { assertPrivateDirectory, assertPrivateRegularFile, assertUnusedPath, existingDatabasePath } = require('./file-safety.cjs');
 const { validateLeadInput, validateProfileInput, normalizePhone, username, STATUSES, assertWorkspaceSchema } = require('./store.cjs');
 const panels = require('./panels.cjs');
+const { INPUT_BYTES, OUTPUT_TOKENS, LEASE_MS, MAX_ROWS } = require('./usage.cjs');
+const { validateLifecycleDatabase } = require('./lifecycle.cjs');
 
 const scrypt = promisify(crypto.scrypt);
 const MAGIC = Buffer.from('PRKBK001');
@@ -122,7 +124,16 @@ function validateDatabase(db) {
       const details = readJson(row.details_json);
       if (!details || typeof details !== 'object' || Array.isArray(details)) fail('invalid_database', 'The workspace contains an invalid audit record.');
     }
-    if (schemaVersion === 2) {
+    if (schemaVersion >= 3) {
+      validateLifecycleDatabase(db, fail);
+      if (db.prepare('SELECT 1 FROM assistant_usage a JOIN users u ON u.id=a.actor_id WHERE a.business_id<>u.business_id LIMIT 1').get()) fail('invalid_database', 'The database business-isolation check failed.');
+      if (db.prepare('SELECT count(*) AS n FROM assistant_usage').get().n > MAX_ROWS) fail('invalid_database', 'The workspace contains too many assistance usage records.');
+      const timestamp = n => Number.isSafeInteger(n) && n >= 0 && n <= 8640000000000000;
+      for (const row of db.prepare('SELECT * FROM assistant_usage').iterate()) {
+        if (!panels.UUID.test(row.id) || !/^[a-f0-9]{64}$/.test(row.request_hash) || !timestamp(row.created_at) || !timestamp(row.expires_at) || row.expires_at !== row.created_at + LEASE_MS || !['pending', 'succeeded', 'failed', 'cancelled', 'timeout', 'abandoned'].includes(row.status) || (row.status === 'pending' ? row.finished_at !== null : !timestamp(row.finished_at) || row.finished_at < row.created_at) || !Number.isSafeInteger(row.input_bytes) || row.input_bytes < 1 || row.input_bytes > INPUT_BYTES || row.output_token_limit !== OUTPUT_TOKENS || !Number.isSafeInteger(row.reserved_micros) || row.reserved_micros < 0 || row.reserved_micros > 1000000000) fail('invalid_database', 'The workspace contains invalid assistance usage records.');
+      }
+    }
+    if (schemaVersion >= 2) {
       const { inspectImage } = require('./ocr.cjs');
       const sourceIds = db.prepare('SELECT id FROM panel_sources WHERE project_id=? AND business_id=?');
       let panelBytes = 0;
@@ -151,7 +162,7 @@ function validateDatabase(db) {
     fail('invalid_database', 'The workspace contains a record that failed validation.');
   }
   const count = table => Number(db.prepare('SELECT count(*) AS n FROM ' + table).get().n);
-  return { businesses: count('businesses'), users: count('users'), leads: count('leads'), messages: count('messages'), audit: count('audit'), optOuts: count('suppression'), ...(schemaVersion === 2 ? { panelProjects: count('panel_projects'), panelSources: count('panel_sources') } : {}) };
+  return { businesses: count('businesses'), users: count('users'), leads: count('leads'), messages: count('messages'), audit: count('audit'), optOuts: count('suppression'), ...(schemaVersion >= 2 ? { panelProjects: count('panel_projects'), panelSources: count('panel_sources') } : {}), ...(schemaVersion >= 3 ? { deletedRecords: count('record_deletions'), deletionOperations: count('deletion_operations'), safetyHolds: count('safety_holds'), assistantUsage: count('assistant_usage') } : {}) };
 }
 
 function makeHeader(payloadBytes, schemaVersion) {
@@ -170,7 +181,7 @@ function makeHeader(payloadBytes, schemaVersion) {
 function parseHeader(archive) {
   if (archive.length < HEADER_BYTES + TAG_BYTES + 100 || !archive.subarray(0, 8).equals(MAGIC)) fail('invalid_archive', 'This is not a supported PanelReply encrypted backup.');
   const header = archive.subarray(0, HEADER_BYTES);
-  if (header.readUInt16BE(8) !== 1 || ![1, 2].includes(header.readUInt16BE(10)) || header[12] !== 1 || header[13] !== 1 || header.readUInt16BE(14) !== 0 || header.readUInt32BE(60) !== 0) fail('unsupported_format', 'This archive version or encryption format is not supported.');
+  if (header.readUInt16BE(8) !== 1 || ![1, 2, 3].includes(header.readUInt16BE(10)) || header[12] !== 1 || header[13] !== 1 || header.readUInt16BE(14) !== 0 || header.readUInt32BE(60) !== 0) fail('unsupported_format', 'This archive version or encryption format is not supported.');
   const size = header.readBigUInt64BE(24);
   const timestamp = header.readBigUInt64BE(16);
   if (size < 100n || size > BigInt(MAX_DATABASE_BYTES) || size !== BigInt(archive.length - HEADER_BYTES - TAG_BYTES) || timestamp > 8640000000000000n) fail('invalid_archive', 'The encrypted backup is incomplete or has invalid metadata.');

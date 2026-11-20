@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
-const { getOcrStatus, recognizeImage } = require('../workspace/ocr.cjs');
+const { createProcessSampler } = require('./ocr-process-metrics.cjs');
 const FIELDS = ['partNumber', 'manufacturer', 'description'];
 
 function percentile(values, quantile) {
@@ -39,12 +39,23 @@ function metrics(results) {
 async function main() {
   const directory = path.resolve(process.argv[2] || '');
   const output = process.argv[3];
-  if (!process.argv[2] || !output) throw new Error('Usage: node scripts/benchmark-ocr.cjs DATASET_DIRECTORY RESULT_JSON');
+  if (!process.argv[2] || !output) throw new Error('Usage: node scripts/benchmark-ocr.cjs DATASET_DIRECTORY RESULT_JSON [TRUSTED_LOCAL_OCR_MODULE]');
+  // A trusted, local baseline module can be measured without editing the
+  // immutable baseline checkout. This is a diagnostic CLI, not an HTTP option.
+  const engineModule = path.resolve(process.argv[4] || path.join(__dirname, '../workspace/ocr.cjs'));
+  const engineModuleSha256 = crypto.createHash('sha256').update(fs.readFileSync(engineModule)).digest('hex');
+  const pipelineSources = ['ocr.cjs', 'ocr-preprocess.py', 'ocr-isolation.cjs']
+    .filter(file => fs.existsSync(path.join(path.dirname(engineModule), file)))
+    .map(file => ({ file, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(path.dirname(engineModule), file))).digest('hex') }));
+  const pipelineSha256 = crypto.createHash('sha256').update(JSON.stringify(pipelineSources)).digest('hex');
+  const sampler = createProcessSampler();
+  const { createOcrService } = require(engineModule);
+  const service = createOcrService({ spawnProcess: sampler.spawnProcess });
   const manifestBytes = fs.readFileSync(path.join(directory, 'manifest.json'));
   const manifest = JSON.parse(manifestBytes);
   if (manifest.format !== 'panelreply-synthetic-ocr-benchmark' || manifest.version !== 1 || !Array.isArray(manifest.cases) || !manifest.cases.length || manifest.cases.length > 500) throw new Error('Invalid benchmark manifest');
   if (new Set(manifest.cases.map(fixture => fixture.sha256)).size !== manifest.cases.length) throw new Error('Duplicate image bytes would inflate benchmark case counts');
-  const status = await getOcrStatus();
+  const status = await service.getOcrStatus();
   if (!status.available) { console.log(JSON.stringify({ status: 'BLOCKED', engine: status, cases: 0 })); process.exitCode = 2; return; }
   const results = [], start = performance.now(), cpuStart = process.cpuUsage(), rssStart = process.memoryUsage().rss;
   for (const fixture of manifest.cases) {
@@ -52,14 +63,16 @@ async function main() {
     const image = fs.readFileSync(path.join(directory, fixture.file));
     if (crypto.createHash('sha256').update(image).digest('hex') !== fixture.sha256) throw new Error('Fixture hash mismatch: ' + fixture.id);
     const began = performance.now();
+    const processStart = sampler.records.length;
     let result, error = null;
-    try { result = await recognizeImage(image); } catch (failure) { error = failure.code || 'OCR_FAILED'; }
+    try { result = await service.recognizeImage(image); } catch (failure) { error = failure.code || 'OCR_FAILED'; }
     const candidate = result?.candidates[0];
     const actual = candidate ? Object.fromEntries(FIELDS.map(key => [key, candidate[key]])) : null;
     const exact = !error && FIELDS.every(key => (actual?.[key] || '') === (fixture.expected?.[key] || '')) && (!fixture.expected ? !candidate : !!candidate);
     results.push({ id: fixture.id, scenario: fixture.scenario, condition: fixture.condition, expected: fixture.expected, actual, exact, error,
       durationMs: Math.round(performance.now() - began), reviewViolation: !!candidate && candidate.reviewStatus !== 'unreviewed',
-      rawText: result?.rawText || '', warnings: result?.warnings || [], candidateWarnings: candidate?.warnings || [] });
+      rawText: result?.rawText || '', warnings: result?.warnings || [], candidateWarnings: candidate?.warnings || [],
+      processing: result?.processing || null, nativeProcess: sampler.summarize(sampler.records.slice(processStart)) });
     if (results.length % 40 === 0) console.log(JSON.stringify({ status: 'MEASURING', completed: results.length, total: manifest.cases.length }));
   }
   const overall = metrics(results);
@@ -68,10 +81,12 @@ async function main() {
   const report = { format: 'panelreply-ocr-benchmark-results', version: 1, status: overall.errors || overall.reviewViolations ? 'FAIL' : 'MEASURED',
     accuracyGate: overall.exactCases === results.length ? 'PASS' : 'FAIL',
     scope: 'Synthetic stress conditions only. Not a real-world accuracy estimate. Measurement completion is not a passing accuracy claim.',
-    engine: status, datasetSha256: crypto.createHash('sha256').update(manifestBytes).digest('hex'), pillowVersion: manifest.pillowVersion, fonts: manifest.fonts,
+    engine: status, engineModuleSha256, pipelineSources, pipelineSha256, datasetSha256: crypto.createHash('sha256').update(manifestBytes).digest('hex'), pillowVersion: manifest.pillowVersion, fonts: manifest.fonts,
     scenarios: manifest.scenarios, conditions: manifest.conditions, omittedDuplicateCases: manifest.omittedDuplicateCases || [], elapsedMs: Math.round(performance.now() - start),
     nodeProcess: { rssBeforeBytes: rssStart, rssAfterBytes: process.memoryUsage().rss, cpuUserMs: Math.round(cpu.user / 1000), cpuSystemMs: Math.round(cpu.system / 1000), scope: 'Node parent only. Does not measure native child CPU or peak RSS.' },
+    nativeProcess: sampler.summarize(),
     overall, byCondition, failureCorpus: results.filter(row => !row.exact), results };
+  await service.shutdown();
   fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify({ status: report.status, accuracyGate: report.accuracyGate, output, overall, elapsedMs: report.elapsedMs }));
   // Accuracy mismatches remain explicit evidence and are not an arbitrary CI

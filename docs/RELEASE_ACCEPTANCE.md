@@ -1,54 +1,49 @@
-# Pre-launch release acceptance
+# Release acceptance
 
-Assessment date: November 19, 2026. Current tested source is [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9), verified by [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). The 1,096 application checks passed in attempt 1, which failed because both required suspension guards failed. After owner-approved suspension, attempt 2 succeeded with only the suspension job rerun: two PASS, zero FAIL and three policy-BLOCKED checks. The application results carried forward without re-execution. OCR measurement completion is not an accuracy PASS.
+Remediation checkpoint, November 19, 2026. This matrix separates executed test scopes from unverified external integrations. It uses PASS, FAIL, BLOCKED and NOT TESTED only. A PASS never approves deployment or establishes behavior outside its named test scope.
 
-In the table, Source 66 means commit 17223d6 and the application checks executed in run66 attempt 1. The suspension row separately identifies its attempt 2 rerun. A PASS applies to the stated tested scope. It is not commercial readiness.
+The baseline was commit 36b2bf3 on `feature/interactive-dual-product-site`, draft PR8. All 163 starting blobs matched. Its historical application source 17223d6 had 1,096 passing application checks in run66 attempt 1. Attempt 2 reran only the suspension guard after owner-approved suspension. Those results do not verify new remediation code.
 
-| ID | Requirement | Implementation / verification | Last evidence | Result / remaining gate |
-| --- | --- | --- | --- | --- |
-| BASE-01 | Continue verified work without duplicates | All 120 starting blobs matched 41e31a8; existing branch/PR8 preserved | Baseline tree and current GitHub refs | PASS |
-| AI-01 | Multi-turn draft, context, corrections and conflicts | Assistant orchestrator, 49-scenario corpus, component/API and four browser cases per engine | Source 66; AI_PRELAUNCH.md | PASS for synthetic integration |
-| AI-02 | Grounded fields and approved business answers | Strict allowlist, field-bound evidence, independent adversarial tests, profile-version recheck | Source 66 | PASS for tested proposals |
-| AI-03 | Timeouts, errors, cancellation and retries | Bounded calls, cancellation/auth rechecks, unavailable-state preservation and fake browser failures | Source 66 | PASS |
-| AI-04 | Concrete provider transport | Disabled Responses adapter; 31 mock HTTP cases including compression and late cancellation | Source 66 | PASS for mock transport; actual provider compatibility BLOCKED |
-| AI-05 | Actual model quality | No real-provider calls or credentials activated | 49 fake scenarios do not measure model behavior | BLOCKED by provider, data-transfer and budget approval |
-| AI-06 | 300–500 meaningful evaluation scenarios | 49 curated scenarios implemented; no trivial multiplication | Source 66 corpus/evaluation report | NOT IMPLEMENTED beyond 49; expansion remains unfinished |
-| SAFE-01 | Consent, STOP and electrical safety holds | Existing deterministic store controls, new bounded hazard cases, in-process/API/browser checks | Source 66 | PASS for tested phrases and restrictions |
-| OCR-01 | Validated image, private source and bounded processing | Native engine with prlimit, timeout/cancel/shutdown/reaping, API and browser paths | Source 66; 14 native cases | PASS; process ceilings are not an OS sandbox |
-| OCR-02 | Synthetic extraction quality | 310 unique images, exact fields, omissions, wrong values and latency | Source 66 and baseline/candidate benchmark artifact | FAIL: 253 exact, 57 nonexact |
-| OCR-03 | Representative photograph quality | Review/correction workflow exists | No approved representative photo set supplied | NOT TESTED; authorized photos needed |
-| DATA-01 | Panel save, reopen, corrections and source ownership | Existing SQLite store and authenticated API/browser checks in three engines | Source 66 | PASS for executed workflows |
-| DATA-02 | Concurrent updates and duplicate retries | Six independent cross-connection worker races and interrupted uncommitted writer | Source 66 | PASS; sustained hosted concurrency not established |
-| DATA-03 | Intake requests, notes, status and history | Existing request API, pure logic, real HTTP and private-browser suites | Source 66 | PASS |
-| EXP-01 | Saved corrected CSV and inert formulas | Existing exporter, exact-value API/browser checks and unsaved-draft handling | Source 66 | PASS |
-| EXP-02 | Saved typed XLSX with tenant/session boundaries | 13 writer cases, API cases, 9 independent reader fixtures, 7 browser cases per engine | Source 66; XLSX_EXPORT.md | PASS for tested writer/readers/browsers |
-| EXP-03 | Native spreadsheet compatibility | Installed LibreOfficeDev 26.8 imported nine files; exact original-file reader tests | Local native observations documented in XLSX_EXPORT.md | PARTIAL evidence: resaving has normalization limits; Microsoft Excel NOT TESTED |
-| AUTH-01 | Authentication, CSRF, Origin, session pins and tenant boundaries | Existing store/API, real HTTP and three-engine private workflows | Source 66 | PASS for executed attack/failure cases |
-| SEC-01 | Inputs, files, outputs, errors and secret handling | Independent code review, negative tests, CSP and repository pattern scan | Source 66 plus documented local scan | PASS for tested controls; no absolute-security claim |
-| REC-01 | Encrypted backup and safe fresh-directory restore | Existing recovery suite plus 204-project/301-request source/restored digest drill | Source 66 | PASS; source unchanged, images/exports/restrictions retained |
-| REC-02 | Offsite recovery and host objectives | Review proposal only | PRELAUNCH_OPERATIONS.md | NOT IMPLEMENTED; host/destination/budget approval required |
-| UX-01 | Existing design and core workflows at six widths | Chromium 186, Firefox 121 and WebKit 121 executed cases; desktop/mobile captures | Source 66 | PASS; actual phones and Safari NOT TESTED |
-| A11Y-01 | Labels, keyboard, focus, motion, feedback and control geometry | Existing assertions retained; focus and precision corrections verified | Source 66 | PASS for scoped automated checks; full assistive-technology audit NOT TESTED |
-| PERF-01 | Bounded storage/resource workload | One drill, five workflow groups, zero unexpected errors; CPU/memory/storage observations | Source 66; 1,792 ms CI drill; separate local record | PASS for bounded drill; HTTP saturation, hosted capacity and production CWV NOT TESTED |
-| OPS-01 | Hosting, backup, monitoring, retention and rollback proposal | Architecture-specific options and approval gates documented | PRELAUNCH_OPERATIONS.md | PASS for preparation; hosted implementation NOT IMPLEMENTED |
-| OPS-02 | Durable provider budgets and restricted OCR worker | Process-local limits exist; durable ledger and OS sandbox absent | AI_PRELAUNCH.md and OCR_BENCHMARK.md | NOT IMPLEMENTED; required before customer/provider activation |
-| BUS-01 | Positioning, competitive facts, cost variables, pilot/support/legal inputs | Official sources, labeled hypotheses and proposed decisions | PRELAUNCH_OPERATIONS.md | PASS for preparation; no approved price, SLA, legal document or pilot |
-| DEP-01 | Both public services suspended | Owner-approved suspension, Render state reads and GET-only guards | Run66 attempt 2, job 135989918969; both HTTP 503 with owner-suspension text and no app markup | PASS at November 19, 7:30 PM EST; keep suspended and require separate approval for further state changes |
-| DEP-02 | No merge, automatic deployment, PR preview or live activation | Main unchanged, PR8 draft, Render auto-deploy/previews off, zero real-provider calls | GitHub/Render reads and Source 66 | PASS at checkpoint; recheck before later actions |
-| LAUNCH-01 | Live customer, messaging, calendar and public pilot readiness | No new deployment or live integration | Current restrictions | BLOCKED; separate owner approval and missing engineering gates |
+Current candidate integration results and exact source are recorded in [remediation verification](REMEDIATION_VERIFICATION.md). Entries marked NOT TESTED below await that candidate's actual CI run.
 
-## Verification layers
+| ID | Requirement and scope | Implementation | Executed test / evidence | Result | Remaining blocker |
+| --- | --- | --- | --- | --- | --- |
+| BASE-01 | Preserve latest verified work and branch | Same branch, PR8 draft, baseline snapshot | 163 Git blobs matched. Fresh unchanged local baseline 638/638. | PASS | No merge authorization. |
+| AI-01 | At least 300 meaningful synthetic scenarios | 334 curated cases, original 49 unchanged | 334 scenarios, 374 turns, 2,196 field and 331 context comparisons. [AI evidence](AI_PRELAUNCH.md). | PASS | Fake proposals do not measure a real model. |
+| AI-02 | Context, extraction, corrections, conflicts and approved answers | Deterministic validation and field-bound evidence/correction cues | Component, corpus, API and independent adversarial fixtures | PASS | Only executed synthetic cases are covered. |
+| AI-03 | Timeout, cancellation, malformed output, retry and session controls | Bounded orchestrator, strict output contract, post-await checks | Component/API and independent completion-failure/cross-session races | PASS | Real-provider timing and semantics remain unverified. |
+| AI-04 | Disabled provider transport and configuration mechanics | Fixed transport, explicit approvals, frozen prepared config | 31 mock transport cases and configuration-negative tests | PASS | This row covers mock/configuration behavior only. |
+| AI-05 | Actual model compatibility and intake quality | Adapter prepared, never activated | Zero real-provider calls | BLOCKED | Provider/model, data-transfer and finite budget approval plus actual evaluation. |
+| AI-06 | Durable business usage and configured allowances | Schema-3 reservations and server-owned policies | 17 focused ledger cases, cross-connection races, API tests and backup roundtrip | PASS | Monetary reservations are not measured invoices. Selected model pricing/cost-bound validation pending. |
+| SAFE-01 | Consent, opt-outs and safety holds in tested flows | Persistent opt-out and business-scoped safety digest, pre/post-generation checks | Hazard/STOP/parser corpus, same-phone recreation, first-message checks and independent races | PASS | No general natural-language detection guarantee. |
+| DATA-01 | Requests, notes, statuses, transcripts, panels, images and exact saves | Existing tenant-scoped SQLite operations preserved | Current store/API suites and logical-table recovery checks | PASS | Full updated real-HTTP/browser execution pending below. |
+| DATA-02 | Concurrent version checks and duplicate submissions | Atomic transactions, idempotency and stale-version rejection | Separate SQLite connection races and terminated transaction tests | PASS | Multi-host architecture is not implemented. |
+| DEL-01 | Authorized request/conversation/project/image deletion | Version, ownership, typed confirmation, stable receipt and tombstone | Lifecycle store cases and 24 API deletion cases | PASS | This verifies synthetic data only. |
+| DEL-02 | Deleted data cannot be recreated by stale retries | Content-free tombstones and deleted source-link cleanup | Duplicate/concurrent deletion, stale create/upload replay and retained restrictions | PASS | Older archives need later-event reconciliation. |
+| DEL-03 | Private deletion UI and response-loss handling | Shared confirmation state machine and same-key retry | 11 independent client-state cases | PASS | DOM tests do not establish browser behavior. |
+| DEL-04 | Deletion browser workflows | Ten new workflows, including response loss then 403 | CI candidate run pending | NOT TESTED | Chromium/Firefox/WebKit execution needed. |
+| OCR-01 | Validation, bounded native pipeline and human review | Fixed Python/Pillow and Tesseract, stdin-only, deadlines, output/resource limits | 72 component/benchmark cases and 17 native fixture/resource cases | PASS | Native libraries still need a host patch policy. |
+| OCR-02 | Exact-image synthetic quality | Orientation fallback and conditional pixel normalization | Same 310 images: 253→277 exact, 24 corrected, zero previously exact regressions | FAIL | 33 nonexact images remain. Not real-photo accuracy. |
+| OCR-03 | Representative field photographs | Manual correction and source review preserved | No authorized representative photograph corpus | NOT TESTED | Authorized photos and measured evaluation. |
+| OCR-04 | Required OS-isolated worker on test host | Fixed mounts, no network, nonroot, seccomp, no fallback | Local namespace probe denied. CI deny verifier pending. | BLOCKED | Supported unprivileged host and actual deny tests. No privilege escalation or host-policy changes. |
+| OCR-05 | Required isolation on deployment host | Prepared configuration only | No selected-host execution | BLOCKED | Select and approve host, then verify there. |
+| EXP-01 | Saved CSV data and formula-injection protection | Existing encoding/escaping and tenant boundaries retained | Exporter/API cases and exact saved-value comparisons | PASS | Updated browser run pending below. |
+| EXP-02 | Typed original XLSX files | Text identifiers, numeric quantities, two worksheets | Nine independent ZIP/XML/openpyxl fixtures plus writer/API cases | PASS | Does not prove every spreadsheet application's resave behavior. |
+| EXP-03 | Microsoft Excel | No authorized Excel environment used | No execution | NOT TESTED | Authorized Excel environment and exact readback. |
+| AUTH-01 | Session, CSRF, Origin and tenant boundaries | Existing identity pin and rechecks retained | Current API/store, delayed deletion, cross-session and malformed input cases | PASS | Selected-host access and policy remain unverified. |
+| REC-01 | Encrypted local backup/restore and source preservation | Schema 1/2/3 strict validation, fresh-directory restore, disabled credentials | Exact logical-table/image hashes, corrupt/invalid archives and terminated restore stages | PASS | Snapshot includes only events present at backup time. |
+| REC-02 | Usage/deletion/restriction preservation in a snapshot | Schema-3 archive content and validation | Ledger roundtrip, malformed metadata, pre/post-deletion archive cases | PASS | Later events require reconciliation before re-enabling a restored workspace. |
+| REC-03 | Offsite/selected-host recovery | Architecture and owner decisions documented | No offsite execution | BLOCKED | Approved destination, credentials, retention, hosting and actual recovery drill. |
+| PERF-01 | Bounded storage/recovery workload | Synthetic 204-project/301-request/five-image drill | Five workflow groups pass with zero unexpected errors | PASS | This is not hosted capacity or a latency SLA. |
+| PERF-02 | Multiple actual HTTP clients under failures | New 12-client loopback workload, contention, OCR backpressure, interruption/restart | CI candidate run pending | NOT TESTED | Execute on authorized CI. |
+| UX-01 | Existing browser workflows and six viewport widths | Navy/blue website preserved, private controls extended | Historical run66 only for unchanged checkpoint. New candidate CI pending. | NOT TESTED | Updated Chromium/Firefox/WebKit run and capture review. |
+| UX-02 | Actual Safari and physical phones | Responsive implementation only | No physical-device execution | NOT TESTED | Authorized devices and browser versions. |
+| A11Y-01 | Labels, keyboard, focus, reduced motion and control geometry | Existing semantics plus native confirmation dialog | Updated browser assertions pending | NOT TESTED | Full assistive-technology audit also remains separate. |
+| OPS-01 | Retention, monitoring, support, host policy and operational recovery | Proposals and controls documented | No production operation executed | BLOCKED | Owner decisions and selected-host evidence. Documentation alone is not acceptance. |
+| DEP-01 | Both public services remain suspended | No service mutation in remediation | Fresh Render reads after 36b2bf3: both suspended, auto-deploy/previews off. CI GET guards pending for candidate. | PASS | Keep suspended. No deployment approval. |
+| DEP-02 | No merge or integration activation | Same draft PR and unchanged main | Fresh GitHub refs and no live provider requests | PASS | Separate approval required for merge, deployment or external activation. |
+| LAUNCH-01 | Public release or real-customer pilot | No launch performed | Missing gates above | BLOCKED | NO-GO until required quality, operational and approval gates are met. |
 
-- Component tests exercise parsing, grounding, validation, storage, writers, resource adapters and error contracts.
-- Integration tests use real SQLite connections, encrypted archives, native Tesseract, independent spreadsheet readers and actual loopback HTTP.
-- Browser/failure tests exercise saved versus unsaved state, interruption, retries, account changes, uploads, exports and review controls through three engines.
+## Decision
 
-These are different layers. Repeatedly running one assertion does not count as three forms of verification. The finite suite does not prove every defect is absent.
-
-## Release-candidate decision
-
-NO-GO for a human pilot, live-provider activation or public release. Required suspension is now verified. OCR accuracy, representative images, real-model quality, durable usage controls, host isolation/recovery and retention/operations remain unresolved. No aggregate pass count overrides these gates.
-
-GO for owner code/design review and isolated synthetic evaluation. Keep PR8 in draft. Do not merge or deploy.
-
-[Authoritative progress](DEVELOPMENT_PROGRESS.md) · [Defects and reproductions](PRELAUNCH_DEFECTS.md) · [Original verification evidence](evidence/prelaunch-verification.json) · [Suspension follow-up evidence](evidence/public-suspension-2026-11-19.json).
+GO for source review and isolated synthetic evaluation. NO-GO for public release, real-provider activation or a customer pilot. Preserve both suspensions and PR8 draft status. A green test workflow cannot override OCR FAIL, missing real-model evidence or unverified hosted operations.

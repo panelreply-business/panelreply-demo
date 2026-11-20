@@ -13,12 +13,12 @@ const LIMITS = Object.freeze({ customerName: 120, phone: 40, job: 2000, zip: 5, 
 const LABELS = Object.freeze({ customerName: 'customer name', phone: 'callback number', job: 'electrical work', zip: 'job ZIP', callbackWindow: 'callback window', requestedWorkDate: 'requested work date' });
 const TOPICS = Object.freeze(['services', 'pricing', 'estimates', 'hours', 'serviceArea', 'contact', 'qualifications', 'emergencyAvailability', 'permits', 'warranty', 'financing']);
 const BAD_CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/;
-const ELECTRICAL = /\b(?:electrical|electric|panel|breaker|fuse|outlet|socket|lighting|lights?|switch|wire|wiring|rewir\w*|charger|ev|generator|service\s+upgrade|receptacle|circuit|fan|smoke\s+(?:alarm|detector))\b/i;
+const ELECTRICAL = /\b(?:electrical|electric|panels?|breakers?|fuses?|outlets?|sockets?|lighting|lights?|switch(?:es)?|wires?|wiring|rewir\w*|chargers?|ev|generators?|service\s+upgrade|receptacles?|circuits?|fans?|doorbells?|intercoms?|surge|grounding|bonding|smoke\s+(?:alarms?|detectors?))\b/i;
 const DATE = /\b(?:today|tomorrow|tonight|next\s+(?:week|month)|this\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday|weekend|weekday|morning|afternoon|evening|asap|after\s+work|(?:after|before|around|at|between)\s+\d{1,2}|\d{1,2}(?::\d{2})?\s*(?:am|pm)|\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)\b/i;
-const CORRECTION = /\b(?:actually|correction|instead|change|update|correct|replace\s+(?:that|my|the)\s+(?:number|name|zip|date|time|job))\b/i;
 const NEGATED = /\b(?:not|never|wrong|incorrect|unavailable|impossible|without|no\s+longer|cannot|can['’]?t|don['’]?t|doesn['’]?t|didn['’]?t|won['’]?t|wouldn['’]?t|isn['’]?t|aren['’]?t)\b/i;
 const INSTRUCTION = /\b(?:ignore\s+(?:all|the|your|previous|prior)|system\s+prompt|developer\s+message|other\s+(?:customer|business|tenant)|bypass|override|pretend\s+(?:you|that)|reveal\s+(?:secrets|credentials)|api\s*key)\b/i;
 const OUTPUT_KEYS = Object.freeze(['changes', 'clarify', 'answerTopics', 'intent']);
+const JOB_CONNECTORS = new Set(['i', 'we', 'my', 'our', 'the', 'a', 'an', 'need', 'want', 'require', 'please', 'also', 'and', 'job', 'actually', 'correction', 'instead', 'is', 'to']);
 const CONTRACT_VERSION = 1;
 const OUTPUT_SCHEMA = Object.freeze({
   type: 'object', additionalProperties: false, required: OUTPUT_KEYS,
@@ -64,19 +64,59 @@ function clauseFor(message, evidence) {
   const clauses = message.split(/[.!?](?=\s|$)|[\n;]+/).map(text => text.trim()).filter(Boolean);
   return clauses.find(text => text.includes(evidence)) || null;
 }
+function jobContent(value) {
+  // Compare the independently recognized work clauses, not a model's summary.
+  // Only grammatical request prefixes/connectors are excluded. Numbers, scope,
+  // location and component words must survive a proposed extraction.
+  return value.split(/[.!?](?=\s|$)|[\n;]+/).filter(clause => ELECTRICAL.test(clause))
+    .join(' ').toLowerCase().match(/[\p{L}\p{N}]+/gu)?.filter(word => !JOB_CONNECTORS.has(word)) || [];
+}
+function completeJob(value, direct) {
+  const proposed = new Set(jobContent(value));
+  return jobContent(direct).every(word => proposed.has(word));
+}
+function handoffRequested(message) {
+  return message.split(/[.!?](?=\s|$)|[\n;]+/).some(clause => !NEGATED.test(clause) && !INSTRUCTION.test(clause)
+    && /\b(?:human|person|contractor|someone|representative|agent|electrician)\b/i.test(clause)
+    && /\b(?:speak|talk|connect|transfer|contact|review|want|need|like|prefer|request)\b/i.test(clause));
+}
+function explicitCorrection(field, clause) {
+  // Work verbs such as "change an outlet" are not authority to replace a
+  // previously supplied job or date. Bind a correction to the proposed field.
+  const labels = {
+    customerName: 'name', phone: '(?:phone(?:\\s+number)?|number|telephone|mobile)',
+    zip: '(?:job\\s+)?(?:zip(?:\\s*code)?|postal\\s*code)',
+    job: '(?:job|work|request)(?!\\s+(?:date|time|window)\\b)',
+    callbackWindow: 'callback(?:\\s+(?:time|window))?',
+    requestedWorkDate: '(?:work|service|job)\\s+date'
+  };
+  const heads = {
+    customerName: /^(?:(?:(?:my|our|the|new|correct)\s+)?name\b|i['’]m\b|i\s+am\b)/i,
+    phone: /^(?:(?:my|our|the|new|correct)\s+)?(?:phone(?:\s+number)?|number|telephone|mobile)\b/i,
+    zip: /^(?:(?:my|our|the|job|new|correct)\s+)*(?:zip(?:\s*code)?|postal\s*code)\b/i,
+    job: /^(?:(?:(?:my|our|the)\s+)?(?:job|work|request)\s*(?:is\s+|[:=])|(?:i|we)\s+(?:need|want|require)\b(?!\s+(?:also|another|additional)\b)|(?:install|repair|replace|fix|upgrade|wire|rewire|inspect|troubleshoot|add|move)\b)/i,
+    callbackWindow: /^(?:(?:(?:my|our|the|preferred)\s+)*callback(?:\s+(?:time|window))?\b|(?:call|reach|contact)\s+(?:me|us)\b)/i,
+    requestedWorkDate: /^(?:(?:(?:my|our|the|requested|preferred)\s+)*(?:work|service|job)\s+date\b|(?:i|we)\s+(?:need|want|prefer)\s+(?:the\s+)?(?:work|job|installation|repair)\s+(?:done|completed|finished)\b)/i
+  };
+  const text = clause.trim().replace(/^please\s+/i, '');
+  const prefix = /^(?:actually|correction)\b\s*[:,]?\s*/i.exec(text);
+  if (prefix && heads[field].test(text.slice(prefix[0].length))) return true;
+  if (new RegExp('^(?:change|update|correct|replace)\\s+(?:(?:my|our|the|that|this)\\s+)?' + labels[field] + '\\s*(?:to\\s+|with\\s+|[:=]\\s*)', 'i').test(text)) return true;
+  return /\binstead\s*$/i.test(text) && heads[field].test(text);
+}
 function grounded(change, message, state, local) {
   const { field, value, evidence, operation } = change;
   if (!safeString(value, LIMITS[field]) || value !== value.trim() || !safeString(evidence, 500)
     || !message.includes(evidence) || !evidence.includes(value) || INSTRUCTION.test(evidence)) return false;
-  const clause = clauseFor(message, evidence);
+  const clause = clauseFor(message, evidence) || (field === 'job' ? evidence : null);
   if (!clause || INSTRUCTION.test(clause) || NEGATED.test(clause)) return false;
-  if (operation === 'correct' && !CORRECTION.test(clause)) return false;
+  if (operation === 'correct' && !explicitCorrection(field, clause)) return false;
   // A field label somewhere in the same sentence does not bind arbitrary text
   // to that field. Preserve the independent explicit parser's recognized value.
   const direct = local[field];
   const comparable = field === 'phone' ? phone(value) : value;
   if (direct && field !== 'job' && direct !== comparable) return false;
-  if (direct && field === 'job' && !direct.includes(value)) return false;
+  if (direct && field === 'job' && !completeJob(value, direct)) return false;
   const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const immediatelyAfter = cue => new RegExp('(?:' + cue + ')\\s*' + escaped + '(?![\\p{L}\\p{N}])', 'iu').test(clause);
   switch (field) {
@@ -90,6 +130,8 @@ function grounded(change, message, state, local) {
     }
     case 'job':
       return ELECTRICAL.test(value) && !/^(?:what|which|why|how|when|where|do|does|can|could|will|would|are|is)\b/i.test(clause)
+        && value.split(/[.!?](?=\s|$)|[\n;]+/).every(part => ELECTRICAL.test(part)
+          && !/^(?:what|which|why|how|when|where|do|does|can|could|will|would|are|is)\b/i.test(part.trim()))
         && !/\b(?:appointment\s+(?:is\s+)?confirmed|booked\s+for|dispatched|message\s+sent)\b/i.test(value);
     case 'callbackWindow':
       return DATE.test(value) && (/\b(?:callback|call\s+(?:me|us)|reach\s+(?:me|us)|contact\s+(?:me|us))\b/i.test(clause) || contextualAnswer(change, message, state));
@@ -106,7 +148,10 @@ function parseOutput(raw, message, state) {
   if (!exact(raw, OUTPUT_KEYS) || !Array.isArray(raw.changes) || raw.changes.length > FIELDS.length
     || !uniqueEnum(raw.clarify, FIELDS) || !uniqueEnum(raw.answerTopics, TOPICS)
     || !['continue', 'summary', 'handoff'].includes(raw.intent)) throw failure();
-  if (raw.intent === 'handoff' && !/\b(?:human|person|contractor|someone|representative|agent)\b/i.test(message)) throw failure();
+  const relevantTopics = new Set(questions.topicsFor(message));
+  if (raw.answerTopics.some(topic => !relevantTopics.has(topic))) throw failure();
+  if (raw.intent === 'handoff' && !handoffRequested(message)) throw failure();
+  if (raw.intent === 'summary' && !relevantTopics.has('requestSummary')) throw failure();
   const local = conversation.previewMessage(message, undefined, {}).state;
   const fields = new Set();
   for (const change of raw.changes) {
@@ -143,11 +188,17 @@ function append(state, message, replies, assistance) {
   if (result.conversation.length > 60 || result.conversation.reduce((n, item) => n + item.text.length, 0) > 20000) throw new conversation.PreviewError(413, 'conversation_limit', 'This draft has reached its conversation limit. Save the reviewed request, then start another draft.');
   return { state: result, replies: parts, assistance };
 }
-function compose(state, output, profile) {
-  const replies = output.answerTopics.map(topic => questions.answerTopic(topic, {}, approvedFacts(profile)));
+function compose(state, output, profile, message, mode) {
+  const facts = { facts: approvedFacts(profile) };
+  const replies = output.answerTopics.map(topic => questions.answerTopic(topic, {}, facts.facts));
+  // Supported questions do not depend on the provider remembering to select an
+  // answer topic. Use the existing deterministic answers and the merged draft.
+  for (const question of intake.partitionMessage(message).questions) {
+    replies.push(...conversation.answerQuestion(question, state, facts, { assistanceMode: mode }));
+  }
   let nextQuestion;
-  if (output.intent === 'summary') replies.push('Draft request:\n' + FIELDS.map(key => LABELS[key] + ': ' + (state[key] || 'Not provided') + (state.issues.includes(key) ? ' (needs confirmation)' : '')).join('\n'));
-  if (output.intent === 'handoff') replies.push('Your request for contractor review is in this draft. Save the reviewed request in the inbox. No person has been contacted.');
+  if (output.intent === 'summary' || questions.topicsFor(message).includes('requestSummary')) replies.push('Draft request:\n' + FIELDS.map(key => LABELS[key] + ': ' + (state[key] || 'Not provided') + (state.issues.includes(key) ? ' (needs confirmation)' : '')).join('\n'));
+  if (output.intent === 'handoff' || handoffRequested(message)) replies.push('Your request for contractor review is in this draft. Save the reviewed request in the inbox. No person has been contacted.');
   if (state.issues.length) {
     replies.push('Please confirm the ' + state.issues.map(key => LABELS[key]).join(', ') + '. The previous values are retained until you clarify them.');
     if (state.issues.length === 1) nextQuestion = 'What is the ' + LABELS[state.issues[0]] + '?';
@@ -231,29 +282,64 @@ function createConversationOrchestrator({ provider = null, allowExternal = false
     if (attempted >= maxAttempts || recent.length >= 10 || active >= maxConcurrent) {
       return append(state, message, ['Assistance is busy or its local request limit has been reached. Your previous draft is unchanged. Review the fields or try again later.'], { mode: 'unavailable', code: 'assistant_limit' });
     }
+    const usage = options.usage;
+    let reservation;
+    if (usage !== undefined && usage !== null) {
+      try {
+        if (!plain(usage) || typeof usage.reserve !== 'function' || typeof usage.finish !== 'function') throw new Error('Invalid usage boundary.');
+        reservation = usage.reserve({ fingerprint, inputBytes: Buffer.byteLength(JSON.stringify(context)), outputTokenLimit: 2048 });
+        if (!plain(reservation) || typeof reservation.id !== 'string' || !reservation.id || reservation.id.length > 256) throw new Error('Invalid usage reservation.');
+      } catch (error) {
+        check(options);
+        const code = error?.code === 'assistant_usage_limit' ? 'assistant_usage_limit' : 'assistant_usage_unavailable';
+        return append(state, message, ['Assistance could not reserve its usage allowance. Your previous draft is unchanged. Review the fields or try again later.'], { mode: 'unavailable', code });
+      }
+    }
     attempted++; active++; recent.push(timestamp);
     const controller = new AbortController();
-    let timer, abortReject, cancelled = false;
+    let timer, abortReject, cancelled = false, cancelReason = 'cancelled';
     const aborted = new Promise((_, reject) => { abortReject = reject; });
-    const entry = { fingerprint, promise: null, abort(reason) { if (!cancelled) { cancelled = true; controller.abort(); abortReject(new conversation.PreviewError(reason === 'timeout' ? 504 : 409, reason === 'timeout' ? 'assistant_timeout' : 'assistant_cancelled', 'The assisted request did not complete.')); } } };
+    const entry = { fingerprint, promise: null, abort(reason) { if (!cancelled) { cancelled = true; cancelReason = reason; controller.abort(); abortReject(new conversation.PreviewError(reason === 'timeout' ? 504 : 409, reason === 'timeout' ? 'assistant_timeout' : 'assistant_cancelled', 'The assisted request did not complete.')); } } };
     const onAbort = () => entry.abort('cancelled');
     options.signal?.addEventListener('abort', onAbort, { once: true });
     timer = setTimeout(() => entry.abort('timeout'), timeoutMs);
     // Keep the slot reserved until the adapter actually settles. An adapter
     // ignoring AbortSignal cannot create an unbounded number of background jobs.
-    const generation = Promise.resolve().then(() => {
-      if (controller.signal.aborted) throw new conversation.PreviewError(409, 'assistant_cancelled', 'The assisted request was cancelled.');
-      return provider.generate(context, { signal: controller.signal });
-    }).finally(() => { active--; });
-    entry.promise = (async () => {
+    const generation = Promise.resolve().then(async () => {
+      let outcome = 'failed';
       try {
-        const raw = await Promise.race([generation, aborted]);
+        check(options);
+        if (controller.signal.aborted) throw new conversation.PreviewError(409, 'assistant_cancelled', 'The assisted request was cancelled.');
+        const raw = await provider.generate(context, { signal: controller.signal });
         check(options);
         if (cancelled || inflight.get(scope) !== entry) throw new conversation.PreviewError(409, 'assistant_cancelled', 'This draft changed. The result was discarded.');
         let output;
         try { output = parseOutput(raw, message, state); } catch (_) { throw failure(); }
         const merged = merge(state, output, message);
-        const result = append(merged, message, compose(merged, output, { facts: context.data.approvedBusinessFacts }), { mode, code: 'validated_proposal' });
+        const result = append(merged, message, compose(merged, output, { facts: context.data.approvedBusinessFacts }, message, mode), { mode, code: 'validated_proposal' });
+        outcome = 'succeeded';
+        return result;
+      } catch (error) {
+        if (error?.code === 'assistant_cancelled') outcome = 'cancelled';
+        if (error?.code === 'assistant_timeout') outcome = 'timeout';
+        throw error;
+      } finally {
+        active--;
+        // A timed-out adapter that ignores AbortSignal retains the reservation
+        // until it actually settles. No failed/cancelled attempt is refunded.
+        if (reservation) {
+          try {
+            const receipt = usage.finish(reservation.id, cancelled ? cancelReason : outcome);
+            if (receipt && typeof receipt.then === 'function') throw new Error('Usage completion must be synchronous.');
+          } catch (_) { throw failure('assistant_usage_unavailable'); }
+        }
+      }
+    });
+    entry.promise = (async () => {
+      try {
+        const result = await Promise.race([generation, aborted]);
+        check(options);
+        if (cancelled || inflight.get(scope) !== entry) throw new conversation.PreviewError(409, 'assistant_cancelled', 'This draft changed. The result was discarded.');
         if (completed.size >= 128) completed.delete(completed.keys().next().value);
         completed.set(scope, { fingerprint, result: structuredClone(result), at: now() });
         return result;
@@ -261,7 +347,7 @@ function createConversationOrchestrator({ provider = null, allowExternal = false
         if (error?.code === 'assistant_cancelled') throw error;
         check(options);
         // Never echo provider errors, metadata, response text or credentials.
-        const code = ['assistant_timeout', 'invalid_assistant_output'].includes(error?.code) ? error.code : 'assistant_unavailable';
+        const code = ['assistant_timeout', 'invalid_assistant_output', 'assistant_usage_unavailable'].includes(error?.code) ? error.code : 'assistant_unavailable';
         return append(state, message, ['Assisted extraction could not complete. Your previous draft is unchanged. Review the fields or try again.'], { mode: 'unavailable', code });
       } finally {
         clearTimeout(timer);

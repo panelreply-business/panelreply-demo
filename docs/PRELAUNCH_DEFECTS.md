@@ -2,6 +2,38 @@
 
 Date: 2026-11-19. This register covers the work after baseline `41e31a8`. [Development progress](DEVELOPMENT_PROGRESS.md) is the authoritative current status. A regression test demonstrates its stated case, not absence of every possible defect. [Historical platform defects](PLATFORM_VERIFICATION.md) remain recorded separately.
 
+## Engineering remediation after 36b2bf3
+
+This section records new reproductions from the final remediation directive. Historical defects and failed runs below remain unchanged. Focused pass counts overlap the final suite. See [current remediation verification](REMEDIATION_VERIFICATION.md) for the committed source and complete CI status.
+
+| ID | Priority | Evidence and reproduction | Correction | Regression |
+| --- | --- | --- | --- | --- |
+| REM-AI-01 | Medium | Ask for several electrical tasks or include component/location qualifiers. A shorter provider proposal can discard supplied scope. | Require proposed job content to retain independently recognized electrical clauses and qualifiers. | Expanded corpus extraction-completeness and multiple-requests cases. |
+| REM-AI-02 | Medium | Ask multiple supported questions while the provider omits or inserts unrelated topics. Replies can omit relevant approved answers or include unrelated facts. | Compose recognized topics deterministically and reject unrequested provider topics/intents. | Business-answer, scheduling, handoff and disclosure fixtures. |
+| REM-AI-03 | High | “The wire is glowing” or “I smell burnt plastic at the outlet” can miss the hazard gate. | Add bounded electrical-context patterns before generation. | No-provider hazard regressions plus routine-work controls. |
+| REM-AI-04 | High | “Do not call me” can fail to register withdrawal. Clearing only the browser stopped flag can also ignore retained STOP history. | Recognize explicit call withdrawal and restore STOP from retained customer history. | Consent corpus and historical-STOP regressions. |
+| REM-AI-05 | Medium | “The circuit label number is 48315” can become the job ZIP. | Exclude equipment/account-number contexts unless a job ZIP cue identifies the value. | Explicit-number corpus and shared-parser regression. |
+| REM-AI-06 | High | Reset a preview or delete a hazardous request, then enter the same phone in a fresh session. Without a retained safety hold, generation can resume. | Persist a minimal business-scoped safety-hold digest and check both the old phone and independently extracted new phone before generation. Recheck after awaited work. | Store lifecycle, first-message API and cross-session independent race cases. |
+| REM-AI-07 | Medium | Restart the process or create another session after reaching an in-memory allowance. The old counters do not enforce a durable business budget. | Add transactional reservations, per-minute/day/lifetime limits, active leases and non-refunded failed attempts. | 17 ledger tests, independent SQLite workers, API and encrypted-backup cases. |
+| REM-AI-08 | Medium | An adapter throws `assistant_timeout`. The browser reports timeout but the ledger records failed. | Map the actual timeout outcome without refunding the attempt. | Independent case failed before correction and passed afterward. |
+| REM-AI-09 | Medium | Saved job is “Install an EV charger.” New message says “I also need to change the kitchen outlet.” A proposed correction overwrites the earlier scope because change/update was treated as a generic correction. Timing fields have the same cross-clause risk. | Bind correction permission to the affected field. Preserve explicit correction controls and clarify conflicts. | Six independent defect cases failed before correction. Six legitimate correction controls remained passing. All 12 pass afterward. |
+| REM-AI-10 | High | Submit STOP or a new electrical hazard with a valid 60-message transcript. The append limit returns 413 before phone suppression/hold is persisted. A cleared draft loses that restriction. | After full message/state validation, preserve deterministic contact restrictions even when append cannot fit, cancel same-scope assistance and retain the original 413. | Four independent before-fix failures cover existing and first-supplied phones. Focused 42-case API regression passes after the correction. |
+| REM-UI-01 | Medium | A deletion response is lost. A subsequent retry returns 403. The interface treats that later refusal as proof the original deletion did not commit. | Keep uncertainty until the matching receipt arrives. Keep the same operation key/version/body for all retries. | Independent state-machine case failed before correction. All 11 deletion cases pass afterward. Equivalent browser regression is in CI. |
+
+### Confirmed OCR limits and rejected experiments
+
+All 57 baseline nonexact images were inspected. Orientation fallback and conditional pixel normalization correct 24 images without regressing any of the 253 previously exact images. 33 cases remain nonexact. See the hash-bound [OCR benchmark](OCR_BENCHMARK.md) for each failure, field errors and remaining review steps. This is still a FAIL for the strict exact-image quality gate.
+
+Unconditional median filtering was rejected after the full 310-image run fell to 252 exact images, regressed 14 previously exact images and introduced a false-positive manufacturer. Scaling and adaptive-threshold experiments also had regressions. The retained pixel-noise detector uses source pixels rather than fixture IDs, expected fields or a guessed manufacturer.
+
+### Test harness corrections
+
+The first combined local remediation run failed five existing client-state tests because its DOM harness did not load the newly shared deletion script. The harness now executes the shipped script and models dialog open/close state. All six client-state tests pass. No product assertion was removed.
+
+The newly written API fixture initially omitted two required request fields and referenced incorrect response properties. Those fixture errors were corrected against the existing contracts. All 39 API cases then passed.
+
+An independent review exceeded the intended local-listener boundary twice while developing the server-shutdown test. It first failed on a synthetic cookie, then passed with the correct cookie. No external endpoint or real data was involved. The case is now under the existing CI-only HTTP gate and excluded from offline evidence. The exact record is in [data reliability verification](DATA_RELIABILITY_VERIFICATION.md).
+
 ## Confirmed code defects
 
 The following corrections are in `c5a47542d665a7d5ffb202e1cde4669c85512243`. The updated local suite passed 638 Node/SQLite/in-process API tests. Actual HTTP and browser verification passed in run66, source 17223d6, as recorded in the progress document.

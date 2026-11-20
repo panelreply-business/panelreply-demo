@@ -163,7 +163,10 @@ test('hazards in customer evidence create a sticky review hold and assistant tex
   const reviewed = f.store.updateLead(f.alice, held.id, { version: 1, status: 'needs_review', notes: 'Awaiting a separate human resolution process.' });
   assert.equal(reviewed.safetyHold, true);
   assert.equal(reviewed.contactAllowed, false);
-  const safe = f.store.createLead(f.alice, lead({ conversation: [{ role: 'assistant', text: 'If there is smoke or sparking, seek help.' }] }), crypto.randomUUID()).lead;
+  const reused = f.store.createLead(f.alice, lead({ conversation: [{ role: 'assistant', text: 'No hazard reported.' }] }), crypto.randomUUID()).lead;
+  assert.equal(reused.safetyHold, true);
+  assert.equal(reused.contactAllowed, false);
+  const safe = f.store.createLead(f.alice, lead({ phone: '+15865550198', conversation: [{ role: 'assistant', text: 'If there is smoke or sparking, seek help.' }] }), crypto.randomUUID()).lead;
   assert.equal(safe.safetyHold, false);
   assert.equal(safe.contactAllowed, true);
 });

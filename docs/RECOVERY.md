@@ -73,9 +73,13 @@ unset PANELREPLY_BACKUP_PASSPHRASE
 
 Wrong passphrases, modified or truncated archives, unsupported formats, unsupported schemas, invalid records and failed integrity checks return failure. They do not publish a restored database. A racing destination creator is not overwritten or deleted.
 
-The restored copy preserves business/user identities, approved answers, requests, notes, transcripts, audit records, retry identifiers, opt-outs and safety holds. It restores no active session or login-throttle state.
+The restored copy preserves business/user identities, approved answers, requests, notes, transcripts, audit records, retry identifiers, opt-outs and safety holds. Schema 3 also preserves deletion receipts, deleted-record retry tombstones, retained phone safety restrictions and all assistance usage reservations. Pending or failed attempts are not refunded by restore. It restores no active session or login-throttle state.
 
 Every restored owner's password is disabled until an operator sets a new one. This prevents an older backup from reactivating a password changed after the backup was created. The restore result explicitly reports that password recovery is required. This change affects the new restored copy only.
+
+An archive captures one earlier point in time. It cannot contain deletions, opt-outs, safety restrictions or usage reservations created after that point. Before resetting restored access, reconcile those changes from the surviving source or an approved incident record. An old archive can contain a record that was later deleted. It can also omit later assistance reservations. Do not treat restoring an old archive as proof that all current restrictions and spending records were recovered. The new destination and disabled passwords provide a review boundary. They do not reconstruct missing history.
+
+Process-interruption tests stop restore before publication, between publication and unlinking the staging copy, and after unlinking that copy. Before publication, no database is available at the destination. Between link and unlink, the owner-only file has two links and normal workspace opening refuses it. After unlink, the test can open a complete validated database with disabled passwords. A retry refuses the existing destination at every stage. An operator must inspect an interrupted directory and use another new destination. No automatic cleanup deletes an existing destination. These tests do not simulate hardware power loss or prove filesystem durability on a hosting platform.
 
 ## Reset an existing owner's password
 
@@ -121,7 +125,7 @@ The CI drill uses synthetic data only. It creates two businesses, saves records 
 - Backup creation is manual through the operator CLI. No real-data schedule, cloud copy or offsite retention policy is configured.
 - JSON exports contain customer information in plaintext and are separate from encrypted backup archives.
 - Recovery to a new directory and password reset are implemented. Hosted self-service account recovery is not implemented.
-- Production hosting, offsite storage, retention/deletion policy, restore objectives and operational monitoring still need an approved design and verification.
+- Production hosting, offsite storage, retention durations, restore objectives and operational monitoring still need owner approval and verification. Explicit local record deletion is implemented with version checks and retry receipts. No automatic retention purge is enabled.
 - The public demos remain suspended. Merging this code does not publish or resume them.
 
 ## Verification
@@ -131,10 +135,26 @@ See [recovery verification](RECOVERY_VERIFICATION.md) for the exact tested revis
 Implementation references: [Node SQLite backup API](https://nodejs.org/download/release/v22.21.0/docs/api/sqlite.html#sqlitebackupsourcedb-destination-options), [Node authenticated encryption](https://nodejs.org/download/release/v22.21.0/docs/api/crypto.html#deciphersetauthtagbuffer-encoding) and [Node scrypt](https://nodejs.org/download/release/v22.21.0/docs/api/crypto.html#cryptoscryptpassword-salt-keylen-options-callback).
 
 
-## Panel workspace compatibility
+## Schema and panel workspace compatibility
 
-The dual-product development branch adds schema 2 panel projects and private source-image BLOBs. Its backup/restore code accepts schema 1 and schema 2 archives. The authenticated archive header records the actual database schema, and a mismatch fails validation before publishing a restored database. Schema2 backups include corrected panel rows and images, preserve business ownership, omit active sessions, and require owner password resets after restore.
+The current development schema is 3. Backup and restore retain exact allowlists for schema 1, 2 and 3. The authenticated archive header records the actual database schema, and a mismatch fails validation before publishing a restored database. Schema 2 adds panel projects and private source-image BLOBs. Schema 3 adds deletion metadata, retained safety restrictions and the durable assistance usage ledger. Backups preserve corrected panel rows, image bytes, business ownership and those schema-3 records. They omit active sessions and require owner password resets after restore.
 
-Normal application startup migrates a validated schema 1 database to schema 2 in one transaction. Recovery reads use `create:false` and do not migrate an existing database. Take an encrypted pre-migration backup before opening an existing workspace with the new branch. Older schema 1-only code cannot open a schema 2 database. A rollback uses the pre-migration archive in a fresh directory rather than overwriting the upgraded database.
+Normal application startup migrates an exactly validated schema 1 or 2 database to schema 3 in one transaction. The migration preserves existing holds in a business-scoped phone digest ledger. Any other saved request at a held phone moves to `needs_review`, receives a new version and a content-free audit event, and retains its customer fields and notes. Recovery reads use `create:false` and do not migrate an existing database. Deletion and assistance accounting require schema 3. Take an encrypted pre-migration backup before opening an existing workspace with the new branch. Older code cannot open an unsupported newer schema. A rollback uses the pre-migration archive in a fresh directory rather than overwriting the upgraded database.
 
-The JSON business-record export remains intake/profile data. Per-project CSV and XLSX are panel spreadsheet exports. Encrypted backups cover both modules and source images. Project/image deletion, automatic retention and hosted/offsite storage remain outside the implemented local recovery scope.
+The JSON business-record export remains intake/profile data. Per-project CSV and XLSX are panel spreadsheet exports. Encrypted backups cover both modules and source images. [Data lifecycle](DATA_LIFECYCLE.md) describes deletion receipts, retained restrictions, source-reference behavior and retention choices awaiting approval.
+
+## Proposed offsite architecture — not activated
+
+No remote account, storage bucket, scheduled upload or paid service is configured by this change. These are implementation requirements for a separately approved host and destination.
+
+| Step | Proposed control | Acceptance evidence required |
+| --- | --- | --- |
+| Capture | Use the existing consistent SQLite snapshot and encrypted archive process on the selected host | Capture while synthetic writes occur, then restore one complete committed state |
+| Protect | Keep the archive passphrase outside the database, archive and source repository. Deliver it through the approved operator secret path | Demonstrate secret access restrictions, rotation and recovery without logging the secret |
+| Transfer | Transfer only the encrypted archive over authenticated TLS to a separate approved storage location. Use an uploader identity with no overwrite or deletion rights where supported | Rejected unauthorized access, failed upload retry, object length/hash verification and no plaintext transfer |
+| Inventory | Keep archive timestamp, schema, encrypted-file SHA-256, size, record counts and restore-drill result in a protected inventory | Match the downloaded encrypted bytes to the inventory and authenticate the archive on restore |
+| Retain | Choose an owner-approved duration and deletion reconciliation process. Review any immutable retention window before enabling it | Verify expiry behavior on synthetic objects and show that required records are not removed early |
+| Recover | Download to an owner-only location, restore into a new directory, reconcile later restrictions/deletions/usage, reset copied credentials, then perform authenticated checks | Verify both businesses, a transcript, corrected panel rows, images, exports, restrictions and original-source preservation |
+| Operate | Alert an approved operator on backup or restore-drill failure. Keep delivery disabled until an actual destination is approved | Exercise failure reporting without contacting a real customer |
+
+A daily archive and monthly restore drill are proposed starting frequencies, not an active schedule. A proposed recovery point of 24 hours and recovery time of four hours require measurement on the selected host and owner approval. The local interruption tests do not satisfy this hosted recovery gate. Storage cost, key custody, geography, access policy, retention and incident ownership remain decisions for the owner.

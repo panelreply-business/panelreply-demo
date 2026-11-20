@@ -13,7 +13,7 @@ const { openStore, digest } = require('../workspace/store.cjs');
 const { hashPassword, createAuth } = require('../workspace/auth.cjs');
 const { createEncryptedBackup, restoreEncryptedBackup, RESTORE_DISABLED_PASSWORD } = require('../workspace/backup.cjs');
 
-const TABLES = ['businesses', 'users', 'leads', 'messages', 'audit', 'suppression', 'panel_projects', 'panel_sources', 'sessions', 'login_attempts'];
+const TABLES = ['businesses', 'users', 'leads', 'messages', 'audit', 'suppression', 'panel_projects', 'panel_sources', 'sessions', 'login_attempts', 'record_deletions', 'deletion_operations', 'safety_holds', 'assistant_usage'];
 const PASSWORD = 'Synthetic stress owner password 2026!';
 const RESET_PASSWORD = 'Synthetic reset owner password 2026!';
 const PASSPHRASE = 'Synthetic stress backup passphrase 2026!';
