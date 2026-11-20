@@ -86,7 +86,7 @@ Monitor failed sign-ins, stale-version conflicts, source quota usage, provider r
 
 Incident sequence: restrict the affected workflow, preserve evidence without spreading customer data, determine impacted businesses, revoke relevant sessions/keys if authorized, verify backup integrity, correct the defect in an isolated branch, retest and obtain reopening approval. Legal notification obligations require qualified review. Do not invent a notification deadline or send customer communications automatically.
 
-Current configuration incident: read-only Render checks observed both existing services as `not_suspended`, although the brief requires suspension. Auto-deploy and PR previews remain off. Treat the configuration as a release FAIL until the owner resolves it. This session did not resume, deploy or change either service.
+Resolved configuration incident: read-only Render checks observed both existing services as `not_suspended`, although the brief requires suspension. After explicit owner approval, the AI service was suspended at 7:28:44 PM EST and the static service at 7:29:45 PM EST on November 19. Render state reads and the isolated run66 attempt 2 suspension job verified both offline at 7:30 PM EST. Both GET responses returned HTTP 503 with the owner-suspension message and no application markup. Auto-deploy and PR previews remain off. [Evidence](evidence/public-suspension-2026-11-19.json). No application code, workflow, merge, deployment or provider activation accompanied the correction. Keep both services suspended and obtain separate approval before further state changes.
 
 ## Deployment and rollback checklist for later approval
 
@@ -111,4 +111,4 @@ Support requires a named operator, a monitored channel, response-hour expectatio
 
 Legal review inputs: data categories and purposes, processors and locations, retention/deletion behavior, backup copies, model data handling, consent and opt-out records, security contact, service limits, ownership/export rights, acceptable-use rules and termination/recovery arrangements. These are product facts to review, not published legal terms or a compliance certification.
 
-The owner must decide service-state correction, future hosting/budget, approved representative photos, provider/model and data-transfer terms, retention/deletion, support responsibility, legal text, pricing, merge and any pilot/public release. None is implied by a passing engineering check.
+The owner-approved service-state correction is verified. The owner must still decide future hosting/budget, approved representative photos, provider/model and data-transfer terms, retention/deletion, support responsibility, legal text, pricing, merge and any pilot/public release. None is implied by a passing engineering check.

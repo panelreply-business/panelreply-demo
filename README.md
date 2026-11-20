@@ -6,9 +6,9 @@ PanelReply is a software platform for electrical contractors. It combines custom
 
 ## Current status
 
-The required public state is suspended. The 2026-11-19 pre-launch audit found both Render services reporting active, contrary to that requirement. Auto-deploy and PR previews remain off. This configuration is a release blocker and needs owner-approved correction. No Render state was changed by this development session. Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
+Both public Render services are suspended. After the November 19 audit found them active, the owner explicitly approved restoring suspension. Render confirmed the AI service suspended at 7:28:44 PM EST and the static service at 7:29:45 PM EST. The GET-only checks passed at 7:30 PM EST with HTTP 503, Render's owner-suspension message and no application markup from either URL. Auto-deploy and PR previews remain off. [Suspension evidence](docs/evidence/public-suspension-2026-11-19.json). Do not resume, deploy, republish or create a replacement public preview without separate owner approval.
 
-Current pre-launch work and evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Operations and business proposal](docs/PRELAUNCH_OPERATIONS.md). The current application/test source at [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683): 645 Node/HTTP, 186 Chromium, 121 Firefox, 121 WebKit, 14 native OCR/resource and nine independent workbook-reader cases. The overall workflow remains FAIL because both suspension guards fail. The separate 310-image OCR benchmark has 57 nonexact cases. No real-model quality claim or release approval follows from these counts.
+Current pre-launch work and evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Release acceptance](docs/RELEASE_ACCEPTANCE.md) · [Operations and business proposal](docs/PRELAUNCH_OPERATIONS.md). The current application/test source at [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683): 645 Node/HTTP, 186 Chromium, 121 Firefox, 121 WebKit, 14 native OCR/resource and nine independent workbook-reader cases. Attempt 1 failed because both suspension guards failed. Attempt 2 succeeded after rerunning only the suspension job: two PASS, zero FAIL and three policy-BLOCKED checks. The 1,096 application results carried forward and were not rerun. The separate 310-image OCR benchmark still has 57 nonexact cases. No real-model quality claim or release approval follows from these counts.
 
 - Public static URL: https://panelreply-demo.onrender.com/
 - Public server URL: https://panelreply-ai.onrender.com/
@@ -78,7 +78,7 @@ WORKSPACE_DATA_DIR="$HOME/.local/share/panelreply" node workspace-server.cjs
 
 Open http://127.0.0.1:10001/login. The entry point binds only to the loopback interface. It rejects a public origin.
 
-The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their required public state is suspended. The current configuration discrepancy is recorded above and in the progress report.
+The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their public state is suspended. The owner-approved correction and verification are recorded above and in the progress report.
 
 ## Prior recovery verification
 

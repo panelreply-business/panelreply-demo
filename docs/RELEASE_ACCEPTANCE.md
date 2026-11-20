@@ -1,8 +1,8 @@
 # Pre-launch release acceptance
 
-Assessment date: November 19, 2026. Current tested source is [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9), verified by [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). The 1,096 application checks pass. The overall workflow fails because both required suspension guards fail. OCR measurement completion is not an accuracy PASS.
+Assessment date: November 19, 2026. Current tested source is [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9), verified by [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). The 1,096 application checks passed in attempt 1, which failed because both required suspension guards failed. After owner-approved suspension, attempt 2 succeeded with only the suspension job rerun: two PASS, zero FAIL and three policy-BLOCKED checks. The application results carried forward without re-execution. OCR measurement completion is not an accuracy PASS.
 
-In the table, Source 66 means commit 17223d6/run66. A PASS applies to the stated tested scope. It is not commercial readiness.
+In the table, Source 66 means commit 17223d6 and the application checks executed in run66 attempt 1. The suspension row separately identifies its attempt 2 rerun. A PASS applies to the stated tested scope. It is not commercial readiness.
 
 | ID | Requirement | Implementation / verification | Last evidence | Result / remaining gate |
 | --- | --- | --- | --- | --- |
@@ -33,7 +33,7 @@ In the table, Source 66 means commit 17223d6/run66. A PASS applies to the stated
 | OPS-01 | Hosting, backup, monitoring, retention and rollback proposal | Architecture-specific options and approval gates documented | PRELAUNCH_OPERATIONS.md | PASS for preparation; hosted implementation NOT IMPLEMENTED |
 | OPS-02 | Durable provider budgets and restricted OCR worker | Process-local limits exist; durable ledger and OS sandbox absent | AI_PRELAUNCH.md and OCR_BENCHMARK.md | NOT IMPLEMENTED; required before customer/provider activation |
 | BUS-01 | Positioning, competitive facts, cost variables, pilot/support/legal inputs | Official sources, labeled hypotheses and proposed decisions | PRELAUNCH_OPERATIONS.md | PASS for preparation; no approved price, SLA, legal document or pilot |
-| DEP-01 | Both public services suspended | Repeated Render reads and GET-only guards | Source 66; both returned HTTP 200 | FAIL: both active; new explicit approval required for state changes |
+| DEP-01 | Both public services suspended | Owner-approved suspension, Render state reads and GET-only guards | Run66 attempt 2, job 135989918969; both HTTP 503 with owner-suspension text and no app markup | PASS at November 19, 7:30 PM EST; keep suspended and require separate approval for further state changes |
 | DEP-02 | No merge, automatic deployment, PR preview or live activation | Main unchanged, PR8 draft, Render auto-deploy/previews off, zero real-provider calls | GitHub/Render reads and Source 66 | PASS at checkpoint; recheck before later actions |
 | LAUNCH-01 | Live customer, messaging, calendar and public pilot readiness | No new deployment or live integration | Current restrictions | BLOCKED; separate owner approval and missing engineering gates |
 
@@ -47,8 +47,8 @@ These are different layers. Repeatedly running one assertion does not count as t
 
 ## Release-candidate decision
 
-NO-GO for a human pilot, live-provider activation or public release. Required suspension, OCR accuracy, representative images, real-model quality, durable usage controls, host isolation/recovery and retention/operations remain unresolved. No aggregate pass count overrides these gates.
+NO-GO for a human pilot, live-provider activation or public release. Required suspension is now verified. OCR accuracy, representative images, real-model quality, durable usage controls, host isolation/recovery and retention/operations remain unresolved. No aggregate pass count overrides these gates.
 
 GO for owner code/design review and isolated synthetic evaluation. Keep PR8 in draft. Do not merge or deploy.
 
-[Authoritative progress](DEVELOPMENT_PROGRESS.md) · [Defects and reproductions](PRELAUNCH_DEFECTS.md) · [Machine-readable evidence](evidence/prelaunch-verification.json).
+[Authoritative progress](DEVELOPMENT_PROGRESS.md) · [Defects and reproductions](PRELAUNCH_DEFECTS.md) · [Original verification evidence](evidence/prelaunch-verification.json) · [Suspension follow-up evidence](evidence/public-suspension-2026-11-19.json).

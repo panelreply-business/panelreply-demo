@@ -37,19 +37,26 @@ Firefox found a medium marketing interaction defect: the first invalid quantity 
 
 Three Firefox geometry checks measured 44 px controls as 43.99998474121094 or 43.99993896484375 px. The checks now compare at 0.001 CSS-pixel precision while retaining the 44 px requirement. This is a test measurement correction, not a larger touch-target design change. The new XLSX button is also included in the same responsive assertion. Run66 verified all of these assertions in Chromium, Firefox and WebKit.
 
+## Resolved configuration finding
+
+OPS-01, High: both Render services repeatedly reported `not_suspended`. Run64 and run66 attempt 1 GET-only guards returned HTTP 200 instead of the required 503. Those failures remain historical evidence.
+
+The owner explicitly approved suspending both services again. Render confirmed the AI service suspended at 7:28:44 PM EST and the static service at 7:29:45 PM EST on November 19, with suspender user. Auto-deploy and PR previews remained off. Only the failed suspension job was rerun. Run66 attempt 2 job 135989918969 passed at 7:30 PM EST with two PASS, zero FAIL and three policy-BLOCKED checks. Both URLs returned HTTP 503, Render's exact owner-suspension message and no PanelReply application markup. OPS-01 is resolved and verified within this scope. [Follow-up evidence](evidence/public-suspension-2026-11-19.json).
+
+The 1,096 application checks were not rerun. Their original passing results carried forward. No application code, workflow, merge, deployment or provider activation was part of the suspension correction. Keep both services suspended and obtain separate approval before any further state change.
+
 ## Unresolved findings and approval boundaries
 
 | ID | Priority | Evidence | Status / next action |
 | --- | --- | --- | --- |
-| OPS-01 | High | Both Render services repeatedly report `not_suspended`. Run64's GET-only guards independently returned HTTP 200 for both URLs instead of the required 503. | FAIL. The latest brief prohibits state changes without new owner approval. Obtain approval to restore suspension, then verify configuration and public responses. No state change was attempted here. |
 | OCR-QUALITY | Medium | Local candidate benchmark exactly matches all expected fields in 253/310 unique synthetic images. 57 cases remain nonexact. Missing/rotated/noisy/cropped inputs have recorded failures. | FAIL accuracy gate. Keep every candidate unreviewed and require source comparison. Use the failure corpus for further measured changes. Representative job-site quality remains untested. |
 
 Actual model quality, representative photographs, hosted recovery, retention/deletion, durable provider budgets, physical-device/assistive-technology checks and live integrations are incomplete requirements, not defects declared fixed by these local tests. See [release acceptance](RELEASE_ACCEPTANCE.md).
 
-No critical vulnerability or cross-business exposure was observed in the executed checks. This statement is limited to their coverage. The active public configuration remains a high-priority release blocker.
+No critical vulnerability or cross-business exposure was observed in the executed checks. This statement is limited to their coverage. The public configuration finding is resolved by the separately approved and verified suspension. Other release gates remain open.
 
 ## Final verification
 
 [Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) passed 1,096 application checks with zero application failures at source 17223d6. This includes the focus correction and all XLSX failure paths. Run65 exposed one additional fixture error: Playwright passed Request as the second positional argument, replacing a captured MIME default. The handler now accepts that argument explicitly. Both fixture responses passed the real local Playwright wrapper, then all seven browser cases passed in each engine. No assertion was removed.
 
-The two public-suspension checks still fail. The OCR quality gate still has 57 nonexact cases. Those findings remain open.
+Run66 attempt 1's two public-suspension failures remain recorded. The subsequent isolated rerun passed both guards after suspension. The OCR quality gate still has 57 nonexact cases and remains open.

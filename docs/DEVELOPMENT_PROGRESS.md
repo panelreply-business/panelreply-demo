@@ -6,7 +6,7 @@ Authoritative checkpoint: November 19, 2026, America/New_York. Continue the exis
 
 GO for code review and isolated synthetic evaluation. NO-GO for a human pilot, real-provider activation or public release.
 
-Application and test source [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 executed application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). The overall workflow is FAIL because the two required public-suspension guards fail. The separate OCR quality gate is also FAIL.
+Application and test source [17223d6](https://github.com/panelreply-business/panelreply-demo/commit/17223d6b972cc4bd3e58e9412964d237cbc0eeb9) passed 1,096 executed application checks with zero application failures in [run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683). Attempt 1 failed because the two required public-suspension guards failed. After explicit owner approval, both services were suspended and only that job was rerun. Attempt 2 succeeded at 7:30 PM EST on November 19 with two suspension guards PASS and three public application checks policy-BLOCKED. The 1,096 application results carried forward and were not rerun. The separate OCR quality gate remains FAIL.
 
 This evidence checkpoint changes documentation and screenshots only. The runtime, tests and workflow remain the source verified above. No new application verification is inferred from a documentation commit.
 
@@ -20,7 +20,7 @@ This evidence checkpoint changes documentation and screenshots only. The runtime
 - Historical [run62](https://github.com/panelreply-business/panelreply-demo/actions/runs/44536934974) was fully green on the starting branch before the observed service-state discrepancy: 590 PASS and three intentional public blocks. Those results are historical, not new-code evidence.
 - Fresh local baseline: 397 Node/SQLite/in-process API tests PASS. Updated local suite: 638 PASS, zero failures or skips. Real HTTP and browser execution used CI because local listeners/browser launch were unavailable.
 
-## Verified run66 results
+## Verified run66 attempt 1 results
 
 | Layer | PASS | FAIL | Scope |
 | --- | ---: | ---: | --- |
@@ -37,7 +37,7 @@ Three public application checks are BLOCKED by the suspension policy and were no
 
 The standalone 49-scenario evaluation overlaps tests already counted above. The storage workload is one drill with five workflow groups. The 310 OCR measurements are separate quality measurements. None are added again to the 1,096 total.
 
-[Machine-readable results and source provenance](evidence/prelaunch-verification.json).
+[Machine-readable results and source provenance](evidence/prelaunch-verification.json). This table preserves the original failed suspension observations. The later owner-approved correction and isolated job rerun are recorded separately in [suspension evidence](evidence/public-suspension-2026-11-19.json).
 
 ## Completed and verified
 
@@ -63,14 +63,18 @@ See [AI evidence](AI_PRELAUNCH.md), [XLSX evidence](XLSX_EXPORT.md), [OCR benchm
 - Hosted private access, offsite restoration, retention/deletion, monitoring delivery, self-service recovery, an OS-level OCR sandbox and durable AI spending limits are NOT IMPLEMENTED.
 - Actual Safari, physical phones, full assistive-technology conformance and production Core Web Vitals are NOT TESTED.
 
-## Configuration defect requiring owner action
+## Configuration defect resolved with owner approval
 
-HIGH / FAIL: repeated read-only Render checks report both existing services as not_suspended. Their recorded update times are 5:02:59 PM and 5:03:10 PM EST on November 19. Run66 independently returned HTTP 200 from both URLs. Auto-deploy and PR previews remain off.
+OPS-01 was HIGH / FAIL: repeated Render checks reported both existing services as not_suspended, with update times of 5:02:59 PM and 5:03:10 PM EST on November 19. Run66 attempt 1 independently returned HTTP 200 from both URLs. These historical observations remain recorded.
+
+The owner approved the explicit request to suspend both services again. The AI service was suspended at 7:28:44 PM EST and the static service at 7:29:45 PM EST on November 19. Fresh Render reads confirmed suspended, suspender user, auto-deploy off and PR previews off for both services.
 
 - [PanelReply AI service](https://dashboard.render.com/web/srv-dbv6do6tlv9c73fuvar0)
 - [PanelReply static service](https://dashboard.render.com/static/srv-dbu5o8tckfvc73b6fb4g)
 
-The newest brief requires suspended services and explicitly forbids changing their state without new owner approval. No service state was changed here. The public URLs run the older main-branch demos, not this unmerged private-workspace branch. Restoring suspension requires approval and verification, not a code change or a weakened test.
+Only the failed Required public suspension job was rerun. Its new job [135989918969](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683/job/135989918969) passed from 7:30:20 to 7:30:26 PM EST: two PASS, zero FAIL and three policy-skipped checks reported as BLOCKED. Both GET responses were HTTP 503, contained Render's exact owner-suspension message and contained no PanelReply application markup. Run66 attempt 2 is successful. The other jobs retain their original execution timestamps and results.
+
+OPS-01 is resolved within this verified scope. [Machine-readable suspension evidence](evidence/public-suspension-2026-11-19.json) and [AI service dashboard capture](evidence/public-ai-suspended-2026-11-19.jpg). No application code, tests or workflow changed, and no merge, deployment or provider activation occurred. The services contain the older main-branch demos, not this unmerged private-workspace branch. Keep both suspended. Reopening or any further service-state change requires separate owner approval.
 
 ## Evidence history and visual review
 
@@ -80,7 +84,7 @@ Two new Chromium run66 panel-workspace captures were inspected: [1440 px desktop
 
 ## Next actions and approvals
 
-1. Obtain explicit approval to restore suspension of both existing public services, then verify configuration and GET-only guards.
+1. Keep both public services suspended and monitor their configuration with read-only checks. The owner-approved correction is verified.
 2. Continue OCR improvements from the recorded failure corpus and obtain authorized noncustomer photographs before claiming representative accuracy.
 3. Expand meaningful conversation scenarios. Obtain a model, data-transfer terms and a bounded approved budget before any real-provider call.
 4. Implement and verify durable usage limits and a restricted OCR worker before customer/provider activation. Prepare a bounded HTTP workload without treating the storage drill as HTTP capacity.

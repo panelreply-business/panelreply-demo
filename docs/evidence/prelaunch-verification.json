@@ -556,5 +556,12 @@
   "noPaidProviderCalls": true,
   "noCustomerData": true,
   "noDeployment": true,
-  "noMerge": true
+  "noMerge": true,
+  "followUps": [
+    {
+      "date": "November 19, 2026, 7:30 PM EST",
+      "file": "public-suspension-2026-11-19.json",
+      "scope": "OPS-01 corrected after new explicit owner approval. Run66 attempt2 reran only the public-suspension job: 2 PASS, 0 FAIL, 3 policy-BLOCKED. The 1,096 application PASS results carry forward from attempt1. Original run/publicPolicy/counts/remainingGates above are preserved as the original historical snapshot. OCR quality and other release gates remain unresolved."
+    }
+  ]
 }
