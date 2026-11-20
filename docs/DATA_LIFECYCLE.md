@@ -76,6 +76,16 @@ See [Recovery](RECOVERY.md) for commands, interruption behavior and the proposed
 
 ## Retention options awaiting owner approval
 
+### Read-only review implementation
+
+`store.reviewRetention(actor, { before, limit })` now prepares a content-free review from one SQLite read snapshot. `before` is an explicit integer UTC epoch timestamp no later than the current clock. `limit` is 1–500 per category. There is no default retention age.
+
+Requests qualify only when closed, explicitly not safety-held, and last updated strictly before the cutoff. Panel projects qualify by their last-update timestamp and remain review candidates, not approved deletions. Each category reports an exact total, an explicit truncation flag and stable ordering by update timestamp then identifier. Rows contain the saved version and message/source count. They omit names, phone numbers, notes, transcript text, parts values and image data.
+
+The function uses the authenticated business scope. It neither writes an audit entry nor changes any application table. It exposes no new public or private HTTP route. Existing deletion operations still require a fresh version, typed confirmation and retry key. A review is not authorization to purge. Backup expiry, restriction metadata, accounting and legal holds need separate policies.
+
+Eight real in-memory SQLite cases verify tenant/status/hold/cutoff filtering, bounded results, content exclusion, unchanged tables/change counter, failed-read rollback, invalid clocks and inputs, and current versions/dependency counts. A store-level integration case is included for Linux CI. The Windows host cannot pass the existing POSIX owner-permission checks, which remain unchanged.
+
 No duration below is configured or presented as a legal requirement.
 
 | Option | Proposed handling | Tradeoff and approval needed |
@@ -101,3 +111,4 @@ node --test tests/data-lifecycle.test.cjs tests/panel-store.test.cjs tests/works
 That verification record also discloses two prior actual local listener attempts during shutdown testing, outside the delegated no-network instruction. They are excluded from offline evidence. The shutdown case now belongs to the CI/HTTP-gated file, which the permitted local suite excludes. It was not relaunched after the correction.
 
 This document defines behavior and tested scope, not a claim that every environment or failure has been tested. Physical power loss, disk exhaustion at every write point, native Windows/macOS filesystems, selected-host disaster recovery and offsite restore remain NOT TESTED. Hosted/offsite implementation is BLOCKED on an approved host, destination and operating policy. Real customer deletion is NOT TESTED and was not performed.
+

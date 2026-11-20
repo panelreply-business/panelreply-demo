@@ -1,5 +1,17 @@
 # PanelReply development progress
 
+## Continuation checkpoint — November 19, 2026 (EST)
+
+The branch had advanced to `c0a947e8415f990f4d58e29a4a1b13ed14bd4982` before this continuation. [Run69](https://github.com/panelreply-business/panelreply-demo/actions/runs/44659300598) completed successfully. Fresh reads of all seven jobs and their logs verify 1,628 application executions: 1,141 Node/HTTP, 197 Chromium, 132 Firefox, 132 WebKit, 17 native OCR/resource and nine workbook-reader cases, with no application failures. Two suspension guards passed and three public checks remained policy-blocked. The 12-client workload completed 516 responses and nine workflow groups with zero unexpected errors. Counts overlap the focused evaluations and must not be added to them. [Checkpoint evidence](evidence/continuation-checkpoint.json).
+
+OCR remains 277/310 and FAIL. Required worker readiness remains BLOCKED, with zero native deny cases executed. Its bounded stderr reports `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`. The diagnostic classifier still reports an unconfirmed startup cause. A successful workflow is not isolation acceptance.
+
+This continuation adds a store-level retention review. An explicit timestamp and bounded result limit select closed, non-held requests and inactive panel projects for one business. Output contains identifiers, saved versions, dates and dependency counts, without customer content. A consistent read transaction makes no database changes. It does not configure a policy, delete records, add an HTTP route or run a schedule. Eight in-memory SQLite cases pass locally. The store integration case needs Linux CI because existing owner-only POSIX permission enforcement rejects this Windows filesystem. The baseline usage suite produced three passes and 14 permission failures locally. No security assertion was relaxed.
+
+The continuation's broader local run passes 702 checks with zero failures or skips, including the eight new review cases. Generated-demo/CSP validation also passes. These are executed local scopes, not a Linux integration result. The initial new fixture used nonexistent columns and lacked parent business rows. Its schema errors were corrected against the shipped schema before all eight cases passed.
+
+The older sections below retain their historical checkpoints. The release matrix now distinguishes run69 evidence from the new retention candidate. PR8 stays draft. No Render state change, deployment, merge, paid provider call or customer interaction was performed.
+
 ## Current engineering remediation
 
 The final remediation directive is being executed on the same branch and draft PR8. No website redesign, merge, deployment, paid service or customer integration is involved. Both Render services still report suspended, auto-deploy off and previews off in the fresh read-only checks.
@@ -112,3 +124,4 @@ Two new Chromium run66 panel-workspace captures were inspected: [1440 px desktop
 6. Keep PR8 draft. Merge, public deployment, live integrations, customer data, spending and a pilot each require separate approval.
 
 The recurring audit remains the existing task. It must read this record and fresh refs, distinguish new execution from historical results and preserve all deployment and authorization restrictions. No continuous 100–200 hours of work is claimed.
+

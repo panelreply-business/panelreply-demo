@@ -1,5 +1,22 @@
 # Release acceptance
 
+## Continuation reconciliation
+
+[Run69](https://github.com/panelreply-business/panelreply-demo/actions/runs/44659300598), source `c0a947e8415f990f4d58e29a4a1b13ed14bd4982`, supersedes the pending integration wording below for that source. Independently inspected job logs report 1,628 passing application executions and no failures. [Evidence](evidence/continuation-checkpoint.json). This evidence does not cover the subsequent retention-review candidate.
+
+| Gate | Current executed scope | Result | Remaining work |
+| --- | --- | --- | --- |
+| DEL-04 | Eleven deletion browser cases in each of Chromium, Firefox and WebKit, including dialog contrast | PASS | Later changes need their own CI. |
+| PERF-02 | Twelve clients, 516 HTTP responses, nine workflow groups, zero unexpected errors | PASS | Selected-host capacity remains unverified. |
+| UX-01 | Run69 Chromium 197, Firefox 132 and WebKit 132 executions | PASS | Physical devices and actual Safari remain NOT TESTED. |
+| A11Y-01 | Existing browser semantics/focus/geometry plus computed dialog contrast | PASS | Full assistive-technology audit remains NOT TESTED. |
+| DEP-01 | Two GET-only suspension guards | PASS | No service-state change authorized. |
+| OCR-02 | 277/310 exact synthetic images | FAIL | 33 nonexact images and representative photos. |
+| OCR-04 | Required-worker readiness exits before native deny tests | BLOCKED | Startup diagnostic is recorded without a confirmed root cause. |
+| RET-01 | Eight in-memory SQLite retention-review cases | PASS | Store integration candidate awaits Linux CI. No automatic retention or deletion policy enabled. |
+
+All actual-model, selected-host, offsite-recovery and release approval gates remain open. NO-GO for launch.
+
 Remediation checkpoint, November 19, 2026. This matrix separates executed test scopes from unverified external integrations. It uses PASS, FAIL, BLOCKED and NOT TESTED only. A PASS never approves deployment or establishes behavior outside its named test scope.
 
 The baseline was commit 36b2bf3 on `feature/interactive-dual-product-site`, draft PR8. All 163 starting blobs matched. Its historical application source 17223d6 had 1,096 passing application checks in run66 attempt 1. Attempt 2 reran only the suspension guard after owner-approved suspension. Those results do not verify new remediation code.
@@ -21,11 +38,11 @@ Current candidate integration results and exact source are recorded in [remediat
 | DEL-01 | Authorized request/conversation/project/image deletion | Version, ownership, typed confirmation, stable receipt and tombstone | Lifecycle store cases and 24 API deletion cases | PASS | This verifies synthetic data only. |
 | DEL-02 | Deleted data cannot be recreated by stale retries | Content-free tombstones and deleted source-link cleanup | Duplicate/concurrent deletion, stale create/upload replay and retained restrictions | PASS | Older archives need later-event reconciliation. |
 | DEL-03 | Private deletion UI and response-loss handling | Shared confirmation state machine and same-key retry | 11 independent client-state cases | PASS | DOM tests do not establish browser behavior. |
-| DEL-04 | Deletion browser workflows | Ten new workflows, including response loss then 403 | CI candidate run pending | NOT TESTED | Chromium/Firefox/WebKit execution needed. |
+| DEL-04 | Deletion browser workflows | Eleven workflows, including response loss then 403 and contrast | Run69: eleven cases per engine | PASS | Subsequent candidate changes need CI. |
 | OCR-01 | Validation, bounded native pipeline and human review | Fixed Python/Pillow and Tesseract, stdin-only, deadlines, output/resource limits | 72 component/benchmark cases and 17 native fixture/resource cases | PASS | Native libraries still need a host patch policy. |
 | OCR-02 | Exact-image synthetic quality | Orientation fallback and conditional pixel normalization | Same 310 images: 253→277 exact, 24 corrected, zero previously exact regressions | FAIL | 33 nonexact images remain. Not real-photo accuracy. |
 | OCR-03 | Representative field photographs | Manual correction and source review preserved | No authorized representative photograph corpus | NOT TESTED | Authorized photos and measured evaluation. |
-| OCR-04 | Required OS-isolated worker on test host | Fixed mounts, no network, nonroot, seccomp, no fallback | Local namespace probe denied. CI deny verifier pending. | BLOCKED | Supported unprivileged host and actual deny tests. No privilege escalation or host-policy changes. |
+| OCR-04 | Required OS-isolated worker on test host | Fixed mounts, no network, nonroot, seccomp, no fallback | Run69: readiness blocked, zero native deny cases; loopback RTM_NEWADDR denied | BLOCKED | Startup root cause unconfirmed. Actual deny tests still required. No host-policy change. |
 | OCR-05 | Required isolation on deployment host | Prepared configuration only | No selected-host execution | BLOCKED | Select and approve host, then verify there. |
 | EXP-01 | Saved CSV data and formula-injection protection | Existing encoding/escaping and tenant boundaries retained | Exporter/API cases and exact saved-value comparisons | PASS | Updated browser run pending below. |
 | EXP-02 | Typed original XLSX files | Text identifiers, numeric quantities, two worksheets | Nine independent ZIP/XML/openpyxl fixtures plus writer/API cases | PASS | Does not prove every spreadsheet application's resave behavior. |
@@ -35,10 +52,10 @@ Current candidate integration results and exact source are recorded in [remediat
 | REC-02 | Usage/deletion/restriction preservation in a snapshot | Schema-3 archive content and validation | Ledger roundtrip, malformed metadata, pre/post-deletion archive cases | PASS | Later events require reconciliation before re-enabling a restored workspace. |
 | REC-03 | Offsite/selected-host recovery | Architecture and owner decisions documented | No offsite execution | BLOCKED | Approved destination, credentials, retention, hosting and actual recovery drill. |
 | PERF-01 | Bounded storage/recovery workload | Synthetic 204-project/301-request/five-image drill | Five workflow groups pass with zero unexpected errors | PASS | This is not hosted capacity or a latency SLA. |
-| PERF-02 | Multiple actual HTTP clients under failures | New 12-client loopback workload, contention, OCR backpressure, interruption/restart | CI candidate run pending | NOT TESTED | Execute on authorized CI. |
-| UX-01 | Existing browser workflows and six viewport widths | Navy/blue website preserved, private controls extended | Historical run66 only for unchanged checkpoint. New candidate CI pending. | NOT TESTED | Updated Chromium/Firefox/WebKit run and capture review. |
+| PERF-02 | Multiple actual HTTP clients under failures | Twelve-client loopback workload, contention, OCR backpressure, interruption/restart | Run69: 516 responses, nine groups, zero unexpected errors | PASS | Selected-host capacity remains unverified. |
+| UX-01 | Existing browser workflows and six viewport widths | Navy/blue website preserved, private controls extended | Run69: 197 Chromium, 132 Firefox, 132 WebKit cases | PASS | Continuation candidate requires fresh CI. Physical-device checks remain separate. |
 | UX-02 | Actual Safari and physical phones | Responsive implementation only | No physical-device execution | NOT TESTED | Authorized devices and browser versions. |
-| A11Y-01 | Labels, keyboard, focus, reduced motion and control geometry | Existing semantics plus native confirmation dialog | Updated browser assertions pending | NOT TESTED | Full assistive-technology audit also remains separate. |
+| A11Y-01 | Labels, keyboard, focus, reduced motion and control geometry | Existing semantics plus native confirmation dialog | Run69 browser assertions, including computed contrast, pass | PASS | Full assistive-technology audit remains untested. |
 | OPS-01 | Retention, monitoring, support, host policy and operational recovery | Proposals and controls documented | No production operation executed | BLOCKED | Owner decisions and selected-host evidence. Documentation alone is not acceptance. |
 | DEP-01 | Both public services remain suspended | No service mutation in remediation | Fresh Render reads after 36b2bf3: both suspended, auto-deploy/previews off. CI GET guards pending for candidate. | PASS | Keep suspended. No deployment approval. |
 | DEP-02 | No merge or integration activation | Same draft PR and unchanged main | Fresh GitHub refs and no live provider requests | PASS | Separate approval required for merge, deployment or external activation. |
@@ -47,3 +64,4 @@ Current candidate integration results and exact source are recorded in [remediat
 ## Decision
 
 GO for source review and isolated synthetic evaluation. NO-GO for public release, real-provider activation or a customer pilot. Preserve both suspensions and PR8 draft status. A green test workflow cannot override OCR FAIL, missing real-model evidence or unverified hosted operations.
+

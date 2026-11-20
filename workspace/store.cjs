@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const intake = require('../src/intake.js');
 const { assertPrivateDirectory, assertUnusedPath, existingDatabasePath } = require('./file-safety.cjs');
 const panels = require('./panels.cjs');
+const { createRetentionReview } = require('./retention.cjs');
 const { USAGE_TABLE_SQL, USAGE_INDEX_SQL, USAGE_AUTO_INDEXES, USAGE_SCHEMA_COLUMNS, createUsageLedger } = require('./usage.cjs');
 const { LIFECYCLE_TABLE_SQL, LIFECYCLE_INDEX_SQL, LIFECYCLE_AUTO_INDEXES, LIFECYCLE_COLUMNS, createLifecycle, phoneHash } = require('./lifecycle.cjs');
 
@@ -581,6 +582,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     deleteLeadConversation(...args) { return lifecycle.deleteLeadConversation(...args); },
     deletePanelProject(...args) { return lifecycle.deletePanelProject(...args); },
     deletePanelSource(...args) { return lifecycle.deletePanelSource(...args); },
+    reviewRetention(...args) { requireUsageSchema(); return retentionReview(...args); },
     reserveAssistantUsage(...args) { requireUsageSchema(); return usage.reserve(...args); },
     finishAssistantUsage(...args) { requireUsageSchema(); return usage.finish(...args); },
     getAssistantUsage(...args) { requireUsageSchema(); return usage.summary(...args); }
@@ -588,8 +590,10 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
   const schemaVersion = db.prepare('PRAGMA user_version').get().user_version;
   function requireUsageSchema() { if (schemaVersion < 3) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before using assistance.'); }
   const usage = createUsageLedger({ db, tx, now, getActor, StoreError });
+  const retentionReview = createRetentionReview({ db, now, getActor, StoreError });
   const lifecycle = createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 3 });
   return store;
 }
 
 module.exports = { openStore, StoreError, FACT_KEYS, STATUSES, PERMISSIONS, LEAD_KEYS, SCHEMA_COLUMNS, SCHEMAS, SCHEMA_VERSION, assertWorkspaceSchema, normalizePhone, validateLeadInput, validateProfileInput, username, object, text, digest };
+

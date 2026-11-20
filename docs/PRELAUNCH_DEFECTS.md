@@ -100,3 +100,8 @@ No critical vulnerability or cross-business exposure was observed in the execute
 [Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) passed 1,096 application checks with zero application failures at source 17223d6. This includes the focus correction and all XLSX failure paths. Run65 exposed one additional fixture error: Playwright passed Request as the second positional argument, replacing a captured MIME default. The handler now accepts that argument explicitly. Both fixture responses passed the real local Playwright wrapper, then all seven browser cases passed in each engine. No assertion was removed.
 
 Run66 attempt 1's two public-suspension failures remain recorded. The subsequent isolated rerun passed both guards after suspension. The OCR quality gate still has 57 nonexact cases and remains open.
+
+## Continuation evidence correction
+
+The handoff and several matrix rows still referred to pending integration after the branch reached `c0a947e`. Run69 job logs now independently verify 1,628 passing application executions, both suspension guards and the bounded HTTP workload. The progress record and matrix include a superseding continuation section. Historical run66/run67/run68 observations remain preserved. OCR stays FAIL and worker isolation stays BLOCKED despite the green workflow. No product defect is declared fixed by this documentation correction.
+
