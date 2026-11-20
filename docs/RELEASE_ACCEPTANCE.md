@@ -2,6 +2,8 @@
 
 ## Continuation reconciliation
 
+Final continuation source `ca9dd8abe28a1d945b1f8c64d11a5829bf3a6e9b` passed [run70](https://github.com/panelreply-business/panelreply-demo/actions/runs/44662687751): 1,637 application executions, zero failures or application skips. The nine additional cases verify retention review, including its actual store integration. DEL-04, PERF-02, UX-01, A11Y-01 and DEP-01 retain PASS for this source. RET-01 now includes a passing Linux store integration. OCR-02 remains FAIL and OCR-04 remains BLOCKED. [Final evidence](evidence/continuation-verification.json). This supersedes pending-candidate wording below.
+
 [Run69](https://github.com/panelreply-business/panelreply-demo/actions/runs/44659300598), source `c0a947e8415f990f4d58e29a4a1b13ed14bd4982`, supersedes the pending integration wording below for that source. Independently inspected job logs report 1,628 passing application executions and no failures. [Evidence](evidence/continuation-checkpoint.json). This evidence does not cover the subsequent retention-review candidate.
 
 | Gate | Current executed scope | Result | Remaining work |
@@ -13,7 +15,7 @@
 | DEP-01 | Two GET-only suspension guards | PASS | No service-state change authorized. |
 | OCR-02 | 277/310 exact synthetic images | FAIL | 33 nonexact images and representative photos. |
 | OCR-04 | Required-worker readiness exits before native deny tests | BLOCKED | Startup diagnostic is recorded without a confirmed root cause. |
-| RET-01 | Eight in-memory SQLite retention-review cases | PASS | Store integration candidate awaits Linux CI. No automatic retention or deletion policy enabled. |
+| RET-01 | Eight in-memory SQLite cases and one store integration, all passing in run70 | PASS | No automatic retention or deletion policy enabled. Review UI, legal holds and archive expiry remain separate work. |
 
 All actual-model, selected-host, offsite-recovery and release approval gates remain open. NO-GO for launch.
 

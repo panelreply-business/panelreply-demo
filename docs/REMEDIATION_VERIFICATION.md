@@ -1,5 +1,13 @@
 # Engineering remediation verification
 
+## Verified continuation
+
+The latest verified implementation is `ca9dd8abe28a1d945b1f8c64d11a5829bf3a6e9b`, [run70](https://github.com/panelreply-business/panelreply-demo/actions/runs/44662687751), completed November 19 at 10:00 PM EST. All seven jobs succeeded. The 1,637 application executions passed without failures or skips: Node/HTTP 1,150, Chromium 197, Firefox 132, WebKit 132, native OCR/resource 17 and workbook reader nine. Two suspension guards passed, with three public checks policy-blocked. The bounded HTTP drill passed nine workflow groups and 516 responses without unexpected errors. Counts are not combined with overlapping corpus/local/workload repetitions.
+
+Run69 at c0a947e had already verified the preceding corrections with 1,628 application passes. This continuation adds nine retention-review cases and a store-level, content-free, explicit-cutoff review method. No purge policy, scheduler or HTTP endpoint was added. [Evidence](evidence/continuation-verification.json). The baseline and first-run sections below remain historical.
+
+OCR stays 277/310 and FAIL. Required worker readiness stays BLOCKED with zero native deny cases and the recorded loopback RTM_NEWADDR denial. Root cause remains unconfirmed. Actual-model quality, representative photographs, selected-host recovery/isolation, offsite operations, physical devices and actual Excel remain outside executed acceptance. No launch, merge, provider activation or Render-state change occurred.
+
 Working checkpoint, November 19, 2026. The same development branch and draft PR8 are retained. Main and both suspended Render services are unchanged. This document will receive the exact committed source and CI results after the candidate completes integration testing.
 
 ## Preserved baseline
@@ -51,3 +59,4 @@ The assigned environment had previously denied local listener/browser execution,
 ## Release decision
 
 NO-GO for public release or live customer/provider use. The strict synthetic OCR gate remains FAIL, actual model quality is BLOCKED, representative photographs are NOT TESTED, and hosted isolation/offsite recovery/operations need approved environments. Review of code and isolated synthetic tests can continue. No merge or deployment follows from a passing CI run.
+

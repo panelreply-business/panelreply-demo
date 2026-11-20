@@ -74,7 +74,7 @@ Recovery steps: stop writes, preserve the failed data directory, identify the la
 
 ## Retention, deletion and account recovery
 
-Decisions still required: how long to retain completed requests, conversations, source images, project rows, audit records and backup copies. Distinguish an image from the corrected text derived from it. A deletion workflow must validate tenant ownership, show affected records, prevent stale-version deletion and explain backup retention. No deletion endpoint is claimed in this release.
+Decisions still required: how long to retain completed requests, conversations, source images, project rows, audit records and backup copies. Distinguish an image from the corrected text derived from it. Explicit tenant/version/confirmation-aware deletion endpoints and retry receipts are implemented. A store-level retention review now returns bounded content-free candidate lists from an explicit cutoff, without deleting records or enabling a schedule. See [data lifecycle](DATA_LIFECYCLE.md). Backup expiry, policy-based purge, legal holds and later-event reconciliation remain separate operating gates.
 
 Operator-assisted owner reset exists. Self-service recovery requires identity verification, abuse controls, short-lived single-use recovery state, session revocation and an approved delivery channel. Email delivery is not connected. Do not add public signup/reset flows until their lifecycle and support ownership are reviewed.
 
@@ -112,3 +112,4 @@ Support requires a named operator, a monitored channel, response-hour expectatio
 Legal review inputs: data categories and purposes, processors and locations, retention/deletion behavior, backup copies, model data handling, consent and opt-out records, security contact, service limits, ownership/export rights, acceptable-use rules and termination/recovery arrangements. These are product facts to review, not published legal terms or a compliance certification.
 
 The owner-approved service-state correction is verified. The owner must still decide future hosting/budget, approved representative photos, provider/model and data-transfer terms, retention/deletion, support responsibility, legal text, pricing, merge and any pilot/public release. None is implied by a passing engineering check.
+

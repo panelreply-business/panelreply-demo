@@ -201,7 +201,7 @@ The synthetic evaluator intentionally cannot activate a real transport through a
 | Responses transport | PASS | 31 mock HTTP cases, inactive by default |
 | Durable usage hook in the orchestrator | PASS | Reservation, settlement, deduplication, cancellation and failure tests |
 | Durable database/API usage enforcement | PASS | Root integration evidence is recorded in the acceptance matrix and remediation report |
-| Full updated application regression and browser checks | NOT TESTED | Pending the root integration run for this remediation revision |
+| Full updated application regression and browser checks | PASS | Run70 at ca9dd8a: 1,637 application executions with no failures. This includes synthetic provider workflows, not actual model evaluation. |
 | Actual provider/model compatibility | BLOCKED | Owner-approved real call required |
 | Actual model quality and real latency | BLOCKED | Authorized representative real-provider evaluation required |
 | Hosted operations and approved spending policy | BLOCKED | Selected host, budgets and owner approval required |
@@ -212,3 +212,4 @@ The draft can record a request for contractor review. It does not contact a pers
 ## Historical integration checkpoint
 
 [Run66](https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683) verified the earlier source revision `17223d6`. Its four synthetic conversation browser scenarios passed in Chromium, Firefox and WebKit against the private HTTP/SQLite server. That historical result does not verify the new remediation revision. Current root-run CI, HTTP and browser evidence must be recorded separately.
+

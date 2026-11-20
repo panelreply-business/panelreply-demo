@@ -103,5 +103,7 @@ Run66 attempt 1's two public-suspension failures remain recorded. The subsequent
 
 ## Continuation evidence correction
 
+The subsequent retention implementation at ca9dd8a passes run70 with 1,637 application cases. REM-UI-02's contrast assertions and corrected fixture now pass in all three engines. REM-SEC-01's dependency gate and fixed dependency build execute successfully, while native worker isolation remains BLOCKED. REM-QA-01 now has bounded startup stderr, but the classifier still reports an unconfirmed root cause. Do not relabel it as successful isolation. [Evidence](evidence/continuation-verification.json).
+
 The handoff and several matrix rows still referred to pending integration after the branch reached `c0a947e`. Run69 job logs now independently verify 1,628 passing application executions, both suspension guards and the bounded HTTP workload. The progress record and matrix include a superseding continuation section. Historical run66/run67/run68 observations remain preserved. OCR stays FAIL and worker isolation stays BLOCKED despite the green workflow. No product defect is declared fixed by this documentation correction.
 

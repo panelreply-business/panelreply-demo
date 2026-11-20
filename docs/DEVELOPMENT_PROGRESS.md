@@ -2,6 +2,14 @@
 
 ## Continuation checkpoint — November 19, 2026 (EST)
 
+### Verified continuation result
+
+Implementation commit `ca9dd8abe28a1d945b1f8c64d11a5829bf3a6e9b` passed [run70](https://github.com/panelreply-business/panelreply-demo/actions/runs/44662687751), completed at 10:00 PM EST on November 19. All seven jobs succeeded. Application executions: 1,150 Node/HTTP, 197 Chromium, 132 Firefox, 132 WebKit, 17 native OCR/resource and nine workbook-reader cases, totaling 1,637 PASS, zero failures and zero application skips. The nine additional cases comprise eight in-memory retention cases and one real store integration case. Linux CI verified the disk-backed integration that this Windows host could not execute under the unchanged POSIX permission contract.
+
+Both suspension guards passed. Three public checks remain policy-blocked. The 12-client, 516-response workload passed all nine workflow groups without unexpected errors. OCR stayed 277/310 with zero native errors or review violations, so accuracy remains FAIL. Required isolation is still BLOCKED before any native deny case. No real-provider call occurred. [Final machine-readable evidence](evidence/continuation-verification.json).
+
+The evidence follow-up changes documentation only. Its runtime, test and workflow files remain those tested at ca9dd8a. No duplicate application run is needed for those documentation edits. The earlier pending wording below describes the pre-CI state and is superseded by this result.
+
 The branch had advanced to `c0a947e8415f990f4d58e29a4a1b13ed14bd4982` before this continuation. [Run69](https://github.com/panelreply-business/panelreply-demo/actions/runs/44659300598) completed successfully. Fresh reads of all seven jobs and their logs verify 1,628 application executions: 1,141 Node/HTTP, 197 Chromium, 132 Firefox, 132 WebKit, 17 native OCR/resource and nine workbook-reader cases, with no application failures. Two suspension guards passed and three public checks remained policy-blocked. The 12-client workload completed 516 responses and nine workflow groups with zero unexpected errors. Counts overlap the focused evaluations and must not be added to them. [Checkpoint evidence](evidence/continuation-checkpoint.json).
 
 OCR remains 277/310 and FAIL. Required worker readiness remains BLOCKED, with zero native deny cases executed. Its bounded stderr reports `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`. The diagnostic classifier still reports an unconfirmed startup cause. A successful workflow is not isolation acceptance.
