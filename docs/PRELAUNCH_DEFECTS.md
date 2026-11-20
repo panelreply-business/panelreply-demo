@@ -11,6 +11,27 @@ These findings apply to the new separated-product candidate. Focused regressions
 
 The new count policy also removed redundant multiplication of malformed provider inputs across unrelated states. The retained assistant matrix has 983 independently named cases. Evidence-harness tests remain excluded from the product goal. Source-specific final counts will be recorded after full integration.
 
+### First expanded platform run
+
+[Run73](https://github.com/panelreply-business/panelreply-demo/actions/runs/44783047893) tested PR merge `d35465f11858992bc25310e42618271a9407c402`, containing candidate `61f071c89829bce4c57cd107d8bb4677742a790d`. The candidate and tested merge have the same Git tree and source manifest. Its full Linux Node result is 8,860 product passes plus 79 evidence-harness passes, with no failures or skips. Portable Windows and Linux each passed 6,935 product cases plus 79 harness cases. The Linux portable observations overlap the full Linux result and do not increase its count.
+
+Expanded browsers exposed the following findings. Their original failures remain recorded. A local correction is not a browser pass; the follow-up source must execute the same workflow assertions.
+
+| ID | Evidence and impact | Candidate correction | Verification required |
+| --- | --- | --- | --- |
+| SPLIT-UI-01 | Selected callback navigation overwrites its product-specific tab title with the legacy combined label. One method fails in each of Chromium, Firefox and WebKit. | Keep the callback label when changing inbox/profile views. | Two client-state navigation controls cover callback and combined mode; actual selected-product browser rerun pending. |
+| SPLIT-UI-02 | Windows WebKit does not focus a pointer-clicked Export button. Blur validation moves the button before click, so the recorded activation count is zero. | Focus Export on primary pointerdown so the existing blur guard preserves the target until click validation. | Keep the existing activation, validation and focus assertions. Browser rerun pending. |
+| SPLIT-UI-03 | Windows WebKit opens the walkthrough without focusing its launch button. Native dialog dismissal cannot restore that expected opener. | Focus the known opener before opening the native dialog. | Keep Escape/Close focus restoration and review/skip destination checks. Browser rerun pending. |
+| SPLIT-UI-04 | At 320 px and 200% text, Firefox and Linux WebKit measure a 349 px page, exceeding the unchanged 321 px tolerance. | Allow text and containing flex items to reflow without shrinking text or hiding overflow. | Preserve the enlarged-text scenario and add offending-element diagnostics. Corrected geometry remains pending. |
+
+The static Firefox suites also report the browser's implicit favicon request as a CSP violation. The candidate declares an embedded icon and permits only data images while preserving default, script/style, connection and form/base restrictions and every console assertion. External image loads remain blocked.
+
+WebKit mobile methods failed before their journeys because the harness assumed `navigator.maxTouchPoints` must be nonzero. The corrected harness retains that value as telemetry and checks real browser-generated, trusted touchstart/touchend events from `locator.tap()`, plus focus and the original viewport/DPR/user-agent checks. It does not override navigator values, synthesize events or replace taps with clicks. The original 40 failures remain separate from the follow-up result. [Playwright touch contract](https://playwright.dev/python/docs/api/class-touchscreen).
+
+Windows/macOS WebKit link navigation uses the platform's alternate Tab chord in the corrected keyboard fixture. Actual focus and activation assertions remain unchanged; Linux WebKit retains its observed working Tab behavior. [Upstream keyboard convention](https://github.com/microsoft/playwright/issues/5609).
+
+Workflow artifacts now include the run-attempt number, preserving each attempt instead of overwriting evidence or colliding on daily reruns. Aggregation still deduplicates case/platform observations and retains unresolved same-source outcomes.
+
 Date: 2026-11-19. This register covers the work after baseline `41e31a8`. [Development progress](DEVELOPMENT_PROGRESS.md) is the authoritative current status. A regression test demonstrates its stated case, not absence of every possible defect. [Historical platform defects](PLATFORM_VERIFICATION.md) remain recorded separately.
 
 ## Engineering remediation after 36b2bf3

@@ -67,7 +67,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-baseline-linux
+          name: release-baseline-linux-attempt-${{ github.run_attempt }}
           path: |
             ${{ runner.temp }}/panelreply-release-node.json
             ${{ runner.temp }}/panelreply-release-platform.json
@@ -104,7 +104,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-private-linux-${{ matrix.browser }}
+          name: release-private-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-platform.json
           if-no-files-found: error
           retention-days: 30
@@ -249,7 +249,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-node-${{ matrix.os }}
+          name: release-node-${{ matrix.os }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-node.json
           if-no-files-found: error
           retention-days: 30
@@ -292,7 +292,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-platform-${{ matrix.os }}-${{ matrix.browser }}
+          name: release-platform-${{ matrix.os }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-platform.json
           if-no-files-found: error
           retention-days: 30
@@ -327,7 +327,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-platform-${{ matrix.os }}-${{ matrix.channel }}
+          name: release-platform-${{ matrix.os }}-${{ matrix.channel }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-platform.json
           if-no-files-found: error
           retention-days: 30
@@ -361,7 +361,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-mobile-linux-${{ matrix.browser }}
+          name: release-mobile-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-mobile.json
           if-no-files-found: error
           retention-days: 30
@@ -397,7 +397,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-selected-${{ matrix.product }}-${{ matrix.browser }}
+          name: release-selected-${{ matrix.product }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-selected-product.json
           if-no-files-found: error
           retention-days: 30
@@ -446,7 +446,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: verified-release-test-summary
+          name: verified-release-test-summary-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-aggregate.json
           if-no-files-found: error
           retention-days: 30

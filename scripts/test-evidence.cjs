@@ -40,6 +40,11 @@ function relativeFile(root, filename) {
   return filename ? path.relative(root, filename).split(path.sep).join('/') : 'unknown-file';
 }
 function productScope(file, name) {
+  if (file.endsWith('/platform-client-state.test.cjs')) {
+    if (/^intake\b/.test(name)) return 'callback';
+    if (/^(?:panel\b|new-project\b|saved-project\b)/.test(name)) return 'spreadsheet';
+    return 'shared';
+  }
   if (/\/product-(?:ui|backup|config|boundaries)\.test\.cjs$/.test(file)) {
     const selected = /^(?:PRODUCT-UI |PROD\.[a-z-]+\.)?(callback|spreadsheet)(?:[.\s]|$)/.exec(name);
     return selected ? selected[1] : 'shared';

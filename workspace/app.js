@@ -198,7 +198,8 @@
     else $('nav-profile').setAttribute('aria-current', 'page');
     $('page-title').textContent = inbox ? 'Request inbox' : 'Business profile';
     $('page-subtitle').textContent = inbox ? 'A clear view of the work coming in.' : 'The information your customers can rely on.';
-    document.title = `${inbox ? 'Request inbox' : 'Business profile'} · PanelReply`;
+    const programLabel = document.body?.dataset?.productId === 'callback' ? 'PanelReply Callback' : 'PanelReply';
+    document.title = `${inbox ? 'Request inbox' : 'Business profile'} · ${programLabel}`;
   }
 
   function updateBusiness() {

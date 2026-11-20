@@ -13,7 +13,7 @@ The active target starts at 10,000. The machine-readable policy is [test-milesto
 
 ## What counts
 
-The milestone unit is one completed **product case / platform configuration** execution on the current tested source. Platform configuration includes the OS, runtime or browser engine/channel and device profile. A justified platform repetition is recorded separately from a distinct scenario.
+The milestone unit is one completed product case / platform configuration execution on the current tested source. Platform configuration includes the OS, runtime or browser engine/channel and device profile. A justified platform repetition is recorded separately from a distinct scenario.
 
 Report all of these numbers:
 

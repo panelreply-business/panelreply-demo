@@ -59,6 +59,28 @@ test('CSP authorizes the exact inline script and CSS, with connections limited t
   assert.match(html, /form-action 'none'/);
 });
 
+test('the explicit favicon stays embedded and CSP continues to reject network images and untrusted code', () => {
+  const policy = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/)[1];
+  const directives = Object.fromEntries(policy.split(';').map(part => part.trim().split(/\s+/)).filter(parts => parts[0]).map(([name, ...values]) => [name, values]));
+  assert.deepEqual(Object.keys(directives).sort(), ['base-uri', 'connect-src', 'default-src', 'form-action', 'img-src', 'script-src', 'style-src']);
+  assert.deepEqual(directives['default-src'], ["'none'"]);
+  assert.deepEqual(directives['img-src'], ['data:']);
+  assert.deepEqual(directives['connect-src'], ["'self'"]);
+  assert.deepEqual(directives['form-action'], ["'none'"]);
+  assert.deepEqual(directives['base-uri'], ["'none'"]);
+  for (const name of ['script-src', 'style-src']) {
+    assert.equal(directives[name].length, 1);
+    assert.match(directives[name][0], /^'sha256-[A-Za-z0-9+/]+=*'$/);
+  }
+  const icons = [...html.matchAll(/<link\s+rel="icon"\s+type="image\/svg\+xml"\s+href="([^"]+)"\s*>/g)];
+  assert.equal(icons.length, 1);
+  assert.ok(icons[0][1].startsWith('data:image/svg+xml,'));
+  const svg = decodeURIComponent(icons[0][1].slice('data:image/svg+xml,'.length));
+  assert.match(svg, /^<svg\s[^>]*viewBox='0 0 24 24'>/);
+  assert.doesNotMatch(svg, /<(?:script|foreignObject|image|use)\b|\b(?:href|on[a-z]+)\s*=/i);
+  assert.match(svg, /<\/svg>$/);
+});
+
 test('site identifies itself as a sample and does not promise actual dispatch', () => {
   assert.match(html, /SAMPLE DATA/);
   assert.match(html, /No calls, texts or emails are sent/);

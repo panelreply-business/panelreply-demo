@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shutil
+import sys
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
@@ -136,7 +137,17 @@ class WorkspaceBrowserTests(unittest.TestCase):
                 const element = document.getElementById(id);
                 return {id, width: element.clientWidth, scroll: element.scrollWidth};
             });
-            return {viewport: innerWidth, page: document.documentElement.scrollWidth, values};
+            const outside = [...document.querySelectorAll('body *')].filter(element => {
+                if (!element.getClientRects().length || getComputedStyle(element).visibility === 'hidden') return false;
+                const rect = element.getBoundingClientRect();
+                return rect.right > innerWidth + 1 || rect.left < -1;
+            }).map(element => {
+                const rect = element.getBoundingClientRect();
+                return {tag: element.tagName, id: element.id, class: element.className,
+                    left: rect.left, right: rect.right, width: rect.width,
+                    scroll: element.scrollWidth, text: element.textContent.trim().slice(0, 80)};
+            });
+            return {viewport: innerWidth, page: document.documentElement.scrollWidth, values, outside};
         }""")
         self.assertLessEqual(dimensions["page"], dimensions["viewport"] + 1, json.dumps(dimensions))
         for item in dimensions["values"]:
@@ -288,7 +299,11 @@ class WorkspaceBrowserTests(unittest.TestCase):
         expect(self.page.locator("#request-state")).to_have_text("Not started")
 
     def test_skip_link_and_workspace_navigation_have_real_targets(self):
-        self.page.keyboard.press("Tab")
+        # WebKit on Windows/macOS uses the alternate Tab chord to include
+        # links. Keep actual keyboard navigation and every focus assertion.
+        # https://github.com/microsoft/playwright/issues/5609
+        links_chord = "Alt+Tab" if os.environ.get("PANELREPLY_BROWSER") == "webkit" and sys.platform in {"win32", "darwin"} else "Tab"
+        self.page.keyboard.press(links_chord)
         skip_link = self.page.locator(".skip-link")
         expect(skip_link).to_be_focused()
         expect(skip_link).to_be_visible()
@@ -351,6 +366,18 @@ class WorkspaceBrowserTests(unittest.TestCase):
                 self.assert_no_horizontal_overflow()
                 font_size = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
                 self.assertGreaterEqual(font_size, 30, "Body text must respond to the user's font scale")
+                headings = self.page.locator('h1, h2').evaluate_all("""elements => elements.map(element => {
+                    const rect = element.getBoundingClientRect();
+                    return {text: element.textContent, left: rect.left, right: rect.right,
+                        width: element.clientWidth, scroll: element.scrollWidth,
+                        overflow: getComputedStyle(element).overflowX};
+                })""")
+                for heading in headings:
+                    self.assertGreater(heading["width"], 0, json.dumps(heading))
+                    self.assertLessEqual(heading["scroll"], heading["width"] + 1, json.dumps(heading))
+                    self.assertGreaterEqual(heading["left"], -1, json.dumps(heading))
+                    self.assertLessEqual(heading["right"], width + 1, json.dumps(heading))
+                    self.assertNotIn(heading["overflow"], ["hidden", "clip"], "Text must wrap without clipping")
         self.page.evaluate("() => document.documentElement.style.fontSize = ''")
         self.page.set_viewport_size({"width": 390, "height": 900})
         self.capture("mobile-ready.jpg")

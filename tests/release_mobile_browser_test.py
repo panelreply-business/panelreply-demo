@@ -35,6 +35,8 @@ class MobileWorkspaceTests(PanelWorkspaceBrowserTests):
         self.device_name = method.device_name
         descriptor = dict(self.playwright.devices[self.device_name])
         self.assertEqual(descriptor.pop("default_browser_type"), ENGINE)
+        self.assertIs(descriptor["has_touch"], True)
+        self.assertIs(descriptor["is_mobile"], True)
         self.descriptor = descriptor
         self.username = self.seed_owner()
         self.context = self.browser.new_context(**descriptor, accept_downloads=True)
@@ -50,12 +52,41 @@ class MobileWorkspaceTests(PanelWorkspaceBrowserTests):
         self.page.on("console", lambda message: self.console_errors.append(message.text)
                      if message.type == "error" else None)
         self.page.goto(self.origin + "/login")
-        actual = self.page.evaluate("""() => ({touch: navigator.maxTouchPoints,
+        actual = self.page.evaluate("""() => ({maxTouchPoints: navigator.maxTouchPoints,
+            touchEvents: 'ontouchstart' in window && 'ontouchend' in window,
             ratio: devicePixelRatio, width: innerWidth, userAgent: navigator.userAgent})""")
-        self.assertGreater(actual["touch"], 0)
+        self.touch_evidence = {"observed": actual, "events": []}
+        self.assertIs(actual["touchEvents"], True)
         self.assertAlmostEqual(actual["ratio"], descriptor["device_scale_factor"], places=2)
         self.assertEqual(actual["width"], descriptor["viewport"]["width"])
         self.assertEqual(actual["userAgent"], descriptor["user_agent"])
+        # has_touch promises touch events, not a spoofed navigator hardware
+        # count. WebKit on the Linux CI host reports maxTouchPoints=0. Verify
+        # the actual browser input path instead of replacing it with a click.
+        # https://playwright.dev/python/docs/api/class-touchscreen
+        username = self.page.get_by_label("Username", exact=True)
+        username.evaluate("""element => {
+            element.__panelReplyTouchProbe = [];
+            for (const type of ['touchstart', 'touchend']) {
+                element.addEventListener(type, event => {
+                    element.__panelReplyTouchProbe.push({type: event.type,
+                        trusted: event.isTrusted, touches: event.touches.length,
+                        changedTouches: event.changedTouches.length});
+                }, {once: true, passive: true});
+            }
+        }""")
+        username.tap()
+        events = username.evaluate("""element => {
+            const events = element.__panelReplyTouchProbe;
+            delete element.__panelReplyTouchProbe;
+            return events;
+        }""")
+        self.touch_evidence["events"] = events
+        self.assertEqual(events, [
+            {"type": "touchstart", "trusted": True, "touches": 1, "changedTouches": 1},
+            {"type": "touchend", "trusted": True, "touches": 0, "changedTouches": 1},
+        ])
+        expect(username).to_be_focused()
 
     def login_touch(self):
         self.page.goto(self.origin + "/login")

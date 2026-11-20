@@ -435,7 +435,13 @@ test('selected program case labels retain their own product scope and shared bou
     ['product-config', 'PROD.api.unbound | explicit product APIs refuse an unmarked real store', 'shared'],
     ['product-boundaries', 'PROD.workflow.callback | intake works without panel capabilities', 'callback'],
     ['product-boundaries', 'PROD.workflow.spreadsheet | export works without callback routes', 'spreadsheet'],
-    ['product-boundaries', 'PROD.cookies.localhost | both product cookies coexist', 'shared']
+    ['product-boundaries', 'PROD.cookies.localhost | both product cookies coexist', 'shared'],
+    ['platform-client-state', 'intake callback navigation preserves its program title', 'callback'],
+    ['platform-client-state', 'intake combined navigation preserves its program title', 'callback'],
+    ['platform-client-state', 'panel initial network failure exposes an enabled retry', 'spreadsheet'],
+    ['platform-client-state', 'new-project quota rejection keeps the draft editable', 'spreadsheet'],
+    ['platform-client-state', 'saved-project version conflict retains the draft', 'spreadsheet'],
+    ['platform-client-state', 'dashboard retry clears old records', 'shared']
   ];
   const items = cases.map(([file, name], index) => {
     const filename = path.join(__dirname, file + '.test.cjs');

@@ -4,7 +4,7 @@ Owner direction: November 20, 2026. Run daily through December 20, 2026, in Amer
 
 ## Two independent decisions
 
-Maintain separate records for the **callback program** and **spreadsheet program**. Each receives its own defects, evidence, operating checklist, real-world-testing decision and release decision. A pass or a launch for one never activates the other.
+Maintain separate records for the callback program and spreadsheet program. Each receives its own defects, evidence, operating checklist, real-world-testing decision and release decision. A pass or a launch for one never activates the other.
 
 December 31 remains the target for the first release. The owner has not selected which program launches first or a date for the second release. December 20 is the readiness review for real-world testing, not automatic permission to use a provider, spend money, contact a customer, load customer data or deploy.
 

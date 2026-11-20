@@ -422,6 +422,9 @@
       else step.removeAttribute('aria-current');
     });
     announce('walkthrough-status', 'Choose Load prepared sample, or skip directly to the editable table.');
+    // WebKit does not focus buttons on pointer activation. Give the native
+    // dialog a known opener to restore when Escape or Close dismisses it.
+    $('start-parts-walkthrough').focus({ preventScroll: true });
     $('parts-walkthrough').showModal();
     $('walkthrough-next').focus();
   }
@@ -606,6 +609,11 @@
     announce('parts-status', 'The original 3 sample parts are restored. Your corrections and review marks were cleared.');
   });
 
+  $('export').addEventListener('pointerdown', event => {
+    // Preserve the blur guard even in engines that do not focus clicked
+    // buttons. Validation on click must not move this target during the press.
+    if (event.button === 0) $('export').focus({ preventScroll: true });
+  });
   $('export').addEventListener('click', async () => {
     if (exporting) return;
     const result = core.exportParts(parts);

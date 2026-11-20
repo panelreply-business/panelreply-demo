@@ -189,6 +189,8 @@ class EvidenceResult(unittest.TextTestResult):
         self.records[identifier]["durationMs"] = round((time.monotonic() - self.started[identifier]) * 1000, 3)
         if hasattr(test, "descriptor"):
             self.records[identifier]["emulation"] = test.descriptor
+        if hasattr(test, "touch_evidence"):
+            self.records[identifier]["touchEvidence"] = test.touch_evidence
         super().stopTest(test)
 
 

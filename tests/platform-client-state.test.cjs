@@ -72,6 +72,7 @@ function client(script, options = {}) {
   }
   const element = id => nodes.get(id) || make('div', id);
   document = { getElementById: element, createElement: tag => make(tag), createDocumentFragment: () => make('#fragment'), querySelectorAll: () => [], body: make('body'), activeElement: null };
+  if (options.productId) document.body.dataset.productId = options.productId;
   element('status-filter').value = 'all';
   const pagePath = script === 'panels.js' ? '/panels' : script === 'dashboard.js' ? '/dashboard' : '/';
   let href = `http://127.0.0.1:10001${pagePath}`;
@@ -85,7 +86,7 @@ function client(script, options = {}) {
     if (requestPath === '/api/session' && state.failSession) throw new Error('Synthetic network failure');
     if (state.holdReads && requestPath !== '/api/session') return new Promise(() => {});
     let status = 200, data;
-    if (requestPath === '/api/session') data = { user: { id: `user-${state.actor}`, username: `owner-${state.actor}`, businessId: `business-${state.actor}` }, csrfToken: `csrf-${state.actor}` };
+    if (requestPath === '/api/session') data = { user: { id: `user-${state.actor}`, username: `owner-${state.actor}`, businessId: `business-${state.actor}` }, csrfToken: `csrf-${state.actor}`, ...(options.productId ? { product: { id: options.productId } } : {}) };
     else if (requestPath === '/api/profile') data = { business: { id: `business-${state.actor}`, name: `Business ${state.actor}` }, version: 1, facts: {} };
     else if (requestPath === '/api/panel-ocr') data = { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'engine_unavailable' };
     else if (method !== 'GET' && state.mutationError) { status = 409; data = { error: state.mutationError }; }
@@ -102,10 +103,27 @@ function client(script, options = {}) {
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(path.join(__dirname, '../workspace/deletion.js'), 'utf8'), context, { filename: 'deletion.js' });
   vm.runInContext(source, context, { filename: script });
-  return { element, state, calls, redirects, window };
+  return { element, state, calls, redirects, window, document };
 }
 
 async function settle() { for (let turn = 0; turn < 3; turn += 1) await new Promise(resolve => setImmediate(resolve)); }
+
+for (const [productId, label] of [[undefined, 'PanelReply'], ['callback', 'PanelReply Callback']]) {
+  test(`intake ${productId || 'combined'} navigation preserves its program title`, async () => {
+    const page = client('app.js', { productId });
+    await settle();
+    assert.equal(page.element('signed-in-name').textContent, 'owner-A');
+    assert.equal(page.element('app-error').hidden, true);
+    await page.element('nav-profile').emit('click');
+    assert.equal(page.document.title, 'Business profile · ' + label);
+    assert.equal(page.element('page-title').textContent, 'Business profile');
+    assert.equal(page.element('profile-view').hidden, false);
+    await page.element('nav-inbox').emit('click');
+    assert.equal(page.document.title, 'Request inbox · ' + label);
+    assert.equal(page.element('page-title').textContent, 'Request inbox');
+    assert.equal(page.element('inbox-view').hidden, false);
+  });
+}
 
 test('panel initial network failure exposes an enabled retry that can recover', async () => {
   const page = client('panels.js', { failSession: true });
