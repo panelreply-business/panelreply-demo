@@ -1,6 +1,6 @@
 # Test milestones and counting policy
 
-This implementation checkpoint supersedes the planning-only record in commit `d5d270f8dd7866c905076d25dfac9efbc7de471d`. That commit and its unimplemented status remain in history. Runtime separation is now implemented locally and requires its own committed integration evidence; neither program has launch approval.
+This implementation checkpoint supersedes the planning-only record in commit `d5d270f8dd7866c905076d25dfac9efbc7de471d`. That commit and its unimplemented status remain in history. Runtime separation is implemented and has committed integration evidence in run76. Each program still needs its own release decision.
 
 Owner requirements, November 20, 2026:
 
@@ -10,6 +10,12 @@ Owner requirements, November 20, 2026:
 4. Release the callback and spreadsheet programs independently. A future merger is optional and requires a later decision.
 
 The active target starts at 10,000. The machine-readable policy is [test-milestones.json](test-milestones.json). It records the America/Detroit cutoff, required platform coverage and the 20,000 target. Do not silently reinterpret the requirement as 10,000 tests per program or repeatedly double beyond 20,000.
+
+## Verified progress — November 20, 2026
+
+[Run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) records 24,372 product case/platform passes across 9,114 distinct cases. The distinct total includes 7,467 generated input/state cases. The count excludes 237 evidence-harness passes and 7,017 duplicate observations. All 30 automated platform requirements pass. [Source-bound evidence](evidence/independent-products-verification.json) preserves per-product totals, actual platform versions, hashes and artifact digests.
+
+The numeric execution count exceeds both thresholds. Seven required platform scopes remain NOT TESTED, so the complete goal has not been achieved. The policy remains at 10,000, with `firstGoalAchievedAt` unset. This is not a claim of 10,000 distinct cases or coverage of every required platform. The one-time increase to 20,000 follows verification of the complete first goal before the deadline.
 
 ## What counts
 

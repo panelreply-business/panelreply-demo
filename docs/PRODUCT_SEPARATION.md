@@ -152,7 +152,7 @@ CALLBACK_DATA_DIR="$PANELREPLY_RECOVERY_DIR/callback-restored" \
 node callback-server.cjs
 ```
 
-The [product recovery tests](../tests/product-backup.test.cjs) pass locally, including actual startup through both fixed entrypoints after restore. Local recovery does not establish offsite recovery, host durability or an approved operating schedule. [Recovery principles](RECOVERY.md) still apply. Its generic unbound commands describe the historical harness.
+The [product recovery tests](../tests/product-backup.test.cjs) pass in [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151), including actual startup through both fixed entrypoints after restore. [Final verification](evidence/independent-products-verification.json) records the tested source and separate product journeys. Controlled recovery does not establish offsite recovery, host durability or an approved operating schedule. [Recovery principles](RECOVERY.md) still apply. Its generic unbound commands describe the historical harness.
 
 ## Internal integration harness
 

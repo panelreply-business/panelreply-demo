@@ -2,15 +2,31 @@
 
 ## Current release structure — November 20, 2026
 
-The callback and spreadsheet programs now have independent release decisions. Use [callback release acceptance](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet release acceptance](SPREADSHEET_RELEASE_ACCEPTANCE.md) for current product gates. [Product separation](PRODUCT_SEPARATION.md) defines their fixed entrypoints, data and recovery boundaries. The combined matrix below remains a historical technical inventory.
+Callback and spreadsheet have independent release decisions. Use [callback release acceptance](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet release acceptance](SPREADSHEET_RELEASE_ACCEPTANCE.md) for their product gates. [Product separation](PRODUCT_SEPARATION.md) defines fixed entrypoints, data and recovery boundaries. The combined matrices below remain historical technical evidence.
 
-The first release target is December 31, 2026. Product order and the second date remain undecided. The [daily checklist](DAILY_QUALITY_CHECKLIST.md) runs through December 20, followed by separate readiness reviews for real-world testing. Neither a date nor a passing count authorizes external activation.
+The first-release target is December 31, 2026. Product order and the second date remain undecided. The [daily checklist](DAILY_QUALITY_CHECKLIST.md) is enabled at 10:00 AM America/Detroit through December 20, followed by separate readiness reviews for real-world testing.
 
-The portfolio target is 10,000 meaningful product case/platform passes, with a one-time increase to 20,000 only after the complete first goal is verified before December 31. [Counting policy](TEST_MILESTONES.md) and [machine-readable platform requirements](test-milestones.json) distinguish numeric progress from required coverage. Shared cases count once; simulated devices are not physical devices.
+### Current verified result
 
-The separated-product source `3bbb0528ba4487e0aa9b3298ad1b5d475939fe70` completed [run75](https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194) with 24,370 product case/platform passes and two Intel macOS WebKit failures. Twenty-nine of 30 automated platform requirements pass. Each selected Linux program passes 21 browser cases across Chromium, Firefox and WebKit. The two Mac failures keep the overall automated platform gate FAIL while targeted corrections are prepared. [Checkpoint evidence](evidence/independent-products-run75.json) records the source, deduplication, failures and seven manual platform gaps.
+Source `ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a` passed [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151). The tested PR merge `7a9b95ac3d36ff238ef49b036457e4d00e77a972` has the same Git tree. All 31 workflow jobs succeeded. The [final source-bound evidence](evidence/independent-products-verification.json) records 24,372 product case/platform passes across 9,114 distinct cases, with zero failures or unresolved product outcomes. It excludes 237 harness passes and 7,017 overlapping observations.
 
-Callback actual-provider quality and selected-host operation remain unverified. Spreadsheet OCR quality remains FAIL at 277/310 and required native isolation remains BLOCKED before native deny testing. Physical-device, Apple-silicon Mac, actual Safari/Excel and relevant operational recovery checks remain open. The programs require separate GO/NO-GO decisions. A product-specific failure does not automatically block the other program after the shared boundary and dependent gates pass.
+| Requirement | Result | Current evidence and limit |
+| --- | --- | --- |
+| Automated platform matrix | PASS | All 30 configured requirements pass. Linux, Windows and Intel Mac; bundled engines, selected Chrome/Edge channels, emulation and fixed-product journeys. |
+| Selected program journeys on Linux | PASS | Callback 21/21 and spreadsheet 21/21 across Chromium, Firefox and WebKit. |
+| Complete required platform coverage | NOT TESTED | Seven scopes remain: actual macOS Safari, physical iPhone/iPad Safari, physical Android Chrome, Windows/macOS private product workflows and Apple silicon macOS. |
+| Callback actual-provider/model quality | BLOCKED | Zero real-provider calls. Synthetic contracts do not measure actual-model behavior. |
+| Spreadsheet synthetic OCR quality | FAIL | 277/310 exact images. All 33 nonexact outcomes remain recorded. |
+| Spreadsheet required native isolation | BLOCKED | Zero native deny cases. Readiness cause remains unconfirmed. |
+| Representative photos and actual Excel | NOT TESTED | Controlled synthetic images and independent file readers are separate evidence. |
+| Selected-host, offsite recovery and operation | BLOCKED | Controlled local restart/recovery passes do not establish these requirements. |
+| Product release or real-world trial | BLOCKED | Each program needs its own applicable quality, operating and activation decision. |
+
+The numeric execution count exceeds 10,000 and 20,000. The complete all-platform goal remains open, so the active target is still 10,000 and its achievement date is unset. [Counting policy](TEST_MILESTONES.md) and [platform requirements](test-milestones.json) preserve the one-time increase to 20,000 if the complete first goal is verified before December 31. Shared cases count once. Emulation and bundled WebKit are separate from physical devices and actual Safari.
+
+[Run75](evidence/independent-products-run75.json) retains its two Mac failures and source. Run76 proves the native-Tab and dropdown corrections against the new source. [Run74](evidence/independent-products-run74.json) retains its Windows skip-link failure and unassigned ARM64 jobs. Prior failed observations are preserved, not transferred into passing results.
+
+Callback and spreadsheet require separate GO/NO-GO decisions. A product-specific failure does not block the other after the shared and dependent gates pass. Neither date nor count activates a service. Both public suspension guards pass, and PR8 remains draft.
 
 ## Continuation reconciliation
 

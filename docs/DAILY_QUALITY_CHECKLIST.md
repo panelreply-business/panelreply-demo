@@ -2,6 +2,8 @@
 
 Owner direction: November 20, 2026. Run daily through December 20, 2026, in America/Detroit. The existing recurring audit runs at 10:00 AM local time beginning November 21. November 20 is the current development and verification session.
 
+November 20 execution is complete. [The verified record](evidence/independent-products-verification.json) contains the tested source, separate product results, 30 passing automated platform requirements and the remaining platform/quality gates. Future checks must use that day's current source and record fresh evidence under the rules below.
+
 ## Two independent decisions
 
 Maintain separate records for the callback program and spreadsheet program. Each receives its own defects, evidence, operating checklist, real-world-testing decision and release decision. A pass or a launch for one never activates the other.

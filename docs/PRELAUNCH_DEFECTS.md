@@ -1,5 +1,29 @@
 # Pre-launch defect register
 
+## Run76 checkpoint — November 20, 2026
+
+[Run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) tested branch head `ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a` through PR merge `7a9b95ac3d36ff238ef49b036457e4d00e77a972`. The source/test manifest SHA-256 is `823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81`, with `sourceChanged:false`. Prior failures remain recorded below. Passing corrections apply to this tested source.
+
+| Executed scope | Run76 result | Evidence and limit |
+| --- | --- | --- |
+| Linux Node/API/HTTP | 8,942 PASS, zero failures or skips | [Linux job](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468890829). Excluding 79 evidence-harness cases leaves 8,863 product executions. Zero cancellations, todo cases and infrastructure errors. |
+| Native OCR and resource/lifecycle | 9 + 8 PASS | Same Linux job. These execution checks do not establish extraction accuracy or OS isolation. |
+| Independent XLSX reader | 9 PASS | Same Linux job. Actual Excel remains NOT TESTED. |
+| Mac static browser workflows | 92/92 per engine | [Chromium](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468891157), [Firefox](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468891131) and [WebKit](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468891138) pass on Intel macOS. WebKit verifies native Tab order and the 44 px select targets. Actual Safari and Apple silicon remain unverified. |
+| Selected callback and spreadsheet programs | 42/42 PASS | Seven cases per program in each of Linux Chromium, Firefox and WebKit. [Callback evidence](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet evidence](SPREADSHEET_RELEASE_ACCEPTANCE.md) link all six jobs. |
+| Automated platform matrix | PASS, 30/30 requirements | [run76 accounting](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136478385752) validates the reports against the tested source. All 23 browser jobs total 1,633 PASS, zero failures, errors or skips. The seven untested platform scopes remain separate. |
+| Controlled storage/recovery drill | Five groups PASS, zero unexpected errors | Linux job. Source preservation, encrypted recovery and credential reset are exercised. Restored sessions are stripped and copied passwords disabled. |
+| Concurrent HTTP drill | Nine groups PASS, 516 responses, zero unexpected errors | [Workload job](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468890517). Twelve clients in one Node process. The restart reopens the HTTP server and store in that process, not the host. |
+| Synthetic OCR quality | FAIL, 277/310 exact | [Measurement job](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468891092). 33 nonexact images, zero native errors and review violations. All 310 recorded outcomes match run75. |
+| Required native-worker isolation | BLOCKED, zero native deny cases | [Isolation job](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468890987). Bubblewrap 0.12.0 passes its version check. Engine readiness reports `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`. Cause remains `worker_startup_cause_unconfirmed`, with `confirmedExternalBlocker:false`. No fallback or privileged retry. |
+| Public suspension | Two guards PASS, three application checks policy-BLOCKED | [GET-only guard job](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151/job/136468890923). No service activation or Render change follows from this result. |
+
+The Linux job also passes the standalone 334-scenario, 374-turn conversation evaluation with zero real-provider calls and the 197-case Chromium browser baseline. The conversation scenarios overlap Node coverage. Drill operations, benchmark images, assertions and reruns do not add product cases.
+
+Complete required platform acceptance remains NOT TESTED. Seven required scopes lack evidence under the [milestone policy](test-milestones.json): actual macOS Safari, physical iPhone Safari, physical iPad Safari, physical Android Chrome, private product workflows on Windows, private product workflows on macOS, and Apple silicon macOS. The automated matrix and any portfolio count cannot close these gaps.
+
+Actual provider/model evaluation, representative photographs, Excel, selected-host operation and offsite recovery remain open. Controlled fixed-entrypoint restart and recovery do not establish hosted restart, failover or recovery objectives. The December 20 readiness review and each program's release decision remain separate from the December 31 first-release target.
+
 ## Run75 checkpoint — November 20, 2026
 
 [Run75](https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194) tested branch head `3bbb0528ba4487e0aa9b3298ad1b5d475939fe70` through PR merge `f314429a7470f17b69f841c3f41e490ba9d16806`. The source/test manifest SHA-256 is `fbffb29fd99a316d26ab8247df3c2162ee6d84fe6c048e95c5dcb2b5c4f9db74`, with `sourceChanged:false`. This checkpoint proves the executed scopes below. It is not completed platform or release acceptance.
@@ -22,16 +46,16 @@ The standalone conversation evaluation passes 334 scenarios across 374 turns wit
 
 Actual provider/model validation, representative photographs, actual Safari, physical devices, Excel, selected-host operation and offsite recovery remain open. Controlled fixed-entrypoint restart and restore tests do not establish hosted restart, failover or recovery objectives. Real-world testing still requires the separate December 20 readiness review and the authorized test scope. The December 31 first-release target does not close these gates.
 
-### New findings still open in run75
+### Run75 findings and run76 verification
 
 | ID | Evidence and impact | Current status and required verification |
 | --- | --- | --- |
-| SPLIT-UI-07 | Mac WebKit ordinary Tab does not focus the `#call` (Simulate missed call) button on root `index.html` in `browser_test.DemoBrowserTests.test_keyboard_access_to_every_control`. | FAIL in run75. The next candidate gives the root page buttons, select, navigation/footer links and disclosure summaries explicit `tabindex="0"` in document order. The existing case uses ordinary Tab across navigation, actions and disclosures, with no positive tabindex or substituted focus calls. Mac CI verification is pending. |
-| SPLIT-UI-08 | Mac WebKit measures marketing-preview selects at 21 px (`request-filter`), 23 px (`detail-status`) and 23 px (`callback`). | FAIL in run75. The next candidate retains native select behavior while using `appearance:none`, a 44 px minimum height and a CSS chevron, with native appearance restored under forced colors. The 44 px browser assertion remains unchanged. Mac CI verification is pending. |
+| SPLIT-UI-07 | Mac WebKit ordinary Tab does not focus the `#call` (Simulate missed call) button on root `index.html` in `browser_test.DemoBrowserTests.test_keyboard_access_to_every_control`. | FAIL in run75, corrected and PASS in run76 Mac WebKit 92/92. Root page buttons, select, navigation/footer links and disclosure summaries use explicit `tabindex="0"` in document order. The existing case verifies ordinary Tab across navigation, actions and disclosures, with no positive tabindex or substituted focus calls. |
+| SPLIT-UI-08 | Mac WebKit measures marketing-preview selects at 21 px (`request-filter`), 23 px (`detail-status`) and 23 px (`callback`). | FAIL in run75, corrected and PASS in run76 Mac WebKit 92/92. The controls retain native select behavior while using `appearance:none`, a 44 px minimum height and a CSS chevron, with native appearance restored under forced colors. The 44 px browser assertion remains unchanged. |
 
 ## Independent product and test expansion — November 20, 2026
 
-These findings describe the separated-product work and its earlier checkpoints. Focused regressions overlap the full suite and must not be added to it. The run75 section above supersedes pending-verification wording only for its named executed scopes. Original run73/run74 failures remain historical evidence.
+These findings describe the separated-product work and its earlier checkpoints. Focused regressions overlap the full suite and must not be added to it. The checkpoint sections above supersede pending-verification wording only for their named executed scopes. Original run73/run74 failures remain historical evidence.
 
 | ID | Evidence and impact | Correction | Regression evidence |
 | --- | --- | --- | --- |
@@ -154,7 +178,7 @@ The 1,096 application checks were not rerun. Their original passing results carr
 
 | ID | Priority | Evidence | Status / next action |
 | --- | --- | --- | --- |
-| OCR-QUALITY | Medium | Run75 exactly matches all expected fields in 277/310 synthetic images. 33 remain nonexact, with zero native execution errors or review violations. The earlier 253/310 result remains in the historical records. | FAIL accuracy gate. Keep every candidate unreviewed and require source comparison. Use the unchanged failure corpus for further measured changes. Representative job-site quality remains NOT TESTED. |
+| OCR-QUALITY | Medium | Run76 exactly matches all expected fields in 277/310 synthetic images. 33 remain nonexact, with zero native execution errors or review violations. All 310 outcomes match run75. The earlier 253/310 result remains in the historical records. | FAIL accuracy gate. Keep every candidate unreviewed and require source comparison. Use the unchanged failure corpus for further measured changes. Representative job-site quality remains NOT TESTED. |
 
 Actual model quality, representative photographs, hosted recovery, retention/deletion, durable provider budgets, physical-device/assistive-technology checks and live integrations are incomplete requirements, not defects declared fixed by these local tests. See [release acceptance](RELEASE_ACCEPTANCE.md).
 

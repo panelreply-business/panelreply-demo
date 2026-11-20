@@ -2,19 +2,50 @@
 
 ## Independent product checkpoint — November 20, 2026 (EST)
 
-The owner set a December 31, 2026 first-release target, requested 10,000 meaningful passing tests across platforms, and requested a one-time increase to 20,000 if the complete first goal is met before December 31. The callback and spreadsheet programs now have separate launch entrypoints and release decisions. Product order and the second release date remain undecided. The older combined-release records below are historical evidence, not current launch approval.
+The callback and spreadsheet programs now have separate startup/configuration, bound data, sessions, routes, backups and release decisions. [Run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) completed successfully at 1:15 PM EST with all 31 workflow jobs successful. Its source-bound ledger records 24,372 passing product case/platform executions across 9,114 distinct product cases. All 30 automated platform requirements pass. Seven required platform scopes and the product-specific quality/operating gates remain open.
 
-The [daily checklist](DAILY_QUALITY_CHECKLIST.md) runs at 10:00 AM America/Detroit through December 20, 2026. December 20 is a separate readiness review for each program before real-world testing. It does not automatically enable a provider, change hosting, contact customers or deploy either program.
+The [daily checklist](DAILY_QUALITY_CHECKLIST.md) is enabled for 10:00 AM America/Detroit from November 21 through December 20, 2026, inclusive. November 20 is this completed development and verification session. December 20 produces separate readiness decisions and bounded real-world test plans. December 31 remains the first-release target. Product order and the second release date remain undecided.
 
-Implementation now separates fixed product configuration, page/API routes, session cookies, data-directory identity and authenticated backup identity. Callback startup does not create an OCR worker. Spreadsheet startup cannot activate callback or model routes. The combined entrypoint remains an internal integration harness and refuses product-bound data. See [product separation](PRODUCT_SEPARATION.md), [callback acceptance](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet acceptance](SPREADSHEET_RELEASE_ACCEPTANCE.md).
+### Verified source and counts
 
-Expanded synthetic tests cover request boundaries, actual SQLite preservation, deletion state histories, exact CSV/XLSX readback, assistant input/transport boundaries and product separation/recovery. New assistant regressions exposed two name-grounding defects: typographic apostrophes were compared inconsistently, and name cues embedded in unrelated roles could be accepted. Both have targeted corrections. The [defect register](PRELAUNCH_DEFECTS.md) preserves the reproduction evidence.
+- Branch source: `ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a`.
+- Tested PR merge: `7a9b95ac3d36ff238ef49b036457e4d00e77a972`.
+- Matching branch and tested-merge tree: `8f4c704af5ead9f6a76cadd83fc6ec2fa2d5b131`.
+- Executable/test/workflow manifest SHA-256: `823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81`.
+- All 27 input reports are complete, clean and unchanged during execution. An independent aggregate matches the CI ledger, including every case/platform result.
 
-The [counting policy](TEST_MILESTONES.md) records distinct cases, product case/platform executions, generated cases and evidence-harness checks separately. Shared tests count once. Reruns, assertions, skips and blocked work cannot inflate the goal. The automated matrix includes Linux, Windows and macOS, bundled Chromium/Firefox/WebKit, Chrome/Edge channels, mobile emulation and each selected product. Physical devices and actual Safari remain separate requirements.
+| Scope | Distinct product cases | Product case/platform passes |
+| --- | ---: | ---: |
+| Callback | 3,321 | 10,351 |
+| Spreadsheet | 4,118 | 11,836 |
+| Shared, counted once | 1,675 | 2,185 |
+| Portfolio | 9,114 | 24,372 |
 
-The first completed Linux, Windows and Intel macOS checkpoint is [run75](https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194), branch source `3bbb0528ba4487e0aa9b3298ad1b5d475939fe70`. It records 24,370 product case/platform passes and two failures across 9,114 distinct product cases. It excludes 237 evidence-harness passes and 7,017 duplicate observations. Both failures are in Intel macOS WebKit: ordinary Tab skips a callback-demo button, and three native selects render below the required touch size. The workflow correctly fails the automated platform gate. [Run75 evidence](evidence/independent-products-run75.json) preserves both outcomes. Run74's failed Windows skip-link case and unassigned ARM64 Mac jobs remain in [run74 evidence](evidence/independent-products-run74.json).
+The distinct total includes 7,467 generated input/state cases and 1,647 cases not marked generated. Product failures, errors, skips, cancelled and unexecuted outcomes are zero in the completed ledger. The goal excludes 237 evidence-harness passes and 7,017 duplicate observations from overlapping suites. Prior runs and the standalone assistant evaluation are not added again. [Final evidence, artifact digests and matrix](evidence/independent-products-verification.json).
 
-The affected source is being corrected and requires a new complete CI run. Do not carry these counts forward to changed code. Numeric progress alone has not completed the all-platform goal. Native OCR quality remains FAIL at 277/310 exact synthetic images. Required worker isolation remains BLOCKED before native deny testing, and actual-model, representative-photo, Excel, physical-device and selected-host evidence remain incomplete. Each program must meet its own applicable gates before launch.
+Node product executions total 22,739: full Linux 8,863, portable Windows 6,938 and portable Intel macOS 6,938. Linux portable repeats the same 6,938 cases and is deduplicated. Browser executions total 1,633 across 23 jobs. Each selected program passes seven journeys in each of Linux Chromium, Firefox and WebKit, totaling 42. Mobile emulation passes 40 journeys in Chromium and 40 in WebKit, with browser-generated trusted touch events. Each Intel Mac engine passes all 92 static-client methods. Browser builds, channels and OS/runtime versions remain in the evidence.
+
+Both numeric thresholds, 10,000 and 20,000 case/platform passes, are exceeded. The complete all-platform goal is not achieved. The active target remains 10,000, with no recorded first-goal achievement date. The [milestone policy](TEST_MILESTONES.md) retains the one-time increase to 20,000 only if the complete first goal is verified before December 31. Missing platforms and quality requirements cannot be waived by a count.
+
+### Separate controls and corrected defects
+
+[Product separation](PRODUCT_SEPARATION.md) documents the fixed callback and spreadsheet entrypoints. Callback never starts OCR. Spreadsheet cannot activate callback or model routes. Each product rejects the other's data binding and authenticated backup identity. The combined entrypoint remains an internal integration harness and refuses product-bound data. Separate [callback](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet](SPREADSHEET_RELEASE_ACCEPTANCE.md) records control readiness, launch, rollback and recovery. A future merger needs a reviewed migration and both products' acceptance evidence.
+
+The expanded tests found and verified corrections for customer-name apostrophe handling, unrelated-role name cues, callback page titles, export pointer activation, walkthrough focus restoration, small-width text reflow, root-page native keyboard order and Mac dropdown dimensions. Existing assertions remain. The [defect register](PRELAUNCH_DEFECTS.md) preserves before/after evidence.
+
+### Open release requirements
+
+Seven platform scopes remain NOT TESTED: actual macOS Safari, physical iPhone Safari, physical iPad Safari, physical Android Chrome, private product workflows on Windows, private product workflows on macOS and Apple silicon macOS. Intel results, bundled WebKit and device emulation do not establish those scopes.
+
+Run76 separately passes nine native OCR execution cases, eight native resource/lifecycle cases, nine independent XLSX-reader cases, five storage/recovery groups and nine concurrent HTTP groups across 516 responses with zero unexpected errors. The 334-scenario, 374-turn assistant evaluation overlaps Node coverage and uses zero real-provider calls. Controlled recovery does not establish selected-host restart, failover or offsite recovery.
+
+Native OCR quality remains FAIL at 277/310 exact synthetic images, with 33 nonexact and zero native errors/review violations. Required worker isolation remains BLOCKED before any native deny case, with startup cause unconfirmed. Actual-model, representative-photo, Excel, selected-host and operating evidence remain incomplete. Both public suspension guards pass; three public application checks remain policy-BLOCKED. Each program requires its own applicable gates before a trial or release. The work remains in draft PR8.
+
+### Preserved verification history
+
+[Run75 evidence](evidence/independent-products-run75.json) preserves 24,370 passes and two Intel Mac WebKit failures on source `3bbb0528ba4487e0aa9b3298ad1b5d475939fe70`. Run76 verifies both corrections on its own source. [Run74 evidence](evidence/independent-products-run74.json) preserves the failed Windows skip-link case and ARM64 Mac jobs that received no assigned runner. The queue cause is unconfirmed. Those observations are historical and are not added to the final count.
+
+This follow-up changes documentation and evidence only. Its 155 executable/test/workflow source files retain the manifest verified in run76. The older combined-release records below are historical evidence, not current launch approval.
 
 ## Continuation checkpoint — November 19, 2026 (EST)
 

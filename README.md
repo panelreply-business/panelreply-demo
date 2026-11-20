@@ -10,7 +10,9 @@ Run daily checks through December 20, 2026, then review each program for real-wo
 
 ## Independent program checkpoint
 
-Current development adds separate callback and spreadsheet processes, product-bound data and backups, separate browser journeys and an exact-source platform counter. [Development progress](docs/DEVELOPMENT_PROGRESS.md) and the two product acceptance records above contain the current decision. The completed [run75 checkpoint](docs/evidence/independent-products-run75.json) preserves 24,370 product case/platform passes and two Intel macOS WebKit failures. Corrections need verification before those platform gates can pass. Distinct cases, platform repetitions, generated cases and harness checks are reported separately.
+The separate callback and spreadsheet programs passed [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) on source `ca5f0cb`. All 30 automated platform requirements pass. The ledger records 24,372 product case/platform passes across 9,114 distinct cases, with no product failures or unresolved outcomes. It excludes harness checks and duplicate observations. [Final verification](docs/evidence/independent-products-verification.json) preserves source hashes, platform versions, per-product counts and artifact digests.
+
+[Development progress](docs/DEVELOPMENT_PROGRESS.md) and the two product acceptance records contain the current decision. Seven platform scopes remain untested, so the full 10,000-test goal and conditional increase to 20,000 remain open. OCR quality is 277/310 exact synthetic images and FAIL. Required OCR isolation, actual-model, representative-photo, Excel and hosted-operation requirements remain open. Each program has its own release decision. Earlier failures remain in the [defect register](docs/PRELAUNCH_DEFECTS.md).
 
 ## Historical engineering remediation checkpoint
 
