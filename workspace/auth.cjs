@@ -4,6 +4,7 @@ const crypto = require('node:crypto');
 const { promisify } = require('node:util');
 const scrypt = promisify(crypto.scrypt);
 const { StoreError, username, digest } = require('./store.cjs');
+const { productCookieName } = require('./products.cjs');
 const SCRYPT_OPTIONS = Object.freeze({ N: 32768, r: 8, p: 3, maxmem: 64 * 1024 * 1024 });
 const DUMMY_HASH = 'scrypt$32768$8$3$' + Buffer.alloc(16, 71).toString('base64url') + '$' + Buffer.alloc(64, 83).toString('base64url');
 
@@ -41,8 +42,8 @@ function cookieToken(header, cookieName) {
   return /^[A-Za-z0-9_-]{43}$/.test(token) ? token : null;
 }
 
-function createAuth(store, { secure = false } = {}) {
-  const cookieName = secure ? '__Host-PanelReplySession' : 'PanelReplyLocalSession';
+function createAuth(store, { secure = false, product = 'combined' } = {}) {
+  const cookieName = productCookieName(product, secure);
   let concurrentLogins = 0;
   return {
     cookieName,

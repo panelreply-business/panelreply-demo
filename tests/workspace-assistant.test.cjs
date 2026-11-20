@@ -434,8 +434,13 @@ for (const kind of ['limit', 'storage']) test('usage ' + kind + ' failure preven
   assert.equal(finished, 0);
 });
 
-for (const malformed of [[], {}, { reserve() { return { id: '' }; }, finish() {} }, { reserve() { return { id: 3 }; }, finish() {} }]) {
-  test('malformed usage interface fails closed: ' + JSON.stringify(malformed), async () => {
+for (const [label, malformed] of [
+  ['array interface', []],
+  ['missing reserve and finish', {}],
+  ['empty reservation id', { reserve() { return { id: '' }; }, finish() {} }],
+  ['numeric reservation id', { reserve() { return { id: 3 }; }, finish() {} }]
+]) {
+  test('malformed usage interface fails closed: ' + label, async () => {
     const a = fake(() => { throw new Error('must not run'); });
     const result = await a.previewMessage('Hello', seed(), {}, { ...opts(), usage: malformed });
     assert.equal(result.assistance.code, 'assistant_usage_unavailable');

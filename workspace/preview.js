@@ -304,6 +304,7 @@
       const session = await api('/api/session');
       if (expired) return;
       if (!session?.user || typeof session.csrfToken !== 'string') throw new Error('Your sign-in could not be confirmed. Reload and sign in again.');
+      if (document.body?.dataset?.productId && session.product?.id !== document.body.dataset.productId) throw new Error('The signed-in program could not be confirmed. Reload this page and sign in again.');
       csrfToken = session.csrfToken;
       const profile = await api('/api/profile');
       if (expired) return;

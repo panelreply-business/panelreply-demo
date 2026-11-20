@@ -1,5 +1,16 @@
 # Pre-launch defect register
 
+## Independent product and test expansion — November 20, 2026
+
+These findings apply to the new separated-product candidate. Focused regressions overlap the full suite and must not be added to it. Committed cross-platform verification remains pending.
+
+| ID | Evidence and impact | Correction | Regression evidence |
+| --- | --- | --- | --- |
+| SPLIT-AI-01 | A customer name such as `O’Neil` retains its typographic apostrophe in the message and proposal, while independent deterministic extraction folds it to an ASCII apostrophe. Raw comparison rejects matching evidence. | Normalize apostrophes for the customer-name comparison only. Preserve the supplied value and exact message/evidence checks. | Four apostrophe controls in `release-assistant-matrix.test.cjs`, plus existing assistant cases. |
+| SPLIT-AI-02 | An unanchored `name is` cue can accept a site, manufacturer, business or project name as the customer's name. Four independent cases failed before the correction. | Anchor the explicit name cue to the clause start, allowing bounded greetings and correction prefixes. Retain actual self-identification and the sole pending name-question path. | `release-name-grounding.test.cjs`: 20 PASS/4 FAIL before correction, 24 PASS after correction. Combined name and assistant regression: 1,468 PASS, zero FAIL/skips. |
+
+The new count policy also removed redundant multiplication of malformed provider inputs across unrelated states. The retained assistant matrix has 983 independently named cases. Evidence-harness tests remain excluded from the product goal. Source-specific final counts will be recorded after full integration.
+
 Date: 2026-11-19. This register covers the work after baseline `41e31a8`. [Development progress](DEVELOPMENT_PROGRESS.md) is the authoritative current status. A regression test demonstrates its stated case, not absence of every possible defect. [Historical platform defects](PLATFORM_VERIFICATION.md) remain recorded separately.
 
 ## Engineering remediation after 36b2bf3

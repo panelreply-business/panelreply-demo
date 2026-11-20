@@ -1,5 +1,19 @@
 # PanelReply development progress
 
+## Independent product checkpoint — November 20, 2026 (EST)
+
+The owner set a December 31, 2026 first-release target, requested 10,000 meaningful passing tests across platforms, and requested a one-time increase to 20,000 if the complete first goal is met before December 31. The callback and spreadsheet programs now have separate launch entrypoints and release decisions. Product order and the second release date remain undecided. The older combined-release records below are historical evidence, not current launch approval.
+
+The [daily checklist](DAILY_QUALITY_CHECKLIST.md) runs at 10:00 AM America/Detroit through December 20, 2026. December 20 is a separate readiness review for each program before real-world testing. It does not automatically enable a provider, change hosting, contact customers or deploy either program.
+
+Implementation now separates fixed product configuration, page/API routes, session cookies, data-directory identity and authenticated backup identity. Callback startup does not create an OCR worker. Spreadsheet startup cannot activate callback or model routes. The combined entrypoint remains an internal integration harness and refuses product-bound data. See [product separation](PRODUCT_SEPARATION.md), [callback acceptance](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet acceptance](SPREADSHEET_RELEASE_ACCEPTANCE.md).
+
+Expanded synthetic tests cover request boundaries, actual SQLite preservation, deletion state histories, exact CSV/XLSX readback, assistant input/transport boundaries and product separation/recovery. New assistant regressions exposed two name-grounding defects: typographic apostrophes were compared inconsistently, and name cues embedded in unrelated roles could be accepted. Both have targeted corrections. The [defect register](PRELAUNCH_DEFECTS.md) preserves the reproduction evidence.
+
+The [counting policy](TEST_MILESTONES.md) records distinct cases, product case/platform executions, generated cases and evidence-harness checks separately. Shared tests count once. Reruns, assertions, skips and blocked work cannot inflate the goal. The automated matrix includes Linux, Windows and macOS, bundled Chromium/Firefox/WebKit, Chrome/Edge channels, mobile emulation and each selected product. Physical devices and actual Safari remain separate requirements.
+
+Current candidate source is awaiting committed CI verification. Focused local results are development evidence and overlap one another. Do not add them together or carry run70 results forward to changed runtime files. Native OCR quality remains FAIL at its last measurement of 277/310 exact synthetic images. Required worker isolation remains BLOCKED, and actual-model, representative-photo, Excel, physical-device and selected-host evidence remain incomplete. Each program must meet its own applicable gates before launch.
+
 ## Continuation checkpoint — November 19, 2026 (EST)
 
 ### Verified continuation result

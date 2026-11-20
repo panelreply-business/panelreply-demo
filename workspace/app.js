@@ -595,6 +595,7 @@
       const session = await api('/api/session');
       if (expired) return;
       if (!session?.user || typeof session.csrfToken !== 'string') throw new Error('Your sign-in could not be confirmed. Please reload and sign in again.');
+      if (document.body?.dataset?.productId && session.product?.id !== document.body.dataset.productId) throw new Error('The signed-in program could not be confirmed. Reload this page and sign in again.');
       if (user && (user.id !== session.user.id || user.businessId !== session.user.businessId || csrfToken !== session.csrfToken)) { clearSession(); return; }
       user = session.user;
       csrfToken = session.csrfToken;
@@ -631,7 +632,10 @@
   buildProfileFields();
   $('nav-inbox').addEventListener('click', () => { if (currentView !== 'inbox') guarded(() => setView('inbox')); });
   $('nav-profile').addEventListener('click', () => { if (currentView !== 'profile') guarded(() => setView('profile')); });
-  for (const id of ['preview-link', 'empty-preview-link', 'home-link', 'dashboard-link', 'panels-link', 'projects-link', 'exports-link']) $(id).addEventListener('click', event => { event.preventDefault(); guarded(() => { window.location.assign($(id).getAttribute('href')); }); });
+  for (const id of ['preview-link', 'empty-preview-link', 'home-link', 'dashboard-link', 'panels-link', 'projects-link', 'exports-link']) {
+    const link = $(id);
+    if (link) link.addEventListener('click', event => { event.preventDefault(); guarded(() => { window.location.assign(link.getAttribute('href')); }); });
+  }
   $('sign-out').addEventListener('click', () => guarded(async () => {
     $('sign-out').disabled = true;
     try { await api('/api/logout', { method: 'POST' }); if (!expired) clearSession(); }

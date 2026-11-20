@@ -8,6 +8,7 @@ const { PreviewError } = require('./conversation.cjs');
 const intake = require('../src/intake.js');
 const panels = require('./panels.cjs');
 const { validateUsagePolicy, usageRequestHash, SYNTHETIC_POLICY } = require('./usage.cjs');
+const { productDefinition, productMetadata, allowsProductRoute, assertStoreProduct } = require('./products.cjs');
 
 // Accommodates valid bounded transcripts even when JSON escapes Unicode.
 const MAX_BODY_BYTES = 192 * 1024;
@@ -99,20 +100,27 @@ async function readJson(req, maxBytes = MAX_BODY_BYTES) {
   } catch (_) { throw new StoreError(400, 'invalid_json', 'Send a valid JSON object.'); }
 }
 
-function createWorkspaceApp({ store, origin, previewMessage, conversationProvider = null, allowExternalProvider = false, assistantUsagePolicy, recognizeImage, getOcrStatus } = {}) {
+function createWorkspaceApp({ store, origin, product = 'combined', previewMessage, conversationProvider = null, allowExternalProvider = false, assistantUsagePolicy, recognizeImage, getOcrStatus } = {}) {
   if (!store) throw new Error('A workspace store is required.');
+  const selectedProduct = productDefinition(product);
+  assertStoreProduct(store, selectedProduct.id);
+  const productInfo = selectedProduct.id === 'combined' ? null : productMetadata(selectedProduct.id);
+  if (!selectedProduct.capabilities.intake && (conversationProvider || allowExternalProvider || assistantUsagePolicy || previewMessage)) throw new Error('The spreadsheet product cannot activate callback assistance.');
   const originUrl = validateOrigin(origin);
-  const auth = createAuth(store, { secure: originUrl.protocol === 'https:' });
+  const auth = createAuth(store, { secure: originUrl.protocol === 'https:', product: selectedProduct.id });
   const usagePolicy = validateUsagePolicy(assistantUsagePolicy || SYNTHETIC_POLICY, { external: conversationProvider?.kind === 'external' });
   if (conversationProvider && ['reserveAssistantUsage', 'finishAssistantUsage', 'getAssistantUsage'].some(name => typeof store[name] !== 'function')) throw new Error('A provider requires durable workspace usage accounting.');
-  const assistant = require('./assistant.cjs').createConversationOrchestrator({ provider: conversationProvider, allowExternal: allowExternalProvider });
+  const assistant = selectedProduct.capabilities.intake
+    ? require('./assistant.cjs').createConversationOrchestrator({ provider: conversationProvider, allowExternal: allowExternalProvider })
+    : { status: () => ({ mode: 'disabled', liveEnabled: false }), close() {} };
   function send(res, status, body, extra = {}, head = false) {
     const serialized = body === undefined ? '' : JSON.stringify(body);
     res.writeHead(status, { ...BASE_HEADERS, 'Content-Type': 'application/json; charset=utf-8', ...extra });
     res.end(head ? undefined : serialized);
   }
   async function staticFile(req, res, filename, type) {
-    const content = await fs.readFile(path.join(ROOT, filename));
+    let content = await fs.readFile(path.join(ROOT, filename));
+    if (productInfo && type.startsWith('text/html')) content = Buffer.from(require('./product-ui.cjs').renderProductHtml(content.toString('utf8'), productInfo));
     res.writeHead(200, { ...BASE_HEADERS, 'Content-Type': type, 'Content-Length': content.length });
     res.end(req.method === 'HEAD' ? undefined : content);
   }
@@ -161,13 +169,20 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
       // No path normalization or filesystem interpolation. Only exact routes are served.
       const route = req.url.split('?')[0];
       const read = req.method === 'GET' || req.method === 'HEAD';
+      // Reject unavailable product surfaces before looking up a session,
+      // reading a body or invoking an assistant/native OCR dependency.
+      if (!allowsProductRoute(selectedProduct.id, route, req.method)) throw new StoreError(404, 'not_found', 'The requested operation was not found.');
       if (read && route === '/favicon.ico') return send(res, 204, undefined);
-      if (read && route === '/health') return send(res, 200, { ok: true, mode: 'private-local', aiEnabled: assistant.status().liveEnabled, bookingEnabled: false }, {}, req.method === 'HEAD');
+      if (read && route === '/health') return send(res, 200, { ok: true, mode: 'private-local', aiEnabled: assistant.status().liveEnabled, bookingEnabled: false, ...(productInfo ? { product: productInfo } : {}) }, {}, req.method === 'HEAD');
       if (read && Object.hasOwn(ASSETS, route)) return await staticFile(req, res, ...ASSETS[route]);
       if (read && route === '/login') return await staticFile(req, res, 'workspace/login.html', 'text/html; charset=utf-8');
       if (read && ['/', '/preview', '/panels', '/dashboard'].includes(route)) {
         if (!auth.session(req)) {
           res.writeHead(303, { ...BASE_HEADERS, Location: '/login', 'Content-Type': 'text/plain; charset=utf-8' });
+          return res.end();
+        }
+        if (selectedProduct.id === 'spreadsheet' && route === '/') {
+          res.writeHead(303, { ...BASE_HEADERS, Location: selectedProduct.homePath, 'Content-Type': 'text/plain; charset=utf-8' });
           return res.end();
         }
         const page = { '/': 'index', '/preview': 'preview', '/panels': 'panels', '/dashboard': 'dashboard' }[route];
@@ -179,11 +194,11 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
         if (typeof input.username !== 'string' || typeof input.password !== 'string' || input.username.length > 120 || input.password.length > 128) throw new StoreError(400, 'invalid_input', 'Check the username and password fields.');
         const session = await auth.login(input, req.socket && req.socket.remoteAddress || 'local');
         auth.logout(auth.session(req));
-        return send(res, 200, { user: session.user, csrfToken: session.csrfToken }, { 'Set-Cookie': auth.cookie(session.token) });
+        return send(res, 200, { user: session.user, csrfToken: session.csrfToken, ...(productInfo ? { product: productInfo } : {}) }, { 'Set-Cookie': auth.cookie(session.token) });
       }
       if (!route.startsWith('/api/')) throw new StoreError(404, 'not_found', 'The page was not found.');
       const session = sessionRequired(req);
-      if (req.method === 'GET' && route === '/api/session') return send(res, 200, { user: session.user, csrfToken: session.csrfToken });
+      if (req.method === 'GET' && route === '/api/session') return send(res, 200, { user: session.user, csrfToken: session.csrfToken, ...(productInfo ? { product: productInfo } : {}) });
       if (req.method === 'GET' && route === '/api/assistant') {
         const { mode, liveEnabled } = assistant.status();
         return send(res, 200, { mode, liveEnabled });
@@ -232,7 +247,7 @@ function createWorkspaceApp({ store, origin, previewMessage, conversationProvide
       if (req.method === 'GET' && match) return send(res, 200, { lead: store.getLead(session.user, match[1]) });
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) mutationRequired(req, session);
       if (req.method === 'POST' && route === '/api/logout') {
-        assistant.cancel(session.token);
+        assistant.cancel?.(session.token);
         auth.logout(currentMutationSession(req, session));
         return send(res, 204, undefined, { 'Set-Cookie': auth.cookie('', true) });
       }

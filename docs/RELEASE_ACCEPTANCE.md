@@ -1,5 +1,15 @@
 # Release acceptance
 
+## Current release structure — November 20, 2026
+
+The callback and spreadsheet programs now have independent release decisions. Use [callback release acceptance](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet release acceptance](SPREADSHEET_RELEASE_ACCEPTANCE.md) for current product gates. [Product separation](PRODUCT_SEPARATION.md) defines their fixed entrypoints, data and recovery boundaries. The combined matrix below remains a historical technical inventory.
+
+The first release target is December 31, 2026. Product order and the second date remain undecided. The [daily checklist](DAILY_QUALITY_CHECKLIST.md) runs through December 20, followed by separate readiness reviews for real-world testing. Neither a date nor a passing count authorizes external activation.
+
+The portfolio target is 10,000 meaningful product case/platform passes, with a one-time increase to 20,000 only after the complete first goal is verified before December 31. [Counting policy](TEST_MILESTONES.md) and [machine-readable platform requirements](test-milestones.json) distinguish numeric progress from required coverage. Shared cases count once; simulated devices are not physical devices.
+
+The separated-product candidate is awaiting committed CI evidence. Previous run70 results apply to their recorded source only. Callback actual-provider quality and selected-host operation remain unverified. Spreadsheet OCR quality remains FAIL at 277/310 and required native isolation remains BLOCKED at its last measurement. Physical-device, actual Safari/Excel and relevant operational recovery checks remain open. The programs require separate GO/NO-GO decisions; a product-specific failure does not automatically block the other program after the shared boundary and dependent gates pass.
+
 ## Continuation reconciliation
 
 Final continuation source `ca9dd8abe28a1d945b1f8c64d11a5829bf3a6e9b` passed [run70](https://github.com/panelreply-business/panelreply-demo/actions/runs/44662687751): 1,637 application executions, zero failures or application skips. The nine additional cases verify retention review, including its actual store integration. DEL-04, PERF-02, UX-01, A11Y-01 and DEP-01 retain PASS for this source. RET-01 now includes a passing Linux store integration. OCR-02 remains FAIL and OCR-04 remains BLOCKED. [Final evidence](evidence/continuation-verification.json). This supersedes pending-candidate wording below.

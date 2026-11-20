@@ -1,8 +1,12 @@
 # PanelReply / Ringkeep
 
-PanelReply is a software platform for electrical contractors. It combines customer-request management and panel-component review in one local, authenticated workspace. The existing intake and recovery work is preserved. The dual-product platform is being prepared in draft PR8 and has not been merged or deployed.
+PanelReply is preparing two local programs for electrical contractors: callback request management and panel-component review with spreadsheet exports. Each program has its own entrypoint, data directory, session cookie and release decision. They share authentication, storage and recovery code in this repository. The work remains in draft PR8 and has not been merged or deployed. The combined workspace remains an internal integration harness.
 
 [Repository](https://github.com/panelreply-business/panelreply-demo) · [Draft platform PR8](https://github.com/panelreply-business/panelreply-demo/pull/8) · [Platform guide](docs/PLATFORM_DEVELOPMENT.md) · [Platform verification](docs/PLATFORM_VERIFICATION.md) · [Private workspace setup](docs/PRIVATE_WORKSPACE.md) · [Backup and recovery](docs/RECOVERY.md) · [Recovery verification](docs/RECOVERY_VERIFICATION.md)
+
+[Separate program setup](docs/PRODUCT_SEPARATION.md) · [Callback acceptance](docs/CALLBACK_RELEASE_ACCEPTANCE.md) · [Spreadsheet acceptance](docs/SPREADSHEET_RELEASE_ACCEPTANCE.md) · [Daily checklist](docs/DAILY_QUALITY_CHECKLIST.md) · [Test milestones](docs/TEST_MILESTONES.md)
+
+Run daily checks through December 20, 2026, then review each program for real-world testing. December 31 is the first release target. The owner has not chosen which program releases first or the second release date. Test totals do not replace each program's quality and operating gates.
 
 ## Engineering remediation checkpoint
 
@@ -18,7 +22,7 @@ Current evidence: [Development progress](docs/DEVELOPMENT_PROGRESS.md) · [Relea
 
 - Public static URL: https://panelreply-demo.onrender.com/
 - Public server URL: https://panelreply-ai.onrender.com/
-- The new workspace runs locally at `http://127.0.0.1:10001` after setup. It has no public URL.
+- Callback runs locally at `http://127.0.0.1:10001`. Spreadsheet runs at `http://127.0.0.1:10002` after separate setup. Neither has a public URL.
 - The private workspace has no active AI, calling, SMS or calendar integration.
 - A customer pilot remains NO-GO until the remaining operational and integration gates are verified.
 
@@ -33,7 +37,7 @@ The branch adds:
 - A navy and blue marketing website in `design-preview/` with both products, a shared SVG identity and interactive synthetic demonstrations.
 - A guided sample-label-to-parts walkthrough with Skip, reduced motion and preserved edits. It displays predetermined data and makes no live OCR claim.
 - Product, feature, pricing-preparation, login-information, pilot-preparation and legal-review views without external submission or invented claims.
-- A shared dashboard and navigation for requests, panel scanning, saved projects, exports, settings and account details.
+- Separate callback and spreadsheet navigation, with the historical shared dashboard retained only in the internal integration harness.
 - Authenticated panel projects with editable parts, quantities, source images, review status and saved CSV and XLSX exports.
 - Private source-image storage in the existing SQLite database, with transactional schema-1/2-to-3 startup migration and older-archive recovery compatibility.
 - Optional local Tesseract 5 text extraction with bounded native resources. All candidates require review. Missing values stay blank. The expanded synthetic benchmark still has nonexact cases.
@@ -70,19 +74,42 @@ The default preview uses explicit field parsing and saved answers. The new provi
 
 Record exports contain customer information and are separate from encrypted backup archives. A restored workspace requires an operator to reset each owner's password before sign-in. The source workspace remains unchanged. See the [recovery guide](docs/RECOVERY.md) for commands, failure cases and the restore drill.
 
-## Run locally
+## Run the separate programs locally
 
-Use Node.js 22.18 or later. No application packages or API keys are required for the private workspace.
+Use Node 24 for current release evidence. Private storage retains its Linux/POSIX permission requirements. No API key is needed for normal startup. Native OCR has its own local dependencies and acceptance gates.
 
-Create a local owner using the stdin-only setup described in [Private workspace setup](docs/PRIVATE_WORKSPACE.md#local-setup). Keep its database outside the repository in an owner-only directory. No real account is bundled with the source.
-
-Then start it:
+Initialize fresh directories before creating accounts:
 
 ```bash
-WORKSPACE_DATA_DIR="$HOME/.local/share/panelreply" node workspace-server.cjs
+CALLBACK_DATA_DIR="$HOME/.local/share/panelreply-callback" node callback-server.cjs --init
+SPREADSHEET_DATA_DIR="$HOME/.local/share/panelreply-spreadsheet" node spreadsheet-server.cjs --init
 ```
 
-Open http://127.0.0.1:10001/login. The entry point binds only to the loopback interface. It rejects a public origin.
+Create a separate owner in each initialized directory using the [stdin-only owner commands](docs/PRODUCT_SEPARATION.md#initialize-two-local-owners). No default account exists. Keep both directories outside the repository. Existing unmarked or other-product data is refused. Initialization does not migrate it.
+
+Start each program in a separate terminal:
+
+```bash
+CALLBACK_DATA_DIR="$HOME/.local/share/panelreply-callback" node callback-server.cjs
+```
+
+```bash
+SPREADSHEET_DATA_DIR="$HOME/.local/share/panelreply-spreadsheet" node spreadsheet-server.cjs
+```
+
+Open `http://127.0.0.1:10001/login` for callback and `http://127.0.0.1:10002/login` for spreadsheet. Both bind only to loopback. Configure another port with that program's `CALLBACK_PORT`/`CALLBACK_ORIGIN` or `SPREADSHEET_PORT`/`SPREADSHEET_ORIGIN`. Generic `PORT` and `WORKSPACE_*` variables do not configure the separated entrypoints.
+
+Each server denies the other program's pages, scripts and APIs. Their cookies and data bindings remain distinct. Product backup/restore commands require matching `--product callback` or `--product spreadsheet`. See [product recovery](docs/PRODUCT_SEPARATION.md#data-binding-and-recovery).
+
+### Internal combined integration harness
+
+`workspace-server.cjs` is retained for historical combined tests, with a separate unbound synthetic database. It is not a product release entrypoint and refuses product-bound directories. Its legacy configuration remains:
+
+```bash
+WORKSPACE_DATA_DIR="$HOME/.local/share/panelreply-integration" node workspace-server.cjs
+```
+
+The historical [private workspace guide](docs/PRIVATE_WORKSPACE.md#local-setup) documents owner setup and `PORT`/`WORKSPACE_ORIGIN` for this harness. Its combined browser results do not substitute for the separate product journeys.
 
 The earlier static demo remains in `index.html`. The separate optional AI server remains in `server.cjs`. They are historical demo surfaces and do not use the private workspace database. Their public state is suspended. The owner-approved correction and verification are recorded above and in the progress report.
 

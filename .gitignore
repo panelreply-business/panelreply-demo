@@ -18,3 +18,4 @@ workspace-restored/
 panelreply-records-*.json
 test-results/
 playwright-report/
+artifacts/

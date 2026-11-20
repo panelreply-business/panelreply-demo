@@ -114,14 +114,23 @@ function grounded(change, message, state, local) {
   // A field label somewhere in the same sentence does not bind arbitrary text
   // to that field. Preserve the independent explicit parser's recognized value.
   const direct = local[field];
-  const comparable = field === 'phone' ? phone(value) : value;
+  // The deterministic name parser folds typographic apostrophes. Compare that
+  // spelling only for role agreement; value/evidence must still be exact source
+  // substrings above, and the original customer spelling is preserved below.
+  const comparable = field === 'phone' ? phone(value)
+    : field === 'customerName' ? value.replace(/[‘’]/g, "'") : value;
   if (direct && field !== 'job' && direct !== comparable) return false;
   if (direct && field === 'job' && !completeJob(value, direct)) return false;
   const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const immediatelyAfter = cue => new RegExp('(?:' + cue + ')\\s*' + escaped + '(?![\\p{L}\\p{N}])', 'iu').test(clause);
   switch (field) {
     case 'customerName':
-      return /^[\p{L}\p{M}][\p{L}\p{M} .’'-]*$/u.test(value) && (direct === value || immediatelyAfter("\\b(?:(?:my|our)\\s+)?name\\s*(?:is|[:=]|['’]s)|\\bi['’]m|\\bi\\s+am") || contextualAnswer(change, message, state));
+      // A site/manufacturer/project "name is" elsewhere in a clause does not
+      // identify the customer. Only an explicit self-name cue can supplement
+      // the independent parser; greetings and correction prefixes are bounded.
+      return /^[\p{L}\p{M}][\p{L}\p{M} .‘’'-]*$/u.test(value) && (direct === comparable
+        || immediatelyAfter("^(?:(?:hi|hello|hey)[,\\s]+|please\\s+)?(?:(?:actually|correction)\\s*[:,]?\\s*)?(?:(?:(?:my|our)\\s+)?name\\s*(?:is|[:=]|['’]s)|i['’]m|i\\s+am)")
+        || contextualAnswer(change, message, state));
     case 'phone':
       return !!phone(value) && (direct === comparable || immediatelyAfter('\\b(?:(?:my|our)\\s+(?:phone(?:\\s+number)?|number)|phone(?:\\s+number)?|telephone|mobile)\\s*(?:(?:is|to)\\s+|[:=]\\s*)|\\b(?:call|reach|contact)\\s+(?:me|us)\\s+(?:at|on)\\s+') || /^[+\d(][\d\s().-]+$/.test(clause) || contextualAnswer(change, message, state));
     case 'zip': {

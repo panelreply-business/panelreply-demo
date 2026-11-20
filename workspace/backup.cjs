@@ -10,6 +10,7 @@ const { validateLeadInput, validateProfileInput, normalizePhone, username, STATU
 const panels = require('./panels.cjs');
 const { INPUT_BYTES, OUTPUT_TOKENS, LEASE_MS, MAX_ROWS } = require('./usage.cjs');
 const { validateLifecycleDatabase } = require('./lifecycle.cjs');
+const { MARKER, separatedProduct, productBinding, readProductBinding } = require('./products.cjs');
 
 const scrypt = promisify(crypto.scrypt);
 const MAGIC = Buffer.from('PRKBK001');
@@ -20,6 +21,7 @@ const MAX_ARCHIVE_BYTES = MAX_DATABASE_BYTES + HEADER_BYTES + TAG_BYTES;
 const RESTORE_DISABLED_PASSWORD = 'disabled:restore-required';
 const SCRYPT_OPTIONS = Object.freeze({ N: 32768, r: 8, p: 3, maxmem: 64 * 1024 * 1024 });
 const DB_OPTIONS = Object.freeze({ enableForeignKeyConstraints: true, enableDoubleQuotedStringLiterals: false, allowExtension: false });
+const PRODUCT_CODES = Object.freeze({ callback: 1, spreadsheet: 2 });
 
 
 class BackupError extends Error {
@@ -32,6 +34,22 @@ function validPassphrase(value) {
 }
 function requirePassphrase(value) {
   if (!validPassphrase(value)) fail('invalid_passphrase', 'Use a backup passphrase of 15–128 characters without control characters.');
+}
+function expectedProduct(value) {
+  if (value === undefined) return null;
+  try { return separatedProduct(value).id; }
+  catch (_) { fail('invalid_product', 'Choose callback or spreadsheet explicitly for a product-bound backup or restore.'); }
+}
+function checkedBinding(dataDir) {
+  try { return readProductBinding(dataDir); }
+  catch (_) { fail('invalid_product_binding', 'The source product binding is invalid. Preserve the directory for operator review.'); }
+}
+function sourceProduct(dataDir, expected) {
+  const binding = checkedBinding(dataDir);
+  if (expected && !binding) fail('product_binding_required', 'An unmarked workspace cannot be assigned to a product by creating a backup.');
+  if (binding && !expected) fail('product_required', 'Supply the matching product when backing up a bound workspace.');
+  if (binding && binding.product !== expected) fail('product_mismatch', 'The source workspace belongs to another product.');
+  return binding?.product || null;
 }
 function expectedPath(fn, ...args) {
   try { return fn(...args); }
@@ -165,13 +183,16 @@ function validateDatabase(db) {
   return { businesses: count('businesses'), users: count('users'), leads: count('leads'), messages: count('messages'), audit: count('audit'), optOuts: count('suppression'), ...(schemaVersion >= 2 ? { panelProjects: count('panel_projects'), panelSources: count('panel_sources') } : {}), ...(schemaVersion >= 3 ? { deletedRecords: count('record_deletions'), deletionOperations: count('deletion_operations'), safetyHolds: count('safety_holds'), assistantUsage: count('assistant_usage') } : {}) };
 }
 
-function makeHeader(payloadBytes, schemaVersion) {
+function makeHeader(payloadBytes, schemaVersion, product) {
   const header = Buffer.alloc(HEADER_BYTES);
   MAGIC.copy(header);
-  header.writeUInt16BE(1, 8); // Archive version determines the fixed cipher/KDF parameters.
+  // V1 retains its exact reserved-byte contract. V2 binds an existing product
+  // code into the authenticated header; the cipher/KDF and payload stay fixed.
+  header.writeUInt16BE(product ? 2 : 1, 8);
   header.writeUInt16BE(schemaVersion, 10); // Actual snapshot schema, independent of archive format.
   header[12] = 1; // AES-256-GCM, 16-byte authentication tag.
   header[13] = 1; // scrypt N32768/r8/p3, 32-byte key.
+  if (product) header.writeUInt16BE(PRODUCT_CODES[product], 14);
   header.writeBigUInt64BE(BigInt(Date.now()), 16);
   header.writeBigUInt64BE(BigInt(payloadBytes), 24);
   crypto.randomBytes(16).copy(header, 32);
@@ -181,18 +202,23 @@ function makeHeader(payloadBytes, schemaVersion) {
 function parseHeader(archive) {
   if (archive.length < HEADER_BYTES + TAG_BYTES + 100 || !archive.subarray(0, 8).equals(MAGIC)) fail('invalid_archive', 'This is not a supported PanelReply encrypted backup.');
   const header = archive.subarray(0, HEADER_BYTES);
-  if (header.readUInt16BE(8) !== 1 || ![1, 2, 3].includes(header.readUInt16BE(10)) || header[12] !== 1 || header[13] !== 1 || header.readUInt16BE(14) !== 0 || header.readUInt32BE(60) !== 0) fail('unsupported_format', 'This archive version or encryption format is not supported.');
+  const version = header.readUInt16BE(8), productCode = header.readUInt16BE(14);
+  const product = version === 2 ? Object.keys(PRODUCT_CODES).find(key => PRODUCT_CODES[key] === productCode) : null;
+  if (![1, 2].includes(version) || ![1, 2, 3].includes(header.readUInt16BE(10)) || header[12] !== 1 || header[13] !== 1
+    || (version === 1 ? productCode !== 0 : !product) || header.readUInt32BE(60) !== 0) fail('unsupported_format', 'This archive version or encryption format is not supported.');
   const size = header.readBigUInt64BE(24);
   const timestamp = header.readBigUInt64BE(16);
   if (size < 100n || size > BigInt(MAX_DATABASE_BYTES) || size !== BigInt(archive.length - HEADER_BYTES - TAG_BYTES) || timestamp > 8640000000000000n) fail('invalid_archive', 'The encrypted backup is incomplete or has invalid metadata.');
-  return { header, schemaVersion: header.readUInt16BE(10), createdAt: new Date(Number(timestamp)).toISOString(), size: Number(size) };
+  return { header, version, product, schemaVersion: header.readUInt16BE(10), createdAt: new Date(Number(timestamp)).toISOString(), size: Number(size) };
 }
 async function deriveKey(passphrase, header) { return scrypt(passphrase, header.subarray(32, 48), 32, SCRYPT_OPTIONS); }
 function normalizedFailure(error, code, message) { return error instanceof BackupError ? error : new BackupError(code, message); }
 
-async function createEncryptedBackup({ dataDir, outputFile, passphrase } = {}) {
+async function createEncryptedBackup({ dataDir, outputFile, passphrase, product: productOption } = {}) {
   requirePassphrase(passphrase);
+  const selected = expectedProduct(productOption);
   const sourceFile = expectedPath(existingDatabasePath, dataDir);
+  const product = sourceProduct(dataDir, selected);
   const destination = expectedPath(assertUnusedPath, outputFile);
   const parent = expectedPath(assertPrivateDirectory, path.dirname(destination));
   let temporary, source, snapshot, key, plaintext;
@@ -221,7 +247,7 @@ async function createEncryptedBackup({ dataDir, outputFile, passphrase } = {}) {
     const schemaVersion = snapshot.prepare('PRAGMA user_version').get().user_version;
     snapshot.close(); snapshot = null;
     plaintext = readBoundedFile(snapshotFile, MAX_DATABASE_BYTES);
-    const header = makeHeader(plaintext.length, schemaVersion);
+    const header = makeHeader(plaintext.length, schemaVersion, product);
     key = await deriveKey(passphrase, header);
     const cipher = crypto.createCipheriv('aes-256-gcm', key, header.subarray(48, 60), { authTagLength: TAG_BYTES });
     cipher.setAAD(header);
@@ -229,12 +255,13 @@ async function createEncryptedBackup({ dataDir, outputFile, passphrase } = {}) {
     const archive = Buffer.concat([header, encrypted, cipher.getAuthTag()]);
     const pendingFile = path.join(temporary, 'archive.pending');
     writeExclusive(pendingFile, archive);
+    if ((checkedBinding(dataDir)?.product || null) !== product) fail('changed_product_binding', 'The source product binding changed during backup. No archive was published.');
     // link() fails with EEXIST instead of replacing a file created meanwhile.
     fs.linkSync(pendingFile, destination);
     fs.unlinkSync(pendingFile);
     syncDirectory(parent);
     expectedPath(assertPrivateRegularFile, destination);
-    return { format: 'panelreply-encrypted-backup', version: 1, schemaVersion, createdAt: new Date(Number(header.readBigUInt64BE(16))).toISOString(), archiveBytes: archive.length, counts, sessionsIncluded: false };
+    return { format: 'panelreply-encrypted-backup', version: product ? 2 : 1, ...(product ? { product } : {}), schemaVersion, createdAt: new Date(Number(header.readBigUInt64BE(16))).toISOString(), archiveBytes: archive.length, counts, sessionsIncluded: false };
   } catch (error) {
     throw normalizedFailure(error, error && error.code === 'EEXIST' ? 'destination_exists' : 'backup_failed', error && error.code === 'EEXIST' ? 'The backup destination already exists. Choose a new file.' : 'The encrypted backup could not be created and verified.');
   } finally {
@@ -244,15 +271,16 @@ async function createEncryptedBackup({ dataDir, outputFile, passphrase } = {}) {
   }
 }
 
-async function restoreEncryptedBackup({ backupFile, dataDir, passphrase } = {}) {
+async function restoreEncryptedBackup({ backupFile, dataDir, passphrase, product: productOption } = {}) {
   requirePassphrase(passphrase);
+  const selected = expectedProduct(productOption);
   const archiveFile = expectedPath(assertPrivateRegularFile, backupFile);
   const destination = expectedPath(assertUnusedPath, dataDir);
   const parent = expectedPath(assertPrivateDirectory, path.dirname(destination));
   let temporary, snapshot, key, plaintext, createdDirectory = false;
   try {
     const archive = readBoundedFile(archiveFile, MAX_ARCHIVE_BYTES);
-    const { header, createdAt, schemaVersion } = parseHeader(archive);
+    const { header, version, product, createdAt, schemaVersion } = parseHeader(archive);
     key = await deriveKey(passphrase, header);
     try {
       const decipher = crypto.createDecipheriv('aes-256-gcm', key, header.subarray(48, 60), { authTagLength: TAG_BYTES });
@@ -262,6 +290,11 @@ async function restoreEncryptedBackup({ backupFile, dataDir, passphrase } = {}) 
       try { plaintext = Buffer.concat([partial, decipher.final()]); }
       finally { partial.fill(0); }
     } catch (_) { fail('authentication_failed', 'The backup passphrase is incorrect or the archive failed authentication.'); }
+    // Product metadata is trusted only after authenticating the complete AAD.
+    // A legacy archive is never reassigned to a release product during restore.
+    if (product && !selected) fail('product_required', 'Supply the matching product when restoring a product-bound archive.');
+    if (!product && selected) fail('legacy_product_binding_forbidden', 'A legacy unbound archive needs a separately reviewed migration. Restore it only as an unbound recovery copy.');
+    if (product && product !== selected) fail('product_mismatch', 'The authenticated archive belongs to another product.');
     // No plaintext file is written until the complete authentication tag passes.
     temporary = temporaryDirectory(parent);
     const snapshotFile = path.join(temporary, 'workspace.sqlite');
@@ -278,16 +311,29 @@ async function restoreEncryptedBackup({ backupFile, dataDir, passphrase } = {}) 
     const counts = validateDatabase(snapshot);
     snapshot.close(); snapshot = null;
     syncFile(snapshotFile);
+    const bindingFile = product ? path.join(temporary, MARKER) : null;
+    if (bindingFile) writeExclusive(bindingFile, JSON.stringify(productBinding(product)) + '\n');
     // mkdir without recursive is exclusive: even an existing empty directory is
     // refused. The database hard link also refuses any racing database creator.
-    fs.mkdirSync(destination, { mode: 0o700 });
+    // A product restore stays inaccessible to normal app startup even before
+    // its first file is linked. Both apps require exactly 0700, not merely
+    // absence of group/other permissions. Only this new directory is changed.
+    fs.mkdirSync(destination, { mode: product ? 0o300 : 0o700 });
     createdDirectory = true;
     fs.linkSync(snapshotFile, path.join(destination, 'workspace.sqlite'));
     fs.unlinkSync(snapshotFile);
+    if (bindingFile) {
+      fs.linkSync(bindingFile, path.join(destination, MARKER));
+      fs.unlinkSync(bindingFile);
+      // Publish only after the validated database and authenticated marker are
+      // both complete regular files with no remaining staging hard link.
+      fs.chmodSync(destination, 0o700);
+    }
     syncDirectory(destination);
     syncDirectory(parent);
     expectedPath(existingDatabasePath, destination);
-    return { restored: true, format: 'panelreply-encrypted-backup', version: 1, schemaVersion, createdAt, counts, sessionsRestored: false, passwordResetRequired: true, ownersRequiringReset: counts.users };
+    if (product && checkedBinding(destination)?.product !== product) fail('product_mismatch', 'The restored product binding could not be verified.');
+    return { restored: true, format: 'panelreply-encrypted-backup', version, ...(product ? { product } : {}), schemaVersion, createdAt, counts, sessionsRestored: false, passwordResetRequired: true, ownersRequiringReset: counts.users };
   } catch (error) {
     // A failed restore never removes a competitor's file or an existing folder.
     if (createdDirectory) {

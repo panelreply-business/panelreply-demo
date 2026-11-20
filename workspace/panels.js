@@ -455,12 +455,17 @@
       const session = await api('/api/session');
       if (expired) return;
       if (!session.user || typeof session.csrfToken !== 'string') throw new ApiError('Sign-in could not be confirmed. Reload the workspace.', 502);
+      if (document.body?.dataset?.productId && session.product?.id !== document.body.dataset.productId) throw new ApiError('The signed-in program could not be confirmed. Reload this page and sign in again.', 502);
       const nextIdentity = `${session.user.id}:${session.user.businessId}`;
       if ((identity && identity !== nextIdentity) || (csrfToken && csrfToken !== session.csrfToken)) { expire(); return; }
       identity = nextIdentity;
       csrfToken = session.csrfToken;
       $('signed-in-name').textContent = session.user.username;
-      const results = await Promise.allSettled([api('/api/profile'), api('/api/panel-ocr'), refreshProjects()]);
+      const spreadsheetOnly = session.product?.id === 'spreadsheet';
+      const profile = spreadsheetOnly
+        ? Promise.resolve({ business: { name: 'PanelReply Spreadsheets' } })
+        : api('/api/profile');
+      const results = await Promise.allSettled([profile, api('/api/panel-ocr'), refreshProjects()]);
       if (expired) return;
       const messages = [];
       if (results[0].status === 'fulfilled') $('sidebar-business-name').textContent = results[0].value.business.name;
