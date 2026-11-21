@@ -1,0 +1,132 @@
+✖ independent correction binding: adding outlet replacement does not replace the EV charger request (45.485129ms)
+✖ independent correction binding: lighting update is work, not an instruction to discard existing scope (4.414782ms)
+✖ independent correction binding: a work change does not authorize a callback correction (5.791095ms)
+✖ independent correction binding: an outlet change does not authorize a work-date correction (5.088889ms)
+✖ independent correction binding: instead selecting a component is not instead selecting a work date (4.186832ms)
+✖ independent correction binding: a correction of the job is not a correction of the callback (2.336041ms)
+✔ independent correction binding preserves explicit customerName correction (7.949361ms)
+✔ independent correction binding preserves explicit phone correction (1.422977ms)
+✔ independent correction binding preserves explicit zip correction (1.360806ms)
+✔ independent correction binding preserves explicit job correction (1.424547ms)
+✔ independent correction binding preserves explicit callbackWindow correction (0.671036ms)
+✔ independent correction binding preserves explicit requestedWorkDate correction (1.89332ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 6
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.934652
+
+✖ failing tests:
+
+test at tests/remediation-review.test.cjs:20:33
+✖ independent correction binding: adding outlet replacement does not replace the EV charger request (45.485129ms)
+  AssertionError [ERR_ASSERTION]: new work or a different field correction must not silently replace the prior value
+  + actual - expected
+  
+  + 'change the kitchen outlet'
+  - 'Install an EV charger'
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-review.test.cjs:25:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'change the kitchen outlet',
+    expected: 'Install an EV charger',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-review.test.cjs:20:33
+✖ independent correction binding: lighting update is work, not an instruction to discard existing scope (4.414782ms)
+  AssertionError [ERR_ASSERTION]: new work or a different field correction must not silently replace the prior value
+  + actual - expected
+  
+  + 'update the kitchen lighting'
+  - 'Install an EV charger'
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-review.test.cjs:25:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'update the kitchen lighting',
+    expected: 'Install an EV charger',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-review.test.cjs:20:33
+✖ independent correction binding: a work change does not authorize a callback correction (5.791095ms)
+  AssertionError [ERR_ASSERTION]: new work or a different field correction must not silently replace the prior value
+  
+  'Friday' !== 'Monday'
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-review.test.cjs:25:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Friday',
+    expected: 'Monday',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-review.test.cjs:20:33
+✖ independent correction binding: an outlet change does not authorize a work-date correction (5.088889ms)
+  AssertionError [ERR_ASSERTION]: new work or a different field correction must not silently replace the prior value
+  + actual - expected
+  
+  + 'on Friday'
+  - 'Saturday'
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-review.test.cjs:25:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'on Friday',
+    expected: 'Saturday',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-review.test.cjs:20:33
+✖ independent correction binding: instead selecting a component is not instead selecting a work date (4.186832ms)
+  AssertionError [ERR_ASSERTION]: new work or a different field correction must not silently replace the prior value
+  + actual - expected
+  
+  + 'on Friday'
+  - 'Saturday'
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-review.test.cjs:25:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'on Friday',
+    expected: 'Saturday',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-review.test.cjs:20:33
+✖ independent correction binding: a correction of the job is not a correction of the callback (2.336041ms)
+  AssertionError [ERR_ASSERTION]: new work or a different field correction must not silently replace the prior value
+  
+  'Friday' !== 'Monday'
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-review.test.cjs:25:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Friday',
+    expected: 'Monday',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

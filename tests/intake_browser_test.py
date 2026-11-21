@@ -17,6 +17,7 @@ import shutil
 import unittest
 
 from playwright.sync_api import Error, expect, sync_playwright
+from browser_engine import launch_browser
 
 
 ACCESS_CODE = "test-only-access-code-0123456789abcdef0123456789"
@@ -61,11 +62,7 @@ class IntakeBrowserTests(unittest.TestCase):
         cls.thread.start()
         cls.origin = f"http://127.0.0.1:{cls.server.server_port}"
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"INTAKE_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):

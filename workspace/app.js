@@ -38,6 +38,7 @@
   let leadConflict = false;
   let exportBusy = false;
   const exportUrls = new Set();
+  const deletion = window.PanelReplyDeletion.create({ api, onChange: updateDirty, onDeleted: deletedLead });
 
   class RequestError extends Error {
     constructor(status, code, message, fields) { super(message); this.status = status; this.code = code; this.fields = fields; }
@@ -52,6 +53,7 @@
 
   function clearSession() {
     expired = true;
+    deletion.expire();
     csrfToken = '';
     user = null;
     leads = [];
@@ -77,8 +79,10 @@
   async function api(path, options = {}) {
     const method = options.method || 'GET';
     const headers = { Accept: 'application/json' };
+    if (csrfToken) headers['X-Workspace-Session'] = csrfToken;
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
     if (method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
+    if (options.key) headers['Idempotency-Key'] = options.key;
     let response;
     try {
       response = await fetch(path, { method, credentials: 'same-origin', cache: 'no-store', headers, body: options.body === undefined ? undefined : JSON.stringify(options.body) });
@@ -113,11 +117,16 @@
   function profileDirty() { return Boolean(profile && profileBaseline && JSON.stringify(profileDraft()) !== profileBaseline); }
   function hasDirty() { return leadDirty() || profileDirty(); }
   function updateDirty() {
+    const deleting = deletion.isOpen();
+    const deleteLocked = deleting || !selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict;
+    $('delete-lead').disabled = deleteLocked;
+    $('delete-conversation').disabled = deleteLocked || !selected?.conversation?.length;
+    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests;
     $('lead-dirty').hidden = !leadDirty();
     $('profile-dirty').hidden = !profileDirty();
-    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict;
-    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict;
-    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy;
+    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting;
+    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting;
+    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting;
   }
 
   async function exportRecords() {
@@ -162,7 +171,7 @@
 
   function guarded(action) {
     if (expired) return;
-    if (leadSaving || profileSaving) {
+    if (leadSaving || profileSaving || deletion.isOpen()) {
       showAppError('A save is still in progress. Wait for its result before leaving this view.');
       return;
     }
@@ -189,7 +198,8 @@
     else $('nav-profile').setAttribute('aria-current', 'page');
     $('page-title').textContent = inbox ? 'Request inbox' : 'Business profile';
     $('page-subtitle').textContent = inbox ? 'A clear view of the work coming in.' : 'The information your customers can rely on.';
-    document.title = `${inbox ? 'Request inbox' : 'Business profile'} · PanelReply`;
+    const programLabel = document.body?.dataset?.productId === 'callback' ? 'PanelReply Callback' : 'PanelReply';
+    document.title = `${inbox ? 'Request inbox' : 'Business profile'} · ${programLabel}`;
   }
 
   function updateBusiness() {
@@ -426,6 +436,40 @@
     }
   }
 
+  function beginLeadDeletion(kind) {
+    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict) return;
+    const conversationOnly = kind === 'lead_conversation';
+    deletion.request({
+      kind, id: selected.id, version: selected.version,
+      url: `/api/leads/${encodeURIComponent(selected.id)}${conversationOnly ? '/conversation' : ''}`,
+      title: conversationOnly ? 'Delete conversation?' : 'Delete customer request?',
+      description: conversationOnly
+        ? 'Remove the saved conversation from this request. Request fields and contact restrictions stay in place.'
+        : 'Remove this request, its notes and saved conversation from the active workspace.'
+    });
+  }
+  async function deletedLead(operation) {
+    if (expired) return;
+    if (operation.kind === 'lead') {
+      leads = leads.filter(item => item.id !== operation.id);
+      selected = null; leadBaseline = ''; leadConflict = false; selectionSerial += 1;
+      $('lead-form').reset(); $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      $('lead-detail').hidden = true; $('request-empty').hidden = false;
+      const url = new URL(location.href); url.searchParams.delete('lead'); history.replaceState(null, '', url.pathname + url.search);
+      renderList(); $('list-status').textContent = 'Request deletion confirmed.';
+      $('request-search').focus(); updateDirty();
+      return;
+    }
+    // Clear deleted text immediately, even if the follow-up read fails.
+    if (selected?.id === operation.id) {
+      selected = null; leadBaseline = ''; $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      $('lead-detail').hidden = true; $('request-empty').hidden = false;
+    }
+    $('list-status').textContent = 'Conversation deletion confirmed. Loading the remaining request…';
+    await selectLead(operation.id);
+    if (!expired && selected?.id === operation.id) $('lead-status').textContent = 'Conversation deleted. Contact restrictions remain.';
+  }
+
   async function saveLead(event) {
     event.preventDefault();
     if (!selected || leadSaving || leadLoading || refreshingRequests || leadConflict || !$('lead-form').reportValidity()) return;
@@ -552,13 +596,15 @@
       const session = await api('/api/session');
       if (expired) return;
       if (!session?.user || typeof session.csrfToken !== 'string') throw new Error('Your sign-in could not be confirmed. Please reload and sign in again.');
+      if (document.body?.dataset?.productId && session.product?.id !== document.body.dataset.productId) throw new Error('The signed-in program could not be confirmed. Reload this page and sign in again.');
+      if (user && (user.id !== session.user.id || user.businessId !== session.user.businessId || csrfToken !== session.csrfToken)) { clearSession(); return; }
       user = session.user;
       csrfToken = session.csrfToken;
       $('signed-in-name').textContent = user.username || 'Workspace owner';
       const results = await Promise.allSettled([api('/api/profile'), api('/api/leads')]);
       if (expired) return;
       const messages = [];
-      if (results[0].status === 'fulfilled') renderProfile(results[0].value);
+      if (results[0].status === 'fulfilled') { renderProfile(results[0].value); if (window.location.hash === '#settings') setView('profile'); }
       else messages.push(`Business profile: ${results[0].reason.message}`);
       if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.leads)) {
         leads = results[1].value.leads;
@@ -587,7 +633,10 @@
   buildProfileFields();
   $('nav-inbox').addEventListener('click', () => { if (currentView !== 'inbox') guarded(() => setView('inbox')); });
   $('nav-profile').addEventListener('click', () => { if (currentView !== 'profile') guarded(() => setView('profile')); });
-  for (const id of ['preview-link', 'empty-preview-link', 'home-link']) $(id).addEventListener('click', event => { event.preventDefault(); guarded(() => { window.location.assign($(id).getAttribute('href')); }); });
+  for (const id of ['preview-link', 'empty-preview-link', 'home-link', 'dashboard-link', 'panels-link', 'projects-link', 'exports-link']) {
+    const link = $(id);
+    if (link) link.addEventListener('click', event => { event.preventDefault(); guarded(() => { window.location.assign(link.getAttribute('href')); }); });
+  }
   $('sign-out').addEventListener('click', () => guarded(async () => {
     $('sign-out').disabled = true;
     try { await api('/api/logout', { method: 'POST' }); if (!expired) clearSession(); }
@@ -608,6 +657,8 @@
   $('refresh-requests').addEventListener('click', () => guarded(refreshRequests));
   $('export-records').addEventListener('click', exportRecords);
   $('retry-load').addEventListener('click', () => guarded(bootstrap));
+  $('delete-lead').addEventListener('click', () => beginLeadDeletion('lead'));
+  $('delete-conversation').addEventListener('click', () => beginLeadDeletion('lead_conversation'));
   $('lead-form').addEventListener('submit', saveLead);
   $('profile-form').addEventListener('submit', saveProfile);
   $('lead-form').addEventListener('input', event => { event.target.removeAttribute('aria-invalid'); $('lead-status').textContent = ''; updateDirty(); });
@@ -616,6 +667,7 @@
   $('profile-form').addEventListener('change', () => { $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
   $('reload-lead').addEventListener('click', () => guarded(() => { if (selected) selectLead(selected.id); }));
   $('reload-profile').addEventListener('click', () => guarded(loadProfile));
-  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving)) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving || deletion.isPending())) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
   bootstrap();
 })();

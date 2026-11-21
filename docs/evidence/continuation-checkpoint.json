@@ -1,0 +1,38 @@
+{
+  "format": "panelreply-continuation-checkpoint",
+  "sourceCommit": "c0a947e8415f990f4d58e29a4a1b13ed14bd4982",
+  "runId": 44659300598,
+  "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44659300598",
+  "application": {
+    "nodeHttp": 1141,
+    "chromium": 197,
+    "firefox": 132,
+    "webkit": 132,
+    "nativeOcrResources": 17,
+    "independentWorkbook": 9,
+    "total": 1628,
+    "fail": 0
+  },
+  "suspension": {
+    "pass": 2,
+    "policyBlocked": 3
+  },
+  "ocr": {
+    "exact": 277,
+    "cases": 310,
+    "accuracyGate": "FAIL"
+  },
+  "isolation": {
+    "status": "BLOCKED",
+    "nativeDenyCases": 0,
+    "stderr": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+    "cause": "worker_startup_cause_unconfirmed"
+  },
+  "http": {
+    "clients": 12,
+    "completedResponses": 516,
+    "workflowGroups": 9,
+    "unexpectedErrors": 0
+  },
+  "scope": "Existing CI checkpoint independently read through job logs. Does not verify subsequent retention changes or approve release."
+}

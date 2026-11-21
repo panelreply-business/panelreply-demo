@@ -6,16 +6,19 @@ class BackupInputError extends Error {}
 
 function parseArgs(args) {
   const [command, ...flags] = args;
-  const allowed = command === 'create' ? ['--data-dir', '--output'] : command === 'restore' ? ['--backup', '--data-dir'] : [];
-  if (!allowed.length || flags.length !== 4) throw new BackupInputError('Usage: workspace-backup.cjs create --data-dir ABSOLUTE_PATH --output NEW_ARCHIVE, or restore --backup ARCHIVE --data-dir NEW_DIRECTORY. Supply the passphrase through stdin.');
+  const required = command === 'create' ? ['--data-dir', '--output'] : command === 'restore' ? ['--backup', '--data-dir'] : [];
+  const allowed = [...required, '--product'];
+  if (!required.length || ![4, 6].includes(flags.length)) throw new BackupInputError('Usage: workspace-backup.cjs create --data-dir ABSOLUTE_PATH --output NEW_ARCHIVE [--product callback|spreadsheet], or restore --backup ARCHIVE --data-dir NEW_DIRECTORY [--product callback|spreadsheet]. Product-bound workspaces require the matching product. Supply the passphrase through stdin.');
   const values = {};
   for (let index = 0; index < flags.length; index += 2) {
     const key = flags[index], value = flags[index + 1];
     if (!allowed.includes(key) || Object.hasOwn(values, key) || typeof value !== 'string' || !value || value.startsWith('--')) throw new BackupInputError('Use each supported option once. Passphrases are accepted only through stdin.');
     values[key] = value;
   }
-  return command === 'create' ? { command, dataDir: values['--data-dir'], outputFile: values['--output'] }
-    : { command, backupFile: values['--backup'], dataDir: values['--data-dir'] };
+  if (required.some(key => !Object.hasOwn(values, key)) || (values['--product'] !== undefined && !['callback', 'spreadsheet'].includes(values['--product']))) throw new BackupInputError('Supply the required paths and choose callback or spreadsheet for a product-bound operation.');
+  const product = values['--product'] ? { product: values['--product'] } : {};
+  return command === 'create' ? { command, dataDir: values['--data-dir'], outputFile: values['--output'], ...product }
+    : { command, backupFile: values['--backup'], dataDir: values['--data-dir'], ...product };
 }
 
 async function readPassphrase(input) {

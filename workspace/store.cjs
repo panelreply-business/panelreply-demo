@@ -6,6 +6,10 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const intake = require('../src/intake.js');
 const { assertPrivateDirectory, assertUnusedPath, existingDatabasePath } = require('./file-safety.cjs');
+const panels = require('./panels.cjs');
+const { createRetentionReview } = require('./retention.cjs');
+const { USAGE_TABLE_SQL, USAGE_INDEX_SQL, USAGE_AUTO_INDEXES, USAGE_SCHEMA_COLUMNS, createUsageLedger } = require('./usage.cjs');
+const { LIFECYCLE_TABLE_SQL, LIFECYCLE_INDEX_SQL, LIFECYCLE_AUTO_INDEXES, LIFECYCLE_COLUMNS, createLifecycle, phoneHash } = require('./lifecycle.cjs');
 
 const FACT_KEYS = Object.freeze(['services', 'pricing', 'estimates', 'hours', 'serviceArea', 'contact', 'qualifications', 'emergencyAvailability', 'permits', 'warranty', 'financing']);
 const STATUSES = Object.freeze(['new', 'needs_review', 'contacted', 'closed']);
@@ -115,6 +119,8 @@ function ensurePrivateDirectory(dataDir) {
 }
 
 const SCHEMA_COLUMNS = Object.freeze({
+  ...LIFECYCLE_COLUMNS,
+  assistant_usage: USAGE_SCHEMA_COLUMNS,
   businesses: ['id', 'name', 'version', 'facts_json', 'created_at'],
   users: ['id', 'business_id', 'username', 'password_hash', 'created_at'],
   sessions: ['token_hash', 'user_id', 'created_at', 'last_seen', 'expires_at'],
@@ -122,7 +128,9 @@ const SCHEMA_COLUMNS = Object.freeze({
   leads: ['id', 'business_id', 'idempotency_key', 'request_hash', 'data_json', 'status', 'version', 'created_at', 'updated_at'],
   messages: ['lead_id', 'business_id', 'position', 'role', 'text'],
   audit: ['id', 'business_id', 'lead_id', 'actor_id', 'action', 'version', 'created_at', 'details_json'],
-  suppression: ['business_id', 'phone', 'created_at']
+  suppression: ['business_id', 'phone', 'created_at'],
+  panel_projects: ['id', 'business_id', 'idempotency_key', 'request_hash', 'name', 'notes', 'rows_json', 'version', 'created_at', 'updated_at'],
+  panel_sources: ['id', 'project_id', 'business_id', 'idempotency_key', 'request_hash', 'name', 'mime', 'bytes', 'width', 'height', 'created_at']
 });
 const TABLE_SQL = Object.freeze({
   "businesses": "CREATE TABLE businesses (id TEXT PRIMARY KEY, name TEXT NOT NULL, version INTEGER NOT NULL, facts_json TEXT NOT NULL, created_at INTEGER NOT NULL) STRICT",
@@ -139,29 +147,47 @@ const INDEX_SQL = Object.freeze({
   "audit_business_lead": "CREATE INDEX audit_business_lead ON audit(business_id, lead_id, created_at)"
 });
 const AUTO_INDEXES = new Set(['sqlite_autoindex_businesses_1', 'sqlite_autoindex_users_1', 'sqlite_autoindex_users_2', 'sqlite_autoindex_sessions_1', 'sqlite_autoindex_login_attempts_1', 'sqlite_autoindex_leads_1', 'sqlite_autoindex_leads_2', 'sqlite_autoindex_messages_1', 'sqlite_autoindex_audit_1', 'sqlite_autoindex_suppression_1']);
+const PANEL_TABLE_SQL = Object.freeze({
+  panel_projects: 'CREATE TABLE panel_projects (id TEXT PRIMARY KEY, business_id TEXT NOT NULL REFERENCES businesses(id), idempotency_key TEXT NOT NULL, request_hash TEXT NOT NULL, name TEXT NOT NULL, notes TEXT NOT NULL, rows_json TEXT NOT NULL, version INTEGER NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, UNIQUE(business_id, idempotency_key), UNIQUE(id, business_id)) STRICT',
+  panel_sources: 'CREATE TABLE panel_sources (id TEXT PRIMARY KEY, project_id TEXT NOT NULL, business_id TEXT NOT NULL REFERENCES businesses(id), idempotency_key TEXT NOT NULL, request_hash TEXT NOT NULL, name TEXT NOT NULL, mime TEXT NOT NULL, bytes BLOB NOT NULL, width INTEGER NOT NULL, height INTEGER NOT NULL, created_at INTEGER NOT NULL, FOREIGN KEY(project_id, business_id) REFERENCES panel_projects(id, business_id), UNIQUE(project_id, idempotency_key)) STRICT'
+});
+const PANEL_INDEX_SQL = Object.freeze({
+  panel_projects_business_updated: 'CREATE INDEX panel_projects_business_updated ON panel_projects(business_id, updated_at DESC)',
+  panel_sources_project: 'CREATE INDEX panel_sources_project ON panel_sources(project_id, business_id, created_at)'
+});
+const PANEL_AUTO_INDEXES = ['sqlite_autoindex_panel_projects_1', 'sqlite_autoindex_panel_projects_2', 'sqlite_autoindex_panel_projects_3', 'sqlite_autoindex_panel_sources_1', 'sqlite_autoindex_panel_sources_2'];
+const SCHEMA_VERSION = 3;
+const SCHEMAS = Object.freeze({
+  1: Object.freeze({ tables: TABLE_SQL, indexes: INDEX_SQL, autoIndexes: AUTO_INDEXES }),
+  2: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES]) }),
+  3: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL, ...LIFECYCLE_TABLE_SQL, ...USAGE_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL, ...LIFECYCLE_INDEX_SQL, ...USAGE_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES, ...LIFECYCLE_AUTO_INDEXES, ...USAGE_AUTO_INDEXES]) })
+});
 function normalizeSchemaSql(sql) { return sql.trim().replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').toLowerCase(); }
 function assertWorkspaceSchema(db) {
   const fail = (code = 'unsupported_schema') => {
-    const message = code === 'invalid_database' ? 'The workspace database integrity check failed.' : 'Use an existing workspace database with supported schema version 1.';
+    const message = code === 'invalid_database' ? 'The workspace database integrity check failed.' : 'Use an existing workspace database with supported schema version 1, 2 or 3.';
     throw Object.assign(new Error(message), { code });
   };
-  if (db.prepare('PRAGMA user_version').get().user_version !== 1) fail();
+  const version = db.prepare('PRAGMA user_version').get().user_version;
+  if (!Object.hasOwn(SCHEMAS, version)) fail();
+  const { tables, indexes, autoIndexes } = SCHEMAS[version];
   const schema = db.prepare('SELECT type, name, sql FROM sqlite_schema ORDER BY type, name').all();
-  if (schema.length !== Object.keys(TABLE_SQL).length + Object.keys(INDEX_SQL).length + AUTO_INDEXES.size) fail();
+  if (schema.length !== Object.keys(tables).length + Object.keys(indexes).length + autoIndexes.size) fail();
   const seen = new Set();
   for (const row of schema) {
     if (seen.has(row.name)) fail();
     seen.add(row.name);
-    const expected = row.type === 'table' && Object.hasOwn(TABLE_SQL, row.name) ? TABLE_SQL[row.name]
-      : row.type === 'index' && Object.hasOwn(INDEX_SQL, row.name) ? INDEX_SQL[row.name] : undefined;
+    const expected = row.type === 'table' && Object.hasOwn(tables, row.name) ? tables[row.name]
+      : row.type === 'index' && Object.hasOwn(indexes, row.name) ? indexes[row.name] : undefined;
     if (expected) {
       if (typeof row.sql !== 'string' || normalizeSchemaSql(row.sql) !== normalizeSchemaSql(expected)) fail();
-    } else if (row.type !== 'index' || row.sql !== null || !AUTO_INDEXES.has(row.name)) fail();
+    } else if (row.type !== 'index' || row.sql !== null || !autoIndexes.has(row.name)) fail();
   }
   try {
     const check = db.prepare('PRAGMA quick_check').all();
     if (check.length !== 1 || check[0].quick_check !== 'ok' || db.prepare('PRAGMA foreign_key_check').all().length) fail('invalid_database');
   } catch (_) { fail('invalid_database'); }
+  return version;
 }
 
 function openStore({ dataDir, now = Date.now, create = true } = {}) {
@@ -170,12 +196,52 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
   if ((fs.statSync(filename).mode & 0o600) !== 0o600) throw new Error('The workspace database must permit owner read and write access (0600).');
   const db = new DatabaseSync(filename, { enableForeignKeyConstraints: true, enableDoubleQuotedStringLiterals: false, allowExtension: false });
   try {
-    if (!create) assertWorkspaceSchema(db);
-    if (db.prepare('PRAGMA user_version').get().user_version > 1) throw new Error('This workspace database needs a newer application version.');
-    db.exec('PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000;');
+    const version = db.prepare('PRAGMA user_version').get().user_version;
+    const isEmpty = version === 0 && db.prepare('SELECT count(*) AS n FROM sqlite_schema').get().n === 0;
+    // Existing databases must exactly match a supported schema before changing
+    // pragmas or DDL. Recovery opens never initialize or migrate a database.
+    if (!create || !isEmpty) assertWorkspaceSchema(db);
+    db.exec('PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA secure_delete=ON; PRAGMA busy_timeout=3000;');
     if (create) {
       db.exec('PRAGMA journal_mode=WAL;');
-      db.exec([...Object.values(TABLE_SQL).map(sql => sql.replace('CREATE TABLE ', 'CREATE TABLE IF NOT EXISTS ')), ...Object.values(INDEX_SQL).map(sql => sql.replace('CREATE INDEX ', 'CREATE INDEX IF NOT EXISTS ')), 'PRAGMA user_version=1'].join(';\n') + ';');
+      if (isEmpty || version < SCHEMA_VERSION) {
+        db.exec('BEGIN IMMEDIATE');
+        try {
+          // Another startup may have migrated while this connection waited for
+          // the writer lock. Check the current schema inside the transaction.
+          const lockedVersion = db.prepare('PRAGMA user_version').get().user_version;
+          const lockedEmpty = lockedVersion === 0 && db.prepare('SELECT count(*) AS n FROM sqlite_schema').get().n === 0;
+          if (!lockedEmpty) assertWorkspaceSchema(db);
+          if (lockedEmpty || lockedVersion < SCHEMA_VERSION) {
+            const prior = lockedEmpty ? { tables: {}, indexes: {} } : SCHEMAS[lockedVersion];
+            const tables = Object.entries(SCHEMAS[SCHEMA_VERSION].tables).filter(([name]) => !Object.hasOwn(prior.tables, name)).map(([, sql]) => sql);
+            const indexes = Object.entries(SCHEMAS[SCHEMA_VERSION].indexes).filter(([name]) => !Object.hasOwn(prior.indexes, name)).map(([, sql]) => sql);
+            db.exec([...tables, ...indexes].join(';\n') + ';');
+            // A migration must preserve existing safety holds before deletion
+            // becomes available. These digests contain no transcript or name.
+            const migrationTime = now();
+            if (!Number.isSafeInteger(migrationTime) || migrationTime < 0 || migrationTime > 8640000000000000) throw new Error('Check the workspace clock before migrating.');
+            for (const row of db.prepare('SELECT business_id,data_json FROM leads').iterate()) {
+              const data = JSON.parse(row.data_json);
+              if (data.safetyHold === true) db.prepare('INSERT OR IGNORE INTO safety_holds VALUES (?,?,?)').run(row.business_id, phoneHash(row.business_id, normalizePhone(data.phone)), migrationTime);
+            }
+            // Older versions held individual records only. Bring another saved
+            // request at the same contact point under review as part of this
+            // single migration, without changing its customer fields or notes.
+            for (const row of db.prepare('SELECT id,business_id,version,data_json FROM leads').all()) {
+              const data = JSON.parse(row.data_json);
+              if (data.safetyHold || !db.prepare('SELECT 1 FROM safety_holds WHERE business_id=? AND phone_hash=?').get(row.business_id, phoneHash(row.business_id, normalizePhone(data.phone)))) continue;
+              data.safetyHold = true;
+              db.prepare("UPDATE leads SET data_json=?,status='needs_review',version=version+1,updated_at=? WHERE id=? AND business_id=?").run(JSON.stringify(data), migrationTime, row.id, row.business_id);
+              const actor = db.prepare('SELECT id FROM users WHERE business_id=? ORDER BY rowid LIMIT 1').get(row.business_id);
+              if (actor) db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)').run(crypto.randomUUID(), row.business_id, row.id, actor.id, 'safety.held', row.version + 1, migrationTime, JSON.stringify({ source: 'migration', fields: ['safetyHold', 'status'] }));
+            }
+            db.exec('PRAGMA user_version=' + SCHEMA_VERSION);
+          }
+          assertWorkspaceSchema(db);
+          db.exec('COMMIT');
+        } catch (error) { db.exec('ROLLBACK'); throw error; }
+      }
     }
     existingDatabasePath(dataDir);
   } catch (error) {
@@ -207,6 +273,19 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     }
     return true;
   }
+  function addSafetyHold(actor, phone, source, currentLeadId = '') {
+    if (schemaVersion < 3) return false;
+    const inserted = lifecycle.preserveSafetyHold(actor, phone);
+    const affected = db.prepare("SELECT id,version,data_json FROM leads WHERE business_id=? AND json_extract(data_json,'$.phone')=? AND id<>?").all(actor.businessId, phone, currentLeadId);
+    for (const row of affected) {
+      const data = JSON.parse(row.data_json);
+      if (data.safetyHold) continue;
+      data.safetyHold = true;
+      db.prepare("UPDATE leads SET data_json=?,status='needs_review',version=version+1,updated_at=? WHERE id=? AND business_id=?").run(JSON.stringify(data), now(), row.id, actor.businessId);
+      addAudit(actor, row.id, 'safety.held', row.version + 1, { source, fields: ['safetyHold', 'status'] });
+    }
+    return inserted;
+  }
   function materializeLead(row, actor) {
     if (!row) throw new StoreError(404, 'not_found', 'The request was not found.');
     const data = JSON.parse(row.data_json);
@@ -214,6 +293,26 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     const transcript = db.prepare('SELECT role, text FROM messages WHERE lead_id = ? AND business_id = ? ORDER BY position').all(row.id, actor.businessId).map(item => ({ role: item.role, text: item.text }));
     const audit = db.prepare('SELECT * FROM audit WHERE business_id = ? AND lead_id = ? ORDER BY created_at, rowid').all(actor.businessId, row.id).map(item => ({ id: item.id, actorId: item.actor_id, action: item.action, version: item.version, createdAt: iso(item.created_at), details: JSON.parse(item.details_json) }));
     return { id: row.id, version: row.version, createdAt: iso(row.created_at), updatedAt: iso(row.updated_at), status: row.status, ...data, contactPermission: optedOut ? 'opted_out' : data.contactPermission, optedOut, contactAllowed: !optedOut && !data.safetyHold && data.contactPermission === 'requested_callback', conversation: transcript, audit };
+  }
+  function sourceMetadata(row) {
+    return { id: row.id, name: row.name, mime: row.mime, bytes: row.byte_count, width: row.width, height: row.height, createdAt: iso(row.created_at) };
+  }
+  function projectSources(actor, id) {
+    return db.prepare('SELECT id,name,mime,length(bytes) AS byte_count,width,height,created_at FROM panel_sources WHERE project_id=? AND business_id=? ORDER BY created_at,rowid').all(id, actor.businessId).map(sourceMetadata);
+  }
+  function materializeProject(row, actor) {
+    if (!row) throw new StoreError(404, 'not_found', 'The panel project was not found.');
+    return { id: row.id, name: row.name, notes: row.notes, rows: JSON.parse(row.rows_json), version: row.version, createdAt: iso(row.created_at), updatedAt: iso(row.updated_at), sources: projectSources(actor, row.id) };
+  }
+  function assertProjectSources(actor, id, rows) {
+    const sourceIds = new Set(projectSources(actor, id).map(source => source.id));
+    if (rows.some(row => row.sourceImageId !== null && !sourceIds.has(row.sourceImageId))) throw new StoreError(400, 'source_not_found', 'Choose a source image saved in this project.', ['sourceImageId']);
+  }
+  function projectDataBytes(project) { return Buffer.byteLength(project.name) + Buffer.byteLength(project.notes) + Buffer.byteLength(JSON.stringify(project.rows)); }
+  function assertPanelCapacity(extraBytes) {
+    const rows = Number(db.prepare('SELECT coalesce(sum(length(CAST(name AS BLOB))+length(CAST(notes AS BLOB))+length(CAST(rows_json AS BLOB))),0) AS n FROM panel_projects').get().n);
+    const images = Number(db.prepare('SELECT coalesce(sum(length(bytes)),0) AS n FROM panel_sources').get().n);
+    if (rows + images + extraBytes > panels.MAX_PANEL_DATA_BYTES) throw new StoreError(413, 'panel_storage_limit', 'The local panel storage limit was reached. Export and review storage with the operator before adding more data.');
   }
   const store = {
     filename,
@@ -294,6 +393,16 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         return true;
       });
     },
+    holdPhone(actor, phone) {
+      getActor(actor);
+      if (schemaVersion < 3) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before recording a safety hold.');
+      const normalized = normalizePhone(phone);
+      return tx(() => {
+        const inserted = addSafetyHold(actor, normalized, 'preview');
+        if (inserted) addAudit(actor, null, 'safety.held', 0, { source: 'preview' });
+        return true;
+      });
+    },
     getProfile(actor) {
       getActor(actor);
       const row = db.prepare('SELECT * FROM businesses WHERE id = ?').get(actor.businessId);
@@ -336,6 +445,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
       const valid = validateLeadInput(input);
       const requestHash = digest(JSON.stringify(valid));
       return tx(() => {
+        lifecycle.assertNotDeleted(actor, 'lead', idempotencyKey);
         const prior = db.prepare('SELECT * FROM leads WHERE business_id = ? AND idempotency_key = ?').get(actor.businessId, idempotencyKey);
         if (prior) {
           if (prior.request_hash !== requestHash) throw new StoreError(409, 'idempotency_conflict', 'This retry identifier belongs to different request details.');
@@ -343,9 +453,10 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         }
         const flags = evidence(valid);
         const { conversation: transcript, ...data } = valid;
-        data.notes = ''; data.safetyHold = flags.safetyHold;
+        data.notes = ''; data.safetyHold = flags.safetyHold || lifecycle.isSafetyHeld(actor, valid.phone);
+        if (data.safetyHold) addSafetyHold(actor, valid.phone, 'lead');
         if (flags.optedOut) addSuppression(actor, valid.phone, 'lead');
-        const needsReview = flags.safetyHold || suppressed(actor.businessId, valid.phone) || valid.contactPermission !== 'requested_callback';
+        const needsReview = data.safetyHold || suppressed(actor.businessId, valid.phone) || valid.contactPermission !== 'requested_callback';
         const id = crypto.randomUUID(), time = now();
         db.prepare('INSERT INTO leads VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)').run(id, actor.businessId, idempotencyKey, requestHash, JSON.stringify(data), needsReview ? 'needs_review' : 'new', time, time);
         const statement = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?, ?)');
@@ -369,7 +480,12 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         const { conversation: transcript, ...data } = valid;
         const flags = evidence(valid);
         data.notes = Object.hasOwn(input, 'notes') ? text(input.notes, 'notes', 2000) : existing.notes;
-        data.safetyHold = existing.safetyHold || flags.safetyHold;
+        data.safetyHold = existing.safetyHold || flags.safetyHold || lifecycle.isSafetyHeld(actor, valid.phone);
+        if (data.safetyHold) {
+          // Keep both contact points restricted when an already held record is corrected.
+          if (existing.safetyHold) addSafetyHold(actor, existing.phone, 'lead', id);
+          addSafetyHold(actor, valid.phone, 'lead', id);
+        }
         if (flags.optedOut) addSuppression(actor, valid.phone, 'lead', id);
         const optedOut = suppressed(actor.businessId, valid.phone);
         if (data.safetyHold && input.status !== 'needs_review') throw new StoreError(409, 'safety_review_required', 'This request has a safety hold and must remain under review.');
@@ -381,9 +497,103 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
         if (flags.optedOut && !existing.optedOut) addAudit(actor, id, 'contact.opted_out', next, {});
         return store.getLead(actor, id);
       });
-    }
+    },
+    listPanelProjects(actor) {
+      getActor(actor);
+      return db.prepare('SELECT p.*, (SELECT count(*) FROM panel_sources s WHERE s.project_id=p.id AND s.business_id=p.business_id) AS source_count FROM panel_projects p WHERE p.business_id=? ORDER BY p.updated_at DESC,p.rowid DESC').all(actor.businessId).map(row => {
+        const rows = JSON.parse(row.rows_json);
+        return { id: row.id, name: row.name, version: row.version, createdAt: iso(row.created_at), updatedAt: iso(row.updated_at), rowCount: rows.length, unreviewedCount: rows.filter(item => item.reviewStatus === 'unreviewed').length, sourceCount: row.source_count };
+      });
+    },
+    getPanelProject(actor, id) {
+      getActor(actor);
+      return materializeProject(db.prepare('SELECT * FROM panel_projects WHERE id=? AND business_id=?').get(id, actor.businessId), actor);
+    },
+    createPanelProject(actor, input, idempotencyKey) {
+      getActor(actor);
+      panels.validateIdempotencyKey(idempotencyKey);
+      const valid = panels.validateProject(input);
+      if (valid.rows.some(row => row.sourceImageId !== null)) throw new StoreError(400, 'source_not_found', 'Save a project before attaching its source images.', ['sourceImageId']);
+      const requestHash = digest(JSON.stringify(valid));
+      return tx(() => {
+        lifecycle.assertNotDeleted(actor, 'panel_project', idempotencyKey);
+        const prior = db.prepare('SELECT * FROM panel_projects WHERE business_id=? AND idempotency_key=?').get(actor.businessId, idempotencyKey);
+        if (prior) {
+          if (prior.request_hash !== requestHash) throw new StoreError(409, 'idempotency_conflict', 'This retry identifier belongs to different panel project details.');
+          return { project: materializeProject(prior, actor), created: false };
+        }
+        if (db.prepare('SELECT count(*) AS n FROM panel_projects WHERE business_id=?').get(actor.businessId).n >= panels.MAX_PROJECTS_PER_BUSINESS) throw new StoreError(409, 'project_limit', 'The local workspace supports up to 200 panel projects per business.');
+        assertPanelCapacity(projectDataBytes(valid));
+        const id = crypto.randomUUID(), time = now();
+        db.prepare('INSERT INTO panel_projects VALUES (?,?,?,?,?,?,?,1,?,?)').run(id, actor.businessId, idempotencyKey, requestHash, valid.name, valid.notes, JSON.stringify(valid.rows), time, time);
+        addAudit(actor, null, 'panel.created', 1, { projectId: id, rowCount: valid.rows.length });
+        return { project: store.getPanelProject(actor, id), created: true };
+      });
+    },
+    updatePanelProject(actor, id, input) {
+      getActor(actor);
+      const valid = panels.validateProject(input, { update: true });
+      return tx(() => {
+        const existing = store.getPanelProject(actor, id);
+        if (existing.version !== valid.version) throw new StoreError(409, 'version_conflict', 'This panel project changed. Reload it before saving.');
+        assertProjectSources(actor, id, valid.rows);
+        assertPanelCapacity(projectDataBytes(valid) - projectDataBytes(existing));
+        db.prepare('UPDATE panel_projects SET name=?,notes=?,rows_json=?,version=version+1,updated_at=? WHERE id=? AND business_id=? AND version=?').run(valid.name, valid.notes, JSON.stringify(valid.rows), now(), id, actor.businessId, valid.version);
+        addAudit(actor, null, 'panel.updated', valid.version + 1, { projectId: id, fields: ['name', 'notes', 'rows'], rowCount: valid.rows.length });
+        return store.getPanelProject(actor, id);
+      });
+    },
+    addPanelSource(actor, id, input, idempotencyKey) {
+      getActor(actor);
+      panels.validateIdempotencyKey(idempotencyKey);
+      // The image inspection runs locally without reading a client path or URL.
+      const valid = panels.validateSource(input, require('./ocr.cjs').inspectImage);
+      const requestHash = digest(JSON.stringify({ name: valid.name, mime: valid.mime, hash: digest(valid.bytes) }));
+      return tx(() => {
+        const project = store.getPanelProject(actor, id);
+        lifecycle.assertNotDeleted(actor, 'panel_source', idempotencyKey, id);
+        const prior = db.prepare('SELECT id,request_hash FROM panel_sources WHERE project_id=? AND business_id=? AND idempotency_key=?').get(id, actor.businessId, idempotencyKey);
+        if (prior) {
+          if (prior.request_hash !== requestHash) throw new StoreError(409, 'idempotency_conflict', 'This retry identifier belongs to a different source image.');
+          return { project, source: project.sources.find(source => source.id === prior.id), created: false };
+        }
+        if (project.version !== valid.version) throw new StoreError(409, 'version_conflict', 'This panel project changed. Reload it before attaching an image.');
+        if (project.sources.length >= panels.MAX_SOURCES) throw new StoreError(409, 'source_limit', 'A panel project supports up to five source images.');
+        assertPanelCapacity(valid.bytes.length);
+        const sourceId = crypto.randomUUID(), time = now();
+        db.prepare('INSERT INTO panel_sources VALUES (?,?,?,?,?,?,?,?,?,?,?)').run(sourceId, id, actor.businessId, idempotencyKey, requestHash, valid.name, valid.mime, valid.bytes, valid.width, valid.height, time);
+        db.prepare('UPDATE panel_projects SET version=version+1,updated_at=? WHERE id=? AND business_id=? AND version=?').run(time, id, actor.businessId, valid.version);
+        addAudit(actor, null, 'panel.source_added', valid.version + 1, { projectId: id, sourceId });
+        const updated = store.getPanelProject(actor, id);
+        return { project: updated, source: updated.sources.find(source => source.id === sourceId), created: true };
+      });
+    },
+    getPanelSource(actor, id, sourceId) {
+      getActor(actor);
+      const row = db.prepare('SELECT id,name,mime,length(bytes) AS byte_count,bytes,width,height,created_at FROM panel_sources WHERE id=? AND project_id=? AND business_id=?').get(sourceId, id, actor.businessId);
+      if (!row) throw new StoreError(404, 'not_found', 'The source image was not found.');
+      return { ...sourceMetadata(row), data: Buffer.from(row.bytes) };
+    },
+    exportPanelProject(actor, id) {
+      return panels.exportProjectCsv(store.getPanelProject(actor, id));
+    },
+    isSafetyHeld(actor, phone) { getActor(actor); return lifecycle.isSafetyHeld(actor, normalizePhone(phone)); },
+    deleteLead(...args) { return lifecycle.deleteLead(...args); },
+    deleteLeadConversation(...args) { return lifecycle.deleteLeadConversation(...args); },
+    deletePanelProject(...args) { return lifecycle.deletePanelProject(...args); },
+    deletePanelSource(...args) { return lifecycle.deletePanelSource(...args); },
+    reviewRetention(...args) { requireUsageSchema(); return retentionReview(...args); },
+    reserveAssistantUsage(...args) { requireUsageSchema(); return usage.reserve(...args); },
+    finishAssistantUsage(...args) { requireUsageSchema(); return usage.finish(...args); },
+    getAssistantUsage(...args) { requireUsageSchema(); return usage.summary(...args); }
   };
+  const schemaVersion = db.prepare('PRAGMA user_version').get().user_version;
+  function requireUsageSchema() { if (schemaVersion < 3) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before using assistance.'); }
+  const usage = createUsageLedger({ db, tx, now, getActor, StoreError });
+  const retentionReview = createRetentionReview({ db, now, getActor, StoreError });
+  const lifecycle = createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 3 });
   return store;
 }
 
-module.exports = { openStore, StoreError, FACT_KEYS, STATUSES, PERMISSIONS, LEAD_KEYS, SCHEMA_COLUMNS, assertWorkspaceSchema, normalizePhone, validateLeadInput, validateProfileInput, username, object, text, digest };
+module.exports = { openStore, StoreError, FACT_KEYS, STATUSES, PERMISSIONS, LEAD_KEYS, SCHEMA_COLUMNS, SCHEMAS, SCHEMA_VERSION, assertWorkspaceSchema, normalizePhone, validateLeadInput, validateProfileInput, username, object, text, digest };
+

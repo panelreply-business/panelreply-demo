@@ -1,0 +1,89 @@
+{
+  "source": {
+    "headCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+    "ciRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+    "tree": "45080aa913b4b22f176e0989ae0e1c6e57868ce7",
+    "runId": 44653806457,
+    "runNumber": 67,
+    "jobId": 136014982565
+  },
+  "measurement": {
+    "status": "PASS",
+    "cases": 8,
+    "failures": 0,
+    "blocked": 0,
+    "engine": {
+      "available": true,
+      "engine": "tesseract",
+      "version": "5.3.4",
+      "language": "eng",
+      "normalizer": {
+        "method": "median3-isolated-noise",
+        "pillowVersion": "10.2.0"
+      },
+      "orientationAvailable": true
+    },
+    "results": [
+      {
+        "test": "exact production resource ceilings and address-space allocation failure",
+        "status": "PASS",
+        "addressSpaceBytes": 1073741824,
+        "cpuSeconds": 10,
+        "openFiles": 64,
+        "coreBytes": 0,
+        "fileBytes": 0,
+        "allocationBeyondCeiling": "REJECTED",
+        "fileWrite": "REJECTED"
+      },
+      {
+        "test": "kernel CPU ceiling terminates and reaps an isolated one-second test workload",
+        "status": "PASS",
+        "testCpuSeconds": 1,
+        "productionCpuSeconds": 10,
+        "signal": "SIGKILL",
+        "processAliveAfterReturn": false
+      },
+      {
+        "test": "native crash returns a generic error and leaves no process",
+        "status": "PASS",
+        "processAliveAfterReturn": false,
+        "coreFileAllowed": false
+      },
+      {
+        "test": "service shutdown kills and reaps actual Tesseract before resolving",
+        "status": "PASS",
+        "processAliveAfterShutdown": false,
+        "laterRecognition": "REJECTED"
+      },
+      {
+        "test": "concurrent actual recognition is rejected without a second native engine",
+        "status": "PASS",
+        "nativeRecognitions": 1,
+        "concurrentRequest": "REJECTED"
+      },
+      {
+        "test": "the normalizer receives the same native resource ceilings as the OCR engine",
+        "status": "PASS",
+        "addressSpaceBytes": 1073741824,
+        "cpuSeconds": 10,
+        "openFiles": 64,
+        "coreBytes": 0,
+        "fileBytes": 0,
+        "processAliveAfterReturn": false
+      },
+      {
+        "test": "cancellation kills and reaps the actual pixel-normalization child",
+        "status": "PASS",
+        "processAliveAfterReturn": false,
+        "nextEngineStageStarted": false
+      },
+      {
+        "test": "cancellation during actual orientation fallback reaps its native child",
+        "status": "PASS",
+        "orientationPassStarted": true,
+        "processAliveAfterReturn": false
+      }
+    ],
+    "scope": "Local Linux process limits and lifecycle. Resource ceilings are not an OS security sandbox or a production hosting approval."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "severity": "medium",
+  "evidenceCommit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+  "source": "Screenshot inspection followed by source-color contrast calculation. Actual computed-style regression prepared for the next Chromium, Firefox and WebKit CI run.",
+  "background": "#132236",
+  "before": {
+    "retentionText": "#53667d",
+    "retentionRatio": 2.7215,
+    "statusText": "#285c40",
+    "statusRatio": 2.0577
+  },
+  "requiredNormalTextRatio": 4.5,
+  "correctedText": "#b2c3d9",
+  "correctedCalculatedRatio": 8.9336,
+  "browserVerification": "NOT TESTED",
+  "captures": "remediation-captures-before.json"
+}

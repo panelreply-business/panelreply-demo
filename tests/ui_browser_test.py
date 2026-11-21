@@ -18,6 +18,7 @@ import shutil
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser
 
 
 BUNDLED_MESSAGE = (
@@ -61,11 +62,7 @@ class WorkspaceBrowserTests(unittest.TestCase):
         cls.thread.start()
         cls.origin = f"http://127.0.0.1:{cls.server.server_port}"
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"WORKSPACE_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):
@@ -139,7 +136,17 @@ class WorkspaceBrowserTests(unittest.TestCase):
                 const element = document.getElementById(id);
                 return {id, width: element.clientWidth, scroll: element.scrollWidth};
             });
-            return {viewport: innerWidth, page: document.documentElement.scrollWidth, values};
+            const outside = [...document.querySelectorAll('body *')].filter(element => {
+                if (!element.getClientRects().length || getComputedStyle(element).visibility === 'hidden') return false;
+                const rect = element.getBoundingClientRect();
+                return rect.right > innerWidth + 1 || rect.left < -1;
+            }).map(element => {
+                const rect = element.getBoundingClientRect();
+                return {tag: element.tagName, id: element.id, class: element.className,
+                    left: rect.left, right: rect.right, width: rect.width,
+                    scroll: element.scrollWidth, text: element.textContent.trim().slice(0, 80)};
+            });
+            return {viewport: innerWidth, page: document.documentElement.scrollWidth, values, outside};
         }""")
         self.assertLessEqual(dimensions["page"], dimensions["viewport"] + 1, json.dumps(dimensions))
         for item in dimensions["values"]:
@@ -293,7 +300,15 @@ class WorkspaceBrowserTests(unittest.TestCase):
     def test_skip_link_and_workspace_navigation_have_real_targets(self):
         self.page.keyboard.press("Tab")
         skip_link = self.page.locator(".skip-link")
-        expect(skip_link).to_be_focused()
+        try:
+            expect(skip_link).to_be_focused()
+        except AssertionError as failure:
+            focus = self.page.evaluate("""() => ({
+                documentFocused: document.hasFocus(),
+                activeElement: document.activeElement?.outerHTML.slice(0, 1000),
+                skipLinkTabIndex: document.querySelector('.skip-link')?.tabIndex
+            })""")
+            raise AssertionError(f"{failure}\nFirst Tab focus: {json.dumps(focus)}") from failure
         expect(skip_link).to_be_visible()
         target = skip_link.get_attribute("href")
         self.assertTrue(target and target.startswith("#"))
@@ -354,6 +369,18 @@ class WorkspaceBrowserTests(unittest.TestCase):
                 self.assert_no_horizontal_overflow()
                 font_size = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
                 self.assertGreaterEqual(font_size, 30, "Body text must respond to the user's font scale")
+                headings = self.page.locator('h1, h2').evaluate_all("""elements => elements.map(element => {
+                    const rect = element.getBoundingClientRect();
+                    return {text: element.textContent, left: rect.left, right: rect.right,
+                        width: element.clientWidth, scroll: element.scrollWidth,
+                        overflow: getComputedStyle(element).overflowX};
+                })""")
+                for heading in headings:
+                    self.assertGreater(heading["width"], 0, json.dumps(heading))
+                    self.assertLessEqual(heading["scroll"], heading["width"] + 1, json.dumps(heading))
+                    self.assertGreaterEqual(heading["left"], -1, json.dumps(heading))
+                    self.assertLessEqual(heading["right"], width + 1, json.dumps(heading))
+                    self.assertNotIn(heading["overflow"], ["hidden", "clip"], "Text must wrap without clipping")
         self.page.evaluate("() => document.documentElement.style.fontSize = ''")
         self.page.set_viewport_size({"width": 390, "height": 900})
         self.capture("mobile-ready.jpg")

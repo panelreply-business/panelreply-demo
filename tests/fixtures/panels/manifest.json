@@ -1,0 +1,71 @@
+{
+  "purpose": "Synthetic labelled text only. No electrical specifications or real customer data.",
+  "cases": [
+    {
+      "file": "complete.png",
+      "lines": [
+        "PART NUMBER: DEMO-1001",
+        "MANUFACTURER: SAMPLE COMPONENTS",
+        "DESCRIPTION: SYNTHETIC LABEL ALPHA"
+      ],
+      "expected": {
+        "partNumber": "DEMO-1001",
+        "manufacturer": "SAMPLE COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      }
+    },
+    {
+      "file": "complete.jpg",
+      "lines": [
+        "PART NUMBER: DEMO-2042",
+        "MANUFACTURER: SAMPLE COMPONENTS",
+        "DESCRIPTION: SYNTHETIC LABEL BRAVO"
+      ],
+      "expected": {
+        "partNumber": "DEMO-2042",
+        "manufacturer": "SAMPLE COMPONENTS",
+        "description": "SYNTHETIC LABEL BRAVO"
+      }
+    },
+    {
+      "file": "missing-manufacturer.png",
+      "lines": [
+        "PART NUMBER: DEMO-3053",
+        "DESCRIPTION: SYNTHETIC LABEL CHARLIE"
+      ],
+      "expected": {
+        "partNumber": "DEMO-3053",
+        "manufacturer": "",
+        "description": "SYNTHETIC LABEL CHARLIE"
+      }
+    },
+    {
+      "file": "conflicting-parts.png",
+      "lines": [
+        "PART NUMBER: DEMO-4001",
+        "PART NUMBER: DEMO-4002",
+        "MANUFACTURER: SAMPLE COMPONENTS",
+        "DESCRIPTION: SYNTHETIC LABEL DELTA"
+      ],
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "SAMPLE COMPONENTS",
+        "description": "SYNTHETIC LABEL DELTA"
+      }
+    },
+    {
+      "file": "unlabelled.png",
+      "lines": [
+        "DEMO-5005",
+        "SAMPLE COMPONENTS",
+        "SYNTHETIC LABEL ECHO"
+      ],
+      "expected": null
+    },
+    {
+      "file": "blank.png",
+      "lines": [],
+      "expected": null
+    }
+  ]
+}

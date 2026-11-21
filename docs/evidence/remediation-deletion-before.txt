@@ -1,0 +1,38 @@
+✖ independent deletion review retains uncertainty when a retry receives403 after a lost commit response (5.746419ms)
+✔ independent deletion review requires the typed word and cancellation sends nothing (1.371385ms)
+✔ independent deletion review keeps the same key, version and body after a lost response (2.313611ms)
+✔ independent deletion review refuses a mismatched receipt: id (1.13923ms)
+✔ independent deletion review refuses a mismatched receipt: kind (0.831785ms)
+✔ independent deletion review refuses a mismatched receipt: version (0.970009ms)
+✔ independent deletion review refuses a mismatched receipt: deletedAt (5.289438ms)
+✔ independent deletion review refuses a mismatched receipt: deleted (0.809015ms)
+✔ independent deletion review prevents repeated clicks during the same outstanding request (1.277869ms)
+✔ independent deletion review discards a late successful response after session expiry (2.227679ms)
+✔ independent deletion review allows cancellation after the first explicit version rejection (2.341095ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.30507
+
+✖ failing tests:
+
+test at tests/deletion-client-review.test.cjs:40:1
+✖ independent deletion review retains uncertainty when a retry receives403 after a lost commit response (5.746419ms)
+  AssertionError [ERR_ASSERTION]: a later rejection cannot establish whether the earlier attempt committed
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/deletion-client-review.test.cjs:46:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

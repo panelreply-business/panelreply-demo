@@ -1,0 +1,3760 @@
+{
+  "format": "panelreply-ocr-remediation",
+  "version": 1,
+  "date": "2026-11-20",
+  "scope": "Synthetic stress set only. Not a real-photo accuracy or hosting readiness claim.",
+  "baselineCommit": "36b2bf30990eb164f6327e1eaa71e1386432da4f",
+  "datasetSha256": "9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601",
+  "inputHashesAfterRun": {
+    "status": "PASS",
+    "cases": 310,
+    "manifestSha256": "9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601",
+    "allImageHashesMatched": true
+  },
+  "pipelineSources": [
+    {
+      "file": "ocr.cjs",
+      "sha256": "f25ac85c7009598637c0814f9d67ef35031ecba3a49912e8c4fd3fa9c8aa49f4"
+    },
+    {
+      "file": "ocr-preprocess.py",
+      "sha256": "6550ceed4e150c35100b9b412bdfa842ca793a084151982f6278ea039793e362"
+    },
+    {
+      "file": "ocr-isolation.cjs",
+      "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
+    }
+  ],
+  "pipelineSha256": "6ea83a79dde4d68f4edb26717bedfb0aa1261684f848e6dd29ceddf4550e6fdd",
+  "pipelineHashDefinition": "SHA256 of UTF8 JSON.stringify(pipelineSources) in the displayed order. The benchmark recorded these hashes before the final native run. They were rechecked unchanged after the run.",
+  "baseline": {
+    "engine": {
+      "available": true,
+      "engine": "tesseract",
+      "version": "5.5.0",
+      "language": "eng"
+    },
+    "engineModuleSha256": "19a1f3eebb5e521c0503a9128e01ddedf9654e1ee40051729b053ad47a8a90df",
+    "overall": {
+      "cases": 310,
+      "exactCases": 253,
+      "errors": 0,
+      "reviewViolations": 0,
+      "fields": {
+        "partNumber": {
+          "known": 219,
+          "exact": 177,
+          "missed": 13,
+          "wrong": 29,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "manufacturer": {
+          "known": 219,
+          "exact": 190,
+          "missed": 19,
+          "wrong": 10,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "description": {
+          "known": 229,
+          "exact": 210,
+          "missed": 15,
+          "wrong": 4,
+          "expectedBlank": 81,
+          "preservedBlank": 81,
+          "falsePositive": 0
+        }
+      },
+      "latencyMs": {
+        "median": 245,
+        "p95": 394,
+        "max": 823
+      }
+    },
+    "elapsedMs": 79771,
+    "nodeProcess": {
+      "rssBeforeBytes": 40431616,
+      "rssAfterBytes": 64057344,
+      "cpuUserMs": 1896,
+      "cpuSystemMs": 1025,
+      "scope": "Node parent only. Does not measure native child CPU or peak RSS."
+    },
+    "nativeProcess": {
+      "processes": 314,
+      "processesWithSamples": 314,
+      "samples": 7728,
+      "sampledPeakResidentBytes": 39526400,
+      "allClosed": true,
+      "samplingIntervalMs": 10,
+      "scope": "Linux /proc child VmRSS/VmHWM sampled every 10 ms. Observed lower bound, not a complete kernel peak. Does not sum concurrent descendants. Parent memory is separate."
+    }
+  },
+  "after": {
+    "engine": {
+      "available": true,
+      "engine": "tesseract",
+      "version": "5.5.0",
+      "language": "eng",
+      "normalizer": {
+        "method": "median3-isolated-noise",
+        "pillowVersion": "11.1.0"
+      },
+      "orientationAvailable": true
+    },
+    "engineModuleSha256": "f25ac85c7009598637c0814f9d67ef35031ecba3a49912e8c4fd3fa9c8aa49f4",
+    "overall": {
+      "cases": 310,
+      "exactCases": 277,
+      "errors": 0,
+      "reviewViolations": 0,
+      "fields": {
+        "partNumber": {
+          "known": 219,
+          "exact": 197,
+          "missed": 1,
+          "wrong": 21,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "manufacturer": {
+          "known": 219,
+          "exact": 206,
+          "missed": 5,
+          "wrong": 8,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "description": {
+          "known": 229,
+          "exact": 229,
+          "missed": 0,
+          "wrong": 0,
+          "expectedBlank": 81,
+          "preservedBlank": 81,
+          "falsePositive": 0
+        }
+      },
+      "latencyMs": {
+        "median": 325,
+        "p95": 827,
+        "max": 1919
+      }
+    },
+    "elapsedMs": 120492,
+    "nodeProcess": {
+      "rssBeforeBytes": 40431616,
+      "rssAfterBytes": 65777664,
+      "cpuUserMs": 4763,
+      "cpuSystemMs": 2833,
+      "scope": "Node parent only. Does not measure native child CPU or peak RSS."
+    },
+    "nativeProcess": {
+      "processes": 660,
+      "processesWithSamples": 660,
+      "samples": 11272,
+      "sampledPeakResidentBytes": 73342976,
+      "allClosed": true,
+      "samplingIntervalMs": 10,
+      "scope": "Linux /proc child VmRSS/VmHWM sampled every 10 ms. Observed lower bound, not a complete kernel peak. Does not sum concurrent descendants. Parent memory is separate."
+    }
+  },
+  "originalNonexact": 57,
+  "correctedOriginalCases": 24,
+  "remainingOriginalCases": 33,
+  "previouslyExactRegressions": [],
+  "checks": {
+    "sameInputSet": "PASS",
+    "allOriginalFailuresInvestigated": "PASS",
+    "noPreviouslyExactRegressions": "PASS",
+    "noBlankFieldFalsePositives": "PASS",
+    "noNativeErrors": "PASS",
+    "allCandidatesUnreviewed": "PASS",
+    "allImageFieldsExact": "FAIL",
+    "realPhotographs": "NOT TESTED",
+    "localOsIsolation": "BLOCKED",
+    "hostingIsolation": "NOT TESTED"
+  },
+  "experiments": {
+    "screeningScope": "57 baseline failure images plus 18 deterministic previously passing controls, 75 total. Screening alone is not evidence of no regressions across 310.",
+    "variants": [
+      {
+        "variant": "sauvola",
+        "cases": 75,
+        "exactCases": 18,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 21,
+            "missed": 15,
+            "wrong": 27,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 34,
+            "missed": 22,
+            "wrong": 8,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 44,
+            "missed": 21,
+            "wrong": 1,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 250,
+          "p95": 513,
+          "max": 894
+        },
+        "gains": [
+          "punctuation--rotate-minus-3"
+        ],
+        "regressions": [
+          "lowercase--low-contrast"
+        ]
+      },
+      {
+        "variant": "adaptive-otsu",
+        "cases": 75,
+        "exactCases": 26,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 24,
+            "missed": 14,
+            "wrong": 25,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 45,
+            "missed": 15,
+            "wrong": 4,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 50,
+            "missed": 13,
+            "wrong": 3,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 260,
+          "p95": 574,
+          "max": 916
+        },
+        "gains": [
+          "standard--downsample",
+          "reordered--downsample",
+          "leading-zero--downsample",
+          "confusable--downsample",
+          "punctuation--downsample",
+          "missing-part--downsample",
+          "missing-description--downsample",
+          "conflicting-parts--noise",
+          "conflicting-parts--downsample"
+        ],
+        "regressions": [
+          "missing-manufacturer--skew-horizontal"
+        ]
+      },
+      {
+        "variant": "scale2",
+        "cases": 75,
+        "exactCases": 26,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 21,
+            "missed": 23,
+            "wrong": 19,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 40,
+            "missed": 23,
+            "wrong": 1,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 39,
+            "missed": 23,
+            "wrong": 4,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 352,
+          "p95": 694,
+          "max": 1017
+        },
+        "gains": [
+          "standard--downsample",
+          "abbreviated--clear-serif",
+          "abbreviated--downsample",
+          "reordered--downsample",
+          "leading-zero--downsample",
+          "confusable--clear-mono",
+          "punctuation--downsample",
+          "missing-part--downsample",
+          "missing-description--downsample",
+          "conflicting-parts--downsample"
+        ],
+        "regressions": [
+          "punctuation--blur-0.6",
+          "missing-manufacturer--skew-horizontal"
+        ]
+      },
+      {
+        "variant": "median3",
+        "cases": 75,
+        "exactCases": 31,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 27,
+            "missed": 13,
+            "wrong": 23,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 41,
+            "missed": 23,
+            "wrong": 0,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 46,
+            "missed": 20,
+            "wrong": 0,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 229,
+          "p95": 392,
+          "max": 511
+        },
+        "gains": [
+          "standard--noise",
+          "abbreviated--clear-serif",
+          "abbreviated--noise",
+          "lowercase--rotate-minus-3",
+          "lowercase--noise",
+          "reordered--noise",
+          "leading-zero--noise",
+          "punctuation--noise",
+          "unknown-manufacturer--noise",
+          "missing-manufacturer--noise",
+          "missing-description--noise",
+          "conflicting-parts--noise",
+          "conflicting-manufacturers--noise"
+        ],
+        "regressions": []
+      },
+      {
+        "variant": "contrast",
+        "cases": 75,
+        "exactCases": 18,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 21,
+            "missed": 13,
+            "wrong": 29,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 35,
+            "missed": 19,
+            "wrong": 10,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 47,
+            "missed": 15,
+            "wrong": 4,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 218,
+          "p95": 386,
+          "max": 480
+        },
+        "gains": [],
+        "regressions": []
+      },
+      {
+        "variant": "scale2median3",
+        "cases": 75,
+        "exactCases": 29,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 25,
+            "missed": 13,
+            "wrong": 25,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 44,
+            "missed": 20,
+            "wrong": 0,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 50,
+            "missed": 14,
+            "wrong": 2,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 344,
+          "p95": 679,
+          "max": 804
+        },
+        "gains": [
+          "standard--noise",
+          "abbreviated--clear-serif",
+          "abbreviated--noise",
+          "lowercase--noise",
+          "reordered--noise",
+          "leading-zero--noise",
+          "unknown-manufacturer--noise",
+          "missing-manufacturer--noise",
+          "missing-description--noise",
+          "conflicting-parts--noise",
+          "conflicting-parts--downsample",
+          "conflicting-manufacturers--noise"
+        ],
+        "regressions": [
+          "punctuation--blur-0.6"
+        ]
+      },
+      {
+        "variant": "no-dawg",
+        "cases": 75,
+        "exactCases": 18,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 63,
+            "exact": 21,
+            "missed": 13,
+            "wrong": 29,
+            "expectedBlank": 12,
+            "preservedBlank": 12,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 64,
+            "exact": 35,
+            "missed": 19,
+            "wrong": 10,
+            "expectedBlank": 11,
+            "preservedBlank": 11,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 66,
+            "exact": 47,
+            "missed": 15,
+            "wrong": 4,
+            "expectedBlank": 9,
+            "preservedBlank": 9,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 215,
+          "p95": 419,
+          "max": 572
+        },
+        "gains": [],
+        "regressions": []
+      }
+    ],
+    "unconditionalMedianFullSet": {
+      "cases": 310,
+      "exactCases": 252,
+      "errors": 0,
+      "reviewViolations": 0,
+      "fields": {
+        "partNumber": {
+          "known": 219,
+          "exact": 172,
+          "missed": 16,
+          "wrong": 31,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "manufacturer": {
+          "known": 219,
+          "exact": 194,
+          "missed": 25,
+          "wrong": 0,
+          "expectedBlank": 91,
+          "preservedBlank": 90,
+          "falsePositive": 1
+        },
+        "description": {
+          "known": 229,
+          "exact": 204,
+          "missed": 25,
+          "wrong": 0,
+          "expectedBlank": 81,
+          "preservedBlank": 81,
+          "falsePositive": 0
+        }
+      },
+      "latencyMs": {
+        "median": 211,
+        "p95": 354,
+        "max": 663
+      },
+      "gains": [
+        "standard--noise",
+        "abbreviated--clear-serif",
+        "abbreviated--noise",
+        "lowercase--rotate-minus-3",
+        "lowercase--noise",
+        "reordered--noise",
+        "leading-zero--noise",
+        "punctuation--noise",
+        "unknown-manufacturer--noise",
+        "missing-manufacturer--noise",
+        "missing-description--noise",
+        "conflicting-parts--noise",
+        "conflicting-manufacturers--noise"
+      ],
+      "regressions": [
+        "standard--clear-mono",
+        "lowercase--downsample",
+        "reordered--clear-mono",
+        "confusable--small-22px",
+        "unknown-manufacturer--clear-mono",
+        "unknown-manufacturer--downsample",
+        "missing-manufacturer--clear-mono",
+        "missing-manufacturer--downsample",
+        "missing-description--clear-mono",
+        "conflicting-parts--skew-horizontal",
+        "conflicting-manufacturers--clear-mono",
+        "conflicting-manufacturers--skew-horizontal",
+        "conflicting-manufacturers--downsample",
+        "multiple-components--downsample"
+      ],
+      "decision": "REJECTED: 14 previously exact images regressed and 1 formerly blank manufacturer became nonempty."
+    },
+    "orientationOnlyFullSet": {
+      "engine": {
+        "available": true,
+        "engine": "tesseract",
+        "version": "5.5.0",
+        "language": "eng"
+      },
+      "engineModuleSha256": "8b0bff1eb8f2c0265f729100306aa4aa66ef81d586cbf1a3f9483528f59f7185",
+      "overall": {
+        "cases": 310,
+        "exactCases": 266,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 219,
+            "exact": 187,
+            "missed": 2,
+            "wrong": 30,
+            "expectedBlank": 91,
+            "preservedBlank": 91,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 219,
+            "exact": 201,
+            "missed": 8,
+            "wrong": 10,
+            "expectedBlank": 91,
+            "preservedBlank": 91,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 229,
+            "exact": 222,
+            "missed": 2,
+            "wrong": 5,
+            "expectedBlank": 81,
+            "preservedBlank": 81,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 233,
+          "p95": 639,
+          "max": 1094
+        }
+      },
+      "elapsedMs": 87377,
+      "nodeProcess": {
+        "rssBeforeBytes": 40038400,
+        "rssAfterBytes": 64897024,
+        "cpuUserMs": 1984,
+        "cpuSystemMs": 1038,
+        "scope": "Node parent only. Does not measure native child CPU or peak RSS."
+      },
+      "nativeProcess": {
+        "processes": 349,
+        "processesWithSamples": 349,
+        "samples": 8501,
+        "sampledPeakResidentBytes": 73338880,
+        "allClosed": true,
+        "samplingIntervalMs": 10,
+        "scope": "Linux /proc child VmRSS/VmHWM sampled every 10 ms. Observed lower bound, not a complete kernel peak. Does not sum concurrent descendants. Parent memory is separate."
+      },
+      "decision": "RETAINED: 13 additional exact images, no formerly exact image regressed and no blank-field false positive."
+    },
+    "conditionalNormalization": {
+      "method": "median3-isolated-noise",
+      "rule": "At least max(32,ceil(imagePixels/1000)) isolated bright/dark pixels unlike all 8 neighbors. Uses pixels only. Does not inspect expected labels, case IDs, part catalogs or recognized values.",
+      "appliedCases": 16,
+      "decision": "RETAINED with full 310 replay: 11 additional exact images beyond orientation, no control regression or blank-field false positive."
+    },
+    "reconciliationDecision": "No catalogue repair, character substitution, punctuation stripping or per-field merger retained. Conflicting/ambiguous source values remain blank and all candidates unreviewed."
+  },
+  "failureReview": [
+    {
+      "id": "standard--rotate-90",
+      "imageSha256": "74497fe80a8cf55ceab16d5036f789e79d64d9a0cf98e81f776db03daa42f112",
+      "condition": "rotate-90",
+      "scenario": "standard",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "n\n2 <\nwr\nZa\n_\n2 =z\nzy\nO a\n935\nGZo\nWi OF\nJF +\nQUE\ngiz\nS \u00a7\nss LW .,\nmS 2\n=)\nare\n=or\n= 3 5\n=~ ZH\nctw\n&Ssa",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "standard--noise",
+      "imageSha256": "2d92b91c3aa1f02d19202449404e11840d660efde40e921d73f3edde5c8a86ff",
+      "condition": "noise",
+      "scenario": "standard",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042 oo =",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042 oo =\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 664,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "standard--downsample",
+      "imageSha256": "b822e9cca11e6335beea07cd354b328510e53efdefc998fe4953a74858e09a6e",
+      "condition": "downsample",
+      "scenario": "standard",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 36,
+            "imagePixels": 35805
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "abbreviated--clear-serif",
+      "imageSha256": "6bba93a8bdb2f3148c0c4dae5b81cecc289ee88dc35ae75ff0473c7b9c4e8b83",
+      "condition": "clear-serif",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "abbreviated_label_not_recognized",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 285,
+            "imagePixels": 284400
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "abbreviated--rotate-plus-1",
+      "imageSha256": "343b6d3b38e051f7b74cf25ce50347c49601e71702a3270ca7217f376a676029",
+      "condition": "rotate-plus-1",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "abbreviated_label_not_recognized",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 301,
+            "imagePixels": 300792
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "abbreviated--rotate-plus-3",
+      "imageSha256": "c1e6481893e581469426052c3b97eb3056b1bd18b5e1fae8ddb92c5428c9223d",
+      "condition": "rotate-plus-3",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "abbreviated_label_not_recognized",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 334,
+            "imagePixels": 333424
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "abbreviated--rotate-90",
+      "imageSha256": "b1700aa523704d72eba87fd775c604f2431bf128907e46127ea5446919f28d15",
+      "condition": "rotate-90",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "nw =\n58\nut <<\nZ\nOm\nam\n2 <\nGUL\n\u2014\na <o\nuy 2 x\nQF \u00a2\n2\u00b0 OG\n2f Y\nasta",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMFR: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 285,
+            "imagePixels": 284400
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "abbreviated--skew-horizontal",
+      "imageSha256": "a2a3e56a6924bd23f3ab9e1b4d7cd235495527a078c97335b53e8de3d9b2882e",
+      "condition": "skew-horizontal",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "abbreviated_label_not_recognized",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N. SAMPLE-2042\nMFR. FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N. SAMPLE-2042\nMFR. FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 301,
+            "imagePixels": 300200
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "abbreviated--noise",
+      "imageSha256": "3724cc9a92f3df58270775864c0fae528e52d015f2a5a0c9c15b28b7b16d3c95",
+      "condition": "noise",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042 : |",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "rawText": "P/N: SAMPLE-2042 : |\nMFR: FICTIONAL COMPONENTS\n\u2018DESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMFR: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 561,
+            "thresholdPixels": 285,
+            "imagePixels": 284400
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "abbreviated--downsample",
+      "imageSha256": "eacf0e975ebcad125518978640f51cc49d90442d2847e593bdbda42d6425dfd3",
+      "condition": "downsample",
+      "scenario": "abbreviated",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "abbreviated_label_not_recognized",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "P/N: SAMPLE-2042\nMER: FICTIONAL COMPONENTS\nDESC: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 32,
+            "imagePixels": 31500
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "lowercase--rotate-minus-3",
+      "imageSha256": "036ebf0e4df73fb408521e09c311cc0a6e31ca2563946cec5e69c423118dc8d0",
+      "condition": "rotate-minus-3",
+      "scenario": "lowercase",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "letter_case",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "sample-2042",
+        "manufacturer": "fictional components",
+        "description": "synthetic label alpha"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "Sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "rawText": "Part number: Sample-2042\nmanufacturer: fictional components\ndescription: synthetic label alpha",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "Sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "rawText": "Part number: Sample-2042\nmanufacturer: fictional components\ndescription: synthetic label alpha",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 334,
+            "imagePixels": 333424
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "lowercase--rotate-90",
+      "imageSha256": "8e59d7c967e9d22c028ff65148248c11ddef93ecc71a326393ca40e64bc3cde1",
+      "condition": "rotate-90",
+      "scenario": "lowercase",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "sample-2042",
+        "manufacturer": "fictional components",
+        "description": "synthetic label alpha"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "17a)\nyw\nCc\ngo \u00a9\nvec\no 2\nQa 6\nNn EG\n+ 0\nao 08\nxa \u2014 2\n1 \u00a9\noer\nao o\n5 oe\na od\no\u00a3 \u20ac\nci a\naa sg\nce > 2\n5 oo 6\nPEG\no\nSES",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "rawText": "part number: sample-2042\nmanufacturer: fictional components\ndescription: synthetic label alpha",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 285,
+            "imagePixels": 284400
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "lowercase--noise",
+      "imageSha256": "7e72f213d2248e540161faaccf390fc23359787f5a8f6bafbb3a415b47aad518",
+      "condition": "noise",
+      "scenario": "lowercase",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "sample-2042",
+        "manufacturer": "fictional components",
+        "description": "synthetic label alpha"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "~ part number: sample-2042\n_ manufacturer: fictional components\n\u2018description: synthetic label alpha wes",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "rawText": "part number: sample-2042\nmanufacturer: fictional components\ndescription: synthetic label alpha",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 552,
+            "thresholdPixels": 285,
+            "imagePixels": 284400
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "reordered--rotate-90",
+      "imageSha256": "6ad0b96f1d7326a775c810c29c79efe89188cb09710662c96eb12dff5dcd3b3e",
+      "condition": "rotate-90",
+      "scenario": "reordered",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "nn\nkK\ntz\nrt uw\na <\nz&\nJi\na \u00a9\n<x N\nji 3a +\n<s\nose\nEo i\nFUE\n5 i =\n<\u00a2 =.\nnay\n. WwW 3s:\n55%\nEGE\na\nzw\n62D\nDZ &\nosf",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "DESCRIPTION: SYNTHETIC LABEL ALPHA\nMANUFACTURER: FICTIONAL COMPONENTS\nPART NUMBER: SAMPLE-2042",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "reordered--noise",
+      "imageSha256": "703bd3706a957cb5fe391409f0624db32682ef5423327e144a23ed00139426b7",
+      "condition": "noise",
+      "scenario": "reordered",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042 =",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA ="
+        },
+        "rawText": "DESCRIPTION: SYNTHETIC LABEL ALPHA =\nMANUFACTURER: FICTIONAL COMPONENTS\nPART NUMBER: SAMPLE-2042 =",
+        "mismatchedFields": [
+          "partNumber",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "DESCRIPTION: SYNTHETIC LABEL ALPHA\nMANUFACTURER: FICTIONAL COMPONENTS\nPART NUMBER: SAMPLE-2042",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 660,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "reordered--downsample",
+      "imageSha256": "0a1227add03d9a122ee1f8e5ff943b43e93d3a052b7eb2e69dea77d86b4bc1cf",
+      "condition": "downsample",
+      "scenario": "reordered",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "DESCRIPTION: SYNTHETIC LABEL ALPHA\nMANUFACTURER: FICTIONAL COMPONENTS.\nPART NUMBER: SAMPLE-2042",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "DESCRIPTION: SYNTHETIC LABEL ALPHA\nMANUFACTURER: FICTIONAL COMPONENTS.\nPART NUMBER: SAMPLE-2042",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 36,
+            "imagePixels": 35805
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "leading-zero--rotate-90",
+      "imageSha256": "c4f0a531e7143a344ac4d5bd377eb8f751a726043a136e1fc9d477035cb12226",
+      "condition": "rotate-90",
+      "scenario": "leading-zero",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "0000123400",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "Tp)\n=\nnie\n6 5\nac\n5 a\nS a\nsai\n23 \u00a2\nkK\nSF\noUE\note2\nss LL\naw =\naT Zz\nap oO\n=OeF-\nD> gt\n=~ Zz\nTp)\nCaw\na =a",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 0000123400\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "leading-zero--noise",
+      "imageSha256": "2ddd1f3d5269610c2da0eed43fecf8c748548202372a376fe9bd1d84757f7987",
+      "condition": "noise",
+      "scenario": "leading-zero",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "0000123400",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "0000123400 cS",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA _"
+        },
+        "rawText": "PART NUMBER: 0000123400 cS\n_ MANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA _",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 0000123400\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 661,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "leading-zero--downsample",
+      "imageSha256": "9a9a057214a5f47f6270de7c944aba3e08fe8d2534fd014ec96dd15e203e783c",
+      "condition": "downsample",
+      "scenario": "leading-zero",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "0000123400",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 0000123400\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 0000123400\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 36,
+            "imagePixels": 35805
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--clear-sans",
+      "imageSha256": "a50ecc2e0c88ef4d80c0bbdd823351f35de5d34a79bad019a3a4b4bb107bbbbb",
+      "condition": "clear-sans",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--clear-mono",
+      "imageSha256": "48d1d7e2bb522f40a81725d853af20f623a27815631f2ca96f134336386fb7a4",
+      "condition": "clear-mono",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "00-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 00-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "00-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 00-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 310,
+            "imagePixels": 309364
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--large-64px",
+      "imageSha256": "9cd0fe14ba012319865363ea01386b4f43543eef4e11d1b35d3438fda17f1185",
+      "condition": "large-64px",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "OO-I1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: OO-I1-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "OO-I1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: OO-I1-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 573,
+            "imagePixels": 572236
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--rotate-plus-1",
+      "imageSha256": "97cb821dc11504257f445ef889fe82ac02092da94dd84a42c6aa045a61d2a221",
+      "condition": "rotate-plus-1",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 345,
+            "imagePixels": 344020
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--rotate-plus-3",
+      "imageSha256": "b3e7a938e7e8003f4df85bc0d83a2706f4cede3f30359df27ec48504e63c6b33",
+      "condition": "rotate-plus-3",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "00-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 00-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "00-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 00-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 385,
+            "imagePixels": 384800
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--rotate-minus-3",
+      "imageSha256": "9a5c6826ec95e0f798a68f83e74e37c2d6d1530bb3b90d9312f424a752d6aec2",
+      "condition": "rotate-minus-3",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 385,
+            "imagePixels": 384800
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--rotate-90",
+      "imageSha256": "a6a8c314eccf389c252e9c14dbf0bed87480fb6981b0b0a02dbfce0d6d20e179",
+      "condition": "rotate-90",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "nn\n2 <\nuw +\nZa\n\u2014\nOz\n-\nco\nVig\nopm a\na So\nIb OF\nOFS\nTiS\no\nOg &\nss LW .,\nmS 2\n=)\nof oO\n=or\nSih\nZz\n2 O\n=~ ZH\ncat\nEso",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "OO0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: OO0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--skew-horizontal",
+      "imageSha256": "050627dba9d885ed61f2fd68ee0da437c6a63f520e959494d6b32cff34c1704f",
+      "condition": "skew-horizontal",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-\\1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-\\1-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-\\1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-\\1-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 340,
+            "imagePixels": 339384
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--blur-0.6",
+      "imageSha256": "ede35afd64909b88ec7cd3ef61b1bcc03dbf212820a0464c22ad75733b99e8d9",
+      "condition": "blur-0.6",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--blur-1.4",
+      "imageSha256": "98f7e8f1a344243a3b4678b605a1f7b1868ffd651ffcd2ce75cc438509685625",
+      "condition": "blur-1.4",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--low-contrast",
+      "imageSha256": "6e7ed19d8ea258681f12c92dea38f1908c4557c78cf2df92b5c98583fc777740",
+      "condition": "low-contrast",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "OO0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: OO0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "OO0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: OO0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--inverted",
+      "imageSha256": "f25ff01c065a49fffb09b3dae2e8744401633e1978f198bf4a667294699a4f34",
+      "condition": "inverted",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--noise",
+      "imageSha256": "0aa5235cff927d7a90485d2c90f9133187a14b57c9fb7e7b73c13c60d5332585",
+      "condition": "noise",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "00-I1-S5-B8 oo =",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: 00-I1-S5-B8 oo =\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 668,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--downsample",
+      "imageSha256": "b7621f4e908019eabd5518f92837ad812592c5ef045cebdc5892af9100c3780c",
+      "condition": "downsample",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 36,
+            "imagePixels": 35805
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--jpeg-35",
+      "imageSha256": "2c468eb5db80f3a60dc97dcf609afc66e2b433636a69ad15770058d9a9f795c1",
+      "condition": "jpeg-35",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--crop-last-line",
+      "imageSha256": "6c91268486c7f6ad0927f37c49761b4ed29ca93314c8017f783d0202d13b3abd",
+      "condition": "crop-last-line",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": ""
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 189,
+            "imagePixels": 188416
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--tight-spacing",
+      "imageSha256": "949ee2537e8ceb10c2c8bb6ad798d52fc99e6a7b6f31a7cdccb55d620aaabecb",
+      "condition": "tight-spacing",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 287,
+            "imagePixels": 286720
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "confusable--wide-spacing",
+      "imageSha256": "9fce9542478ac1adfd24e952ede5b9d6a96861a97735ab16ebb86f0d04ee67ab",
+      "condition": "wide-spacing",
+      "scenario": "confusable",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "confusable_characters",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "O0-I1-S5-B8",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: O0-11-S5-B8\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 453,
+            "imagePixels": 452608
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "punctuation--clear-serif",
+      "imageSha256": "d9c1d9f75c5e759b165d0bf24b134e8820986366f6ad3acf5ffb5a3249579332",
+      "condition": "clear-serif",
+      "scenario": "punctuation",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "part_number_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "X/24_A.03-7",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "X/24_ A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24_ A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "X/24_ A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24_ A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 359,
+            "imagePixels": 358976
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "punctuation--rotate-minus-3",
+      "imageSha256": "90d17e752f7f597c2d53c0d656f741b6f433365912cfe2f02893ba5c6c390993",
+      "condition": "rotate-minus-3",
+      "scenario": "punctuation",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "part_number_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "X/24_A.03-7",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "X/24 A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24 A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "X/24 A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24 A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 385,
+            "imagePixels": 384800
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "punctuation--rotate-90",
+      "imageSha256": "088be959812e3f142f1a299f77a6aa87667ce4995a7be0c31e1386e51ffab94f",
+      "condition": "rotate-90",
+      "scenario": "punctuation",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "X/24_A.03-7",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "(Tp)\n2 <\nuw +\nZa\n\u2014\n2 =z\n=\nS a\nVig\nsa J\nmm LO\nz-~\n36%\nkK\nSOE\nVi 2\nxXx \u00a9\nss LW .,\nmS 2\naFe\n=or\nD>aete\nwe\n-5 6\n=~ ZH\nctw\n&Ssa",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24_A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "punctuation--noise",
+      "imageSha256": "a6eaf3252583937634b6afa1ac341ffe9d12972d61ba94cc0d53b9dc5796f5bd",
+      "condition": "noise",
+      "scenario": "punctuation",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "X/24_A.03-7",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "X/24_A.03-7 Le",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA _"
+        },
+        "rawText": "PART NUMBER: X/24_A.03-7 Le\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA _",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24_A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 667,
+            "thresholdPixels": 324,
+            "imagePixels": 323584
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "punctuation--downsample",
+      "imageSha256": "bcabe0a96345d4f52de607f121fec92b478d09fe535033b7ea779a4ada4b5223",
+      "condition": "downsample",
+      "scenario": "punctuation",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "X/24_A.03-7",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24_A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: X/24_A.03-7\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 36,
+            "imagePixels": 35805
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "unknown-manufacturer--rotate-90",
+      "imageSha256": "b95b309b5600e151f9e243863f6738cd06ff7d6e2ae2a18b7f44bc93426ad66e",
+      "condition": "rotate-90",
+      "scenario": "unknown-manufacturer",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "INVENTED ZETA LAB",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "t\nGa\nsoa\n<q\n<u\nim WwW\nN\nN <<\n+t Oa\nOw CO\nN FY\nwm 2 re\naw WwW\na>trz\nSs 2Z2E\naq-\u00e9e\nOe a\n. uo\naw s\nWW a\nap oO\n=ok&-\nDot\n=~ ZH\nCaw\na =a",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: INVENTED ZETA LAB\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 305,
+            "imagePixels": 304308
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "unknown-manufacturer--noise",
+      "imageSha256": "36961ed54564154c007cf92b8cbbf8b7e1c430fd7e63b52a98b5cc699d5ec34a",
+      "condition": "noise",
+      "scenario": "unknown-manufacturer",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "INVENTED ZETA LAB",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042.",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042.\nMANUFACTURER: INVENTED ZETA LAB\n\u2018DESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: INVENTED ZETA LAB\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 586,
+            "thresholdPixels": 305,
+            "imagePixels": 304308
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "missing-manufacturer--rotate-90",
+      "imageSha256": "8bbd0d78bcec9473b11158610a59382b034b1cb74e26bbc5be55b855eea71984",
+      "condition": "rotate-90",
+      "scenario": "missing-manufacturer",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "<x\nx\na\n|\nx\n\u2014\nLL\n~ 2\n3 5\nx VY\nwe i\noF\n< 2\nYH\ncz\nma O\n=e\n5 2a\n=a\nO\nzo\n\u00a34",
+        "mismatchedFields": [
+          "partNumber",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 270,
+            "imagePixels": 269640
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "missing-manufacturer--noise",
+      "imageSha256": "9d9e297c03bd96a35f562cc0619b444a98613d3221f5efa32b89071ddfbeb35d",
+      "condition": "noise",
+      "scenario": "missing-manufacturer",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042 Oe",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA ."
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042 Oe\nDESCRIPTION: SYNTHETIC LABEL ALPHA .",
+        "mismatchedFields": [
+          "partNumber",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 524,
+            "thresholdPixels": 270,
+            "imagePixels": 269640
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "missing-part--rotate-90",
+      "imageSha256": "486143fb211e034ec3935327038325da94504052a54d38c64a24d09b59038d40",
+      "condition": "rotate-90",
+      "scenario": "missing-part",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "iva)\n=\nna\nZa\n\u2014\nOz\n5 a\nS a\na\n\u2014\nae\nOb\n-\u2014 +r\nYE\nwe\nx mh\nWo,\ncz\nPo\nOke\nqo\nLe\nSO\nWN\nctw\n= QA",
+        "mismatchedFields": [
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "MANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 287,
+            "imagePixels": 286720
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "missing-part--downsample",
+      "imageSha256": "1483c2ce056830339984fe83150ed13d0d842c1d0c5c02c34c322f7922b9ca13",
+      "condition": "downsample",
+      "scenario": "missing-part",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "MANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "MANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 32,
+            "imagePixels": 31713
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "missing-description--rotate-90",
+      "imageSha256": "61fa75679121c3b09ef00942179e18164b5f018310f8b8021fb97aa4d1747f5d",
+      "condition": "rotate-90",
+      "scenario": "missing-description",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": ""
+      },
+      "before": {
+        "actual": null,
+        "rawText": "iva)\nkK\n=a\nLL\n=m\nO\na\n=\nS\n4\noc\nN 2\nuw O\nZO\nqi\nWO a\nze 2\nwes\nOF\n= OU\n>\n=)\n=~ Zz\ncz\nzs",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 287,
+            "imagePixels": 286720
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "missing-description--noise",
+      "imageSha256": "b123c6e07a6d9f3b46c92069ded1f2942776bac3270639d806d7a50ddbbbac98",
+      "condition": "noise",
+      "scenario": "missing-description",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": ""
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042, |",
+          "manufacturer": "",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042, |\n_ MANUFACTURER: FICTIONAL COMPONENTS",
+        "mismatchedFields": [
+          "partNumber",
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 567,
+            "thresholdPixels": 287,
+            "imagePixels": 286720
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "missing-description--downsample",
+      "imageSha256": "514aeb19e210c842901e61d89a857d0f3242eca1297587d3287e44f8ac0762e2",
+      "condition": "downsample",
+      "scenario": "missing-description",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": ""
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS.",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS.",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 32,
+            "imagePixels": 31713
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "conflicting-parts--rotate-90",
+      "imageSha256": "6f095fecd7e305b397275e25dfb05e5a9747bf8a1ac1c5ab86132ad9e0d932c8",
+      "condition": "rotate-90",
+      "scenario": "conflicting-parts",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "Tp)\n=\ni >\n5 3\n\u2014\nac\n5 a\nS a\noqownw =\novr 2 LI\noo <\na\nww O\na ao oe-\naOagoct\nZ=Zicts\nqiqie\u00e9\u20ac\nNN Xe H\nss oss LL\naaad =\nuu SZ\noof O\n=2OF\nDDdDaee\n225 5\nee en\n&isa",
+        "mismatchedFields": [
+          "manufacturer",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-1001\nPART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 398,
+            "imagePixels": 397312
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "conflicting-parts--noise",
+      "imageSha256": "441230877515fce4241348431e0c342a0d933a0413cf198850a71d4bea18f07d",
+      "condition": "noise",
+      "scenario": "conflicting-parts",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS -",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-1001 |\nPART NUMBER: SAMPLE-2042 | ee\nMANUFACTURER: FICTIONAL COMPONENTS -\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-1001\nPART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 833,
+            "thresholdPixels": 398,
+            "imagePixels": 397312
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "conflicting-parts--downsample",
+      "imageSha256": "5f34badc07150fe7b32cf5f5dfc0ac7c496630c596cff4b1abb7ecfa102b3546",
+      "condition": "downsample",
+      "scenario": "conflicting-parts",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "downsample_punctuation",
+      "status": "FAIL",
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "FICTIONAL COMPONENTS",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-1001\nPART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS.",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-1001\nPART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS.\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "manufacturer"
+        ],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 44,
+            "imagePixels": 43989
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Manual correction required. No character substitution or catalogue repair was applied."
+    },
+    {
+      "id": "conflicting-manufacturers--rotate-90",
+      "imageSha256": "3f77912c22899325be67bc0cff3460e00ad8ad6589ec76971bae609e907ebc21",
+      "condition": "rotate-90",
+      "scenario": "conflicting-manufacturers",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": null,
+        "rawText": "n\n=\no UT\nSO 2\n<tIs 1\ntf oO w\nanNO \u00ae\nSoa gs\now <=\nSEBS\nw 2ZOF\naw pf wW\nS 2-6\nse\nca\ncaeoaes\nao Peo\nSFEE\nOOF\nDaeawewe\nZzueuL Ee\ne220\nq_itiatuw\na 222A",
+        "mismatchedFields": [
+          "partNumber",
+          "description"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: INVENTED ZETA LAB\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 398,
+            "imagePixels": 397312
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "conflicting-manufacturers--noise",
+      "imageSha256": "9b2b351609a3b5b29f78da5feab5ab1552b4c80ddd183674d2aadf87a126914a",
+      "condition": "noise",
+      "scenario": "conflicting-manufacturers",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "isolated_pixel_noise",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "SAMPLE-2042",
+        "manufacturer": "",
+        "description": "SYNTHETIC LABEL ALPHA"
+      },
+      "before": {
+        "actual": {
+          "partNumber": "SAMPLE-2042 |",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042 |\nMANUFACTURER: INVENTED ZETALAB)\n-MANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [
+          "partNumber"
+        ]
+      },
+      "after": {
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "rawText": "PART NUMBER: SAMPLE-2042\nMANUFACTURER: INVENTED ZETA LAB\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL ALPHA",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 1,
+          "orientationFallbackUsed": false,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": true,
+            "isolatedNoisePixels": 832,
+            "thresholdPixels": 398,
+            "imagePixels": 397312
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    },
+    {
+      "id": "multiple-components--rotate-90",
+      "imageSha256": "a32f9eba4e733ed236e3d0f83847db27972464637d4cdf66b03bf4b32a91b093",
+      "condition": "rotate-90",
+      "scenario": "multiple-components",
+      "priority": "medium",
+      "investigated": true,
+      "cause": "orientation",
+      "status": "PASS",
+      "expected": {
+        "partNumber": "",
+        "manufacturer": "",
+        "description": ""
+      },
+      "before": {
+        "actual": null,
+        "rawText": "n\n20\n<9\not wu >\nto <a\ni a eo)\n<x a a\n<u = 4\nfr Ww Oo wW\nN @ O a\na atin <x\nsei2sa3\naeFUA ZY\nmw Z2e wy OF\nJaw wH ae\na >tfaocz\nS255\nqi-\u2014~\u20acd\u00a2d <\nHe Ande a\noo W. og\nele gv -\nLu Zu =\n=) =)\noFOE@Me_E OC\n=oOokrFazOE\nDaee2odage\n25a 25 0\ne23E 29\nq_itiwagxtw\na 2=2aaszka",
+        "mismatchedFields": []
+      },
+      "after": {
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "rawText": "PART NUMBER: SAMPLE-1001\nMANUFACTURER: INVENTED ZETA LAB\nDESCRIPTION: SYNTHETIC LABEL ALPHA\nPART NUMBER: SAMPLE-2042\nMANUFACTURER: FICTIONAL COMPONENTS\nDESCRIPTION: SYNTHETIC LABEL BRAVO",
+        "mismatchedFields": [],
+        "processing": {
+          "passes": 2,
+          "orientationFallbackUsed": true,
+          "normalization": {
+            "method": "median3-isolated-noise",
+            "pillowVersion": "11.1.0",
+            "applied": false,
+            "isolatedNoisePixels": 0,
+            "thresholdPixels": 545,
+            "imagePixels": 544768
+          }
+        }
+      },
+      "reproduction": "Generate the unchanged 310-image manifest with the documented font/Pillow versions, verify this image SHA256, run scripts/benchmark-ocr.cjs and inspect this case ID.",
+      "remainingAction": "Recovered on the fixed synthetic input. Still requires source review."
+    }
+  ],
+  "localNativeVerification": {
+    "fixtures": {
+      "status": "PASS",
+      "engine": "tesseract",
+      "version": "5.5.0",
+      "language": "eng",
+      "cases": 9,
+      "fixtureCases": 6,
+      "nativeFailureCases": 3,
+      "failures": 0,
+      "knownFields": 10,
+      "matchedFields": 10,
+      "emptyFields": 2,
+      "preservedEmptyFields": 2,
+      "results": [
+        {
+          "file": "complete.png",
+          "status": "PASS",
+          "durationMs": 356,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "complete.jpg",
+          "status": "PASS",
+          "durationMs": 353,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "missing-manufacturer.png",
+          "status": "PASS",
+          "durationMs": 311,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "conflicting-parts.png",
+          "status": "PASS",
+          "durationMs": 562,
+          "candidates": 1,
+          "fieldMatches": {
+            "partNumber": true,
+            "manufacturer": true,
+            "description": true
+          }
+        },
+        {
+          "file": "unlabelled.png",
+          "status": "PASS",
+          "durationMs": 737,
+          "candidates": 0,
+          "fieldMatches": {}
+        },
+        {
+          "file": "blank.png",
+          "status": "PASS",
+          "durationMs": 278,
+          "candidates": 0,
+          "fieldMatches": {}
+        }
+      ],
+      "failurePathResults": [
+        {
+          "test": "timeout reaps every native OCR pipeline child",
+          "status": "PASS",
+          "code": "OCR_TIMEOUT",
+          "observedChildren": 1,
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "cancel reaps every native OCR pipeline child",
+          "status": "PASS",
+          "code": "OCR_CANCELLED",
+          "observedChildren": 2,
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "structurally valid but undecodable pixels return a generic error",
+          "status": "PASS",
+          "code": "OCR_FAILED"
+        }
+      ],
+      "scope": "Synthetic printed text only. These measurements do not establish accuracy on real panel photographs or electrical specifications."
+    },
+    "resourceAndLifecycle": {
+      "status": "PASS",
+      "cases": 8,
+      "failures": 0,
+      "blocked": 0,
+      "engine": {
+        "available": true,
+        "engine": "tesseract",
+        "version": "5.5.0",
+        "language": "eng",
+        "normalizer": {
+          "method": "median3-isolated-noise",
+          "pillowVersion": "11.1.0"
+        },
+        "orientationAvailable": true
+      },
+      "results": [
+        {
+          "test": "exact production resource ceilings and address-space allocation failure",
+          "status": "PASS",
+          "addressSpaceBytes": 1073741824,
+          "cpuSeconds": 10,
+          "openFiles": 64,
+          "coreBytes": 0,
+          "fileBytes": 0,
+          "allocationBeyondCeiling": "REJECTED",
+          "fileWrite": "REJECTED"
+        },
+        {
+          "test": "kernel CPU ceiling terminates and reaps an isolated one-second test workload",
+          "status": "PASS",
+          "testCpuSeconds": 1,
+          "productionCpuSeconds": 10,
+          "signal": "SIGKILL",
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "native crash returns a generic error and leaves no process",
+          "status": "PASS",
+          "processAliveAfterReturn": false,
+          "coreFileAllowed": false
+        },
+        {
+          "test": "service shutdown kills and reaps actual Tesseract before resolving",
+          "status": "PASS",
+          "processAliveAfterShutdown": false,
+          "laterRecognition": "REJECTED"
+        },
+        {
+          "test": "concurrent actual recognition is rejected without a second native engine",
+          "status": "PASS",
+          "nativeRecognitions": 1,
+          "concurrentRequest": "REJECTED"
+        },
+        {
+          "test": "the normalizer receives the same native resource ceilings as the OCR engine",
+          "status": "PASS",
+          "addressSpaceBytes": 1073741824,
+          "cpuSeconds": 10,
+          "openFiles": 64,
+          "coreBytes": 0,
+          "fileBytes": 0,
+          "processAliveAfterReturn": false
+        },
+        {
+          "test": "cancellation kills and reaps the actual pixel-normalization child",
+          "status": "PASS",
+          "processAliveAfterReturn": false,
+          "nextEngineStageStarted": false
+        },
+        {
+          "test": "cancellation during actual orientation fallback reaps its native child",
+          "status": "PASS",
+          "orientationPassStarted": true,
+          "processAliveAfterReturn": false
+        }
+      ],
+      "scope": "Local Linux process limits and lifecycle. Resource ceilings are not an OS security sandbox or a production hosting approval."
+    }
+  },
+  "crossVersion": "Run 68 measured the prior dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5 pipeline using Tesseract 5.3.4 and system Pillow 10.2.0 on a separately generated, font-distinct manifest. Its 277/310 extraction results matched the previous local run. This final local version-gated source still returns identical extraction results on the unchanged local dataset with Tesseract 5.5.0 and Pillow 11.1.0. Current-source CI verification is reported separately.",
+  "deadlineClock": "Monotonic performance.now(), independent of host wall-clock changes.",
+  "localUnitVerification": {
+    "status": "PASS",
+    "cases": 88,
+    "failures": 0,
+    "skipped": 0,
+    "scope": "OCR adapter/parser, benchmark accounting, isolation policy, mocked required-mode version gate and bounded diagnostic observer. No native isolation claim.",
+    "logSha256": "c830e223bf0f202ab8c7706bd8bb6fac8708ca0b20ffc4521eaff93468bf01bf"
+  },
+  "priorComparison": {
+    "file": "ocr-remediation-pre-version-gate.json",
+    "sha256": "aa577abbb3d79a8e023cb9d3039101b8fd7503a1cf8d20d91dabbb1c6a31c840",
+    "pipelineSha256": "dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5",
+    "fullCaseResults": "ocr-remediation-after-310.json"
+  },
+  "versionGateVerification": {
+    "status": "PASS",
+    "mode": "mocked required-isolation dependency gate",
+    "minimumUpstreamVersion": "0.12.0",
+    "fixedVersionRead": "/usr/bin/prlimit [fixed limits] -- /usr/bin/bwrap --version",
+    "inputBytes": 0,
+    "maxCombinedOutputBytes": 1024,
+    "maxReadinessMs": 2000,
+    "namespaceSetupBeforeAcceptedVersion": false,
+    "prereleaseVendorMalformedBanners": "REJECTED",
+    "missingFailedOversizedTimedOutReads": "REJECTED",
+    "cacheRefreshRechecksVersion": true,
+    "knownVulnerableVersion": "0.9.0-1ubuntu0.3",
+    "reference": "https://ubuntu.com/security/CVE-2026-87766",
+    "actualRequiredIsolation": "NOT TESTED",
+    "hostPolicyChanged": false,
+    "packagesInstalledLocally": false
+  },
+  "comparisonToPreviousFinal": {
+    "status": "PASS",
+    "sameDataset": true,
+    "cases": 310,
+    "changedExtractionOrReviewCases": 0,
+    "comparedFields": [
+      "expected",
+      "actual",
+      "exact",
+      "error",
+      "reviewViolation",
+      "rawText",
+      "warnings",
+      "candidateWarnings",
+      "processing"
+    ],
+    "previousPipelineSha256": "dc631869d414815a492859487225ac56580fb0e744f315a54b8f97f2f6b6fcc5",
+    "currentPipelineSha256": "6ea83a79dde4d68f4edb26717bedfb0aa1261684f848e6dd29ceddf4550e6fdd",
+    "currentCaseResults": "ocr-remediation-version-gate-310.json"
+  }
+}

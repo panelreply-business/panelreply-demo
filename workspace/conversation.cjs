@@ -64,6 +64,16 @@ function validateState(value) {
   if (state.conversation.reduce((total, item) => total + item.text.length, 0) > MAX_CONVERSATION_TEXT) invalid('The preview conversation is too long. Save this request before starting another draft.');
   // A safety hold cannot be removed by changing a client-side boolean.
   if (intake.isUrgent(state.job) || state.conversation.some(item => item.role === 'customer' && intake.isUrgent(item.text))) state.hold = true;
+  // An unchanged STOP in the supplied history must not be bypassed by clearing
+  // only the stopped boolean. START can resume an unknown-phone draft, while
+  // the API's stored phone suppression remains independently authoritative.
+  let lastControl;
+  for (const item of state.conversation) {
+    if (item.role !== 'customer') continue;
+    if (intake.isOptOut(item.text)) lastControl = 'stop';
+    else if (intake.isStart(item.text)) lastControl = 'start';
+  }
+  if (lastControl === 'stop') state.stopped = true;
   return state;
 }
 
@@ -161,7 +171,7 @@ function requestField(key, state) {
 function requestSummary(state) {
   return 'Here is the draft so far.\n' + FIELDS.map(key => LABELS[key][0].toUpperCase() + LABELS[key].slice(1) + ': ' + (state[key] || 'Not provided') + (state.issues.includes(key) ? ' (needs confirmation)' : '')).join('\n') + '\nReview the fields before saving. No appointment is booked.';
 }
-function answerQuestion(question, state, profile) {
+function answerQuestion(question, state, profile, { assistanceMode = 'deterministic' } = {}) {
   const lower = question.toLowerCase();
   const recall = /\b(?:my|our|i|recorded|supplied|provided|entered)\b/.test(lower) && /\b(?:what|which|when|recall|remember|did|have|tell|show)\b/.test(lower);
   if (recall && /\b(?:name|phone|number|work date|service date)\b/.test(lower)) {
@@ -185,13 +195,18 @@ function answerQuestion(question, state, profile) {
       case 'requestSummary': replies.push(requestSummary(state)); break;
       case 'booking': case 'availability': replies.push('This workspace records requests. It does not check a calendar, reserve a time or book an appointment. The callback window is when a customer wants a call. The requested work date is when they would like the work done. The contractor must confirm both.'); break;
       case 'messaging': replies.push('This workspace does not send calls, texts, emails or notifications. It does not dispatch an electrician or contact emergency services. Saving a request adds it to the contractor inbox only.'); break;
-      case 'privacy': replies.push('Draft messages are processed in this private preview. Save request stores the reviewed details and conversation in the signed-in business workspace. Reset draft or reloading clears the unsaved draft, not saved requests. STOP for a known phone number is stored immediately as a contact restriction, even before a request is saved. No AI provider receives these messages.'); break;
+      case 'privacy': replies.push('Draft messages are processed in this private preview. Save request stores the reviewed details and conversation in the signed-in business workspace. Reset draft or reloading clears the unsaved draft, not saved requests. STOP for a known phone number is stored immediately as a contact restriction, even before a request is saved. '
+        + (assistanceMode === 'external-provider' ? 'This assisted mode sends the message, draft, conversation and approved business facts to the configured AI provider.'
+          : assistanceMode === 'fake-provider' ? 'This synthetic assistant uses a local test provider. No external AI provider receives these messages.' : 'No AI provider receives these messages.')); break;
       case 'reset': replies.push('Reset draft clears only this unsaved conversation and its review fields. Saved requests and stored phone opt-outs remain. Use the inbox to review saved requests.'); break;
       case 'controls': replies.push('STOP pauses automated replies. For a known phone number, it also saves a contact restriction for this business. START cannot clear a stored opt-out or a safety hold. Reset draft does not remove stored opt-outs.'); break;
       case 'bundled': replies.push('You can send explicit details together, up to 500 characters per message. For example: "My name is Jamie Stone. My phone is 586-555-0101. I need an EV charger installed. ZIP 48315. Call me Monday after 4 pm. I need the work done Friday." Review and correct each field before saving.'); break;
       case 'corrections': replies.push('Name the field to correct, such as "Actually my job ZIP is 48084", "Callback: Tuesday after 4 pm" or "Work date: Friday". You can also edit the review fields before saving. A callback window and a work date are separate preferences.'); break;
       case 'howItWorks': replies.push('Enter a customer name, US callback number, electrical-work request and five-digit job ZIP. You can add a callback window and a requested work date separately. Review the fields and record contact permission before saving. The request then appears in the contractor inbox. No appointment is booked.'); break;
-      case 'answerMode': replies.push('This preview uses a local parser and saved business answers. Live AI is not connected. It can recognize explicit details, answer supported questions and show fields for review.'); break;
+      case 'answerMode': replies.push(assistanceMode === 'external-provider'
+        ? 'This mode uses a configured AI provider for structured suggestions. The application validates the suggestions and supplies the replies. No appointment is booked or person contacted.'
+        : assistanceMode === 'fake-provider' ? 'This is a synthetic assistant test. It uses predefined local responses, not a live language model.'
+          : 'This preview uses a local parser and saved business answers. Live AI is not connected. It can recognize explicit details, answer supported questions and show fields for review.'); break;
       case 'questionHelp': replies.push('I can answer supported questions about this draft, how the workspace works and business facts the contractor has confirmed. I will say when I do not have a confirmed answer.'); break;
       default: replies.push('I do not have a confirmed answer to that question. I can help with this request, the workspace controls and approved business details.');
     }
@@ -226,6 +241,9 @@ function previewMessage(message, value, profile, options = {}) {
   if (message.length > 500) throw new PreviewError(413, 'message_too_large', 'Keep each message to 500 characters.');
   message = message.trim();
   const state = validateState(value);
+  // The authenticated API supplies this independently of editable draft data.
+  // A persisted hold remains effective after a caller clears its local history.
+  if (options.safetyHeld === true) state.hold = true;
   const partition = intake.partitionMessage(message);
   // A request to use a particular phone is supplied contact information even
   // when it has a question mark and no time cue. Other questions stay excluded.
@@ -265,4 +283,4 @@ function previewMessage(message, value, profile, options = {}) {
   return finish(state, message, replies);
 }
 
-module.exports = { previewMessage, PreviewError, blankState, validateState };
+module.exports = { previewMessage, PreviewError, blankState, validateState, answerQuestion };

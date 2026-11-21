@@ -1,0 +1,6 @@
+# Keep source/CSP bytes identical on Windows, macOS and Linux checkouts.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary

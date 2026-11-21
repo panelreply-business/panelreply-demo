@@ -9,6 +9,30 @@ const intake = require('../src/intake.js');
 
 const empty = { job: '', zip: '', timing: '' };
 
+for (const message of [
+  'There is a fire in my electrical panel',
+  "There's a fire inside the breaker box",
+  'The outlet is too hot to touch',
+  'The breaker box feels hot',
+  'The wire is glowing red',
+  'There is water pouring into the energized panel',
+  'The breaker box smells like burnt plastic',
+  'The service cable is touching standing water'
+]) test('hazard review holds explicit component heat/fire/water: ' + message, () => {
+  assert.equal(intake.isUrgent(message), true);
+});
+
+for (const message of [
+  'I need a smoke detector installed',
+  'I need a fire alarm panel upgrade',
+  'Install a hot tub control panel',
+  'Replace the water heater electrical circuit',
+  'I need a waterproof outdoor outlet installed',
+  'The panel has a red indicator light'
+]) test('routine installation remains outside new hazard rules: ' + message, () => {
+  assert.equal(intake.isUrgent(message), false);
+});
+
 test('bundled message captures job, ZIP and callback timing', () => {
   const result = intake.extractFields('I need an EV charger installed in my garage. My ZIP is 48315. Call me Friday after 4 pm.', empty);
   assert.equal(result.job, 'I need an EV charger installed in my garage');
@@ -484,4 +508,28 @@ test('original opt-out and hazard messages take precedence over question partiti
     assert.deepEqual(intake.extractFields(message, empty),
       { job: null, zip: null, timing: null, ambiguous: false }, message);
   }
+});
+
+for (const message of ['The wire is glowing', 'I smell burnt plastic at the outlet', 'I smell burnt rubber near the breaker box']) {
+  test('additional component hazard bypass: ' + message, () => {
+    assert.equal(intake.isUrgent(message), true);
+    assert.deepEqual(intake.extractFields(message, empty), { job: null, zip: null, timing: null, ambiguous: false });
+  });
+}
+for (const message of ['Do not call me', "Please don't call me again", 'Stop calling me', 'No more calls']) {
+  test('explicit calling opt-out: ' + message, () => assert.equal(intake.isOptOut(message), true));
+}
+for (const message of ['Do not call me before 4 pm', 'Can you call me?', 'I need to replace the glowing indicator light', 'Install a smoke detector in the plastic enclosure']) {
+  test('routine callback or component request does not trigger new control phrases: ' + message, () => {
+    assert.equal(intake.isOptOut(message), false);
+    assert.equal(intake.isUrgent(message), false);
+  });
+}
+for (const message of ['The circuit label number is 48315', 'Model number: 48315', 'Part number 48315', 'My account number is 48315']) {
+  test('five-digit equipment or account identifier is not a job ZIP: ' + message, () => assert.equal(intake.extractFields(message, empty).zip, null));
+}
+test('explicit job ZIP survives a separate equipment identifier', () => {
+  const result = intake.extractFields('Replace panel model number 12345. ZIP 48315', empty);
+  assert.equal(result.zip, '48315');
+  assert.match(result.job, /12345/);
 });

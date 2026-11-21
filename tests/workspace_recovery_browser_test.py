@@ -20,6 +20,7 @@ import unittest
 import uuid
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -52,11 +53,7 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"RECOVERY_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):
@@ -352,7 +349,9 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.assertEqual(content["leads"][0]["customerName"], "Jamie Recovery")
         self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         box = self.page.get_by_role("button", name="Export records", exact=True).bounding_box()
-        self.assertGreaterEqual(box["height"], 44)
+        # Preserve the 44 px target while removing sub-0.001 px coordinate
+        # subtraction noise observed in Firefox (43.99998474121094 px).
+        self.assertGreaterEqual(round(box["height"], 3), 44)
         self.emit_preview("recovery-inbox-mobile.jpg")
 
     def test_encrypted_restore_preserves_requests_and_restrictions_but_rejects_old_sessions(self):

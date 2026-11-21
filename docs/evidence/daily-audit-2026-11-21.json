@@ -1,0 +1,95 @@
+{
+  "format": "panelreply-daily-quality-audit-v1",
+  "date": "2026-11-21",
+  "timezone": "America/Detroit",
+  "source": {
+    "branch": "feature/interactive-dual-product-site",
+    "documentationHead": "7280a1e3e76ae28f7bac7810d1da147f2a47c01d",
+    "testedApplicationHead": "ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a",
+    "testedMerge": "7a9b95ac3d36ff238ef49b036457e4d00e77a972",
+    "testedTree": "8f4c704af5ead9f6a76cadd83fc6ec2fa2d5b131",
+    "executableTestWorkflowManifest": "823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81",
+    "unchangedByDocsCommit": true,
+    "main": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+    "pr": 8,
+    "prDraft": true
+  },
+  "freshExecution": {
+    "branchRegressions": "BLOCKED",
+    "reason": "Local Node v22.16.0 below project requirement; git ls-remote DNS resolution failed; accessible GitHub Actions actions support individual job rerun but no authorized full workflow dispatch. Re-running successful individual jobs was avoided.",
+    "mainRun": {
+      "id": 44912159620,
+      "number": 77,
+      "completed": "2026-11-21T14:08:14Z",
+      "result": "PASS",
+      "node": 291,
+      "chromium": 105,
+      "total": 396,
+      "guardsPassed": 2,
+      "publicApplicationChecksBlocked": 3,
+      "doesNotTestPr": true
+    },
+    "externalHttp": "NOT_TESTED: direct external GET inaccessible"
+  },
+  "previousVerifiedPr": {
+    "runId": 44788287151,
+    "number": 76,
+    "status": "PASS",
+    "productCasePlatformPasses": 24372,
+    "distinctProductCases": 9114,
+    "generatedDistinctCases": 7467,
+    "callbackPasses": 10351,
+    "spreadsheetPasses": 11836,
+    "sharedPassesCountedOnce": 2185,
+    "harnessExcluded": 237,
+    "duplicateObservationsExcluded": 7017,
+    "automatedPlatformsPassed": 30,
+    "manualPlatformScopesNotTested": 7,
+    "allValuesHistorical": true
+  },
+  "publicState": {
+    "AI": {
+      "id": "srv-dbv6do6tlv9c73fuvar0",
+      "state": "suspended",
+      "updatedAt": "2026-11-20T00:28:44.514773Z",
+      "autoDeploy": "off",
+      "prPreviews": "off"
+    },
+    "static": {
+      "id": "srv-dbu5o8tckfvc73b6fb4g",
+      "state": "suspended",
+      "updatedAt": "2026-11-20T00:29:45.304967Z",
+      "autoDeploy": "off",
+      "prPreviews": "off"
+    },
+    "newEventsSinceSuspension": 0,
+    "newDeploysSinceSuspension": 0,
+    "verifiedBy": "Read-only Render configuration and events"
+  },
+  "gates": {
+    "callbackRealModel": "BLOCKED",
+    "spreadsheetSyntheticOcr": {
+      "status": "FAIL",
+      "exact": 277,
+      "total": 310,
+      "nonexact": 33
+    },
+    "requiredOcrWorkerIsolation": "BLOCKED",
+    "nativeDenyCasesExecuted": 0,
+    "representativePhotos": "NOT_TESTED",
+    "actualExcel": "NOT_TESTED",
+    "actualSafariAndPhysicalDevices": "NOT_TESTED",
+    "selectedHostOffsiteRecovery": "BLOCKED"
+  },
+  "result": {
+    "newConfirmedCodeDefects": 0,
+    "codeChanges": 0,
+    "infraChanges": 0,
+    "callbackRelease": "NO-GO",
+    "spreadsheetRelease": "NO-GO",
+    "firstMilestoneGoalStatus": "OPEN",
+    "activeTarget": 10000,
+    "earlyTarget": 20000,
+    "reason": "Required platform coverage incomplete"
+  }
+}

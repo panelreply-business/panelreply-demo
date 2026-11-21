@@ -1,0 +1,31 @@
+✔ independent deletion review retains uncertainty when a retry receives403 after a lost commit response (3.528691ms)
+✔ independent deletion review requires the typed word and cancellation sends nothing (0.929916ms)
+✔ independent deletion review keeps the same key, version and body after a lost response (1.926305ms)
+✔ independent deletion review refuses a mismatched receipt: id (1.109249ms)
+✔ independent deletion review refuses a mismatched receipt: kind (0.842826ms)
+✔ independent deletion review refuses a mismatched receipt: version (0.91978ms)
+✔ independent deletion review refuses a mismatched receipt: deletedAt (2.487018ms)
+✔ independent deletion review refuses a mismatched receipt: deleted (1.074267ms)
+✔ independent deletion review prevents repeated clicks during the same outstanding request (2.324084ms)
+✔ independent deletion review discards a late successful response after session expiry (1.718656ms)
+✔ independent deletion review allows cancellation after the first explicit version rejection (1.083196ms)
+✔ independent correction binding: adding outlet replacement does not replace the EV charger request (44.481507ms)
+✔ independent correction binding: lighting update is work, not an instruction to discard existing scope (8.01309ms)
+✔ independent correction binding: a work change does not authorize a callback correction (5.460472ms)
+✔ independent correction binding: an outlet change does not authorize a work-date correction (6.241016ms)
+✔ independent correction binding: instead selecting a component is not instead selecting a work date (3.147201ms)
+✔ independent correction binding: a correction of the job is not a correction of the callback (3.452851ms)
+✔ independent correction binding preserves explicit customerName correction (7.741595ms)
+✔ independent correction binding preserves explicit phone correction (3.056276ms)
+✔ independent correction binding preserves explicit zip correction (4.917756ms)
+✔ independent correction binding preserves explicit job correction (5.184925ms)
+✔ independent correction binding preserves explicit callbackWindow correction (2.744856ms)
+✔ independent correction binding preserves explicit requestedWorkDate correction (2.580498ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 244.338064

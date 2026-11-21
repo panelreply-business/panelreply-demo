@@ -1,0 +1,47 @@
+Run 66, attempt 2, job 135989918969
+Executed November 19, 2026 at 7:30 PM EST
+Only the Required public suspension job was rerun.
+Source application commit: 17223d6b972cc4bd3e58e9412964d237cbc0eeb9
+Original CI merge checkout: 05a4a99ee38c6ac01c865787f734115ed2afa712
+Command: PANELREPLY_EXPECT_PUBLIC_OFFLINE=true node --test tests/live-smoke.test.cjs
+
+TAP version 13
+# Subtest: public demo remains owner-suspended: https://panelreply-demo.onrender.com
+ok 1 - public demo remains owner-suspended: https://panelreply-demo.onrender.com
+  ---
+  duration_ms: 247.88186
+  type: 'test'
+  ...
+# Subtest: public demo remains owner-suspended: https://panelreply-ai.onrender.com
+ok 2 - public demo remains owner-suspended: https://panelreply-ai.onrender.com
+  ---
+  duration_ms: 185.984048
+  type: 'test'
+  ...
+# Subtest: live Render demo responds with an explicit sample-only disclosure
+ok 3 - live Render demo responds with an explicit sample-only disclosure # SKIP BLOCKED: public demos intentionally offline
+  ---
+  duration_ms: 0.253477
+  type: 'test'
+  ...
+# Subtest: live robots.txt is available and blocks search indexing
+ok 4 - live robots.txt is available and blocks search indexing # SKIP BLOCKED: public demos intentionally offline
+  ---
+  duration_ms: 0.134172
+  type: 'test'
+  ...
+# Subtest: live Render demo CSP matches its delivered script and style
+ok 5 - live Render demo CSP matches its delivered script and style # SKIP BLOCKED: public demos intentionally offline
+  ---
+  duration_ms: 0.172335
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 527.172497

@@ -17,7 +17,7 @@ This stage adds a standalone, authenticated contractor inbox with saved requests
 | Local recovery | Encrypted backup, restore into a new directory and operator password reset are documented in the [recovery guide](RECOVERY.md). |
 | Public services | Both existing Render demos remain intentionally suspended. Auto-deploy remains off. |
 
-Live AI, inbound calls/SMS, outbound messages, notifications, calendar availability, appointment booking and billing are not implemented in this workspace. The existing optional AI adapter is a separate application and is not imported here.
+Normal startup uses deterministic parsing and approved business answers. The private workspace now includes provider-independent orchestration, a disabled provider transport and durable usage accounting. Synthetic adapters exercise those paths. No real AI provider has been activated or evaluated. See [AI preparation](AI_PRELAUNCH.md) and [usage controls](ASSISTANT_USAGE.md). Inbound calls/SMS, outbound messages, notifications, calendar availability, appointment booking and billing remain unavailable.
 
 ## Local setup
 
@@ -134,7 +134,7 @@ The server requires complete name, US phone, job and five-digit ZIP before savin
 
 A request failure does not show a saved state. A retry keeps its identifier until the payload changes or a save succeeds. Authentication expiry requires sign-in again. The browser keeps no customer records or session tokens in localStorage.
 
-This is a single-process local workspace. Business-record export, encrypted local backup and restore, and operator password recovery are implemented in the [recovery stage](RECOVERY.md). Shared hosting, scheduled offsite backups, self-service account recovery, retention/deletion controls, pagination and operational monitoring remain future work. Filesystem owner-only access does not encrypt the live database at rest. No production durability, recovery-time or service-level claim is made.
+This is a single-process local workspace. Business-record export, encrypted local backup and restore, and operator password recovery are implemented in the [recovery stage](RECOVERY.md). Explicit, versioned deletion of requests, transcripts, projects and source images is implemented in [data lifecycle controls](DATA_LIFECYCLE.md). Deletion retains minimal opt-out/safety restrictions and retry tombstones. Automatic retention is not active. Shared hosting, scheduled offsite backups, self-service account recovery, pagination and operational monitoring remain future work. Filesystem owner-only access does not encrypt the live database at rest. No production durability, recovery-time or service-level claim is made.
 
 ## Test commands
 

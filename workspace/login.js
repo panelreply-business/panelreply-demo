@@ -33,9 +33,20 @@
         throw new Error(data?.error?.message || fallback);
       }
       if (!data?.user || typeof data.csrfToken !== 'string') throw new Error('The sign-in response was incomplete. Please try again.');
+      const selectedProduct = document.body?.dataset?.productId;
+      const homes = { callback: '/', spreadsheet: '/panels' };
+      let home = '/';
+      if (selectedProduct || data.product !== undefined) {
+        if (!data.product || !Object.hasOwn(homes, data.product.id)
+            || data.product.homePath !== homes[data.product.id]
+            || (selectedProduct && data.product.id !== selectedProduct)) {
+          throw new Error('The signed-in program could not be confirmed. Reload this page and try again.');
+        }
+        home = homes[data.product.id];
+      }
       password.value = '';
       status.textContent = 'Signed in. Opening your workspace…';
-      window.location.replace('/');
+      window.location.replace(home);
     } catch (cause) {
       error.textContent = cause instanceof TypeError
         ? 'Could not reach the workspace. Check your connection and try again.'
