@@ -1,5 +1,18 @@
 # PanelReply development progress
 
+## Daily quality check — November 21, 2026 (America/Detroit)
+
+Fresh read-only audit at 10:00 AM EST. The branch remains at documentation checkpoint `7280a1e`, derived from application/test source `ca5f0cb`. GitHub comparison confirms the only intervening commit changes 10 documentation/evidence files, not runtime, tests or workflows. PR8 remains open and draft; main remains `c6152b38`. No new open code issue or PR review was observed.
+
+Fresh [main scheduled run77](https://github.com/panelreply-business/panelreply-demo/actions/runs/44912159620), completed November 21 at 9:08 AM EST, passed 396 checks (291 Node, 105 Chromium) and two public suspension guards, with three policy-blocked public application checks. **This tests main, not PR8.** A fresh full PR8 execution is **BLOCKED** today: local Node 22.16.0 is below the required version, git remote resolution failed, and the available GitHub Actions interface cannot dispatch an authorized full matrix without a code change or repeated individual jobs. No fresh PR cases are claimed.
+
+The [run76 source-bound ledger](evidence/independent-products-verification.json) remains the last verified PR8 full result: 24,372 passing case/platform observations, 9,114 distinct cases, 7,467 generated distinct cases, 7,017 duplicate observations excluded and 237 evidence-harness passes excluded. Callback 10,351, spreadsheet 11,836 and shared 2,185, counted once. All 30 automated platform requirements passed. Seven required platform scopes remain NOT TESTED; the active milestone remains 10,000 rather than being raised to 20,000.
+
+Fresh Render service and event reads confirm **both owner-suspended**, auto-deploy and PR previews off, with no post-suspension service event or deployment. Independent external GET retrieval was inaccessible from this environment. Today's main CI suspension guards passed, but are not substitute PR application tests. Existing OCR quality remains FAIL (277/310, 33 nonexact). Required OCR isolation remains BLOCKED (zero native denial cases). Actual model, authorized representative photographs, real Excel/Safari/phones, selected-host and offsite recovery remain incomplete. No new code defect was confirmed through this read-only audit; no fix is claimed.
+
+**Callback:** GO for draft review and synthetic evaluation, NO-GO for human trial/release. **Spreadsheet:** GO for draft review and synthetic evaluation, NO-GO for human trial/release. No provider calls, customer interactions, spending, service-state changes, PR merge or deployment. [Day evidence](evidence/daily-audit-2026-11-21.json).
+
+
 ## Independent product checkpoint — November 20, 2026 (EST)
 
 The callback and spreadsheet programs now have separate startup/configuration, bound data, sessions, routes, backups and release decisions. [Run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) completed successfully at 1:15 PM EST with all 31 workflow jobs successful. Its source-bound ledger records 24,372 passing product case/platform executions across 9,114 distinct product cases. All 30 automated platform requirements pass. Seven required platform scopes and the product-specific quality/operating gates remain open.

@@ -1,5 +1,10 @@
 # Callback release acceptance
 
+## November 21 daily check
+
+The fixed callback entrypoint, product-only routes, separate cookie/data binding and encrypted product restore remain implemented in the unchanged tested source `ca5f0cb`. Last verified product ledger: 3,321 distinct callback cases, 10,351 case/platform passes, plus 1,675 distinct shared cases counted once (2,185 shared executions). Seven selected callback journeys per Linux Chromium, Firefox and WebKit passed in run76. No fresh callback regression executed today (environment and full-matrix dispatch BLOCKED). The November 21 scheduled main run77 does not test callback's unmerged source. Real-model quality, seven manual platform scopes, selected-host/offsite recovery and operating approvals remain open. NO-GO for human trial/release. [Daily audit](evidence/daily-audit-2026-11-21.json).
+
+
 Review date: November 20, 2026. Current decision: NO-GO for release or a real-world trial. Continue source review and isolated synthetic evaluation.
 
 This record covers `callback-server.cjs` and its own bound data directory. It covers authenticated request intake, business answers, review/save/reopen, notes and statuses, JSON record export, contact restrictions and usage controls. Saving a request sends no message and books no appointment. Calling, SMS, calendar integration and delivery of a human handoff are not implemented release capabilities.

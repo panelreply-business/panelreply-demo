@@ -1,5 +1,10 @@
 # Spreadsheet release acceptance
 
+## November 21 daily check
+
+The fixed spreadsheet entrypoint, product-only routes, separate cookie/data binding and encrypted product restore remain implemented in the unchanged tested source `ca5f0cb`. Last verified product ledger: 4,118 distinct spreadsheet cases, 11,836 case/platform passes, plus 1,675 distinct shared cases counted once (2,185 shared executions). Seven selected spreadsheet journeys per Linux Chromium, Firefox and WebKit passed in run76. No fresh spreadsheet regression executed today (environment and full-matrix dispatch BLOCKED). OCR quality is still FAIL (277/310 exact, 33 nonexact); required OS isolation remains BLOCKED before native denial tests. Representative photos, Excel, manual platforms, selected-host/offsite recovery and operating approvals remain open. NO-GO for human trial/release. [Daily audit](evidence/daily-audit-2026-11-21.json).
+
+
 Review date: November 20, 2026. Current decision: NO-GO for release or a real-world trial. Continue source review and isolated synthetic evaluation.
 
 This record covers `spreadsheet-server.cjs` and its own bound data directory. It covers panel projects, private source images, local OCR candidates, human review, saved rows and CSV/XLSX export. Unknown values stay blank. Source bytes remain available. OCR does not certify electrical specifications, identify compatibility or approve a part.
