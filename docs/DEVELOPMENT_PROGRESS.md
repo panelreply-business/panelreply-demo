@@ -1,5 +1,17 @@
 # PanelReply development progress
 
+## Daily quality check — November 22, 2026 (America/Detroit)
+
+Read-only audit completed at 2026-11-22, 10:04:23 a.m.. [Draft PR8](https://github.com/panelreply-business/panelreply-demo/pull/8) remains open, draft and unmerged at documentation head `bc86e8e1`; main remains `c6152b38`. The compare from tested implementation `ca5f0cb` to today's head contains documentation/evidence only. The executable/test/workflow manifest remains `823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81`. No new open issue or PR review was found. Fixed product entrypoints, routing, data binding and separate recovery implementation were inspected.
+
+Today's completed [main scheduled run78](https://github.com/panelreply-business/panelreply-demo/actions/runs/45030730688) at 9:05:59 AM EST passed 291 Node and 105 Chromium checks (396 total), plus both public-suspension guards, with three public application checks policy-blocked. It tests **main, not PR8**. Fresh full PR8 regression remains **BLOCKED**: Node 22.16.0 is below the required release environment, no repository checkout is mounted, and no authorized complete workflow dispatch is available. Known remote DNS failure was not retried. No PR tests were freshly executed or counted today.
+
+[Run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) remains the last full verified PR implementation regression: **24,372 PASS** case/platform executions across **9,114 distinct cases**, including 7,467 generated cases, zero product failures or skips, 7,017 duplicate observations and 237 harness passes excluded. Callback has 10,351 passes, spreadsheet 11,836, and shared 2,185 counted once. All 30 automated platform requirements passed, but seven manual/actual-platform requirements remain **NOT TESTED**. The active 10,000 milestone is not complete under its required platform condition, despite exceeding both numeric thresholds. No trigger to raise to 20,000 yet.
+
+Fresh read-only Render configuration, events, deployments and logs show both public services **suspended by owner**, auto-deploy and previews off, with no post-suspension event or deployment. Direct independent web GET failed due to access restrictions, so fresh HTTP is **NOT TESTED**; main run78 guards passed. OCR exact-image quality remains **FAIL: 277/310**, 33 nonexact. Native OCR isolation remains **BLOCKED** with zero actual denial cases; actual-model evaluation, representative photos, Excel, physical phones/actual Safari, selected-host/offsite recovery and operating approvals remain open. No newly confirmed code defect, code fix or external mutation today.
+
+Callback: **GO for draft review/synthetic evaluation, NO-GO for customer trial/release**. Spreadsheet: **GO for draft review/synthetic evaluation, NO-GO for customer trial/release**. Each retains an independent decision. [November 22 daily evidence](evidence/daily-audit-2026-11-22.json).
+
 ## Daily quality check — November 21, 2026 (America/Detroit)
 
 Fresh read-only audit at 10:00 AM EST. The branch remains at documentation checkpoint `7280a1e`, derived from application/test source `ca5f0cb`. GitHub comparison confirms the only intervening commit changes 10 documentation/evidence files, not runtime, tests or workflows. PR8 remains open and draft; main remains `c6152b38`. No new open code issue or PR review was observed.

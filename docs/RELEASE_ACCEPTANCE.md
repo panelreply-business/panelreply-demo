@@ -1,5 +1,9 @@
 # Release acceptance
 
+## November 22 daily acceptance review
+
+No changed application, test or workflow files since source `ca5f0cb`. Fresh [main run78](https://github.com/panelreply-business/panelreply-demo/actions/runs/45030730688) passed 396 main-only checks and two suspension guards, not PR8 acceptance. Today's fresh PR8 regression is **BLOCKED** by environment/dispatch constraints. Last full PR8 [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) retains 24,372 verified case/platform passes with zero product failures, but seven required platform scopes **NOT TESTED**. Callback actual-model **BLOCKED**; spreadsheet OCR quality **FAIL 277/310**, isolation **BLOCKED**; real photos, actual Excel, approved host/offsite recovery and operating gates remain open. Both products **NO-GO** for trial/release. The active numeric milestone remains 10,000 until its required platform coverage is completed. [November 22 daily evidence](evidence/daily-audit-2026-11-22.json).
+
 ## Current release structure — November 20, 2026
 
 Callback and spreadsheet have independent release decisions. Use [callback release acceptance](CALLBACK_RELEASE_ACCEPTANCE.md) and [spreadsheet release acceptance](SPREADSHEET_RELEASE_ACCEPTANCE.md) for their product gates. [Product separation](PRODUCT_SEPARATION.md) defines fixed entrypoints, data and recovery boundaries. The combined matrices below remain historical technical evidence.

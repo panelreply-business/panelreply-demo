@@ -1,0 +1,124 @@
+{
+  "format": "panelreply-daily-quality-audit-v1",
+  "date": "2026-11-22",
+  "timezone": "America/Detroit",
+  "checkedAt": "2026-11-22T15:04:23.410Z",
+  "checkedLocal": "2026-11-22, 10:04:23 a.m.",
+  "source": {
+    "repository": "panelreply-business/panelreply-demo",
+    "branch": "feature/interactive-dual-product-site",
+    "documentationHead": "bc86e8e1fb80d540f1dda369d9ad53044631ba96",
+    "applicationTestHead": "ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a",
+    "testedMerge": "7a9b95ac3d36ff238ef49b036457e4d00e77a972",
+    "testedTree": "8f4c704af5ead9f6a76cadd83fc6ec2fa2d5b131",
+    "executableTestWorkflowManifest": "823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81",
+    "main": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+    "pr": 8,
+    "draft": true,
+    "merged": false,
+    "comparison": "Only documentation and evidence files changed since tested application source ca5f0cb; compare ca5f0cb...bc86e8e reports 11 docs/evidence files, no executable/test/workflow changes."
+  },
+  "freshAudit": {
+    "git": "PASS: PR8 draft/open/unmerged, no new code revisions, no open code issues/reviews.",
+    "sourceReview": "PASS: fixed callback/spreadsheet entrypoints, program routing, bound private stores and product backup code inspected. Identical implementation source from run76.",
+    "render": "PASS: Both services report suspended by user; autoDeploy no, trigger off, PR previews off; no new service event/deploy or post-suspension log after November 19 approval.",
+    "externalGet": "NOT TESTED: direct external GET through available web environment inaccessible; latest main run78 checked GET suspension guards.",
+    "newCodeDefects": "None confirmed by today's read-only source and evidence review.",
+    "codeFixes": "NONE",
+    "externalWrites": "NONE",
+    "spending": "NONE"
+  },
+  "freshExecution": {
+    "prRegression": "BLOCKED",
+    "reason": "Local Node v22.16.0 below documented minimum/Node24 release runner, repository not mounted locally; prior remote git DNS failure and no authorized complete GitHub Actions workflow dispatch action. Deliberately did not repeat a known host restriction or rerun passing individual jobs.",
+    "mainRun": {
+      "id": 45030730688,
+      "number": 78,
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45030730688",
+      "status": "PASS",
+      "completedAt": "2026-11-22T14:05:59Z",
+      "nodePassed": 291,
+      "chromiumPassed": 105,
+      "totalPassed": 396,
+      "guardsPassed": 2,
+      "publicChecksBlocked": 3,
+      "testsPr": false
+    }
+  },
+  "priorVerifiedPr": {
+    "runId": 44788287151,
+    "runNumber": 76,
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151",
+    "completedAt": "2026-11-20T18:15:35Z",
+    "allJobsPassed": 31,
+    "allReports": 27,
+    "productCasePlatformPasses": 24372,
+    "distinctProductCases": 9114,
+    "generatedDistinctCases": 7467,
+    "unmarkedGeneratedCases": 1647,
+    "duplicateObservationsExcluded": 7017,
+    "evidenceHarnessExcluded": 237,
+    "productFailures": 0,
+    "productSkips": 0,
+    "callback": {
+      "distinctCases": 3321,
+      "passes": 10351,
+      "selectedLinuxBrowser": 21
+    },
+    "spreadsheet": {
+      "distinctCases": 4118,
+      "passes": 11836,
+      "selectedLinuxBrowser": 21
+    },
+    "shared": {
+      "distinctCases": 1675,
+      "passes": 2185,
+      "countedOnce": true
+    },
+    "automatedPlatformRequirementsPassed": 30,
+    "platformScenariosMissing": 7
+  },
+  "platformGaps": [
+    "Actual macOS Safari",
+    "Physical iPhone Safari",
+    "Physical iPad Safari",
+    "Physical Android Chrome",
+    "Windows private product journeys",
+    "macOS private product journeys",
+    "Apple silicon macOS"
+  ],
+  "releaseGates": {
+    "callbackRealModel": "BLOCKED: zero real-provider calls",
+    "spreadsheetOcrAccuracy": "FAIL: 277/310 exact synthetic, 33 nonexact",
+    "spreadsheetOcrIsolation": "BLOCKED: no executed native denial case; bwrap RTM_NEWADDR operation not permitted, startup cause unconfirmed",
+    "representativePhotos": "NOT TESTED",
+    "actualExcel": "NOT TESTED",
+    "selectedHostAndOffsiteRecovery": "BLOCKED",
+    "productionMonitoringRetentionAndLegal": "BLOCKED",
+    "physicalDevicesAndActualSafari": "NOT TESTED",
+    "publicSuspension": "PASS: configuration and main run78 guards; direct GET from this environment not tested"
+  },
+  "milestone": {
+    "initialTarget": 10000,
+    "numericTargetReached": true,
+    "earlyTarget": 20000,
+    "earlyNumericTargetReached": true,
+    "activeTarget": 10000,
+    "fullInitialGoalAchieved": false,
+    "firstGoalAchievedAt": null,
+    "raiseTo20000": false,
+    "reason": "Seven mandatory platform scopes lack evidence. Test counts alone cannot approve release."
+  },
+  "decisions": {
+    "callback": "GO for draft code review and synthetic evaluation, NO-GO for trial/release",
+    "spreadsheet": "GO for draft code review and synthetic evaluation, NO-GO for trial/release"
+  },
+  "nextActions": [
+    "Obtain actual Safari/physical-device/Apple silicon platform evidence and private client OS testing",
+    "Inspect and correct remaining 33 OCR cases without guessing values or weakening exact evaluation",
+    "Prove native worker isolation on an approved suitable host with actual denial cases",
+    "Prepare bounded approved real-model and representative photo evaluations separately",
+    "Complete selected-host offsite recovery, monitoring, support and legal/retention decisions before a pilot"
+  ],
+  "restrictions": "No external provider, customer data, contact, deployment, merge, Render state change, paid CI or spending. Both public services remain suspended."
+}

@@ -1,5 +1,9 @@
 # Callback release acceptance
 
+## November 22 daily check
+
+Current callback program source remains tested `ca5f0cb` (docs-only branch head `bc86e8e1`). The last exact-source evidence is [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): **3,321 distinct callback cases, 10,351 passing case/platform executions**, and 21/21 selected callback browser journeys on Linux Chromium, Firefox and WebKit. Another 1,675 distinct shared cases (2,185 passes) are counted once in portfolio totals. Separate fixed entrypoint, data/session/product-route boundary and bound backup/restore were inspected in unchanged code. No fresh callback execution today: **BLOCKED** by runtime/checkout/full-dispatch limits. Today's [main run78](https://github.com/panelreply-business/panelreply-demo/actions/runs/45030730688) does not test this PR. Real-model quality, actual/physical platforms, chosen host/offsite recovery and operating approvals remain **BLOCKED or NOT TESTED**. **NO-GO for human trial/release**. [November 22 daily evidence](evidence/daily-audit-2026-11-22.json).
+
 ## November 21 daily check
 
 The fixed callback entrypoint, product-only routes, separate cookie/data binding and encrypted product restore remain implemented in the unchanged tested source `ca5f0cb`. Last verified product ledger: 3,321 distinct callback cases, 10,351 case/platform passes, plus 1,675 distinct shared cases counted once (2,185 shared executions). Seven selected callback journeys per Linux Chromium, Firefox and WebKit passed in run76. No fresh callback regression executed today (environment and full-matrix dispatch BLOCKED). The November 21 scheduled main run77 does not test callback's unmerged source. Real-model quality, seven manual platform scopes, selected-host/offsite recovery and operating approvals remain open. NO-GO for human trial/release. [Daily audit](evidence/daily-audit-2026-11-21.json).

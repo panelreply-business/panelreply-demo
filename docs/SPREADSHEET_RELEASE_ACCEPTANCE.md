@@ -1,5 +1,9 @@
 # Spreadsheet release acceptance
 
+## November 22 daily check
+
+Current spreadsheet program source remains tested `ca5f0cb` (docs-only branch head `bc86e8e1`). The last exact-source evidence is [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): **4,118 distinct spreadsheet cases, 11,836 passing case/platform executions**, and 21/21 selected spreadsheet browser journeys on Linux Chromium, Firefox and WebKit. Another 1,675 distinct shared cases (2,185 passes) are counted once. Separate fixed entrypoint, source routes, data/session boundary, encrypted product backup and restore were inspected in unchanged code. No fresh spreadsheet execution today: **BLOCKED** by runtime/checkout/full-dispatch limits. OCR accuracy remains **FAIL 277/310, 33 nonexact**; required worker isolation **BLOCKED**, zero native denial cases; real photos, Excel, actual/physical platforms, selected host and offsite recovery remain open. **NO-GO for human trial/release**. [November 22 daily evidence](evidence/daily-audit-2026-11-22.json).
+
 ## November 21 daily check
 
 The fixed spreadsheet entrypoint, product-only routes, separate cookie/data binding and encrypted product restore remain implemented in the unchanged tested source `ca5f0cb`. Last verified product ledger: 4,118 distinct spreadsheet cases, 11,836 case/platform passes, plus 1,675 distinct shared cases counted once (2,185 shared executions). Seven selected spreadsheet journeys per Linux Chromium, Firefox and WebKit passed in run76. No fresh spreadsheet regression executed today (environment and full-matrix dispatch BLOCKED). OCR quality is still FAIL (277/310 exact, 33 nonexact); required OS isolation remains BLOCKED before native denial tests. Representative photos, Excel, manual platforms, selected-host/offsite recovery and operating approvals remain open. NO-GO for human trial/release. [Daily audit](evidence/daily-audit-2026-11-21.json).
