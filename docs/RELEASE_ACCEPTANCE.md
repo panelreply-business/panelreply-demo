@@ -1,5 +1,13 @@
 # Release acceptance
 
+## November 23 read-snapshot and browser-correction checkpoint
+
+The next candidate passes 9,217 local Node/API/HTTP checks with stable manifest `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658`: 9,071 product cases and 146 excluded harness checks. Fifteen new cases verify consistent project/source/export and request/conversation reads during real concurrent commits. Zero failures or skipped outcomes. [Local evidence](evidence/snapshot-layout-local-2026-11-23.json).
+
+The final verified run85 ledger on preceding `76db2d6` has 24,791 PASS, seven FAIL and six Safari NOT_RUN. Its immutable aggregate matches CI, while ARM ends cancelled without a runner or cases. It preserves Linux WebKit overflow, five disabled-field focus probes and the mobile WebKit task-read page error. Native Safari rejects an invalid desktop capability request before any method runs. [Run evidence](evidence/callback-scheduling-run85.json). Corrected layout/focus, completed-view sequencing and strict desktop capabilities still need their own committed-source CI.
+
+The policy remains 56 automated and seven manual requirements. The full platform goal and both independent trial/release decisions remain open. OCR accuracy, native isolation, Windows/private macOS and actual/physical-device scope, actual Excel, applicable provider and operating requirements remain unresolved. [Exact next steps](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 Safari and reflow checkpoint
 
 The next candidate passes 9,202 local Node/API/HTTP checks: 9,056 product cases and 146 excluded harness checks, with zero failures or skips and unchanged source. [Local record](evidence/safari-reflow-local-2026-11-23.json). It adds six actual-Safari journeys and two automated scopes while retaining all seven manual gates. Native Safari execution is NOT TESTED until committed-source CI. [Native scope](NATIVE_SAFARI_SCOPE.md).

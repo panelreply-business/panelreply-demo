@@ -1,5 +1,19 @@
 # PanelReply development progress
 
+## Coherent reads and browser corrections — November 23, 2026
+
+The next runtime milestone passes 9,217 Node/API/HTTP checks across 57 files with zero failures, skips, cancellations, TODOs or infrastructure errors. It contains 9,071 product cases and 146 excluded harness checks. Fifteen new regressions cover actual second-connection commits, and all 9,056 prior product cases remain. The source stays `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658` across 179 manifest entries. [Final local record](evidence/snapshot-layout-local-2026-11-23.json).
+
+Project rows, source metadata and export inputs now read one SQLite snapshot. Callback request state and its conversation history share the same boundary. Caller-owned transactions remain unchanged, failed reads clean up their own transactions, and new writes still check current versions and STOP/safety restrictions. Seven spreadsheet and eight callback regressions pass after ten reproduced baseline failures. [Spreadsheet](SPREADSHEET_READ_SNAPSHOT_2026_11_23.md) and [callback](CALLBACK_READ_SNAPSHOT_2026_11_23.md).
+
+Run85 on `76db2d6` is complete with 24,791 product passes, seven failures and six native Safari NOT_RUN outcomes. The collector excludes 370 harness checks and 7,102 overlapping observations. All 35 release ZIPs and 37 reports match the committed source and policy, and the reconstructed aggregate matches CI except generatedAt. The two remaining Linux WebKit jobs pass 65/65 static and 9/9 spreadsheet methods. ARM ends cancelled with no runner or steps. Run84 also finishes with 24,796 PASS and two FAIL, with an unexecuted cancelled ARM job. No agent requested either cancellation. Final [run85](evidence/callback-scheduling-run85.json) and [run84](evidence/callback-scheduling-run84.json) preserve their prior snapshot histories.
+
+Linux callback WebKit still overflows at 521px. Five other selected callback suites fail a focus probe that runs while a task draft disables the fields. One mobile WebKit save/reopen journey records a task-read page error at teardown. The next candidate styles the real permission select, adds a scoped keyboard outline, fixes draft/focus ordering and waits for completed save/task rendering before reload. It strengthens failure diagnostics while preserving every geometry, font, focus and page-error requirement. Changed-source browser acceptance remains pending. [Layout](CALLBACK_REFLOW_2026_11_23.md) and [sequencing](BROWSER_SEQUENCING_2026_11_23.md).
+
+Installed Safari rejects the iOS-only simulator capability even when false. The corrected exact desktop request removes it while retaining native browser/driver/host/session identity and actual file downloads. All six original NOT_RUN outcomes remain recorded. [Safari evidence and scope](NATIVE_SAFARI_SCOPE.md).
+
+The standalone Windows component has completed independent source/provenance review and eight local harness checks. Its 15 native methods still need Windows execution and neither product imports it. The workflow grants zero release-test credit. OCR accuracy, native isolation, physical/actual platforms and owner-dependent gates remain open. [Exact continuation](AUTONOMOUS_CONTINUATION.md).
+
 ## Native Safari coverage and callback reflow — November 23, 2026
 
 The next integrated milestone passes all 9,202 local Node/API/HTTP checks across 55 files, with zero failures, skips, cancellations or infrastructure errors. The 9,056 product cases are unchanged from the integrity milestone. Ten added evidence-tool checks bring the excluded Node harness count to 146. Four Python harness cases also pass without product credit. The tested manifest is `208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd`. [Local evidence](evidence/safari-reflow-local-2026-11-23.json).

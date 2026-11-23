@@ -99,23 +99,34 @@ class SelectedProductHarness:
             try:
                 geometry = self.page.evaluate("""() => {
                   const round = value => Math.round(value * 100) / 100;
-                  return [...document.querySelectorAll('body *')].flatMap(element => {
+                  const measure = element => {
                     const rect = element.getBoundingClientRect();
                     const style = getComputedStyle(element);
                     if (!element.getClientRects().length || !rect.width || !rect.height ||
-                        style.visibility === 'hidden' || element.matches('.sr-only, .skip-link')) return [];
+                        style.visibility === 'hidden' || element.matches('.sr-only, .skip-link')) return null;
                     const outside = Math.max(0, rect.right - innerWidth, -rect.left);
                     const inside = Math.max(0, element.scrollWidth - element.clientWidth);
-                    if (outside <= 1 && inside <= 1) return [];
-                    return [{tag: element.tagName.toLowerCase(), id: element.id,
+                    const control = element.matches('input, select, textarea') ? element :
+                      element.matches('.form-field, .select-control') ?
+                        element.querySelector('input, select, textarea') : null;
+                    return {tag: element.tagName.toLowerCase(), id: element.id,
+                      controlId: control ? control.id : null,
                       classes: element.getAttribute('class') || '', type: element.getAttribute('type'),
                       left: round(rect.left), right: round(rect.right), width: round(rect.width),
                       clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
                       outside: round(outside), inside, fontSize: style.fontSize,
                       minWidth: style.minWidth, maxWidth: style.maxWidth,
                       display: style.display, gridColumns: style.gridTemplateColumns,
-                      overflowX: style.overflowX, whiteSpace: style.whiteSpace}];
-                  }).sort((a, b) => b.outside - a.outside || b.inside - a.inside).slice(0, 24);
+                      appearance: style.appearance, boxSizing: style.boxSizing,
+                      overflowX: style.overflowX, whiteSpace: style.whiteSpace};
+                  };
+                  const overflow = [...document.querySelectorAll('body *')].map(measure)
+                    .filter(item => item && (item.outside > 1 || item.inside > 1))
+                    .sort((a, b) => b.outside - a.outside || b.inside - a.inside).slice(0, 24);
+                  const controls = [...document.querySelectorAll(
+                    '.inbox-grid input, .inbox-grid select, .inbox-grid textarea, .inbox-grid .select-control')]
+                    .map(measure).filter(Boolean).slice(0, 24);
+                  return {overflow, controls};
                 }""")
             except Exception as diagnostic_error:
                 geometry = {"diagnosticError": type(diagnostic_error).__name__}
@@ -421,9 +432,10 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
                 self.assertIsNotNone(bounds)
                 self.assertGreaterEqual(bounds["x"], 0)
                 self.assertLessEqual(bounds["x"] + bounds["width"], 321)
-        self.page.get_by_label("Contact permission", exact=True).focus()
-        self.page.keyboard.press("Tab")
-        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_focused()
+        # A task draft deliberately locks request edits. Do not try to focus
+        # disabled request fields before resolving that draft.
+        expect(self.page.get_by_label("Contact permission", exact=True)).to_be_disabled()
+        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_disabled()
         self.page.locator("#nav-schedule").click()
         self.page.locator("#discard-changes").click()
         expect(self.page.locator("#schedule-view")).to_be_visible()
@@ -433,6 +445,29 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         self.assertGreaterEqual(queue_refresh["x"], 0)
         self.assertLessEqual(queue_refresh["x"] + queue_refresh["width"], 321)
         self.assertEqual(self.api("GET", "/api/callback-tasks?state=all")["tasks"], [])
+        self.page.locator("#nav-inbox").click()
+        expect(self.page.locator("#inbox-view")).to_be_visible()
+        permission = self.page.get_by_label("Contact permission", exact=True)
+        expect(permission).to_be_enabled()
+        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_enabled()
+        self.assertAlmostEqual(permission.evaluate("e => parseFloat(getComputedStyle(e).fontSize)"),
+                               control_fonts["#lead-permission"] * 2, places=2)
+        permission.focus()
+        expect(permission).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_focused()
+        self.page.keyboard.press("Shift+Tab")
+        expect(permission).to_be_focused()
+        focus_style = permission.evaluate("""e => {
+          const style = getComputedStyle(e);
+          return {visible: e.matches(':focus-visible'), outline: style.outlineStyle,
+                  width: parseFloat(style.outlineWidth)};
+        }""")
+        self.assertTrue(focus_style["visible"])
+        self.assertEqual(focus_style["outline"], "solid")
+        self.assertGreaterEqual(focus_style["width"], 2)
+        self.page.keyboard.press("Tab")
+        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_focused()
 
     def test_callback_export_and_request_deletion_include_task_records(self):
         self.login()

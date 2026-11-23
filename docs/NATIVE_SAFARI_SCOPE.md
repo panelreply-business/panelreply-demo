@@ -2,6 +2,23 @@
 
 Prepared on 2026-11-23. No native Safari product journey has run locally.
 
+## First committed attempt and correction
+
+Run85 on `76db2d6` observed installed Safari26.6, its matching driver and
+macOS15.7.9 with unchanged before/after hashes. Session creation failed because
+the macOS driver rejects the `safari:useSimulator` capability even when false.
+All six methods remain NOT_RUN and contribute zero product passes. This is a
+runner configuration defect, not evidence that the app failed or that operator
+permission is missing. [Preserved native report](evidence/native-safari-run85.json).
+
+The correction sends exactly the pinned standard desktop request:
+`browserName=safari`, `platformName=mac`, `pageLoadStrategy=normal` and the
+observed installed `browserVersion`. It rejects extra request keys, including
+either value of the iOS simulator capability. The observed session still must
+identify desktop Mac, match the installed Safari version, preserve native host
+checks and reject any returned simulator=true. Native startup and all six
+journeys still need execution on the corrected committed source.
+
 ## Execution boundary
 
 The standard `macos-15-intel` job uses the installed release Safari and
@@ -56,7 +73,8 @@ A passing method requires all of the following.
 - Observed macOS version/build and x86_64 architecture.
 - Unchanged installed driver/browser observations before and after execution.
 - An actual native session whose Safari version matches the installed app and
-  whose platform is Mac. The request explicitly disables simulator selection.
+  whose platform is Mac. The exact standard request selects Mac and contains
+  no iOS or simulator capability.
 - The final requested capabilities retain the pinned Selenium defaults and
   installed browser version. Returned native OS version/build fields must
   agree with `sw_vers`. Absent optional fields are listed as unavailable.
@@ -139,3 +157,5 @@ scope, method collection or synthetic report is not product acceptance.
   https://www.selenium.dev/documentation/webdriver/elements/file_upload/
 - Selenium, download-observation limitation:
   https://www.selenium.dev/documentation/test_practices/discouraged/file_downloads/
+- WebKit's Apple-authored platform and iOS simulator capability description:
+  https://webkit.org/blog/9395/webdriver-is-coming-to-safari-in-ios-13/

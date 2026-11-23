@@ -1,0 +1,130 @@
+{
+  "format": "panelreply-spreadsheet-read-snapshot-evidence",
+  "version": 1,
+  "recordedOn": "2026-11-23",
+  "scope": "Isolated product-bound synthetic SQLite and fixed spreadsheet API verification. No release or platform-wide acceptance.",
+  "baseCommit": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
+  "candidate": {
+    "sourceTreeSha256": "90b8d821b43ffdd6e963f5d4f784da14c8f6113acf3b7934914d3ff1436cfa26",
+    "dirty": true,
+    "platform": {
+      "os": "linux",
+      "osRelease": "6.18.57",
+      "architecture": "x86_64",
+      "node": "v24.22.3",
+      "platformKey": "linux/x86_64/node24"
+    },
+    "modifiedProductFiles": [
+      {
+        "path": "workspace/store.cjs",
+        "sha256": "0a506c55935a63008f897ae1b56f3b64738d4490136b9648b864fd5f006c2488"
+      },
+      {
+        "path": "tests/panel-read-snapshot.test.cjs",
+        "sha256": "203454ad168165490e257d18a0c25c2d2c167dcc29ed3ea1ba6ac21fa2f6f70d"
+      }
+    ],
+    "frozenManifestMatchedAfter": true
+  },
+  "baseline": {
+    "sourceCommit": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
+    "storeSha256": "11fe460d5356fa9a305c16cbc5cd9a0b40b434c0860c8d2bc98cc59407fadd9e",
+    "regressionFileSha256": "203454ad168165490e257d18a0c25c2d2c167dcc29ed3ea1ba6ac21fa2f6f70d",
+    "setup": "Export the committed index with git checkout-index into a new temporary directory and copy only the candidate regression file into it.",
+    "command": "node --test --test-reporter=tap tests/panel-read-snapshot.test.cjs",
+    "logFile": "/tmp/panelreply-panel-snapshot-before-final-20261123.log",
+    "logSha256": "c0faf7231e6ed532b43324f8bed7c2ffd00b4ec65f4ac15eb277d042e0d7dbf5",
+    "tests": 7,
+    "pass": 2,
+    "fail": 5,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 908.594208
+  },
+  "finalAffectedSelection": {
+    "command": "WORKSPACE_HTTP_TESTS=1 node --test --test-reporter=tap tests/panel-read-snapshot.test.cjs tests/panel-store.test.cjs tests/panel-api.test.cjs tests/panel-xlsx.test.cjs tests/panel-mutation-recovery.test.cjs tests/data-lifecycle.test.cjs tests/lifecycle-api.test.cjs tests/prelaunch-concurrency.test.cjs tests/product-backup.test.cjs",
+    "files": [
+      "tests/panel-read-snapshot.test.cjs",
+      "tests/panel-store.test.cjs",
+      "tests/panel-api.test.cjs",
+      "tests/panel-xlsx.test.cjs",
+      "tests/panel-mutation-recovery.test.cjs",
+      "tests/data-lifecycle.test.cjs",
+      "tests/lifecycle-api.test.cjs",
+      "tests/prelaunch-concurrency.test.cjs",
+      "tests/product-backup.test.cjs"
+    ],
+    "logFile": "/tmp/panelreply-panel-snapshot-regression-final-20261123.log",
+    "logSha256": "33d6b3d9d7f1c76c7c4039ffa01a95aacb6b70256daac85e729ef377014442fe",
+    "tests": 191,
+    "pass": 191,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 25462.239404
+  },
+  "newCases": [
+    {
+      "name": "panel detail keeps source links and review state in one snapshot during a committed source deletion",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "panel CSV exports a complete saved revision when source deletion commits during the read",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "panel XLSX exports the complete source-linked snapshot instead of rejecting mixed revisions",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "panel project deletion cannot combine deleted sources with an earlier saved project response",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "panel source upload cannot appear under the revision read before its commit",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "panel reads preserve an existing outer read transaction and its snapshot",
+      "before": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "panel read failures end only their own snapshot without writes or a stale subsequent read",
+      "before": "PASS",
+      "after": "PASS"
+    }
+  ],
+  "accounting": {
+    "newDistinctProductCases": 7,
+    "finalSelectionIncludesNewCases": true,
+    "extraCreditForRepeatedFocusedRuns": 0,
+    "explanation": "All seven new cases are included in the final 191. The earlier focused run, earlier affected run with two default-disabled HTTP cases, and separately enabled two-case HTTP run overlap and are not additional distinct cases."
+  },
+  "defect": {
+    "readBoundary": "Project row/revision and source metadata were fetched in separate autocommit queries.",
+    "reproducedOutcomes": [
+      "Source deletion produced a reviewed row whose source ID was absent from the returned sources.",
+      "CSV exported that reviewed row with its source filename missing.",
+      "XLSX rejected the mixed saved state with xlsx_invalid_data.",
+      "Whole-project deletion and source upload could also mix the earlier project row with later source metadata."
+    ],
+    "fix": "Own one deferred read transaction when no transaction exists. Reuse and leave any caller transaction unchanged."
+  },
+  "peerReview": {
+    "reviewer": "platform_coverage",
+    "result": "No concrete defect found in transaction ownership, failure cleanup or coordinated SQLite test hook.",
+    "readOnly": true,
+    "additionalExecutions": 0
+  },
+  "remainingLimits": [
+    "Complete integrated-source regression and committed-source CI remain required.",
+    "Filesystem path replacement/tampering was not established by this SQL repair.",
+    "No Windows native execution, real Excel, physical-device, native OCR isolation or selected-host durability acceptance."
+  ]
+}

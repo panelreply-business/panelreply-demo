@@ -92,7 +92,7 @@ function safari(suite = 'callback-safari', statuses = ['PASS', 'PASS', 'PASS']) 
   };
   const nativeSafari = { format: 'apple-safaridriver-v1', state: 'OBSERVED', before: installation,
     after: structuredClone(installation), stable: true,
-    requestedCapabilities: { browserName: 'safari', platformName: 'mac', browserVersion: '26.6', 'safari:useSimulator': false, pageLoadStrategy: 'normal' },
+    requestedCapabilities: { browserName: 'safari', platformName: 'mac', browserVersion: '26.6', pageLoadStrategy: 'normal' },
     session: { browserName: 'Safari', browserVersion: '26.6', platformName: 'mac', 'safari:useSimulator': false,
       'safari:platformVersion': '15.7.9', 'safari:platformBuildVersion': '24G507' },
     unavailableSessionCapabilities: [], sessionSha256: sha('native session identity') };
@@ -494,6 +494,9 @@ test('native Safari passes are bound to the requested desktop and measured nativ
     raw => { raw.platform.nativeSafari.session['safari:platformVersion'] = '15.7.8'; },
     raw => { raw.platform.nativeSafari.session['safari:platformBuildVersion'] = '24G508'; },
     raw => { raw.platform.nativeSafari.requestedCapabilities['safari:useSimulator'] = true; },
+    raw => { raw.platform.nativeSafari.requestedCapabilities['safari:useSimulator'] = false; },
+    raw => { raw.platform.nativeSafari.requestedCapabilities['safari:deviceType'] = 'iPhone'; },
+    raw => { raw.platform.nativeSafari.requestedCapabilities.pageLoadStrategy = 'none'; },
     raw => { raw.platform.nativeSafari.requestedCapabilities.browserName = 'Safari'; },
     raw => { delete raw.platform.nativeSafari.requestedCapabilities.browserVersion; },
     raw => { delete raw.platform.nativeSafari.session['safari:platformVersion']; },

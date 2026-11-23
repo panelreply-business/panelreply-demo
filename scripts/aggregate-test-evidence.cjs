@@ -92,8 +92,9 @@ function validateNativeSafari(report, item) {
     && normalizeArchitecture(host.architecture) === 'x86_64', 'INVALID_NATIVE_SAFARI_HOST', 'Native Safari needs observed Intel macOS version/build metadata.');
   const requested = native.requestedCapabilities, session = native.session;
   requireValue(object(requested) && requested.browserName === 'safari' && requested.platformName === 'mac'
-    && requested.browserVersion === browser.version && requested['safari:useSimulator'] === false,
-    'INVALID_NATIVE_SAFARI_SESSION', 'The native session must explicitly request desktop Safari without a simulator.');
+    && requested.browserVersion === browser.version && requested.pageLoadStrategy === 'normal'
+    && JSON.stringify(Object.keys(requested).sort()) === JSON.stringify(['browserName', 'browserVersion', 'pageLoadStrategy', 'platformName']),
+    'INVALID_NATIVE_SAFARI_SESSION', 'The native session must use the exact standard desktop request without iOS-only capabilities.');
   requireValue(object(session) && String(session.browserName).toLowerCase() === 'safari'
     && session.browserVersion === browser.version && ['mac', 'macos'].includes(String(session.platformName).toLowerCase())
     && (session['safari:useSimulator'] === undefined || session['safari:useSimulator'] === false)

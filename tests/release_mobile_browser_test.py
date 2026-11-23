@@ -158,6 +158,10 @@ class MobileWorkspaceTests(PanelWorkspaceBrowserTests):
                          'Comma, "quote" and\nsecond line Ω', "7", "", "unreviewed", ""])
 
     def behavior_request_save_and_reopen(self):
+        def task_read_completed():
+            expect(self.page.locator("#lead-task-status")).to_have_text("0 of 0 saved tasks.")
+            expect(self.page.locator("#task-error")).not_to_be_visible()
+
         self.login_touch()
         self.open_preview()
         self.fill_review(customerName="Synthetic Mobile Owner", job="Replace a garage outlet")
@@ -168,13 +172,20 @@ class MobileWorkspaceTests(PanelWorkspaceBrowserTests):
         lead = pending.value.json()["lead"]
         self.page.goto(self.origin + "/")
         self.page.get_by_role("button", name="Open request from Synthetic Mobile Owner", exact=True).tap()
+        task_read_completed()
         self.page.get_by_label("Internal notes", exact=True).fill("Synthetic mobile review")
         with self.page.expect_response(lambda response:
                 response.url.endswith("/api/leads/" + lead["id"]) and response.request.method == "PATCH") as updated:
             self.page.get_by_role("button", name="Save changes", exact=True).tap()
         self.assertEqual(updated.value.status, 200)
+        # This journey verifies a completed save and reopened view. Let both
+        # rendered save state and its task read finish before navigation.
+        expect(self.page.locator("#lead-status")).to_have_text(re.compile(r"^Changes saved · "))
+        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_enabled()
+        task_read_completed()
         self.page.reload()
         expect(self.page.get_by_label("Internal notes", exact=True)).to_have_value("Synthetic mobile review")
+        task_read_completed()
         self.assertEqual(self.api("GET", "/api/leads/" + lead["id"])["lead"]["notes"], "Synthetic mobile review")
 
     def behavior_upload_and_private_preview(self):

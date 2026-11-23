@@ -70,6 +70,13 @@ def session_identity_matches(session, installation, session_id):
             ("safari:platformVersion", "osVersion"), ("safari:platformBuildVersion", "osBuild")))
 
 
+def desktop_request_matches(requested, version):
+    # macOS rejects safari:useSimulator even when false. platformName='mac'
+    # selects the desktop host without sending any iOS-only capabilities.
+    return requested == {"browserName": "safari", "platformName": "mac",
+                         "pageLoadStrategy": "normal", "browserVersion": version}
+
+
 def sha256_file(filename):
     result = hashlib.sha256()
     with filename.open("rb") as source:
@@ -131,11 +138,10 @@ class NativeSafari:
         self.keys, self.select_type, self.wait_type = Keys, Select, WebDriverWait
         options = webdriver.SafariOptions()
         # Preserve the pinned Selenium native default browserName='safari'.
-        options.set_capability("safari:useSimulator", False)
         options.set_capability("browserVersion", self.evidence["before"]["browser"]["version"])
         self.evidence["requestedCapabilities"] = dict(options.to_capabilities())
-        if self.evidence["requestedCapabilities"].get("browserName") != "safari" or \
-                self.evidence["requestedCapabilities"].get("platformName") != "mac":
+        if not desktop_request_matches(self.evidence["requestedCapabilities"],
+                                       self.evidence["before"]["browser"]["version"]):
             raise RuntimeError("The pinned client's native desktop capabilities changed")
         self.service = Service(executable_path=str(DRIVER), enable_logging=False,
                                log_output=subprocess.DEVNULL)

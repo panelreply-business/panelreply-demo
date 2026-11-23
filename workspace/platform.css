@@ -228,10 +228,13 @@ input:focus, textarea:focus, select:focus { border-color: #2466dd; box-shadow: 0
 .callback-schedule .form-footer .button-row { margin-left: auto; }
 /* Native control minimums must not enlarge the request grid at enlarged text sizes. */
 .inbox-grid input, .inbox-grid select, .inbox-grid textarea { min-width: 0; max-width: 100%; }
-/* Keep a closed native menu's long option text inside its own control box.
-   Its native popup and keyboard behavior remain available. Do not clip the
-   form or page, where overflow could conceal labels or actions. */
-#lead-permission { overflow: hidden; text-overflow: ellipsis; }
+/* Style the closed menu inside a block-sized control. The real select keeps
+   its popup, focus, keyboard and disabled semantics. Its decorative caret
+   uses borders so it also follows forced colors without an image request. */
+.select-control { display: block; position: relative; min-width: 0; width: 100%; }
+.select-control::after { content: ""; position: absolute; right: .85em; top: 50%; width: .35em; height: .35em; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+#lead-permission { appearance: none; padding-inline-end: 1.8em; overflow: hidden; text-overflow: ellipsis; }
+#lead-permission:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
 .request-list-panel .panel-heading, .callback-queue-panel .panel-heading { flex-wrap: wrap; }
 .request-list-panel .panel-heading > div, .callback-queue-panel .panel-heading > div { min-width: 0; }
 .callback-schedule #task-time-preview { overflow-wrap: anywhere; }

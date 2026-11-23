@@ -1,20 +1,20 @@
 {
-  "format": "panelreply-partial-ci-evidence-v1",
-  "recordedAt": "2026-11-23T17:28:28.826Z",
+  "format": "panelreply-final-ci-evidence-v1",
+  "recordedAt": "2026-11-23T17:58:15.717578+00:00",
   "repository": "panelreply-business/panelreply-demo",
   "run": {
     "id": 45225565320,
     "number": 84,
     "attempt": 1,
-    "status": "queued",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "failure",
     "headSha": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
     "event": "pull_request",
     "createdAt": "2026-11-23T17:14:57Z",
-    "updatedAt": "2026-11-23T17:14:57Z",
+    "updatedAt": "2026-11-23T17:31:14Z",
     "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45225565320"
   },
-  "status": "PARTIAL_UNASSIGNED_ARM_GATE_PENDING",
+  "status": "COMPLETED_FAILURE_WITH_UNEXECUTED_ARM",
   "source": {
     "head": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
     "testedMerge": "0be57f078d28f075cd15876d61519c4b00371685",
@@ -30,18 +30,19 @@
   "scope": {
     "releaseArtifacts": 34,
     "sourceReports": 35,
-    "workflowJobsObserved": 37,
+    "workflowJobsObserved": 38,
     "jobStates": {
       "success": 34,
-      "queued": 1,
-      "failure": 2
+      "cancelled": 1,
+      "failure": 3
     },
     "missingEmittedReleaseReportsAtSnapshot": 0,
     "unknownOrIgnoredReportFiles": [],
-    "previewArtifactsNotCounted": 8
+    "previewArtifactsNotCounted": 8,
+    "aggregateArtifactsVerified": 1
   },
   "aggregation": {
-    "generatedAt": "2026-11-23T17:29:00.394Z",
+    "generatedAt": "2026-11-23T17:57:27.279Z",
     "valid": true,
     "observations": 32230,
     "duplicateObservationsExcluded": 7092,
@@ -188,11 +189,30 @@
     "implementationAndPolicyMatchedTestedManifest": true,
     "policyBindingEnforcedForEveryReport": true,
     "sourceManifestMatchedEveryCommittedFile": true,
-    "localAggregateJsonSha256": "f38e22557b0155d5dac7ad8ba13ca8416830747cf3ca27a60c75759ea0ac3092",
-    "ciAggregateArtifact": "NOT_EMITTED_AT_SNAPSHOT",
-    "command": "node /tmp/panelreply-run84-immutable-tools/scripts/aggregate-test-evidence.cjs --input /tmp/panelreply-run84-evidence/reports --output /tmp/panelreply-run84-partial-aggregate.json --source 0be57f078d28f075cd15876d61519c4b00371685",
+    "localAggregateJsonSha256": "abb8cd512319261f8d04d896b66d008a5163b69886eaf23b564fd593c9156552",
+    "ciAggregateArtifact": {
+      "id": 14845815998,
+      "name": "verified-release-test-summary-attempt-1",
+      "jobId": 137881292428,
+      "zipSha256": "5db76ff85900a0ac5112097fcc45a02be9a532361ab50d75ae98c093478c6e35",
+      "zipBytes": 1031722,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "reportSha256": "755fba8309ab5b6d4b8bade7176bff408196efff751dce6330cb7c19223b31df",
+      "sourceCommit": "0be57f078d28f075cd15876d61519c4b00371685",
+      "sourceManifestSha256": "e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3",
+      "policySha256": "bde713a2eb921df4a730331938297b1d26740306c2ab9d36e65acd5b474f8886",
+      "generatedAt": "2026-11-23T17:31:09.856Z"
+    },
+    "command": "node /tmp/panelreply-run84-immutable-tools/scripts/aggregate-test-evidence.cjs --input /tmp/panelreply-run84-evidence/final-ci-input --output /tmp/panelreply-run84-final-aggregate.json --source 0be57f078d28f075cd15876d61519c4b00371685",
     "cliExitCode": 0,
-    "interpretation": "A valid strict aggregation validates evidence integrity. It does not turn recorded failures or missing required coverage into PASS."
+    "interpretation": "A valid strict aggregation validates evidence integrity. It does not turn recorded failures or missing required coverage into PASS.",
+    "ciAggregateMatchesLocalExceptGeneratedAt": true,
+    "aggregateComparisonIgnoredFields": [
+      "generatedAt"
+    ],
+    "newReleaseArtifactsVerifiedOnRefresh": [],
+    "previousArtifactsReusedWithMatchingGitHubMetadataAndRawReportHashes": true
   },
   "failedExecutions": [
     {
@@ -231,8 +251,27 @@
     }
   ],
   "aggregateGate": {
-    "status": "NOT_STARTED_AT_SNAPSHOT",
-    "reason": "The queued Apple Silicon dependency has not completed. No CI aggregate artifact exists yet."
+    "status": "FAIL",
+    "jobId": 137881292428,
+    "conclusion": "failure",
+    "reason": "The evidence aggregation succeeded, but the automated platform acceptance step rejected unresolved requirements.",
+    "unresolvedAutomatedRequirements": [
+      "client-linux-webkit",
+      "client-darwin-webkit",
+      "callback-program-linux-webkit",
+      "callback-program-darwin-intel-webkit",
+      "callback-program-darwin-arm64-chromium",
+      "spreadsheet-manual-program-darwin-arm64-chromium",
+      "callback-program-darwin-arm64-firefox",
+      "spreadsheet-manual-program-darwin-arm64-firefox",
+      "callback-program-darwin-arm64-webkit",
+      "spreadsheet-manual-program-darwin-arm64-webkit",
+      "node-darwin-arm64",
+      "client-darwin-arm64-chromium",
+      "client-darwin-arm64-firefox",
+      "client-darwin-arm64-webkit"
+    ],
+    "logSha256": "5aec7fa6ef0c4235a59cb0da35df81d8c2ff56622955870e0e3f515bbb229a5d"
   },
   "coverage": {
     "automated": {
@@ -325,14 +364,18 @@
   },
   "unexecutedAppleSilicon": {
     "jobId": 137870996914,
-    "status": "queued",
+    "status": "completed",
+    "conclusion": "cancelled",
     "runnerId": 0,
+    "runnerName": "",
     "labels": [
       "macos-15"
     ],
     "stepCount": 0,
     "productCasesExecuted": 0,
-    "cause": "Runner allocation cause unconfirmed. No paid label, privilege change, retry or cancellation was used.",
+    "startedAt": "2026-11-23T17:14:58Z",
+    "completedAt": "2026-11-23T17:30:51Z",
+    "cause": "GitHub reports cancellation without runner assignment or any steps. Allocation and cancellation causes are unconfirmed. This refresh made no cancellation, retry, label or privilege change.",
     "acceptance": "NOT_TESTED"
   },
   "verifiedBehaviors": [
@@ -1601,15 +1644,15 @@
     {
       "id": 137870996914,
       "name": "Apple Silicon contracts and selected products",
-      "status": "queued",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "cancelled",
       "runnerId": 0,
       "runnerName": "",
       "labels": [
         "macos-15"
       ],
       "startedAt": "2026-11-23T17:14:58Z",
-      "completedAt": null,
+      "completedAt": "2026-11-23T17:30:51Z",
       "stepCount": 0,
       "failedSteps": [],
       "releaseReports": []
@@ -2301,6 +2344,24 @@
           }
         }
       ]
+    },
+    {
+      "id": 137881292428,
+      "name": "Account for distinct product and platform tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000417,
+      "runnerName": "GitHub Actions 1000000417",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:30:54Z",
+      "completedAt": "2026-11-23T17:31:13Z",
+      "stepCount": 10,
+      "failedSteps": [
+        "Report the measured totals and separate release decisions"
+      ],
+      "releaseReports": []
     }
   ],
   "reports": [
@@ -4305,14 +4366,62 @@
     }
   ],
   "remainingActions": [
-    "Preserve the queued ARM job without claiming execution or changing its acceptance gates.",
-    "When this same run reaches a terminal state, collect any newly emitted ARM reports and CI aggregate, verify their digests/source/policy, and supersede this partial snapshot.",
-    "Compare the terminal CI aggregate to a local aggregate with the exact7a collector and policy, allowing only generatedAt to differ.",
-    "Validate the separately prepared WebKit select/heading repair on its own future source. Run84 failures stay attached to7a.",
-    "Keep OCR accuracy, required native isolation, physical devices, actual Safari and other untested release requirements open."
+    "Preserve all failures and unexecuted methods from this immutable source. Verify corrections only on subsequent committed source.",
+    "Keep the unexecuted Apple Silicon requirements open. No runner assignment or method execution was observed.",
+    "Keep OCR accuracy, native isolation, actual Safari, physical devices and the other unresolved release requirements open. Measurement completion and numeric counts do not close these gates."
   ],
   "noNewTestExecution": true,
   "noCiRerun": true,
   "noCancellation": true,
-  "noPolicyChange": true
+  "noPolicyChange": true,
+  "metadataCapturedAt": "2026-11-23T17:55:50.973Z",
+  "snapshotHistory": [
+    {
+      "record": "panelreply-run84-partial-evidence.json",
+      "localPath": "/tmp/panelreply-run84-partial-evidence.json",
+      "sha256": "b4715d9dda575c64ce8f4b46952ff1212971f13fa71d55a4a33ebf9c4ed5fe83",
+      "recordedAt": "2026-11-23T17:28:28.826Z",
+      "metadataCapturedAt": null,
+      "status": "PARTIAL_UNASSIGNED_ARM_GATE_PENDING",
+      "runStatus": "queued",
+      "runConclusion": null,
+      "jobStates": {
+        "success": 34,
+        "queued": 1,
+        "failure": 2
+      },
+      "releaseArtifacts": 34,
+      "sourceReports": 35,
+      "product": {
+        "total": 24798,
+        "PASS": 24796,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 2,
+        "ERROR": 0
+      },
+      "pendingJobs": [],
+      "appleSilicon": {
+        "jobId": 137870996914,
+        "status": "queued",
+        "runnerId": 0,
+        "labels": [
+          "macos-15"
+        ],
+        "stepCount": 0,
+        "productCasesExecuted": 0,
+        "cause": "Runner allocation cause unconfirmed. No paid label, privilege change, retry or cancellation was used.",
+        "acceptance": "NOT_TESTED"
+      },
+      "preservedUnchanged": true
+    }
+  ],
+  "pendingJobsAtMetadataCapture": [],
+  "newlyCompletedReleaseJobs": []
 }

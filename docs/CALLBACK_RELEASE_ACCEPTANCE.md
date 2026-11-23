@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+## November 23 request snapshot and browser correction
+
+Eight new regressions verify one read snapshot for request state and conversation history under real concurrent update, delete, STOP and safety-hold commits. List reads stay coherent across requests. Existing caller transactions remain open. Fresh task writes still reject stale versions and current contact restrictions. [Callback evidence](CALLBACK_READ_SNAPSHOT_2026_11_23.md). The shared final local regression passes 9,217 checks, including 9,071 product cases and 146 excluded harness checks. This is not callback-only credit. [Local record](evidence/snapshot-layout-local-2026-11-23.json).
+
+Run85 preserves six selected-callback failures: five focus probes on intentionally disabled fields and genuine Linux WebKit 521px overflow. One shared mobile callback journey also records a task-read page error. Three installed-Safari callback methods never start because the desktop request includes an iOS-only capability. [Final verified evidence](evidence/callback-scheduling-run85.json).
+
+The next candidate corrects the closed-control layout and keyboard outline, performs focus checks after draft discard, synchronizes the completed save/reopen view and submits an exact native desktop Safari request. Every original browser/error and native-identity requirement remains. CB-12, native/physical platforms, provider/host/operating requirements and the separate callback release decision remain incomplete until their own evidence passes.
+
 ## November 23 native-browser candidate
 
 Run84 on `7a0a93a` passes private WebKit recovery (132/132 methods) but retains both selected callback WebKit enlarged-text failures (14/15 each). New geometry identifies the permission control's own overflowing contents and an off-screen Refresh button. The candidate repairs those boundaries while retaining 200% text, 320px width, keyboard and unsaved-draft requirements. Actual browser acceptance is pending. [Evidence and repair](CALLBACK_REFLOW_2026_11_23.md).

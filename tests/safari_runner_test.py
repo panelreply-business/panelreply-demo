@@ -25,6 +25,15 @@ class SafariRunnerHarnessTests(unittest.TestCase):
     def test_native_identity_rejects_version_suffixes_and_contradictory_host_capabilities(self):
         version, build = "26.6", "20624.4.5.18.1"
         self.assertTrue(runner.driver_identity_matches(f"Included with Safari {version} ({build})", version, build))
+        requested = {"browserName": "safari", "platformName": "mac",
+                     "pageLoadStrategy": "normal", "browserVersion": version}
+        self.assertTrue(runner.desktop_request_matches(requested, version))
+        # Run85's installed macOS driver rejected this extension even as false.
+        # Neither a simulator selector nor an altered desktop request is valid.
+        for key, value in [("safari:useSimulator", False), ("safari:useSimulator", True),
+                           ("safari:deviceType", "iPhone"), ("platformName", "ios"),
+                           ("pageLoadStrategy", "none"), ("browserVersion", "26.5")]:
+            self.assertFalse(runner.desktop_request_matches({**requested, key: value}, version))
         for output in [f"Included with Safari {version}.1 ({build})", f"Included with Safari {version} ({build}2)"]:
             self.assertFalse(runner.driver_identity_matches(output, version, build))
         installation = {"browser": {"version": version}, "host": {"osVersion": "15.7.9", "osBuild": "24G507"}}

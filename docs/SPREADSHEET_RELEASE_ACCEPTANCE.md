@@ -1,5 +1,15 @@
 # Spreadsheet release acceptance
 
+## November 23 project read-snapshot correction
+
+Seven new regressions reproduce and repair mixed project/source revisions during actual second-connection deletion and upload. CSV and XLSX now receive one saved snapshot, caller transactions remain open and failed reads clean up their own snapshot. Five baseline failures become seven passing cases, including two baseline contract passes. [Spreadsheet evidence](SPREADSHEET_READ_SNAPSHOT_2026_11_23.md).
+
+The shared final local regression passes 9,217 checks, including 9,071 product cases and 146 excluded harness checks, with zero failures or skips and stable source. This is not spreadsheet-only credit. [Final local record](evidence/snapshot-layout-local-2026-11-23.json).
+
+Run85's final verified record passes all six fixed-spreadsheet suites: nine methods per Linux engine and ten per Intel Mac engine. The two receipt/retry journeys pass throughout. ARM ends cancelled without execution. All three native Safari spreadsheet methods are NOT_RUN because session creation rejects an iOS-only desktop capability. The corrected strict desktop request still requires actual native downloads and product-bound recovery. [Final run](evidence/callback-scheduling-run85.json) and [Safari scope](NATIVE_SAFARI_SCOPE.md).
+
+OCR remains FAIL at 289/310 exact. Required native isolation, representative photos, actual Excel, native Windows/full macOS extraction, remaining actual/physical platforms and operating approval stay open. No spreadsheet trial or release is approved.
+
 ## November 23 native-browser candidate
 
 Run84 on `7a0a93a` passes all fixed-spreadsheet jobs on Linux (9/9 each) and Intel Mac (10/10 each), including both new receipt/retry journeys across all six jobs. All 34 emitted release ZIPs and 35 reports pass independent source/policy reconciliation. The run remains partial while ARM is queued. Private WebKit recovery passes all 132 methods. These observations belong to that committed source. [Verified snapshot](evidence/callback-scheduling-run84.json).

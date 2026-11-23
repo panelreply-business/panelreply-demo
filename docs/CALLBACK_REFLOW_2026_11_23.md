@@ -9,29 +9,62 @@ viewport and observed 200% root, body and control text, the document becomes
 521px wide on Linux and 443px on Intel Mac. The preceding control/grid minimum
 changes did not repair this failure. [Recorded geometry](evidence/callback-reflow-run84.json).
 
-The contact-permission field stays 248px wide but has 485px of scrollable
+An anonymous `form-field span-two` stays 248px wide but has 485px of scrollable
 content on Linux and 407px on Mac. That overflow propagates to the form and
-document. Its select does not appear as an outward-overflow box, so native or
-anonymous control contents are the inferred source. The Linux Requests
+document. The trace lacks the descendant control ID. The permission select is
+a source-based inference, not an identified element in this trace. Native or
+anonymous control contents may contribute without an outward-overflow box.
+The Linux Requests
 heading has a separate defect: the Refresh button ends at 356.45px. Clipping
 the whole form or page would conceal that action.
 
-## Candidate repair
+## Run85 result and next candidate
 
-Only the closed `#lead-permission` select gets `overflow: hidden` and
-`text-overflow: ellipsis`. This constrains the control's own closed text. Its
-native appearance, option list, font size, enabled state and focus behavior
-remain. The Requests and Callback queue headings wrap their action onto a
-new line when it cannot fit beside the title.
+The select-only `overflow: hidden` change on committed `76db2d6` does not
+repair Linux WebKit. Run85 still records a 521px document at a 320px viewport,
+with the same anonymous 248px field and 485px scroll width. It records no
+select-specific appearance or descendant control ID. Mac WebKit passes those
+earlier geometry assertions but the method later fails its focus probe, so
+that journey still earns no pass. [Source-bound final result](evidence/callback-scheduling-run85.json).
+
+The next candidate gives the real `#lead-permission` select `appearance: none`
+inside a block-sized wrapper, retains control-only overflow containment and
+adds a border caret. The closed control follows CSS sizing while its option
+popup, keyboard, disabled and focus semantics remain those of a real select.
+The font stays doubled. No form/page clipping or custom list widget is used.
+The help text is now linked with `aria-describedby`. The Requests and Callback
+queue headings continue to wrap their action when it cannot fit beside the
+title. Actual Linux and Mac browser verification is pending.
+
+Review also found that the existing `select:focus { outline: none }` rule
+outranks the generic focus-visible rule. The styled permission select now has
+an explicit focus-visible outline. It does not depend only on box-shadow,
+which forced-colors mode removes. The journey checks native Tab in both
+directions and a visible solid outline after keyboard focus returns to the
+menu. Forced-colors behavior still needs its own browser observation.
 
 The existing browser method retains the 320px document-width assertion and
 measures actual doubling of the root, body and five control fonts. It now
 also requires the Refresh action and all five controls to remain on screen.
-At doubled text, native keyboard Tab must move from the labelled permission
-menu to Internal notes. After discarding the unsaved task, the queue and its
-Refresh action must also fit the screen and no callback task may exist.
+While the task draft exists, the request fields must remain disabled. After
+discarding the unsaved task, the queue and its Refresh action must fit the
+screen and no callback task may exist. Returning to the request at the same
+doubled font must enable both request fields, then native keyboard Tab must
+move from the labelled permission menu to Internal notes.
 These assertions extend one existing journey. They do not add cases to the
 execution target.
+
+Failure-only diagnostics now identify the descendant control of each reported
+form field. They also record bounded geometry, computed appearance and box
+sizing for visible inbox controls, including controls whose own boxes do not
+overflow. They do not log field values, change the page or filter an assertion.
+
+Run85 exposed an error in the first added focus probe on `76db2d6`: it tried
+to focus the intentionally disabled request fields before resolving the task
+draft. The Mac Chromium trace identifies the Internal notes textbox as
+disabled. The correction above moves that probe after discard and verifies
+both the locked and unlocked states. It retains the font, viewport, control
+bounds and keyboard requirements. Changed-source browser execution is pending.
 
 The local environment has no usable pinned Playwright browser. The reviewed
 change remains NOT TESTED in a browser until the next committed-source CI
@@ -49,6 +82,7 @@ WebKit 26.5 defect.
 - [WebKit control clipping correction](https://github.com/WebKit/WebKit/commit/6896a514b489)
 - [WebKit layout-overflow follow-up](https://github.com/WebKit/WebKit/commit/1c6579f366d2)
 - [CSS UI4 native appearance behavior](https://www.w3.org/TR/css-ui-4/#appearance-switching)
+- [CSS forced-colors properties](https://www.w3.org/TR/css-color-adjust-1/#forced-colors-properties)
 
 The engine corrections describe keeping a control's contents from contributing
 outside scrollable overflow. This supports a repair at the control boundary.

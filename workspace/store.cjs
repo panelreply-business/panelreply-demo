@@ -284,6 +284,14 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     try { const result = fn(); db.exec('COMMIT'); return result; }
     catch (error) { db.exec('ROLLBACK'); throw error; }
   };
+  const readSnapshot = fn => {
+    // Related rows must describe one saved state. A mutation or export may
+    // already own a transaction, which this read must leave unchanged.
+    if (db.isTransaction) return fn();
+    db.exec('BEGIN');
+    try { const result = fn(); db.exec('COMMIT'); return result; }
+    catch (error) { db.exec('ROLLBACK'); throw error; }
+  };
   const iso = value => new Date(value).toISOString();
   const getActor = actor => {
     if (!actor || typeof actor.id !== 'string' || typeof actor.businessId !== 'string') throw new StoreError(401, 'unauthorized', 'Sign in to continue.');
@@ -477,7 +485,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     },
     listLeads(actor) {
       getActor(actor);
-      return db.prepare('SELECT * FROM leads WHERE business_id = ? ORDER BY created_at DESC, rowid DESC').all(actor.businessId).map(row => materializeLead(row, actor));
+      return readSnapshot(() => db.prepare('SELECT * FROM leads WHERE business_id = ? ORDER BY created_at DESC, rowid DESC').all(actor.businessId).map(row => materializeLead(row, actor)));
     },
     exportBusiness(actor) {
       getActor(actor);
@@ -495,7 +503,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     },
     getLead(actor, id) {
       getActor(actor);
-      return materializeLead(db.prepare('SELECT * FROM leads WHERE id = ? AND business_id = ?').get(id, actor.businessId), actor);
+      return readSnapshot(() => materializeLead(db.prepare('SELECT * FROM leads WHERE id = ? AND business_id = ?').get(id, actor.businessId), actor));
     },
     createLead(actor, input, idempotencyKey) {
       getActor(actor);
@@ -568,7 +576,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     },
     getPanelProject(actor, id) {
       getActor(actor);
-      return materializeProject(db.prepare('SELECT * FROM panel_projects WHERE id=? AND business_id=?').get(id, actor.businessId), actor);
+      return readSnapshot(() => materializeProject(db.prepare('SELECT * FROM panel_projects WHERE id=? AND business_id=?').get(id, actor.businessId), actor));
     },
     createPanelProject(actor, input, idempotencyKey) {
       getActor(actor);
