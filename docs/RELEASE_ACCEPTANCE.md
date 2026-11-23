@@ -1,5 +1,15 @@
 # Release acceptance
 
+## November 23 verified browser corrections and next native repairs
+
+Final run86 on `13b8741` records 24,813 product PASS and six FAIL across 9,352 distinct cases after excluding 370 harness checks and 7,102 duplicates. All 35 release ZIPs and 37 reports bind to its exact source/policy. The immutable aggregate matches CI. Automated requirements are 43 PASS, three FAIL and ten NOT_TESTED. All seven manual gates remain NOT_TESTED. [Final record](evidence/callback-scheduling-run86.json).
+
+All six selected callback suites pass 15/15 and both emulated mobile engines pass 40+12 methods. This verifies the prior reflow/focus and completed-save/reopen repairs within those scopes. Five installed-Safari failures and the static Mac WebKit sample-action failure remain preserved. A later static job pass establishes no cause or repair.
+
+The next manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e` passes all 9,233 local checks, including 9,086 product cases and 147 excluded harness checks. It adds required-OCR path guards and prepares native Safari input/label and Windows build repairs. Nine Python harness checks earn zero product credit. Actual changed-source platform verification remains pending. [Local evidence](evidence/native-boundaries-local-2026-11-23.json).
+
+The numeric count closes no failed or unexecuted requirement. OCR accuracy, native isolation, actual/physical platforms, Windows integration, Excel and applicable provider/host/operating gates remain open. Both independent release decisions remain NO-GO. [Exact next steps](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 Windows component and first native Safari execution
 
 The standalone Windows component adds no product capability or release credit yet. Its eight local harness checks pass, while native compilation and 15 component methods await standard Windows CI. Existing product code, release policy and prior workflow jobs remain unchanged. Windows private-product acceptance stays open. [Scope and local evidence](WINDOWS_NATIVE_COMPONENT_2026_11_23.md).

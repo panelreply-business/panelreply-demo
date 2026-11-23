@@ -16,7 +16,7 @@ function fixedStage(args) {
 }
 
 function classify(records, reason) {
-  if (['isolation_dependency_unsupported', 'isolation_dependency_unavailable'].includes(reason)) return { kind: reason, confirmedExternalBlocker: false, status: 'FAIL' };
+  if (['isolation_dependency_unsupported', 'isolation_dependency_unavailable', 'isolation_path_overlap', 'isolation_path_context_unavailable'].includes(reason)) return { kind: reason, confirmedExternalBlocker: false, status: 'FAIL' };
   const failed = records.find(row => row.spawnErrorCode || row.signal || row.exitCode !== 0);
   if (!failed) return { kind: 'readiness_contract_unconfirmed', confirmedExternalBlocker: false, status: 'BLOCKED' };
   const stderr = failed.stderr;

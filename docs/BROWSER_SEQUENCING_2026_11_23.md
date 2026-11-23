@@ -1,5 +1,11 @@
 # Browser journey sequencing corrections
 
+## Verified run86 outcome
+
+All six selected callback suites pass 15/15 on committed `13b8741`, including the corrected disabled/enabled focus sequence. Both emulated mobile engines pass the shared 40-method and fixed-callback 12-method suites. The WebKit completed-save/reopen case passes with all page-error assertions retained. [Final source-bound evidence](evidence/callback-scheduling-run86.json).
+
+The original run85 failures remain below. The initiating interruption cause stays an inference. These passes verify the intended completed-save journey, not every interrupted browser request or physical-device behavior.
+
 Run85 tests committed `76db2d6`. Two observed verification defects are described
 here. The final full-run record preserves seven failed executions and six
 unexecuted Safari cases. [Sequencing traces](evidence/browser-sequencing-run85.json)

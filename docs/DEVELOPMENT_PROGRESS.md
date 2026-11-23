@@ -1,5 +1,17 @@
 # PanelReply development progress
 
+## OCR boundary and native verification repairs — November 23, 2026
+
+The next milestone follows `9264d2a` and passes all 9,233 local Node/API/HTTP checks across 58 files with unchanged manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e`. There are 9,086 product cases and 147 excluded harness checks, with no failures or skipped outcomes. Fifteen new product cases verify required-mode OCR path checks. All 9,071 prior product IDs remain. Nine Python Safari harness checks pass separately without product credit. [Local evidence](evidence/native-boundaries-local-2026-11-23.json).
+
+Required OCR now rejects runtime-mount overlap with private storage, repository or home paths, unresolved path context and a redirected normalizer before starting native work or reusing readiness. These checks are bounded to trusted, stable host paths. They do not establish native sandbox denial. [Scope](OCR_PATH_BOUNDARY_2026_11_23.md).
+
+Safari's label and native date-entry repairs preserve all six workflow methods, actual trusted input, exact dates/timezones and downloads. The Windows build repair selects one application command before enforcing the existing pins. A passive observer preserves the static sample journey's original actions/assertions while collecting bounded failure context. All changed native/browser execution remains pending. [Safari](NATIVE_SAFARI_INPUT_REPAIR_2026_11_23.md), [Windows](WINDOWS_BUILD_RESOLUTION_2026_11_23.md), [static diagnostic](STATIC_SAMPLE_POINTER_2026_11_23.md).
+
+Final run86 on `13b8741` verifies 24,813 passing product executions and six failures across 9,352 distinct cases. It excludes 370 harness checks and 7,102 duplicates. All six callback 15-method suites and both mobile 40+12 suites pass, verifying the prior reflow/focus and completed-save fixes. Five native Safari failures and one static Mac WebKit failure remain recorded. Its exact-source aggregate matches CI. [Final ledger](evidence/callback-scheduling-run86.json).
+
+Run87's component artifact shows build failure before compilation or any of its 15 methods. Its static Mac WebKit job succeeds on unchanged relevant bytes, which does not establish the earlier failure's cause. No complete run87 product ledger is claimed. Apple Silicon has no assigned runner in runs83–87; documented labels/visibility match and cause remains unknown. SQLite sidecar/token observation work continues separately with zero acceptance credit. [Resume here](AUTONOMOUS_CONTINUATION.md).
+
 ## Standalone Windows storage verification candidate — November 23, 2026
 
 The reviewed Windows component and its separate standard-runner job are ready for native CI. Neither product imports it. Existing application/tests and all 14 prior jobs stay byte/structure unchanged. The source manifest is `1d80393f3534eda1e76be9fa28c41f9a0a01e873ba1dec4253915472bbc6afe1` across 192 entries. Eight report/provenance harness checks and seven JavaScript syntax checks pass. All 15 native methods remain unexecuted locally and contribute zero product credit. [Integration evidence](evidence/windows-component-integration-2026-11-23.json) and [component scope](WINDOWS_NATIVE_COMPONENT_2026_11_23.md).

@@ -1,5 +1,11 @@
 # Native desktop Safari scope
 
+## Pending native input and label verification
+
+The next candidate corrects the spreadsheet's plural label and uses actual native segmented keyboard entry for datetime-local controls. It verifies compatible observed locale/control settings, trusted key/input/change records and exact field values. All six method IDs and local/UTC/timezone, persistence, restrictions and real download assertions remain. Nine Python harness checks pass but supply no product credit. Actual Safari execution on manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e` is pending. [Repair evidence](NATIVE_SAFARI_INPUT_REPAIR_2026_11_23.md).
+
+Run87 repeats the two empty datetime failures and three label failures on unchanged Safari source. Its job status/log observation is not a new fully verified product ledger. [Observation](evidence/run87-job-observation-2026-11-23.json).
+
 ## Run86 native execution
 
 The exact desktop request on committed `13b8741` starts installed Safari26.6 with stable matching browser/driver/host evidence. All six methods are attempted: callback one PASS/two FAIL and spreadsheet zero PASS/three FAIL. The failed callback methods type an ISO datetime string but observe an empty native control value. The spreadsheet methods fail setup on a singular/plural product-label expectation. The corresponding complete workflows remain unverified. [Source-bound job record](evidence/native-safari-run86.json).

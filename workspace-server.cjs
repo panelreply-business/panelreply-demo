@@ -44,7 +44,7 @@ function startConfiguredWorkspace(config, { conversationProvider = null, assista
   // needs explicit approved configuration and durable bounded reservations.
   // Environment variables, profiles and browser input cannot activate it.
   try {
-    if (product.capabilities.ocr) ocr = require('./workspace/ocr.cjs').createOcrService();
+    if (product.capabilities.ocr) ocr = require('./workspace/ocr.cjs').createOcrService({ privateDataDir: path.dirname(store.filename) });
     app = createWorkspaceApp({ store, origin: config.origin, product: product.id, conversationProvider, ...assistantOptions,
       ...(ocr ? { recognizeImage: ocr.recognizeImage, getOcrStatus: ocr.getOcrStatus } : {}) });
   } catch (error) {

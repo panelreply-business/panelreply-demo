@@ -1,0 +1,36 @@
+{
+  "format": "panelreply-windows-sqlite-publication-assessment-v1",
+  "assessedAt": "2026-11-23T18:06:48.011Z",
+  "sourceCommit": "13b8741ca7ce192c9d187b0b7c0033760531c5b5",
+  "scope": "Read-only source/API assessment. No implementation or native experiment.",
+  "report": "docs/WINDOWS_SQLITE_PUBLICATION_ASSESSMENT_2026_11_23.md",
+  "reportSha256": "b0573b3879e7b111b1b41dc2fbf139bc822cd67928b5b1841c7109861831aa53",
+  "nativeWindowsExecutions": 0,
+  "productPassing": 0,
+  "releaseCredit": false,
+  "applicationIntegration": "DISABLED",
+  "localSources": {
+    "workspace/store.cjs": "0271c1e6f8ce0017411451075d22c423c64d16f9e2bddeeef587f53c407403db",
+    "workspace/backup.cjs": "4a691dc0467c8e7919e4e8bd53b2984b1f492454c822209fee370eb6cdd6b6b1",
+    "workspace/products.cjs": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf",
+    "workspace/file-safety.cjs": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad"
+  },
+  "upstream": {
+    "nodeVersion": "24.22.3",
+    "nodeWrapperBlob": "a0a13c3537e7ae95ae1bf535ec9b50b2469e78a5",
+    "nodeSqliteHeaderBlob": "30d431bc34ae21b25cb1906ca0b88cbb5d2b3ac2",
+    "sqliteVersion": "3.54.1",
+    "sqliteSourceId": "2026-10-16 14:45:20 555e07ef33f69a0957d24d8e555b702464a131d6f1607f4c3c1e4551e8e6ca76",
+    "sqliteReleaseCommit": "57520227c95396ce39ba6ecaac8d475b78dd3964",
+    "winVfsBlob": "8c6b258094b1b0c72648f01e55fcdeea9f62fe36",
+    "nodeAmalgamationRetrieved": false
+  },
+  "remaining": [
+    "Actual pinned-runtime owner and protected DACL behavior for SQLite-created files",
+    "Path lifetime for SQLite pathname opens",
+    "Temporary files and VACUUM confinement",
+    "Persistent incomplete-restore refusal and no-overwrite publication",
+    "64 MiB recovery IO boundary"
+  ],
+  "nextStep": "Obtain the first native component Windows results before choosing or implementing integration."
+}

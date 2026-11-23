@@ -1,0 +1,401 @@
+{
+  "format": "panelreply-ci-job-observation-v1",
+  "recordedAt": "2026-11-23T18:29:18.509Z",
+  "runId": 45235230394,
+  "runNumber": 87,
+  "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45235230394",
+  "sourceCommit": "9264d2a3575889c6b39140554fc767caf6e6a7ad",
+  "scope": "Job metadata only. No complete product ledger or artifact/source validation is claimed by this observation.",
+  "jobs": [
+    {
+      "id": 137905042497,
+      "name": "Private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000498,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042857,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000508,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042896,
+      "name": "Static client (windows-2022, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000499,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042956,
+      "name": "Static client (windows-2022, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000500,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042959,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000509,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042965,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000506,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042973,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000504,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905042986,
+      "name": "Static client (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000505,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043040,
+      "name": "Static client (ubuntu-24.04, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000507,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043087,
+      "name": "demo-tests",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000514,
+      "stepCount": 18,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043101,
+      "name": "Synthetic OCR measurements",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000510,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043134,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000517,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043157,
+      "name": "Static client (windows-2022, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000502,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043174,
+      "name": "Static client (windows-2022, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000501,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043207,
+      "name": "Restricted OCR worker verification",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000520,
+      "stepCount": 9,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043214,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000511,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043217,
+      "name": "Static client (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000525,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043266,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000526,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043285,
+      "name": "Static client (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000531,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043295,
+      "name": "Private workflows (firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000533,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043308,
+      "name": "Static client (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000512,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043397,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000528,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043420,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000518,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043430,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000521,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043489,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000524,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043503,
+      "name": "Emulated private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000515,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043564,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000522,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043584,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000527,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043692,
+      "name": "Windows private storage component",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000503,
+      "stepCount": 10,
+      "failedSteps": [
+        {
+          "name": "Build the pinned Windows component and separate probe artifacts",
+          "number": 4,
+          "conclusion": "failure"
+        },
+        {
+          "name": "Record every component case, including unexecuted cases after build failure",
+          "number": 5,
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 137905043714,
+      "name": "Portable release contracts (macos-15-intel)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000535,
+      "stepCount": 10,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043717,
+      "name": "Portable release contracts (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000532,
+      "stepCount": 10,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043739,
+      "name": "Required public suspension",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000530,
+      "stepCount": 7,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043766,
+      "name": "Synthetic concurrent HTTP workload",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000529,
+      "stepCount": 8,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043779,
+      "name": "Static client (ubuntu-24.04, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000523,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043838,
+      "name": "Apple Silicon contracts and selected products",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runnerId": 0,
+      "stepCount": 0,
+      "failedSteps": []
+    },
+    {
+      "id": 137905043968,
+      "name": "Static client (windows-2022, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000513,
+      "stepCount": 11,
+      "failedSteps": []
+    },
+    {
+      "id": 137905044042,
+      "name": "Emulated private workflows (chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000534,
+      "stepCount": 13,
+      "failedSteps": []
+    },
+    {
+      "id": 137905044123,
+      "name": "Portable release contracts (windows-2022)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000516,
+      "stepCount": 10,
+      "failedSteps": []
+    },
+    {
+      "id": 137905044425,
+      "name": "Installed Safari fixed product workflows",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000536,
+      "stepCount": 13,
+      "failedSteps": [
+        {
+          "name": "Exercise the installed Safari with six product journeys",
+          "number": 7,
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 137916393610,
+      "name": "Account for distinct product and platform tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000541,
+      "stepCount": 10,
+      "failedSteps": [
+        {
+          "name": "Report the measured totals and separate release decisions",
+          "number": 6,
+          "conclusion": "failure"
+        }
+      ]
+    }
+  ],
+  "productCredit": 0,
+  "findings": [
+    "Static Intel Mac WebKit job succeeds after the run86 sample-action failure on unchanged relevant application/test bytes. This observation does not establish cause or repair.",
+    "Native Safari logs repeat the two empty datetime control failures and three singular/plural setup failures.",
+    "Windows component build fails before native execution. Its verified artifact is preserved separately.",
+    "Apple Silicon is cancelled with runner ID zero and no steps. Cause remains unknown."
+  ]
+}

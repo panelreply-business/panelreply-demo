@@ -3,7 +3,12 @@
 // This policy is opt-in and fail closed. It has no privileged or unconfined
 // fallback. Native deny tests must pass on the intended host before use there.
 const path = require('node:path');
+const fs = require('node:fs');
+const os = require('node:os');
 const BWRAP = '/usr/bin/bwrap';
+const RUNTIME_DIRECTORY = '/usr';
+const REPOSITORY_DIRECTORY = path.resolve(__dirname, '..');
+const NORMALIZER_SCRIPT = path.join(__dirname, 'ocr-preprocess.py');
 const SANDBOX_SCRIPT = '/app/ocr-preprocess.py';
 const ARCH_X86_64 = 0xC000003E;
 const RET_KILL_PROCESS = 0x80000000;
@@ -25,6 +30,37 @@ const DENIED_SYSCALLS = Object.freeze([
 
 function isolationSupported({ platform = process.platform, arch = process.arch, uid = process.getuid?.() } = {}) {
   return platform === 'linux' && arch === 'x64' && Number.isInteger(uid) && uid > 0;
+}
+
+function canonicalDirectory(input) {
+  if (typeof input !== 'string' || !input || !input.isWellFormed() || input.includes('\0') || !path.isAbsolute(input)) throw new TypeError('Invalid trusted directory.');
+  // Resolve the original spelling. Collapsing '..' first would lose the
+  // filesystem meaning of an earlier symlink. Missing paths fail closed.
+  const canonical = fs.realpathSync.native(input);
+  if (!fs.statSync(canonical).isDirectory()) throw new TypeError('Invalid trusted directory.');
+  return canonical;
+}
+
+function containsDirectory(parent, child) {
+  return parent === child || child.startsWith(parent.endsWith(path.sep) ? parent : parent + path.sep);
+}
+
+function requiredPathReason(privateDataDir) {
+  try {
+    const runtime = canonicalDirectory(RUNTIME_DIRECTORY);
+    // These roots come from the opened store, loaded module and local account.
+    // HTTP input cannot replace the repository or either source of home data.
+    const protectedDirectories = [privateDataDir, REPOSITORY_DIRECTORY, os.homedir(), os.userInfo().homedir].map(canonicalDirectory);
+    if (protectedDirectories.some(directory => containsDirectory(runtime, directory) || containsDirectory(directory, runtime))) return 'isolation_path_overlap';
+    // This one intentional repository-file bind must not redirect to another
+    // file. It does not grant access to the rest of the repository or home.
+    const script = fs.realpathSync.native(NORMALIZER_SCRIPT);
+    if (script !== path.join(protectedDirectories[1], 'workspace', 'ocr-preprocess.py') || !fs.statSync(script).isFile()) return 'isolation_path_context_unavailable';
+    return null;
+  } catch {
+    // Do not expose paths, account details or native filesystem diagnostics.
+    return 'isolation_path_context_unavailable';
+  }
 }
 
 function seccompProgram(arch = process.arch) {
@@ -57,12 +93,12 @@ function restrictedInvocation(binary, args) {
     '--uid', '65534', '--gid', '65534', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv',
     '--setenv', 'PATH', '/usr/bin:/bin', '--setenv', 'LANG', 'C.UTF-8', '--setenv', 'LC_ALL', 'C.UTF-8',
     '--setenv', 'OMP_THREAD_LIMIT', '1', '--setenv', 'OMP_NUM_THREADS', '1',
-    '--ro-bind', '/usr', '/usr', '--symlink', 'usr/bin', '/bin', '--symlink', 'usr/lib', '/lib', '--symlink', 'usr/lib64', '/lib64',
+    '--ro-bind', RUNTIME_DIRECTORY, '/usr', '--symlink', 'usr/bin', '/bin', '--symlink', 'usr/lib', '/lib', '--symlink', 'usr/lib64', '/lib64',
     '--proc', '/proc', '--dev', '/dev', '--dir', '/tmp', '--dir', '/app',
   ];
   let engineArgs = args;
   if (isNormalizer) {
-    const script = path.join(__dirname, 'ocr-preprocess.py');
+    const script = NORMALIZER_SCRIPT;
     if (args[0] !== '-I' || args[1] !== '-B' || args[2] !== script) throw new TypeError('Unsupported OCR normalizer invocation.');
     invocation.push('--ro-bind', script, SANDBOX_SCRIPT);
     engineArgs = ['-I', '-B', SANDBOX_SCRIPT, ...args.slice(3)];
@@ -71,4 +107,4 @@ function restrictedInvocation(binary, args) {
   return { binary: BWRAP, args: invocation, seccomp: seccompProgram() };
 }
 
-module.exports = { isolationSupported, restrictedInvocation, seccompProgram, DENIED_SYSCALLS };
+module.exports = { isolationSupported, requiredPathReason, restrictedInvocation, seccompProgram, DENIED_SYSCALLS };

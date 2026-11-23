@@ -1,5 +1,13 @@
 # Spreadsheet release acceptance
 
+## November 23 required-OCR path boundary and native repair
+
+The next manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e` adds 15 product regressions for required-OCR trusted-path checks. Private storage, repository and both home paths must resolve outside the runtime mount. The fixed normalizer and cached/per-stage checks reject redirection before native work. This repairs a configuration gap, with no observed native leak and no claim of sandbox denial or mount-topology pinning. Resource-limits behavior remains. [Scope and evidence](OCR_PATH_BOUNDARY_2026_11_23.md).
+
+The combined local suite passes 9,233 checks: 9,086 product and 147 excluded harness cases. These totals span both products. Safari's spreadsheet title contract now matches the actual plural product label, but all three native spreadsheet workflows still need execution on changed source. No download/storage/recovery pass follows from a harness check. [Local record](evidence/native-boundaries-local-2026-11-23.json) and [Safari repair](NATIVE_SAFARI_INPUT_REPAIR_2026_11_23.md).
+
+Final run86 passes all six fixed-spreadsheet suites with nine Linux and ten Intel Mac methods per engine. It preserves three native Safari setup failures. Windows component build fails before native execution in run87; its command-resolution repair still needs Windows. OCR remains 289/310 exact and native isolation remains BLOCKED. Actual Excel, representative photos, required platforms and operating approval remain open. [Run86](evidence/callback-scheduling-run86.json) and [Windows evidence](evidence/windows-native-component-run87.json).
+
 ## November 23 first native Safari spreadsheet execution
 
 Run86 on `13b8741` verifies the installed Safari session but all three spreadsheet methods fail setup: the test expects singular PanelReply Spreadsheet while the actual product label is PanelReply Spreadsheets. This test-contract correction is pending. No native download, storage or recovery acceptance follows from these failures. [Source-bound native evidence](evidence/native-safari-run86.json).

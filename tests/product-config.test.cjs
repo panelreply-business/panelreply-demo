@@ -130,7 +130,7 @@ for (const product of products) test(`PROD.start.${product.id} | only the select
   const dataDir = path.join(root(t), product.id);
   const ocr = require('../workspace/ocr.cjs'), assistant = require('../workspace/assistant.cjs');
   const originalServer = http.createServer, originalOcr = ocr.createOcrService, originalAssistant = assistant.createConversationOrchestrator;
-  let ocrCreated = 0, ocrClosed = 0, assistantCreated = 0, bound;
+  let ocrCreated = 0, ocrClosed = 0, assistantCreated = 0, bound, ocrOptions;
   class FakeServer extends EventEmitter {
     listen(port, host) { bound = { port, host }; }
     close(callback) { callback(); }
@@ -138,13 +138,14 @@ for (const product of products) test(`PROD.start.${product.id} | only the select
     closeAllConnections() {}
   }
   http.createServer = () => new FakeServer();
-  ocr.createOcrService = () => { ocrCreated++; return { recognizeImage() { throw new Error('must not run'); }, getOcrStatus() { throw new Error('must not run'); }, shutdown: async () => { ocrClosed++; } }; };
+  ocr.createOcrService = options => { ocrCreated++; ocrOptions = options; return { recognizeImage() { throw new Error('must not run'); }, getOcrStatus() { throw new Error('must not run'); }, shutdown: async () => { ocrClosed++; } }; };
   assistant.createConversationOrchestrator = options => { assistantCreated++; return originalAssistant(options); };
   t.after(() => { http.createServer = originalServer; ocr.createOcrService = originalOcr; assistant.createConversationOrchestrator = originalAssistant; });
   const running = product.start({ [product.prefix + '_DATA_DIR']: dataDir, PRODUCT: product.id === 'callback' ? 'spreadsheet' : 'callback' }, { product: 'combined' });
   try {
     assert.equal(running.config.product, product.id); assert.deepEqual(bound, { port: product.port, host: '127.0.0.1' });
     assert.equal(ocrCreated, product.id === 'spreadsheet' ? 1 : 0);
+    assert.deepEqual(ocrOptions, product.id === 'spreadsheet' ? { privateDataDir: path.dirname(running.store.filename) } : undefined);
     assert.equal(assistantCreated, product.id === 'callback' ? 1 : 0);
   } finally { await running.close(); }
   assert.equal(ocrClosed, ocrCreated);

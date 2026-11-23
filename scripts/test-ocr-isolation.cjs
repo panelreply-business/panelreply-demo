@@ -55,9 +55,9 @@ function pythonCheck(lines) {
   return ['import errno, os, resource, socket, sys', 'sys.stdin.buffer.read()', ...lines, `sys.stdout.write(${JSON.stringify(TSV)})`].join('\n');
 }
 
-async function workerAssertions(lines) {
+async function workerAssertions(lines, privateDataDir) {
   const injection = injectedWorker(pythonCheck(lines));
-  const service = createOcrService({ ...injection, isolation: 'required' });
+  const service = createOcrService({ ...injection, isolation: 'required', privateDataDir });
   try {
     const result = await service.recognizeImage(IMAGE);
     assert.equal(result.candidates[0].partNumber, 'ISOLATION-OK');
@@ -82,41 +82,42 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  const diagnostics = createReadinessDiagnostics();
-  const readiness = createOcrService({ isolation: 'required', spawnProcess: diagnostics.spawnProcess });
-  const engine = await readiness.getOcrStatus();
-  await readiness.shutdown();
-  if (!engine.available) {
-    const diagnostic = diagnostics.snapshot(engine.reason);
-    const status = diagnostic.classification.status;
-    output({ status, reason: engine.reason, cases: 0, engine, diagnostic, nativeDenyBehavior: 'NOT TESTED', privilegedRetry: false,
-      scope: 'Required readiness failed. Only an explicit namespace-denial diagnostic establishes an external host blocker. No policy change or unconfined fallback ran.' });
-    process.exitCode = status === 'FAIL' ? 1 : 2;
-    return;
-  }
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-isolation-synthetic-'));
-  fs.chmodSync(directory, 0o700);
-  const canary = path.join(directory, 'private-canary.txt');
-  fs.writeFileSync(canary, 'Synthetic host-only canary. No customer information.\n', { mode: 0o600 });
-  const parentNetworkNamespace = fs.readlinkSync('/proc/self/ns/net');
-  const results = [];
-  const check = async (name, task) => {
-    try { results.push({ test: name, status: 'PASS', ...await task() }); }
-    catch (error) { results.push({ test: name, status: 'FAIL', code: error.code || 'ASSERTION_FAILED', detail: error.message }); }
-  };
   try {
+    fs.chmodSync(directory, 0o700);
+    const diagnostics = createReadinessDiagnostics();
+    const readiness = createOcrService({ isolation: 'required', privateDataDir: directory, spawnProcess: diagnostics.spawnProcess });
+    let engine;
+    try { engine = await readiness.getOcrStatus(); }
+    finally { await readiness.shutdown(); }
+    if (!engine.available) {
+      const diagnostic = diagnostics.snapshot(engine.reason);
+      const status = diagnostic.classification.status;
+      output({ status, reason: engine.reason, cases: 0, engine, diagnostic, nativeDenyBehavior: 'NOT TESTED', privilegedRetry: false,
+        scope: 'Required readiness failed. Only an explicit namespace-denial diagnostic establishes an external host blocker. No policy change or unconfined fallback ran.' });
+      process.exitCode = status === 'FAIL' ? 1 : 2;
+      return;
+    }
+    const canary = path.join(directory, 'private-canary.txt');
+    fs.writeFileSync(canary, 'Synthetic host-only canary. No customer information.\n', { mode: 0o600 });
+    const parentNetworkNamespace = fs.readlinkSync('/proc/self/ns/net');
+    const results = [];
+    const check = async (name, task) => {
+      try { results.push({ test: name, status: 'PASS', ...await task() }); }
+      catch (error) { results.push({ test: name, status: 'FAIL', code: error.code || 'ASSERTION_FAILED', detail: error.message }); }
+    };
     await check('host-only canary unreadable and runtime/root mounts read only', async () => ({ ...await workerAssertions([
       'denied = False', 'try:', ` open(${JSON.stringify(canary)}, "rb").read()`, 'except OSError as error:', ' denied = error.errno in (errno.ENOENT, errno.EACCES)', 'assert denied',
       'for target in ("/usr/panelreply-isolation-synthetic", "/tmp/panelreply-isolation-synthetic"):',
       ' denied = False', ' try:', '  fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)', '  os.close(fd)',
       ' except OSError as error:', '  denied = error.errno == errno.EROFS', ' assert denied',
-    ]), hostCanaryRead: 'DENIED', writesToRuntimeAndRoot: 'DENIED_EROFS' }));
+    ], directory), hostCanaryRead: 'DENIED', writesToRuntimeAndRoot: 'DENIED_EROFS' }));
     await check('separate network namespace and IPv4 IPv6 Unix socket creation denied', async () => ({ ...await workerAssertions([
       `assert os.readlink('/proc/self/ns/net') != ${JSON.stringify(parentNetworkNamespace)}`,
       'for family in (socket.AF_INET, socket.AF_INET6, socket.AF_UNIX):', ' denied = False',
       ' try:', '  connection = socket.socket(family, socket.SOCK_STREAM)', '  connection.close()',
       ' except OSError as error:', '  denied = error.errno == errno.EPERM', ' assert denied',
-    ]), networkNamespace: 'DIFFERENT', socketCreation: 'DENIED_EPERM', connectionAttempts: 0 }));
+    ], directory), networkNamespace: 'DIFFERENT', socketCreation: 'DENIED_EPERM', connectionAttempts: 0 }));
     await check('nonroot identity no capabilities no privilege escalation no worker forks and process bounds', async () => ({ ...await workerAssertions([
       'assert os.getuid() == 65534 and os.getgid() == 65534',
       'status = dict(line.split(":", 1) for line in open("/proc/self/status") if ":" in line)',
@@ -127,9 +128,9 @@ async function main() {
       `assert resource.getrlimit(resource.RLIMIT_CPU) == (${LIMITS.nativeCpuSeconds}, ${LIMITS.nativeCpuSeconds})`,
       `assert resource.getrlimit(resource.RLIMIT_NOFILE) == (${LIMITS.nativeOpenFiles}, ${LIMITS.nativeOpenFiles})`,
       'assert resource.getrlimit(resource.RLIMIT_CORE) == (0, 0)', 'assert resource.getrlimit(resource.RLIMIT_FSIZE) == (0, 0)',
-    ]), uid: 65534, gid: 65534, effectiveCapabilities: 0, noNewPrivileges: true, identityChanges: 'DENIED', workerFork: 'DENIED', resourceBounds: 'ENFORCED' }));
+    ], directory), uid: 65534, gid: 65534, effectiveCapabilities: 0, noNewPrivileges: true, identityChanges: 'DENIED', workerFork: 'DENIED', resourceBounds: 'ENFORCED' }));
     await check('actual image recognition and normalization execute inside the required worker', async () => {
-      const service = createOcrService({ isolation: 'required' });
+      const service = createOcrService({ isolation: 'required', privateDataDir: directory });
       try {
         const result = await service.recognizeImage(IMAGE);
         assert.equal(result.candidates[0].partNumber, 'DEMO-1001');
@@ -141,7 +142,7 @@ async function main() {
       await check(`${mode} terminates the wrapper and its actual namespace child`, async () => {
         const controller = new AbortController();
         const injection = injectedWorker('import sys\nsys.stdin.buffer.read()\nwhile True: pass', mode === 'cancel' ? () => controller.abort() : undefined);
-        const service = createOcrService({ ...injection, isolation: 'required', recognitionTimeoutMs: 2000 });
+        const service = createOcrService({ ...injection, isolation: 'required', privateDataDir: directory, recognitionTimeoutMs: 2000 });
         try {
           await assert.rejects(service.recognizeImage(IMAGE, { signal: controller.signal }), error => error.code === (mode === 'cancel' ? 'OCR_CANCELLED' : 'OCR_TIMEOUT'));
           assert.equal(injection.records.length, 1);
@@ -154,11 +155,11 @@ async function main() {
         } finally { await service.shutdown(); }
       });
     }
+    const failures = results.filter(result => result.status === 'FAIL').length;
+    output({ status: failures ? 'FAIL' : 'PASS', cases: results.length, failures, engine, results,
+      scope: 'Synthetic native deny tests on this test host only. Does not approve any hosted service or prove isolation on a different kernel/runtime.', privilegedRetry: false });
+    if (failures) process.exitCode = 1;
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
-  const failures = results.filter(result => result.status === 'FAIL').length;
-  output({ status: failures ? 'FAIL' : 'PASS', cases: results.length, failures, engine, results,
-    scope: 'Synthetic native deny tests on this test host only. Does not approve any hosted service or prove isolation on a different kernel/runtime.', privilegedRetry: false });
-  if (failures) process.exitCode = 1;
 }
 
 main().catch(error => { output({ status: 'FAIL', code: error.code || 'ISOLATION_TEST_FAILED', detail: error.message }); process.exitCode = 1; });

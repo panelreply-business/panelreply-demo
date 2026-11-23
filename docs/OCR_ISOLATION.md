@@ -19,10 +19,13 @@ The existing private local application continues to use resource limits by defau
 The internal factory accepts:
 
 ```js
-const service = createOcrService({ isolation: 'required' });
+const service = createOcrService({
+  isolation: 'required',
+  privateDataDir: require('node:path').dirname(store.filename),
+});
 ```
 
-This option is not accepted from HTTP input. Before any namespace or mount invocation, it reads only `/usr/bin/bwrap --version` through the existing process limits, with no image input, a 1 KiB combined stdout/stderr limit and the existing readiness deadline. It requires a stable numeric upstream version of at least 0.12.0. Older, prerelease, vendor-suffixed and malformed banners fail closed with `isolation_dependency_unsupported`. Missing, failed, oversized or timed-out reads fail with `isolation_dependency_unavailable`. The dependency check repeats when the readiness cache expires. It does not prove the installed binary's authenticity or successful OS isolation.
+These options are not accepted from HTTP input. `store` must be the already-opened private store. The application entrypoints supply its actual directory to the factory while retaining the existing resource-limits mode. Required mode first checks the trusted filesystem context described below. Before any namespace or mount invocation, it then reads only `/usr/bin/bwrap --version` through the existing process limits, with no image input, a 1 KiB combined stdout/stderr limit and the existing readiness deadline. It requires a stable numeric upstream version of at least 0.12.0. Older, prerelease, vendor-suffixed and malformed banners fail closed with `isolation_dependency_unsupported`. Missing, failed, oversized or timed-out reads fail with `isolation_dependency_unavailable`. The dependency check repeats when the readiness cache expires. It does not prove the installed binary's authenticity or successful OS isolation.
 
 The gate addresses [CVE-2026-87766](https://ubuntu.com/security/CVE-2026-87766), a sandbox-setup symlink flaw fixed upstream in 0.12.0. Ubuntu's [USN-8779-2](https://ubuntu.com/security/notices/USN-8779-2) states that its 0.9.0-1ubuntu0.3 update reverted the fix. Existing run 67/68 evidence remains historical evidence for that older dependency. No package or host policy was changed by this gate.
 
@@ -36,12 +39,26 @@ The existing `resource-limits` mode remains explicit in the factory implementati
 - Fixed `/usr/bin/bwrap`, launched through the existing `/usr/bin/prlimit` limits. No shell, executable selection, path selection or environment inheritance from an HTTP request.
 - Separate required user, PID, network, IPC, UTS and cgroup namespaces. No `try` namespace options and no shared-network fallback.
 - UID/GID 65534 inside the worker, dropped capabilities, a new session and `--die-with-parent`.
-- A read-only `/usr` runtime, fixed library symlinks, namespace-local `/proc`, minimal `/dev` and an empty read-only root. The repository, private database, home directory and host temporary files are not mounted.
+- A read-only `/usr` runtime, fixed library symlinks, namespace-local `/proc`, minimal `/dev` and an empty read-only root. The protected repository, private data and home directory paths must not overlap the runtime mount. The fixed normalizer script is the one intended repository-file exception. Host temporary files receive no separate mount.
 - The normalizer gets only its fixed script mounted at `/app/ocr-preprocess.py`. Python runs with `-I -B` and fixed arguments. Input and output use pipes.
 - A fixed x86_64 seccomp filter blocks socket operations, process creation, identity changes, cross-process access, namespace/mount changes, kernel modules, keyrings, io_uring and other listed privileged interfaces. Other architectures and the x32 ABI are killed rather than interpreted using the wrong syscall numbers.
 - All existing address-space, CPU, file, descriptor, image, output, wall-time, concurrency, cancellation and shutdown limits remain.
 
 The filter is a targeted deny policy combined with namespaces and read-only mounts. It is not a syscall allowlist, a dependency vulnerability scan or proof against every native-library exploit. Keep Tesseract, Leptonica, Python, Pillow, bubblewrap and the host kernel maintained. Do not assume the policy works on a host where it has not been tested.
+
+## Trusted filesystem context
+
+Required mode resolves the runtime mount, the opened store directory, the loaded repository, the environment-derived home and the OS account home. Each directory must already exist. Input must be an absolute, nonempty, well-formed string without NUL bytes. Native `realpath` resolves the original spelling before any lexical collapse of `..`, then a directory check verifies the result. Missing leaves, broken links, link loops, permission errors and nondirectory components fail closed. The factory never substitutes a guessed nearest existing parent.
+
+Neither a protected directory inside `/usr` nor a protected ancestor containing `/usr` is supported. An installation under `/usr`, or a home configured there, therefore cannot use required mode. Component boundaries distinguish `/usr` from a separate `/usr-adjacent` directory. Existing private-storage ownership, permission and link restrictions still apply independently.
+
+The normalizer must be a regular file at exactly `workspace/ocr-preprocess.py` beneath the canonical loaded repository. A redirected script bind is refused. Repository and home roots come from the running module and local account APIs, not caller-supplied replacement roots. The server derives the data directory from `store.filename`, not an HTTP field.
+
+The check runs before even the dependency-version child, before every later child, before cached readiness reuse, and before a successful readiness result. Failures return only the fixed reasons `isolation_path_overlap` or `isolation_path_context_unavailable`. The native verifier classifies these as configuration FAIL with no native denial cases claimed. Existing namespace-denial classification remains unchanged. Resource-limits mode performs none of this path inspection.
+
+This is a configuration preflight for a trusted, stable host filesystem. [Node's filesystem documentation](https://nodejs.org/docs/latest-v24.x/api/fs.html#fsrealpathpath-options-callback) states that canonical names are not unique through bind mounts or hard links. These checks do not establish the absence of such aliases, pin mount-source handles, prevent concurrent privileged path replacement, or establish the contents or authenticity of `/usr`. Operators must keep private content and aliases out of the runtime tree. Native denial tests on the intended host remain required.
+
+[The focused repair record](OCR_PATH_BOUNDARY_2026_11_23.md) distinguishes reproduced factory failures from unexecuted native behavior.
 
 ## Native verification
 
@@ -60,7 +77,7 @@ The verifier uses only checked-in synthetic labels and a newly created synthetic
 5. Cancellation leaves neither the wrapper nor its recorded namespace child alive when the operation returns.
 6. Timeout leaves neither process alive when the operation returns.
 
-The canary is deleted after the tests. Rejected dependency versions and known dependency/configuration errors return `FAIL`, exit 1, with zero deny cases claimed. Namespace restrictions and indeterminate startup failures return `BLOCKED`, exit 2. Failed assertions return `FAIL`, exit 1. All six cases must pass to return `PASS`, exit 0. CI must preserve the result JSON and distinguish BLOCKED from PASS.
+The synthetic private directory is created before readiness and supplied to every required-mode service. It and any canary are deleted on early readiness failure and after the tests. Rejected dependency versions and known dependency/configuration errors return `FAIL`, exit 1, with zero deny cases claimed. Namespace restrictions and indeterminate startup failures return `BLOCKED`, exit 2. Failed assertions return `FAIL`, exit 1. All six cases must pass to return `PASS`, exit 0. CI must preserve the result JSON and distinguish BLOCKED from PASS.
 
 ## Primary implementation references
 

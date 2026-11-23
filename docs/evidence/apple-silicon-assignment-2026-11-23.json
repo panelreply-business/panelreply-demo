@@ -1,0 +1,172 @@
+{
+  "format": "panelreply-apple-silicon-assignment-investigation",
+  "version": 1,
+  "recordedAt": "2026-11-23 18:25:43 UTC",
+  "status": "CAUSE_UNCONFIRMED_NO_LABEL_CORRECTION_SUPPORTED",
+  "repository": {
+    "id": "1461477265",
+    "name": "panelreply-business/panelreply-demo",
+    "visibility": "public",
+    "ownerType": "User",
+    "archived": false,
+    "defaultBranch": "main"
+  },
+  "workflow": {
+    "headCommit": "9264d2a3575889c6b39140554fc767caf6e6a7ad",
+    "sha256": "dc079d8538b891ceeb70c1d1c380bd42108b16ffa6440f3a536f80e393048359",
+    "job": "apple-silicon-release",
+    "runsOn": "macos-15",
+    "timeoutMinutes": 35,
+    "topLevelConcurrencyPresent": false,
+    "jobConcurrencyPresent": false,
+    "needsPresent": false,
+    "strategyPresent": false,
+    "environmentPresent": false,
+    "architectureAssertion": "node -e \"if (process.platform !== 'darwin' || process.arch !== 'arm64') throw new Error('Expected actual macOS arm64'); console.log(process.platform, process.arch, process.version)\"\nsw_vers\n"
+  },
+  "historicalObservations": [
+    {
+      "runNumber": 83,
+      "runId": 45217347462,
+      "jobId": 137841954965,
+      "labels": [
+        "macos-26"
+      ],
+      "metadata": "/tmp/panelreply-run83-final-metadata.json",
+      "metadataSha256": "7ed80e592af1f1a37b8d492d5f47dea7ce641e3036668c43625a274ca684870f",
+      "capturedAt": null,
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runnerId": 0,
+      "stepCount": 0,
+      "createdAt": null,
+      "startedAt": null,
+      "completedAt": null,
+      "jobUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45217347462/job/137841954965",
+      "supplementaryEvidence": {
+        "path": "/tmp/panelreply-run83-final-evidence.json",
+        "sha256": "bc527df155640d2c18ca19a3c320464e5b7f414a7557abcbbc35d21141906ef6",
+        "observation": {
+          "jobId": 137841954965,
+          "labels": [
+            "macos-26"
+          ],
+          "status": "completed",
+          "conclusion": "cancelled",
+          "runnerId": 0,
+          "steps": 0,
+          "productExecutions": 0,
+          "reason": "Cancelled before runner assignment. The underlying unassigned-runner cause remains unconfirmed. This is unexecuted coverage, not a product failure or pass."
+        }
+      }
+    },
+    {
+      "runNumber": 84,
+      "runId": 45225565320,
+      "jobId": 137870996914,
+      "labels": [
+        "macos-15"
+      ],
+      "metadata": "/tmp/panelreply-run84-final-metadata.json",
+      "metadataSha256": "672f8c127caf4ee0410183f0b02b1913d551ebb6a91d7a8bd583a0c49c4b851a",
+      "capturedAt": "2026-11-23T17:55:50.973Z",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runnerId": 0,
+      "stepCount": 0,
+      "createdAt": "2026-11-23T17:14:58Z",
+      "startedAt": "2026-11-23T17:14:58Z",
+      "completedAt": "2026-11-23T17:30:51Z",
+      "jobUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45225565320/job/137870996914"
+    },
+    {
+      "runNumber": 85,
+      "runId": 45228816564,
+      "jobId": 137882485411,
+      "labels": [
+        "macos-15"
+      ],
+      "metadata": "/tmp/panelreply-run85-final-metadata.json",
+      "metadataSha256": "7d16d2278d84b594b056dac99f6053b211ce01ceb8b523662f58c12939a56284",
+      "capturedAt": "2026-11-23T17:55:51.280Z",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runnerId": 0,
+      "stepCount": 0,
+      "createdAt": "2026-11-23T17:32:44Z",
+      "startedAt": "2026-11-23T17:32:44Z",
+      "completedAt": "2026-11-23T17:47:45Z",
+      "jobUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45228816564/job/137882485411"
+    },
+    {
+      "runNumber": 86,
+      "runId": 45233837607,
+      "jobId": 137900160312,
+      "labels": [
+        "macos-15"
+      ],
+      "metadata": "/tmp/panelreply-run86-updated-metadata.json",
+      "metadataSha256": "74876f8c5a74848cc2c02e296b4720f9876369eeac3608de559a6c357b5de735",
+      "capturedAt": "2026-11-23T18:17:35.830Z",
+      "status": "queued",
+      "conclusion": null,
+      "runnerId": 0,
+      "stepCount": 0,
+      "createdAt": "2026-11-23T18:01:06Z",
+      "startedAt": "2026-11-23T18:01:06Z",
+      "completedAt": null,
+      "jobUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45233837607/job/137900160312"
+    }
+  ],
+  "latestNormalizedRead": {
+    "retrieval": "GitHub fetch_workflow_run_jobs, latest attempt first page",
+    "returnedJobs": 30,
+    "arm": [
+      {
+        "id": 137900160312,
+        "name": "Apple Silicon contracts and selected products",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "run_id": 45233837607,
+        "logs_url": null,
+        "steps": null
+      }
+    ]
+  },
+  "freshReadLimits": "The normalized fresh job result does not retain labels, runner IDs or timestamps. Those fields come only from preserved full metadata snapshots. No billing, settings, policy, cancellation, retry or workflow mutation was requested.",
+  "officialReferences": [
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "finding": "Standard public and private tables list macos-15 and macos-26 for arm64. Public standard usage is available without a larger-runner label."
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/limits",
+      "finding": "Generic macOS concurrency limits and possible demand delays are documented. No account-specific limit or causal reason was established."
+    }
+  ],
+  "findings": [
+    "Repository visibility is public, owner type User",
+    "Recorded macos-26 and macos-15 labels are documented standard arm64 labels",
+    "Current job requests a single scalar macos-15 label and preserves explicit Darwin/arm64 runtime assertions",
+    "No configured concurrency cancellation, job dependency, strategy matrix or environment gate in this job establishes a source-level reason for the unassigned observations",
+    "No runner was observed assigned in the preserved metadata; architecture assertions and product tests did not execute",
+    "Run 86 is now cancelled in a fresh normalized connector read, separate from the preserved queued snapshot",
+    "Cancellation provenance and cause are absent from the examined job metadata; do not infer outage, quota or eligibility restriction"
+  ],
+  "proposedWorkflowChange": null,
+  "actionsTaken": {
+    "repositoryMetadataRead": true,
+    "workflowJobsRead": true,
+    "officialDocumentationRead": true,
+    "billingInspected": false,
+    "organizationPolicyInspected": false,
+    "runnerPurchase": false,
+    "jobCancellation": false,
+    "jobRetry": false,
+    "supportContact": false,
+    "rootEdits": false,
+    "workflowChange": false,
+    "testExecution": false
+  },
+  "releaseScope": "Unassigned Apple Silicon jobs supply no test credit. Physical-device validation and native macOS OCR remain separate open requirements."
+}

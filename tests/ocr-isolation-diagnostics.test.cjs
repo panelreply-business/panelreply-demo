@@ -104,6 +104,14 @@ test('a rejected dependency version is a prerequisite failure even when the vers
   }
 });
 
+test('trusted path rejection is a configuration failure with no native denial or host blocker claimed', () => {
+  for (const reason of ['isolation_path_overlap', 'isolation_path_context_unavailable']) {
+    for (const records of [[], [record('', { stage: 'isolation_version', exitCode: 0 })]]) {
+      assert.deepEqual(classify(records, reason), { kind: reason, confirmedExternalBlocker: false, status: 'FAIL' });
+    }
+  }
+});
+
 test('the observer retains all four fixed readiness stages after adding the version gate', () => {
   const children = [];
   const observer = createReadinessDiagnostics({ spawnProcess: () => { const child = fakeChild(); children.push(child); return child; } });

@@ -3,7 +3,8 @@
 const { spawn } = require('node:child_process');
 const path = require('node:path');
 const { performance } = require('node:perf_hooks');
-const { isolationSupported, restrictedInvocation } = require('./ocr-isolation.cjs');
+const { isolationSupported, requiredPathReason, restrictedInvocation } = require('./ocr-isolation.cjs');
+const ISOLATION_PATH_REASON = Symbol('isolationPathReason');
 
 const LIMITS = Object.freeze({
   imageBytes: 2 * 1024 * 1024,
@@ -315,7 +316,7 @@ function supportedIsolationVersion(output) {
   return Boolean(match && match[0] === output && (Number(match[1]) > 0 || Number(match[2]) >= 12));
 }
 
-function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.recognitionTimeoutMs, statusTimeoutMs = LIMITS.statusTimeoutMs, now = () => performance.now(), isolation = 'resource-limits' } = {}) {
+function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.recognitionTimeoutMs, statusTimeoutMs = LIMITS.statusTimeoutMs, now = () => performance.now(), isolation = 'resource-limits', privateDataDir } = {}) {
   // Injection exists for isolated process-failure tests, not HTTP callers or application settings.
   if (typeof spawnProcess !== 'function' || typeof now !== 'function' || !Number.isInteger(recognitionTimeoutMs) || recognitionTimeoutMs < 1 || recognitionTimeoutMs > LIMITS.recognitionTimeoutMs || !Number.isInteger(statusTimeoutMs) || statusTimeoutMs < 1 || statusTimeoutMs > LIMITS.statusTimeoutMs || !['resource-limits', 'required'].includes(isolation)) throw new TypeError('Invalid local OCR service options.');
   let activeRecognition = false, processingImage = false, statusCache = null, statusPromise = null;
@@ -323,9 +324,20 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
   const lifetime = new AbortController();
   const pendingProcesses = new Set();
 
+  function requiredPathError() {
+    if (isolation !== 'required') return null;
+    const reason = requiredPathReason(privateDataDir);
+    if (!reason) return null;
+    const error = new OcrError('OCR_UNAVAILABLE');
+    error[ISOLATION_PATH_REASON] = reason;
+    return error;
+  }
+
   function runProcess(args, { input, signal, timeoutMs, maxOutputBytes, outputBudget, normalizer = false, binaryOutput = false, isolationVersionProbe = false } = {}) {
     signal = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
     if (signal?.aborted) return Promise.reject(new OcrError('OCR_CANCELLED'));
+    const pathError = requiredPathError();
+    if (pathError) return Promise.reject(pathError);
     let markSettled;
     const settled = new Promise(resolve => { markSettled = resolve; });
     pendingProcesses.add(settled);
@@ -403,6 +415,8 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
   async function getOcrStatus() {
     if (closed) return { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'service_shutdown' };
     if (isolation === 'required' && !isolationSupported()) return { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'isolation_unsupported' };
+    const pathError = requiredPathError();
+    if (pathError) return { available: false, engine: 'tesseract', version: null, language: 'eng', reason: pathError[ISOLATION_PATH_REASON] };
     if (statusCache && (now() - statusCache.at < LIMITS.statusCacheMs || processingImage)) return { ...statusCache.value };
     if (statusPromise) return { ...await statusPromise };
     statusPromise = (async () => {
@@ -412,7 +426,8 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
           let dependencyVersion;
           try {
             dependencyVersion = await runProcess([], { isolationVersionProbe: true, timeoutMs: statusTimeoutMs, maxOutputBytes: 1024 });
-          } catch {
+          } catch (error) {
+            if (error[ISOLATION_PATH_REASON]) throw error;
             return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'isolation_dependency_unavailable' };
           }
           if (!supportedIsolationVersion(dependencyVersion)) return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'isolation_dependency_unsupported' };
@@ -428,13 +443,16 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         try {
           normalizer = JSON.parse(await runProcess(['--probe'], { normalizer: true, timeoutMs: statusTimeoutMs, maxOutputBytes: 1024 }));
           if (normalizer.method !== NORMALIZER_METHOD || !/^\d+\.\d+\.\d+$/.test(normalizer.pillowVersion)) throw new Error('normalizer unavailable');
-        } catch {
+        } catch (error) {
+          if (error[ISOLATION_PATH_REASON]) throw error;
           return { available: false, engine: 'tesseract', version, language: 'eng', reason: 'normalizer_unavailable' };
         }
+        const pathError = requiredPathError();
+        if (pathError) throw pathError;
         return { available: true, engine: 'tesseract', version, language: 'eng', normalizer: { method: NORMALIZER_METHOD, pillowVersion: normalizer.pillowVersion }, orientationAvailable,
           ...(isolation === 'required' ? { isolation: 'bubblewrap-seccomp' } : {}) };
       } catch (error) {
-        return { available: false, engine: 'tesseract', version, language: 'eng', reason: isolation === 'required' ? 'isolation_unavailable' : error.code === 'OCR_UNAVAILABLE' ? 'engine_unavailable' : 'engine_check_failed' };
+        return { available: false, engine: 'tesseract', version, language: 'eng', reason: error[ISOLATION_PATH_REASON] || (isolation === 'required' ? 'isolation_unavailable' : error.code === 'OCR_UNAVAILABLE' ? 'engine_unavailable' : 'engine_check_failed') };
       }
     })();
     try {

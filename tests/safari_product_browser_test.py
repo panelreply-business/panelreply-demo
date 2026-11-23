@@ -9,6 +9,7 @@ API readbacks supplement UI actions and never stand in for a browser download.
 
 import base64
 import csv
+from datetime import datetime
 import hashlib
 import io
 import json
@@ -127,6 +128,7 @@ class SafariProductHarness(unittest.TestCase):
         self.wait = self.native.wait_type(self.driver, 10, poll_frequency=0.1)
         self.download_evidence = []
         self.readback_evidence = []
+        self.input_evidence = []
         self.driver.get(self.origin + "/login")
         self.driver.delete_all_cookies()
         type(self).counter += 1
@@ -266,9 +268,88 @@ class SafariProductHarness(unittest.TestCase):
 
     def task_time(self, value):
         self.fill("#task-time-zone", "America/Detroit")
-        # Native WebDriver value entry. Never inject a date value or a synthetic
-        # input event to turn an unsupported control into a passing interaction.
-        self.fill("#task-local-time", value)
+        self.assertRegex(value, r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$")
+        local = datetime.fromisoformat(value)
+        element = self.element("#task-local-time")
+        self.wait.until(lambda _driver: element.is_enabled())
+        observation = {"selector": "#task-local-time", "requestedValue": value,
+                       "requestedTimeZone": "America/Detroit", "status": "ATTEMPTED",
+                       "transport": "native WebDriver segmented keyboard entry"}
+        self.input_evidence.append(observation)
+        # Inspect the existing page contract. This does not change the browser's
+        # locale, the control, or a value. Intl describes the language context;
+        # the exact native-control readback below remains the acceptance check.
+        control = self.driver.execute_script("""
+            const element = arguments[0], style = getComputedStyle(element);
+            const lang = element.closest('[lang]')?.getAttribute('lang') || '';
+            const formatter = new Intl.DateTimeFormat(lang || undefined, {
+                dateStyle: 'short', timeStyle: 'short', timeZone: 'UTC'
+            });
+            return {type: element.type, step: element.step, lang,
+                direction: style.direction, writingMode: style.writingMode,
+                browserLanguage: navigator.language, browserLanguages: navigator.languages,
+                format: formatter.resolvedOptions(),
+                fieldOrder: formatter.formatToParts(new Date('2006-11-22T23:45:00Z'))
+                    .filter(part => part.type !== 'literal').map(part => part.type)};
+        """, element)
+        observation["control"] = control
+        self.assertEqual({name: control[name] for name in ("type", "step", "lang", "direction", "writingMode")},
+                         {"type": "datetime-local", "step": "60", "lang": "en",
+                          "direction": "ltr", "writingMode": "horizontal-tb"})
+        self.assertEqual(control["fieldOrder"], ["month", "day", "year", "hour", "minute", "dayPeriod"])
+        self.assertEqual({name: control["format"][name] for name in ("calendar", "numberingSystem", "hourCycle")},
+                         {"calendar": "gregory", "numberingSystem": "latn", "hourCycle": "h12"})
+        element.clear()
+        self.assertEqual(element.get_property("value"), "")
+        # WebKit's datetime-local keyboard regression uses separate fields and
+        # explicit Right keys. An ISO string is not a native field sequence.
+        # One command preserves focus between fields. Left keys first select
+        # the first field, even when a previous reschedule selected another one.
+        keys = self.native.keys
+        fields = [str(local.month), str(local.day), str(local.year),
+                  str(local.hour % 12 or 12), str(local.minute), "A" if local.hour < 12 else "P"]
+        sequence = [keys.ARROW_LEFT] * 6
+        for index, field in enumerate(fields):
+            if index:
+                sequence.append(keys.ARROW_RIGHT)
+            sequence.append(field)
+        sequence.append(keys.TAB)
+        observation["fields"] = fields
+        self.driver.execute_script("""
+            const element = arguments[0], events = [], types = ['keydown', 'keyup', 'input', 'change'];
+            const probe = {events, overflow: false, element};
+            probe.listener = event => {
+                if (events.length >= 128) { probe.overflow = true; return; }
+                events.push({type: event.type, key: event.key || null,
+                    trusted: event.isTrusted, value: element.value});
+            };
+            for (const type of types) element.addEventListener(type, probe.listener, true);
+            window.__panelreplyNativeDateProbe = probe;
+        """, element)
+        try:
+            element.send_keys(*sequence)
+        finally:
+            # Preserve a failed attempt too. These listeners only observe
+            # events. No value setters, synthetic events or fallback input.
+            observation.update(self.driver.execute_script("""
+                const probe = window.__panelreplyNativeDateProbe;
+                for (const type of ['keydown', 'keyup', 'input', 'change'])
+                    probe.element.removeEventListener(type, probe.listener, true);
+                delete window.__panelreplyNativeDateProbe;
+                return {events: probe.events, overflow: probe.overflow,
+                    observedValue: probe.element.value, activeElementId: document.activeElement?.id || null};
+            """))
+        self.assertEqual(observation["observedValue"], value, json.dumps(observation, ensure_ascii=False))
+        self.assertFalse(observation["overflow"])
+        self.assertTrue(observation["events"])
+        self.assertTrue(all(event["trusted"] for event in observation["events"]))
+        for event_type in ("keydown", "keyup"):
+            self.assertEqual(sum(event["type"] == event_type and event["key"] == "ArrowRight"
+                                 for event in observation["events"]), 5)
+        for event_type in ("input", "change"):
+            self.assertTrue(any(event["type"] == event_type and event["value"] == value
+                                for event in observation["events"]), event_type)
+        observation["status"] = "OBSERVED"
 
     def save_task(self, lead, expected_count, task_id=None, version=None):
         self.click("#save-callback-task")
@@ -472,7 +553,7 @@ class SafariCallbackBrowserTests(SafariProductHarness):
 
 class SafariSpreadsheetBrowserTests(SafariProductHarness):
     product_id = "spreadsheet"
-    product_label = "PanelReply Spreadsheet"
+    product_label = "PanelReply Spreadsheets"
     server_entry = "spreadsheet-server.cjs"
     home_path = "/panels"
 

@@ -10,6 +10,7 @@ const { PassThrough, Writable } = require('node:stream');
 const { inspectImage, parseTsv, expandedImageSize, OcrError, LIMITS, createOcrService } = require('../workspace/ocr.cjs');
 
 const fixture = name => fs.readFileSync(path.join(__dirname, 'fixtures/panels', name));
+const ISOLATION_PRIVATE_DIR = path.join(__dirname, 'fixtures/panels');
 const HEADER = 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext';
 function tsv(lines, confidence = 95) {
   return HEADER + '\n' + lines.flatMap((line, lineIndex) => line.split(' ').map((word, wordIndex) =>
@@ -875,7 +876,7 @@ test('shutdown cancels and reaps active normalization without starting an OCR en
 
 test('required isolation checks the fixed dependency version before wrapping engine probes or image stages', async () => {
   const fake = fakeSpawner();
-  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
   assert.equal((await service.getOcrStatus()).isolation, 'bubblewrap-seccomp');
   const result = await service.recognizeImage(tinyPng());
   assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
@@ -899,7 +900,7 @@ test('required isolation checks the fixed dependency version before wrapping eng
 
 test('a rejected isolation launcher fails closed without a privileged or resource-only retry', async () => {
   const fake = fakeSpawner({ probe: call => call.finish('', 1) });
-  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
   const status = await service.getOcrStatus();
   assert.equal(status.available, false);
   assert.equal(status.reason, 'isolation_unavailable');
@@ -914,7 +915,7 @@ test('a rejected isolation launcher fails closed without a privileged or resourc
 test('required isolation rejects vulnerable, prerelease and malformed versions before namespace setup', async () => {
   for (const isolationVersion of ['bubblewrap 0.9.0\n', 'bubblewrap 0.11.99\n', 'bubblewrap 0.12.0-rc1\n', 'bubblewrap 0.12.0+vendor\n', 'bubblewrap 0.12\n', 'bubblewrap 00.12.0\n', 'bubblewrap 0.12.0\n\n', 'bubblewrap 0.12.0\nPRIVATE EXTRA OUTPUT', 'PRIVATE INVALID OUTPUT', '']) {
     const fake = fakeSpawner({ isolationVersion });
-    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
     try {
       const status = await service.getOcrStatus();
       assert.equal(status.available, false);
@@ -932,7 +933,7 @@ test('required isolation rejects vulnerable, prerelease and malformed versions b
 test('required isolation accepts the fixed upstream release and later stable numeric versions', async () => {
   for (const isolationVersion of ['bubblewrap 0.12.0\n', 'bubblewrap 0.12.1\r\n', 'bubblewrap 0.13.0', 'bubblewrap 1.0.0\n']) {
     const fake = fakeSpawner({ isolationVersion });
-    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
     try {
       assert.equal((await service.getOcrStatus()).available, true);
       assert.equal(fake.calls.length, 4);
@@ -946,7 +947,7 @@ test('required isolation accepts the fixed upstream release and later stable num
 test('a missing or failed isolation version read cannot reach the namespace launcher', async () => {
   for (const options of [{ spawnError: 'ENOENT' }, { isolationProbe: call => call.finish('', 1) }, { isolationProbe: call => call.finish(Buffer.from([0xff])) }]) {
     const fake = fakeSpawner(options);
-    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
     try {
       assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unavailable');
       await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_UNAVAILABLE', 503));
@@ -959,7 +960,7 @@ test('a missing or failed isolation version read cannot reach the namespace laun
 test('the isolation version read bounds combined stdout and stderr and reaps an oversized child', async () => {
   for (const isolationProbe of [call => call.child.stdout.write(Buffer.alloc(1025, 65)), call => { call.child.stdout.write('bubblewrap 0.12.0\n'); call.child.stderr.write(Buffer.alloc(1024, 65)); }]) {
     const fake = fakeSpawner({ isolationProbe, killDelay: 10 });
-    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
     try {
       assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unavailable');
       assert.equal(fake.calls.length, 1);
@@ -971,7 +972,7 @@ test('the isolation version read bounds combined stdout and stderr and reaps an 
 
 test('the isolation version deadline kills and reaps the probe before returning unavailable', async () => {
   const fake = fakeSpawner({ isolationProbe: () => {}, killDelay: 10 });
-  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', statusTimeoutMs: 10 });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR, statusTimeoutMs: 10 });
   try {
     assert.equal((await service.getOcrStatus()).reason, 'isolation_dependency_unavailable');
     assert.equal(fake.calls.length, 1);
@@ -982,7 +983,7 @@ test('the isolation version deadline kills and reaps the probe before returning 
 
 test('shutdown cancels and reaps an in-flight isolation version read without starting namespaces', async () => {
   const fake = fakeSpawner({ isolationProbe: () => {}, killDelay: 10 });
-  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required' });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR });
   const pending = service.getOcrStatus();
   await new Promise(resolve => setImmediate(resolve));
   await service.shutdown();
@@ -995,7 +996,7 @@ test('shutdown cancels and reaps an in-flight isolation version read without sta
 test('readiness refresh rechecks the isolation dependency and rejects a downgraded version', async () => {
   let clock = 0, probes = 0;
   const fake = fakeSpawner({ isolationProbe: call => call.finish(probes++ === 0 ? 'bubblewrap 0.12.0\n' : 'bubblewrap 0.9.0\n') });
-  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', now: () => clock });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess, isolation: 'required', privateDataDir: ISOLATION_PRIVATE_DIR, now: () => clock });
   try {
     assert.equal((await service.getOcrStatus()).available, true);
     clock += LIMITS.statusCacheMs + 1;

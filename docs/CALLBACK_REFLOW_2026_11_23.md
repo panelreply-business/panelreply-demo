@@ -1,5 +1,11 @@
 # Callback enlarged-text reflow
 
+## Verified run86 outcome
+
+Committed `13b8741` passes the complete 15-method selected callback suite in Chromium, Firefox and WebKit on Linux and Intel Mac. The enlarged-text journey retains 320px geometry, doubled root/body/control fonts, request-control bounds, draft-disable/discard behavior, native Tab/ShiftTab and visible focus assertions. Linux and Mac WebKit both pass. This closes the recorded reflow/focus failure for those source/platform scopes. [Verified final record](evidence/callback-scheduling-run86.json).
+
+The earlier failures and candidate reasoning below remain historical evidence. This result does not establish physical devices, native Safari or forced-colors operation.
+
 ## Reproduced failure
 
 [Run84](https://github.com/panelreply-business/panelreply-demo/actions/runs/45225565320)

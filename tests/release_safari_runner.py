@@ -206,6 +206,7 @@ class SafariResult(EvidenceResult):
         record["observedViewport"] = getattr(test, "viewport", None)
         record["downloadEvidence"] = getattr(test, "download_evidence", [])
         record["readbackEvidence"] = getattr(test, "readback_evidence", [])
+        record["inputEvidence"] = getattr(test, "input_evidence", [])
         super().stopTest(test)
 
 
@@ -223,7 +224,7 @@ def missing_record(test):
     return {"id": test.id(), "status": "NOT_RUN", "durationMs": 0,
             "platformKey": platform_key(), "profile": "desktop", "emulated": False,
             "productScope": test.product_id, "nativeSessionSha256": None,
-            "observedViewport": None, "downloadEvidence": [], "readbackEvidence": []}
+            "observedViewport": None, "downloadEvidence": [], "readbackEvidence": [], "inputEvidence": []}
 
 
 def main():

@@ -27,7 +27,10 @@ if (-not [IO.Path]::IsPathFullyQualified($OutputDirectory) -or
     $Destination -eq $Repository -or (Test-Path -LiteralPath $Destination)) {
   throw 'Use a new absolute build directory outside the source checkout.'
 }
-$NodeExecutable = (Get-Command node -CommandType Application).Source
+# Multiple installations can be on PATH. Resolve the first application once,
+# then keep the reviewed version/hash checks on that exact executable. Never
+# concatenate CommandInfo.Source values or fall back after a pin mismatch.
+$NodeExecutable = (Get-Command node -All -CommandType Application | Select-Object -First 1).Source
 $ObservedNode = (& $NodeExecutable -p 'process.versions.node').Trim()
 if ($LASTEXITCODE -ne 0 -or $ObservedNode -ne $NodeVersion -or
     (Get-FileHash -LiteralPath $NodeExecutable -Algorithm SHA256).Hash.ToLowerInvariant() -ne $Pins.nodeExecutableSha256) {
@@ -35,8 +38,8 @@ if ($LASTEXITCODE -ne 0 -or $ObservedNode -ne $NodeVersion -or
 }
 $SourceBefore = (& $NodeExecutable (Join-Path $Repository 'scripts/test-evidence.cjs') --source | ConvertFrom-Json)
 if ($LASTEXITCODE -ne 0) { throw 'Could not capture the source manifest.' }
-$CMakeExecutable = (Get-Command cmake -CommandType Application).Source
-$TarExecutable = (Get-Command tar -CommandType Application).Source
+$CMakeExecutable = (Get-Command cmake -All -CommandType Application | Select-Object -First 1).Source
+$TarExecutable = (Get-Command tar -All -CommandType Application | Select-Object -First 1).Source
 $CMakeDescription = (& $CMakeExecutable --version) -join "`n"
 if ($LASTEXITCODE -ne 0 -or $CMakeDescription -notmatch '^cmake version ([0-9]+\.[0-9]+\.[0-9]+)' -or
     [version]$Matches[1] -lt [version]$Pins.minimumCMake) { throw 'CMake 3.27 or later is required for exact SDK selection.' }

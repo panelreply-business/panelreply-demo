@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+## November 23 reflow and mobile verification
+
+Final run86 on `13b8741` passes all six selected callback suites, 15/15 each, including Linux/Intel Mac WebKit at 320px with doubled text, request-control bounds, unsaved-task discard and native keyboard focus. Both emulated mobile engines pass the shared 40-method and fixed-callback 12-method suites. This verifies the scoped reflow/focus and completed-save/reopen repairs without browser-error suppression. It does not establish physical-device acceptance. [Final evidence](evidence/callback-scheduling-run86.json).
+
+Native Safari passes intake/status/persistence/sign-out but fails both scheduling methods on empty datetime control values. The next repair uses observed native segmented keyboard entry, trusted input/change events and exact value checks while retaining local/UTC/timezone, persistence, contact-hold and follow-up assertions. Its nine harness checks are not native execution. [Repair](NATIVE_SAFARI_INPUT_REPAIR_2026_11_23.md).
+
+The shared next-manifest local run passes 9,233 checks, including 9,086 product and 147 excluded harness cases. These are not callback-only totals. Native Safari, private Windows, remaining platforms and applicable provider/host/operating requirements remain open. CB-12 and the independent release decision remain incomplete. [Local record](evidence/native-boundaries-local-2026-11-23.json).
+
 ## November 23 first native Safari callback execution
 
 Run86 on `13b8741` starts the installed Safari session with verified browser/driver/host identity. Intake, status persistence and sign-out pass. Both scheduling-related methods fail because the test's native ISO typing leaves the datetime-local field empty. Native keyboard/control behavior requires investigation while exact local/UTC/timezone and persistence requirements remain. [Source-bound native evidence](evidence/native-safari-run86.json).
