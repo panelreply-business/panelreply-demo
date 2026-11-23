@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+Callback records three FAIL outcomes in installed Safari run91. These native failures remain open. [Source-bound verification](evidence/native-safari-run91-independent-2026-11-23.json).
+
+## November 23 callback receipt repair
+
+The scheduler preserves pending commands, drafts and retry keys until the returned parent/task data validates. Fresh receipts require the expected identities, revisions, schedule and outcome. Legitimate later-state replays remain accepted. The root same-source verification covers 9,283 distinct local checks across both products, including 11 new receipt regressions. This is the union of 9,274 full-run passes and exactly nine socket cases that were initially disabled and then passed with the existing setting enabled. Exclude 178 harness checks and do not add author/reviewer overlaps. [Root evidence](evidence/callback-receipts-root-integration-2026-11-23.json).
+
+The new browser journey is pending on the resulting commit. The separate request-edit receipt gap in `app.js` is the next product milestone. Native/platform/provider/host/operating gates remain open. Callback remains an independent NO-GO decision.
+
 ## November 23 native-control and receipt work
 
 The installed-Safari candidate uses native keyboard selection with trusted input/change observations, retaining all scheduling, contact-hold, persistence and downloaded-data assertions. Its local harness passes do not establish Safari acceptance. Actual changed-source execution remains pending. [Candidate](NATIVE_SAFARI_CONTROLS_2026_11_23.md).

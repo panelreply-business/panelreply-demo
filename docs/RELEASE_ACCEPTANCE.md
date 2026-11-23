@@ -1,5 +1,13 @@
 # Release acceptance
 
+## November 23 callback receipts and native run91
+
+The reviewed callback receipt repair has 9,283 distinct same-source local checks verified through the full run plus the exact nine initially disabled socket cases. This includes 9,105 product cases and 178 excluded harness checks. Its new browser journey still needs committed CI. [Local evidence](evidence/callback-receipts-root-integration-2026-11-23.json).
+
+Actual run91 on the preceding `1562c8e` source retains 13 Windows component PASS, two FAIL and incomplete cleanup. Ubuntu24 fails OCR readiness at loopback setup. Ubuntu26 reaches Python but cannot open the preprocessing script. Both remain BLOCKED with zero denial cases. [Native verification](evidence/run91-native-independent-verification-2026-11-23.json). Neither product imports the component or observation tools. Both independent product releases remain NO-GO. Public activation remains owner-controlled.
+
+Installed Safari on run91 records zero PASS, four FAIL and two ERROR outcomes. Root verifies both artifact ZIPs, both 200-entry source manifests, reported native identity stability and matching per-method session digests. Native selection still fails, and two upload journeys display the image-read error before a source is saved. These observations do not establish the original upload cause. [Native report verification](evidence/native-safari-run91-independent-2026-11-23.json).
+
 ## November 23 reviewed native-control candidate
 
 Candidate manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da` has reviewed Windows fixture and Safari control repairs, passive diagnostics and the unchanged-policy Ubuntu24/Ubuntu26 isolation comparison. The final affected local selection passes 155 checks; the prior full 9,261 run remains bound to its earlier source. No local native execution or release acceptance follows from harness passes. [Final local record](evidence/native-host-final-focused-2026-11-23.json).

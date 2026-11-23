@@ -1,5 +1,17 @@
 # PanelReply development progress
 
+## Callback receipt repair and native run91 findings — November 23, 2026
+
+The callback scheduler now validates the complete consumed parent/task receipt before clearing the draft or pending command. It binds update identity, exact fresh revisions and submitted action fields, while accepting later-state idempotency replays. Malformed parent history remains retryable. Independent review corrected extended-year chronology and readable legacy parent revisions without relaxing persisted task limits. The backend and product boundaries are unchanged. [Repair](CALLBACK_RECEIPTS_2026_11_23.md).
+
+Root integrated the reviewed patch on `1562c8e`. Manifest `63d709515f0a3c44fa9b4369cbc18e772119bd9f8465ee225ef844b4e5d1f05e` covers 200 files. The full run records 9,274 PASS and nine explicitly disabled socket SKIP outcomes. Enabling the existing socket setting and selecting exactly those nine cases yields nine PASS on the same source. The union verifies 9,283 distinct checks: 9,105 product and 178 excluded harness cases. All 9,094 prior product IDs remain, with 11 new receipt regressions. The original full and supplement outcomes stay separate. [Root evidence](evidence/callback-receipts-root-integration-2026-11-23.json). The added browser journey still needs the resulting commit's CI.
+
+Run91 tests the preceding native-control commit `1562c8e`, manifest `14b0b86f…`, through merge `26cf9a6f`. Root verifies every one of its 200 source entries, downloaded artifact digests, three native binaries/projects, configured toolchain, dependency manifests and stable before/after identities. Windows still has 13 PASS, two empty-DACL FAIL outcomes and incomplete cleanup. Adding OVERLAPPED did not resolve the fixture metadata opens, which still return Windows5. No native component acceptance or application import follows.
+
+Ubuntu24 remains BLOCKED at Bubblewrap loopback RTM_NEWADDR. Ubuntu26 passes engine version/language readiness but remains BLOCKED when Python cannot open `/app/ocr-preprocess.py` with EPERM. Both execute zero of the six denial cases. Host context does not establish profile attachment or justify policy/privilege changes. [Independent native verification](evidence/run91-native-independent-verification-2026-11-23.json). Run90 remains the latest fully reconciled release ledger until run91 closes. Both product decisions remain NO-GO.
+
+Installed Safari on run91 records zero PASS, four FAIL and two ERROR outcomes. Root verifies both artifact ZIPs, both 200-entry source manifests, reported native identity stability and matching per-method session digests. Native selection still fails, and two upload journeys display the image-read error before a source is saved. These observations do not establish the original upload cause. [Native report verification](evidence/native-safari-run91-independent-2026-11-23.json).
+
 ## Native controls and OCR host evidence — November 23, 2026
 
 This reviewed candidate follows `2882d4f` with executable/test/workflow/policy manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da` across 200 files. It repairs Windows empty-DACL fixture inspection/identity-bound cleanup and installed-Safari native select input. It adds passive Safari upload and Windows Firefox diagnostics, plus separate Ubuntu24/Ubuntu26 OCR host observations with unchanged worker policy and six-case verifier. Neither application imports the inactive Windows component or observation scripts. Actual native execution on this source remains pending.

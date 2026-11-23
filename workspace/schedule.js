@@ -38,6 +38,88 @@
       hour: 'numeric', minute: '2-digit', timeZoneName: 'shortOffset' }).format(new Date(value)) + ` (${timeZone})`;
   }
 
+  const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  const object = value => Boolean(value && typeof value === 'object' && !Array.isArray(value));
+  // Legacy request/audit records can still be read at the safe integer limit.
+  // Callback task records have a stricter persisted revision ceiling.
+  const revision = value => Number.isSafeInteger(value) && value >= 1;
+  const taskRevision = value => revision(value) && value < Number.MAX_SAFE_INTEGER;
+  const text = (value, limit) => typeof value === 'string' && value.length <= limit && value.isWellFormed()
+    && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value);
+  function timestamp(value) {
+    if (typeof value !== 'string') return false;
+    const instant = Date.parse(value);
+    return Number.isFinite(instant) && instant >= 0 && new Date(instant).toISOString() === value;
+  }
+  function contactBlockReason(lead) {
+    if (lead.optedOut || lead.contactPermission === 'opted_out') return 'contact_blocked';
+    if (lead.safetyHold) return 'safety_review_required';
+    if (lead.contactPermission !== 'requested_callback') return 'contact_permission_required';
+    if (lead.status === 'closed') return 'request_closed';
+    if (lead.status === 'needs_review') return 'request_review_required';
+    return null;
+  }
+  function validLeadReceipt(lead) {
+    if (!object(lead) || !UUID.test(lead.id) || !revision(lead.version)
+      || !timestamp(lead.createdAt) || !timestamp(lead.updatedAt) || Date.parse(lead.updatedAt) < Date.parse(lead.createdAt)
+      || !['new', 'needs_review', 'contacted', 'closed'].includes(lead.status)
+      || !['requested_callback', 'not_recorded', 'opted_out'].includes(lead.contactPermission)
+      || ['optedOut', 'safetyHold', 'contactAllowed'].some(key => typeof lead[key] !== 'boolean')
+      || lead.contactAllowed !== (!lead.optedOut && !lead.safetyHold && lead.contactPermission === 'requested_callback')) return false;
+    const fields = { customerName: 120, phone: 40, job: 2000, zip: 5, callbackWindow: 200, requestedWorkDate: 200, notes: 2000 };
+    if (Object.entries(fields).some(([key, limit]) => !text(lead[key], limit))
+      || !lead.customerName.trim() || !lead.phone.trim() || !lead.job.trim() || !/^\d{5}$/.test(lead.zip)) return false;
+    // These arrays are consumed by app.js before it reselects the request.
+    // Validate their entries before a successful receipt can clear the draft.
+    if (!Array.isArray(lead.conversation) || lead.conversation.length > 60 || lead.conversation.some(entry => !object(entry)
+      || !['customer', 'assistant'].includes(entry.role) || !text(entry.text, 2000) || !entry.text.trim())) return false;
+    if (!Array.isArray(lead.audit) || lead.audit.some(entry => !object(entry) || !text(entry.action, 100) || !entry.action
+      || !revision(entry.version) || entry.version > lead.version || !timestamp(entry.createdAt) || !object(entry.details)
+      || (entry.details.fields !== undefined && (!Array.isArray(entry.details.fields) || entry.details.fields.some(field => typeof field !== 'string'))))) return false;
+    return true;
+  }
+  function validTaskReceipt(task, lead) {
+    if (!object(task) || !UUID.test(task.id) || task.leadId !== lead.id || task.leadVersion !== lead.version || !taskRevision(task.version)
+      || !['callback', 'follow_up'].includes(task.kind) || !['scheduled', 'completed', 'cancelled'].includes(task.status)
+      || !timestamp(task.dueAt) || !timestamp(task.createdAt) || !timestamp(task.updatedAt)
+      || Date.parse(task.updatedAt) < Date.parse(task.createdAt) || Date.parse(task.updatedAt) > Date.parse(lead.updatedAt) || !text(task.notes, 2000)
+      || task.customerName !== lead.customerName || task.phone !== lead.phone || task.requestStatus !== lead.status
+      || task.blockReason !== contactBlockReason(lead) || task.contactAllowed !== (task.blockReason === null)
+      || typeof task.isDue !== 'boolean') return false;
+    try { zoneFormatter(task.timeZone); } catch (_) { return false; }
+    if (task.status === 'scheduled') return task.outcome === '' && task.completedAt === null && task.cancelledAt === null
+      && ['upcoming', 'due', 'overdue'].includes(task.dueState);
+    if (task.version < 2 || task.dueState !== null || task.isDue !== false) return false;
+    return task.status === 'completed'
+      ? ['reached', 'no_answer', 'voicemail', 'other'].includes(task.outcome) && task.completedAt === task.updatedAt && task.cancelledAt === null
+      : task.outcome === '' && task.cancelledAt === task.updatedAt && task.completedAt === null;
+  }
+  function validateSaveReceipt(result, command) {
+    const invalid = () => { throw new Error('The task save response was incomplete. Retry to confirm the result.'); };
+    if (!object(result) || typeof result.replayed !== 'boolean' || typeof result.created !== 'boolean'
+      || !validLeadReceipt(result.lead) || result.lead.id !== command.leadId || !validTaskReceipt(result.task, result.lead)) invalid();
+    const creating = command.method === 'POST', expectedVersion = creating ? 1 : command.body.version + 1;
+    const expectedLeadVersion = command.body.leadVersion + 1, task = result.task;
+    if (result.created !== (creating && !result.replayed) || (!creating && task.id !== command.taskId)
+      || task.version < expectedVersion || result.lead.version < expectedLeadVersion
+      || (!result.replayed && (task.version !== expectedVersion || result.lead.version !== expectedLeadVersion))) invalid();
+    if (task.kind !== (creating ? command.body.kind : command.taskBefore.kind)
+      || (!creating && task.createdAt !== command.taskBefore.createdAt)) invalid();
+    // A replay returns current state. Later rescheduling, completion, contact
+    // restrictions or cancellation may legitimately supersede the saved action.
+    // At the committed task revision, its fields still have to match the action.
+    if (task.version === expectedVersion) {
+      const action = creating ? 'create' : command.body.action;
+      const expectedStatus = action === 'complete' ? 'completed' : action === 'cancel' ? 'cancelled' : 'scheduled';
+      if (task.status !== expectedStatus || task.notes !== command.body.notes.trim()) invalid();
+      if (action === 'create' || action === 'reschedule') {
+        if (task.dueAt !== command.body.dueAt || task.timeZone !== command.body.timeZone) invalid();
+      } else if (task.dueAt !== command.taskBefore.dueAt || task.timeZone !== command.taskBefore.timeZone
+        || (action === 'complete' && task.outcome !== command.body.outcome)) invalid();
+    } else if (!creating && ['complete', 'cancel'].includes(command.body.action)) invalid();
+    return result;
+  }
+
   function create({ api, onChange, onLead, onOpenLead, onReloadLead, guard }) {
     const $ = id => document.getElementById(id);
     const kindLabel = value => value === 'follow_up' ? 'Follow-up' : 'Callback';
@@ -253,7 +335,9 @@
       if (mode === 'create' || mode === 'reschedule') { payload.dueAt = selectedInstant; payload.timeZone = $('task-time-zone').value.trim(); }
       if (mode === 'create') payload.kind = $('task-kind').value;
       else { payload.version = task.version; payload.action = mode; if (mode === 'complete') payload.outcome = $('task-outcome').value; }
-      return { leadId: lead.id, url: mode === 'create' ? `/api/leads/${encodeURIComponent(lead.id)}/tasks` : `/api/callback-tasks/${encodeURIComponent(task.id)}`,
+      return { leadId: lead.id, taskId: task?.id || null,
+        taskBefore: task ? { kind: task.kind, createdAt: task.createdAt, dueAt: task.dueAt, timeZone: task.timeZone } : null,
+        url: mode === 'create' ? `/api/leads/${encodeURIComponent(lead.id)}/tasks` : `/api/callback-tasks/${encodeURIComponent(task.id)}`,
         method: mode === 'create' ? 'POST' : 'PATCH', body: payload, key: crypto.randomUUID() };
     }
     async function save(event) {
@@ -267,8 +351,7 @@
       try {
         const result = await api(command.url, { method: command.method, body: command.body, key: command.key });
         if (expired || pending !== command) return;
-        if (!result?.lead || result.lead.id !== command.leadId || !Number.isSafeInteger(result.lead.version)
-          || !result.task || result.task.leadId !== command.leadId || !Number.isSafeInteger(result.task.version)) throw new Error('The task save response was incomplete. Retry to confirm the result.');
+        validateSaveReceipt(result, command);
         pending = null; busy = false; resetForm();
         onLead(result.lead);
         $('task-save-status').textContent = result.task.status === 'completed' ? 'Call outcome saved. Schedule a follow-up if another call is needed.' : result.task.status === 'cancelled' ? 'Task cancelled.' : 'Task scheduled. No call or message was sent.';
@@ -316,7 +399,7 @@
       isBusy: () => busy, isPending: () => Boolean(pending), setLocked(value) { locked = value; update(); } };
   }
 
-  const exported = { create, localInstants, localValue, describeInstant };
+  const exported = { create, localInstants, localValue, describeInstant, validateSaveReceipt };
   if (typeof module === 'object' && module.exports) module.exports = exported;
   else window.PanelReplySchedule = Object.freeze(exported);
 })();

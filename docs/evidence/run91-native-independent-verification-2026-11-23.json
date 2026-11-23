@@ -1,0 +1,214 @@
+{
+  "format": "panelreply-native-independent-verification-v1",
+  "recordedAt": "2026-11-23T19:32:01.484890+00:00",
+  "runId": 45248305894,
+  "head": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "merge": {
+    "sha": "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe",
+    "tree": "a2e235cf32df07f5329591c68f4e4ff84606f7c5",
+    "parents": [
+      "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+      "1562c8ea0326b31f34386925ac55f44f9f9328b1"
+    ]
+  },
+  "releaseAcceptance": false,
+  "productCredit": 0,
+  "windows": {
+    "artifact": {
+      "id": 14854474119,
+      "name": "windows-storage-component-evidence-attempt-1",
+      "size_in_bytes": 193151,
+      "digest": "sha256:15b76227df3080fe6257623eee03c761c1db493893a1fdb227703095126146d0"
+    },
+    "reportSha256": "beafd119031c97fda2d693ac9653c9cf434504d716b2f36f3760c7340fd702dd",
+    "source": {
+      "entriesVerified": 200,
+      "sourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+      "everyEntryMatchesCommittedSource": true
+    },
+    "nativeIdentityStable": true,
+    "buildRecordSha256": "207fefbf72ee7edd3f7243b107ff22b9c84f236e2159faafe42ae8e16d838af2",
+    "binariesVerified": [
+      {
+        "name": "panelreply_windows_storage.node",
+        "bytes": 73728,
+        "sha256": "9898c2944416428b4e9fc5091d852ff1a7b35e5208e28b19d5a2b55e31a3734c",
+        "testInstrumented": false,
+        "projectSha256": "3b090078b4aa4fe473b92261d8509baf76b68138f49de493e0bbcd51b7d2c68e"
+      },
+      {
+        "name": "panelreply_windows_storage_probe.node",
+        "bytes": 76800,
+        "sha256": "8542636f2964921d46c24939d8f112540672a00cfed0cff6d9a25cbbe001e290",
+        "testInstrumented": true,
+        "projectSha256": "79d0f9b49e9a04e147ab9eaedc096751c6009b4ec07715367e0f9ba1218a6f85"
+      },
+      {
+        "name": "panelreply_windows_storage_fixture.exe",
+        "bytes": 113152,
+        "sha256": "783112feb286220b7a7fd2415debac51c9003a206f94c5dc135bf0a8ce7e37bb",
+        "testInstrumented": false,
+        "projectSha256": "c637f0de09ed6a3eb55f817c1df7c812ad77067eafbaf5c2986991609f59b77c"
+      }
+    ],
+    "headerManifestVerified": true,
+    "configuredToolchainVerified": true,
+    "toolchain": {
+      "generator": "Visual Studio 17 2022",
+      "platform": "x64",
+      "toolset": "v143",
+      "windowsSdk": "10.0.26100.0",
+      "compiler": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+      "compilerId": "MSVC",
+      "compilerVersion": "19.44.35230.0",
+      "cmakeVersion": "3.31.6"
+    },
+    "node": "24.22.3",
+    "totals": {
+      "passed": 13,
+      "failed": 2,
+      "skipped": 0,
+      "cancelled": 0,
+      "notRun": 0,
+      "todo": 0
+    },
+    "infrastructureErrors": [
+      {
+        "stage": "fixture-cleanup",
+        "status": "ERROR",
+        "message": "EPERM, Permission denied: 'C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C'"
+      }
+    ],
+    "fixtureCleaned": false,
+    "outcome": "OVERLAPPED candidate did not resolve either empty-DACL metadata open failure. Both retain Windows error5. Cleanup remains incomplete. No application integration.",
+    "observationsSha256": "7c1337ca5e49ba3cab60d55beacab6ac0ed9c29534068ae61f62448450dfba2e"
+  },
+  "ocr": [
+    {
+      "os": "24.04",
+      "artifact": {
+        "id": 14854314566,
+        "name": "ocr-isolation-host-ubuntu-24.04-attempt-1",
+        "size_in_bytes": 12974,
+        "digest": "sha256:d34be2d43f1db506e5ac671d4f52b6e73d07453d371192055075677bac7ae38b"
+      },
+      "reportSha256": "9d55d978db1c56fee845afc4153c318f2a8910e7dc128a12aaf4256d90756fc9",
+      "sourceBefore": {
+        "entriesVerified": 200,
+        "sourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+        "everyEntryMatchesCommittedSource": true
+      },
+      "sourceAfter": {
+        "entriesVerified": 200,
+        "sourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+        "everyEntryMatchesCommittedSource": true
+      },
+      "dependencyStable": true,
+      "dependencySha256": "becb00df88d8a02281636a079e6a7cdee9ab79e139c6589ecef019351e14651f",
+      "nativeStatus": "BLOCKED",
+      "reason": "isolation_unavailable",
+      "nativeCases": 0,
+      "attempts": 1,
+      "workerStages": [
+        {
+          "stage": "isolation_version",
+          "exitCode": 0,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 0,
+          "stderr": "",
+          "stderrBytesRetained": 0,
+          "stderrTruncated": false
+        },
+        {
+          "stage": "engine_version",
+          "exitCode": 1,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 61,
+          "stderr": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n",
+          "stderrBytesRetained": 61,
+          "stderrTruncated": false
+        }
+      ],
+      "profileAttachment": "NOT_ESTABLISHED",
+      "scope": "Context does not promote native acceptance or establish the worker security label."
+    },
+    {
+      "os": "26.04",
+      "artifact": {
+        "id": 14856285064,
+        "name": "ocr-isolation-host-ubuntu-26.04-attempt-1",
+        "size_in_bytes": 13027,
+        "digest": "sha256:4da4b23968267be7c5a8c06af06923783ad156b731b7ab9a022240837a774794"
+      },
+      "reportSha256": "7d0a3121ca72006722705201446a8779d11264a05d820825eca35608790f27fb",
+      "sourceBefore": {
+        "entriesVerified": 200,
+        "sourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+        "everyEntryMatchesCommittedSource": true
+      },
+      "sourceAfter": {
+        "entriesVerified": 200,
+        "sourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+        "everyEntryMatchesCommittedSource": true
+      },
+      "dependencyStable": true,
+      "dependencySha256": "a8675cb86862301e3c765e65898f5b6acc5b8902196eed406b94c47995eb2527",
+      "nativeStatus": "BLOCKED",
+      "reason": "normalizer_unavailable",
+      "nativeCases": 0,
+      "attempts": 1,
+      "workerStages": [
+        {
+          "stage": "isolation_version",
+          "exitCode": 0,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 0,
+          "stderr": "",
+          "stderrBytesRetained": 0,
+          "stderrTruncated": false
+        },
+        {
+          "stage": "engine_version",
+          "exitCode": 0,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 0,
+          "stderr": "",
+          "stderrBytesRetained": 0,
+          "stderrTruncated": false
+        },
+        {
+          "stage": "engine_languages",
+          "exitCode": 0,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 0,
+          "stderr": "",
+          "stderrBytesRetained": 0,
+          "stderrTruncated": false
+        },
+        {
+          "stage": "normalizer_probe",
+          "exitCode": 2,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 94,
+          "stderr": "/usr/bin/python3: can't open file '/app/ocr-preprocess.py': [Errno 1] Operation not permitted\n",
+          "stderrBytesRetained": 94,
+          "stderrTruncated": false
+        }
+      ],
+      "profileAttachment": "NOT_ESTABLISHED",
+      "scope": "Context does not promote native acceptance or establish the worker security label."
+    }
+  ]
+}

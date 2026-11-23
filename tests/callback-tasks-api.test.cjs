@@ -11,6 +11,7 @@ const { EventEmitter } = require('node:events');
 const { openProductStore } = require('../workspace/products.cjs');
 const { hashPassword } = require('../workspace/auth.cjs');
 const { createWorkspaceApp } = require('../workspace/api.cjs');
+const { validateSaveReceipt } = require('../workspace/schedule.js');
 
 const ORIGIN = 'http://127.0.0.1:10001';
 const PASSWORD = 'Synthetic scheduling API password 2026!';
@@ -71,6 +72,45 @@ test('callback API creation and completion retries return current saved state wi
   const updateKey = crypto.randomUUID(), input = { leadVersion: 2, version: 1, action: 'complete', outcome: 'reached', notes: 'Reported complete' };
   const options = { method: 'PATCH', url: '/api/callback-tasks/' + first.body.task.id, headers: { ...headers, 'idempotency-key': updateKey }, input };
   assert.equal((await request(f.app, options)).status, 200); const again = await request(f.app, options); assert.equal(again.status, 200); assert.equal(again.body.replayed, true); assert.equal(again.body.task.version, 2); assert.equal(again.body.lead.version, 3);
+});
+
+test('callback client receipt validation accepts real fresh writes and advanced replays after opt-out and cancellation', async t => {
+  const f = await fixture(t), headers = await f.login(), createKey = crypto.randomUUID();
+  const input = { ...INPUT, notes: '  Preserve server note normalization  ' };
+  const createCommand = { method: 'POST', leadId: f.lead.id, body: input };
+  const first = await f.create(headers, input, createKey);
+  assert.equal(first.status, 201); assert.equal(validateSaveReceipt(first.body, createCommand), first.body);
+  const taskBefore = task => ({ kind: task.kind, createdAt: task.createdAt, dueAt: task.dueAt, timeZone: task.timeZone });
+  const rescheduleKey = crypto.randomUUID(), reschedule = { leadVersion: first.body.lead.version, version: first.body.task.version,
+    action: 'reschedule', dueAt: '2026-12-02T17:00:00.000Z', timeZone: 'America/Chicago', notes: 'A revised plan' };
+  const rescheduleCommand = { method: 'PATCH', leadId: f.lead.id, taskId: first.body.task.id, taskBefore: taskBefore(first.body.task), body: reschedule };
+  const rescheduleOptions = { method: 'PATCH', url: '/api/callback-tasks/' + first.body.task.id,
+    headers: { ...headers, 'idempotency-key': rescheduleKey }, input: reschedule };
+  const changed = await request(f.app, rescheduleOptions);
+  assert.equal(changed.status, 200); assert.equal(validateSaveReceipt(changed.body, rescheduleCommand), changed.body);
+  f.store.suppressPhone(f.owner, f.lead.phone);
+  const stoppedSnapshot = f.store.exportBusiness(f.owner), stoppedReplay = await request(f.app, rescheduleOptions);
+  assert.equal(stoppedReplay.status, 200); assert.equal(stoppedReplay.body.replayed, true);
+  assert.equal(stoppedReplay.body.task.version, changed.body.task.version);
+  assert.equal(stoppedReplay.body.lead.version, changed.body.lead.version + 1);
+  assert.equal(stoppedReplay.body.lead.optedOut, true);
+  assert.equal(validateSaveReceipt(stoppedReplay.body, rescheduleCommand), stoppedReplay.body);
+  assert.deepEqual(f.store.exportBusiness(f.owner), stoppedSnapshot);
+  const cancelInput = { leadVersion: f.store.getLead(f.owner, f.lead.id).version, version: changed.body.task.version,
+    action: 'cancel', notes: 'Cancelled after opt-out' };
+  const cancelled = await request(f.app, { method: 'PATCH', url: rescheduleOptions.url,
+    headers: { ...headers, 'idempotency-key': crypto.randomUUID() }, input: cancelInput });
+  assert.equal(cancelled.status, 200);
+  validateSaveReceipt(cancelled.body, { ...rescheduleCommand, taskBefore: taskBefore(changed.body.task), body: cancelInput });
+  const snapshot = f.store.exportBusiness(f.owner);
+  const createReplay = await f.create(headers, input, createKey), updateReplay = await request(f.app, rescheduleOptions);
+  assert.equal(createReplay.status, 200); assert.equal(updateReplay.status, 200);
+  assert.equal(createReplay.body.replayed, true); assert.equal(updateReplay.body.replayed, true);
+  assert.equal(createReplay.body.task.status, 'cancelled'); assert.equal(createReplay.body.lead.optedOut, true);
+  assert.equal(createReplay.body.task.contactAllowed, false); assert.ok(updateReplay.body.task.version > reschedule.version + 1);
+  assert.equal(validateSaveReceipt(createReplay.body, createCommand), createReplay.body);
+  assert.equal(validateSaveReceipt(updateReplay.body, rescheduleCommand), updateReplay.body);
+  assert.deepEqual(f.store.exportBusiness(f.owner), snapshot);
 });
 
 test('callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks', async t => {

@@ -934,3 +934,35 @@ test('dashboard retry clears old records before waiting on a different account d
   assert.equal(page.element('dashboard-request-list').children.length, 0);
 });
 
+test('intake callback malformed parent history preserves the task draft, request and retry until a complete receipt arrives', async () => {
+  const page = client('app.js', { lead: true, productId: 'callback' }); await settle();
+  page.element('task-time-zone').value = 'America/Detroit'; page.element('task-local-time').value = '2026-12-01T09:30';
+  page.element('task-notes').value = 'Keep the operator callback draft'; await page.element('callback-task-form').emit('input');
+  let attempts = 0;
+  page.state.respond = async (url, request) => {
+    if (url !== `/api/leads/${LEAD_ID}/tasks` || request.method !== 'POST') return;
+    attempts++;
+    const body = JSON.parse(request.body), task = { id: PROJECT_ID, leadId: LEAD_ID, leadVersion: 2, version: 1,
+      customerName: savedLead.customerName, phone: savedLead.phone, requestStatus: savedLead.status, contactAllowed: true, blockReason: null,
+      kind: body.kind, dueAt: body.dueAt, timeZone: body.timeZone, notes: body.notes, status: 'scheduled', outcome: '',
+      createdAt: TIME, updatedAt: TIME, completedAt: null, cancelledAt: null, dueState: 'upcoming', isDue: false };
+    return panelReply(attempts === 1 ? 201 : 200, { task, lead: { ...savedLead, version: 2, audit: attempts === 1 ? [null] : [] },
+      created: attempts === 1, replayed: attempts !== 1 });
+  };
+  await page.element('callback-task-form').emit('submit'); await settle();
+  assert.equal(page.element('task-notes').value, 'Keep the operator callback draft');
+  assert.equal(page.element('task-local-time').value, '2026-12-01T09:30');
+  assert.equal(page.element('lead-name').value, savedLead.customerName);
+  assert.equal(page.element('lead-version').textContent, 'Revision 1');
+  assert.match(page.element('task-error').textContent, /incomplete/);
+  assert.equal(page.element('task-uncertain').hidden, false); assert.equal(page.element('retry-task-save').disabled, false);
+  assert.equal(page.element('task-save-status').textContent, '');
+  const first = page.calls.find(call => call.method === 'POST');
+  await page.element('retry-task-save').emit('click'); await settle();
+  const writes = page.calls.filter(call => call.method === 'POST');
+  assert.equal(writes.length, 2); assert.deepEqual(writes, [first, first]);
+  assert.equal(page.element('lead-version').textContent, 'Revision 2');
+  assert.equal(page.element('task-notes').value, ''); assert.equal(page.element('task-uncertain').hidden, true);
+  assert.match(page.element('task-save-status').textContent, /Task scheduled/);
+});
+

@@ -1,5 +1,15 @@
 # Pre-launch defect register
 
+## November 23 callback receipt and native follow-up
+
+| ID | Observed defect | Current scope | Evidence |
+| --- | --- | --- | --- |
+| QA-26-16 | A malformed task save receipt could clear the operator draft/retry and display success. Invalid parent history could then throw in the renderer. | Complete receipt validation now precedes draft/pending mutation. Fresh revisions and action fields bind to the command. Later-state replays remain valid. Local verification passes. The new committed browser journey is pending. | [Repair](CALLBACK_RECEIPTS_2026_11_23.md), [root verification](evidence/callback-receipts-root-integration-2026-11-23.json). |
+| QA-26-10 follow-up | The Windows OVERLAPPED metadata candidate still fails both empty-DACL cases with error5. Cleanup remains incomplete. | The cause is unconfirmed. Preserve both failures and the original identity requirements. Investigate exact native access without changing ACLs or privileges. | [Run91 independent verification](evidence/run91-native-independent-verification-2026-11-23.json). |
+| OCR host follow-up | Ubuntu24 cannot set up loopback. Ubuntu26 gets farther but Python cannot open the mounted normalizer with EPERM. | Both hosts remain BLOCKED before six native denial cases. Host observations do not establish profile attachment or prove the cause. | [Ubuntu24](evidence/ocr-host-ubuntu-24.04-run91.json), [Ubuntu26](evidence/ocr-host-ubuntu-26.04-run91.json). |
+
+The separate request-save receipt defect in `app.js` remains open for the next product milestone. Earlier failed native/browser observations stay recorded.
+
 ## Active implementation findings — November 23, 2026
 
 These findings follow the earlier read-only daily audit. Local candidate passes apply only to their recorded source. Browser and committed-source acceptance remain separate.

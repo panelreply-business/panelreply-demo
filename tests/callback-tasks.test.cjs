@@ -11,6 +11,7 @@ const { openStore, SCHEMAS, SCHEMA_VERSION, assertWorkspaceSchema } = require('.
 const { hashPassword } = require('../workspace/auth.cjs');
 const { createEncryptedBackup, restoreEncryptedBackup, validateDatabase } = require('../workspace/backup.cjs');
 const { TASK_TABLE_SQL, MAX_TASKS_PER_BUSINESS, MAX_TASK_OPERATIONS } = require('../workspace/callback-tasks.cjs');
+const { validateSaveReceipt } = require('../workspace/schedule.js');
 
 const PASSWORD = hashPassword('Synthetic callback schedule password 2026!');
 const START = Date.parse('2026-11-23T15:00:00.000Z');
@@ -53,6 +54,49 @@ test('callback schedule audit identifies actor, action and task without copying 
   assert.equal(entry.action, 'callback.scheduled'); assert.equal(entry.version, 2); assert.equal(entry.actorId, f.owner.id); assert.equal(entry.details.taskId, result.task.id);
   assert.deepEqual(entry.details.fields, ['kind', 'dueAt', 'timeZone', 'notes', 'status']);
   for (const privateValue of [SCHEDULE.notes, LEAD.customerName, LEAD.phone]) assert.ok(!JSON.stringify(entry).includes(privateValue));
+});
+
+test('callback client receipts preserve extended-year chronology for fresh writes and current-parent replays', async t => {
+  const f = await fixture(t), key = crypto.randomUUID(), input = { leadVersion: 1, ...SCHEDULE };
+  const createCommand = { method: 'POST', leadId: f.lead.id, body: input };
+  const first = f.store.createCallbackTask(f.owner, f.lead.id, input, key);
+  f.setNow(Date.parse('+010000-01-01T00:00:00.000Z'));
+  f.store.updateLead(f.owner, f.lead.id, { version: first.lead.version, status: 'new', notes: 'Later supported clock' });
+  const replay = f.store.createCallbackTask(f.owner, f.lead.id, input, key);
+  assert.equal(replay.lead.updatedAt, '+010000-01-01T00:00:00.000Z');
+  assert.equal(replay.task.updatedAt, first.task.updatedAt);
+  assert.equal(validateSaveReceipt(replay, createCommand), replay);
+  const updateInput = { leadVersion: replay.lead.version, version: first.task.version, action: 'reschedule',
+    dueAt: SCHEDULE.dueAt, timeZone: 'UTC', notes: 'Updated task at the supported clock' };
+  const changed = f.store.updateCallbackTask(f.owner, first.task.id, updateInput, crypto.randomUUID());
+  assert.equal(changed.task.createdAt, first.task.createdAt);
+  assert.equal(changed.task.updatedAt, replay.lead.updatedAt);
+  assert.equal(validateSaveReceipt(changed, { method: 'PATCH', leadId: f.lead.id, taskId: first.task.id,
+    taskBefore: first.task, body: updateInput }), changed);
+  const nextInput = { ...input, leadVersion: changed.lead.version, kind: 'follow_up' };
+  const next = f.store.createCallbackTask(f.owner, f.lead.id, nextInput, crypto.randomUUID());
+  assert.equal(validateSaveReceipt(next, { ...createCommand, body: nextInput }), next);
+  assert.equal(f.db(db => validateDatabase(db)).callbackTasks, 2);
+});
+
+test('callback client receipts accept archive-valid maximum parent history revisions without relaxing task limits', async t => {
+  const f = await fixture(t), key = crypto.randomUUID(), input = { leadVersion: 1, ...SCHEDULE };
+  const first = f.store.createCallbackTask(f.owner, f.lead.id, input, key);
+  f.db(db => {
+    db.prepare('UPDATE leads SET version=? WHERE id=?').run(Number.MAX_SAFE_INTEGER, f.lead.id);
+    db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)').run(crypto.randomUUID(), f.owner.businessId, f.lead.id, f.owner.id,
+      'lead.updated', Number.MAX_SAFE_INTEGER, START, JSON.stringify({ fields: ['notes'] }));
+    assert.equal(validateDatabase(db).callbackTasks, 1);
+  });
+  const before = f.snapshot(), replay = f.store.createCallbackTask(f.owner, f.lead.id, input, key);
+  const command = { method: 'POST', leadId: f.lead.id, body: input };
+  assert.equal(replay.replayed, true); assert.equal(replay.task.id, first.task.id);
+  assert.equal(replay.lead.version, Number.MAX_SAFE_INTEGER);
+  assert.equal(replay.lead.audit.at(-1).version, Number.MAX_SAFE_INTEGER);
+  assert.equal(replay.task.version, 1);
+  assert.equal(validateSaveReceipt(replay, command), replay);
+  assert.throws(() => validateSaveReceipt({ ...replay, task: { ...replay.task, version: Number.MAX_SAFE_INTEGER } }, command), /incomplete/);
+  assert.deepEqual(f.snapshot(), before);
 });
 
 test('lost create response replays once and reports current restrictions after a later STOP', async t => {

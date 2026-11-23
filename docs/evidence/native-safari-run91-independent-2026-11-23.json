@@ -1,0 +1,109 @@
+{
+  "format": "panelreply-native-safari-independent-verification-v1",
+  "recordedAt": "2026-11-23T19:35:28.399036+00:00",
+  "runId": 45248305894,
+  "head": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "merge": "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe",
+  "sourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+  "artifacts": [
+    {
+      "id": 14854778055,
+      "zipBytes": 32276,
+      "zipSha256": "d72ad2b355c061494e52804e47d30b208667354b5ee4d0724053cc2eb5d5e739",
+      "safeZipEntries": 2
+    },
+    {
+      "id": 14854409718,
+      "zipBytes": 855014,
+      "zipSha256": "ba8580dc1588d545439fb99fad495a8795c622901c3d63e4170d5dbd875d2a73",
+      "safeZipEntries": 6
+    }
+  ],
+  "reports": [
+    {
+      "file": "docs/evidence/run91-callback-safari.json",
+      "sha256": "585318afa938e3c5d637884eeb7af7285e493f901edc5c19f7e6042f512b57ac",
+      "tests": [
+        {
+          "id": "safari_product_browser_test.SafariCallbackBrowserTests.test_contact_hold_and_keyboard_dirty_edit_guard",
+          "status": "FAIL",
+          "diagnostics": [
+            "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 740, in test_contact_hold_and_keyboard_dirty_edit_guard\n    self.select(\"#lead-permission\", \"opted_out\")\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 270, in select\n    self.assertEqual(observation[\"observedValue\"], observation[\"expectedValue\"], observation)\nAssertionError: '' != 'opted_out'\n+ opted_out\n : {'selector': '#lead-permission', 'requestedValue': 'opted_out', 'expectedValue': 'opted_out', 'status': 'ATTEMPTED', 'transport': 'native WebDriver character cycling and Tab', 'control': {'multiple': False, 'size': 0, 'tag': 'SELECT', 'value': 'requested_callback', 'options': [{'disabled': False, 'value': 'not_recorded', 'label': 'Not recorded', 'hidden': False}, {'disabled': False, 'value': 'requested_callback', 'label': 'Customer requested a callback', 'hidden': False}, {'disabled': False, 'value': 'opted_out', 'label': 'Customer opted out', 'hidden': False}], 'disabled': False, 'selectedIndex': 1}, 'plan': {'character': 'c', 'cycles': 1, 'targetIndex': 2, 'initialValue': 'requested_callback', 'targetLabel': 'Customer opted out'}, 'activeElementId': 'lead-permission', 'observedValue': '', 'overflow': False, 'events': []}\n"
+          ]
+        },
+        {
+          "id": "safari_product_browser_test.SafariCallbackBrowserTests.test_intake_status_persistence_and_sign_out",
+          "status": "FAIL",
+          "diagnostics": [
+            "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 660, in test_intake_status_persistence_and_sign_out\n    self.select(\"#preview-permission\", \"requested_callback\")\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 270, in select\n    self.assertEqual(observation[\"observedValue\"], observation[\"expectedValue\"], observation)\nAssertionError: '' != 'requested_callback'\n+ requested_callback\n : {'selector': '#preview-permission', 'requestedValue': 'requested_callback', 'expectedValue': 'requested_callback', 'status': 'ATTEMPTED', 'transport': 'native WebDriver character cycling and Tab', 'control': {'multiple': False, 'size': 0, 'tag': 'SELECT', 'value': 'not_recorded', 'options': [{'disabled': False, 'value': 'not_recorded', 'label': 'Not recorded', 'hidden': False}, {'disabled': False, 'value': 'requested_callback', 'label': 'Customer requested a callback', 'hidden': False}, {'disabled': False, 'value': 'opted_out', 'label': 'Customer opted out', 'hidden': False}], 'disabled': False, 'selectedIndex': 0}, 'plan': {'character': 'c', 'cycles': 1, 'targetIndex': 1, 'initialValue': 'not_recorded', 'targetLabel': 'Customer requested a callback'}, 'activeElementId': 'preview-permission', 'observedValue': '', 'overflow': False, 'events': []}\n"
+          ]
+        },
+        {
+          "id": "safari_product_browser_test.SafariCallbackBrowserTests.test_schedule_reschedule_outcome_follow_up_and_cancel",
+          "status": "FAIL",
+          "diagnostics": [
+            "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 699, in test_schedule_reschedule_outcome_follow_up_and_cancel\n    self.select(\"#task-outcome\", \"no_answer\")\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 270, in select\n    self.assertEqual(observation[\"observedValue\"], observation[\"expectedValue\"], observation)\nAssertionError: '' != 'no_answer'\n+ no_answer\n : {'selector': '#task-outcome', 'requestedValue': 'no_answer', 'expectedValue': 'no_answer', 'status': 'ATTEMPTED', 'transport': 'native WebDriver character cycling and Tab', 'control': {'multiple': False, 'size': 0, 'tag': 'SELECT', 'value': '', 'options': [{'disabled': False, 'value': '', 'label': 'Choose an outcome', 'hidden': False}, {'disabled': False, 'value': 'reached', 'label': 'Reached customer', 'hidden': False}, {'disabled': False, 'value': 'no_answer', 'label': 'No answer', 'hidden': False}, {'disabled': False, 'value': 'voicemail', 'label': 'Left voicemail', 'hidden': False}, {'disabled': False, 'value': 'other', 'label': 'Other', 'hidden': False}], 'disabled': False, 'selectedIndex': 0}, 'plan': {'character': 'n', 'cycles': 1, 'targetIndex': 2, 'initialValue': '', 'targetLabel': 'No answer'}, 'activeElementId': 'task-outcome', 'observedValue': '', 'overflow': False, 'events': []}\n"
+          ]
+        }
+      ],
+      "totals": {
+        "PASS": 0,
+        "FAIL": 3,
+        "ERROR": 0,
+        "NOT_RUN": 0,
+        "SKIP": 0,
+        "RUNNING": 0
+      },
+      "infrastructureErrors": [],
+      "nativeSessionSha256": "5dd458cbfb455834e46a9cc44cd94ff05f49fe93030bad957982dd1a519f21d5",
+      "nativeBrowserStable": true,
+      "rawSessionIdRetained": false,
+      "sessionDigestRecomputed": false,
+      "sourceEntriesVerified": 200
+    },
+    {
+      "file": "docs/evidence/run91-spreadsheet-manual-safari.json",
+      "sha256": "cf0134774515b292ccd27a2c65f7a3651ba73b92f38ef1a752116da6170fedd8",
+      "tests": [
+        {
+          "id": "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_bound_recovery_revokes_archived_sessions_and_credentials",
+          "status": "ERROR",
+          "diagnostics": [
+            "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 828, in test_bound_recovery_revokes_archived_sessions_and_credentials\n    source = self.upload_source(project)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 595, in upload_source\n    self.text_contains(\"#source-status\", \"Source image saved\")\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 348, in text_contains\n    return self.wait.until(lambda _driver: text in self.element(selector).text)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/support/wait.py\", line 112, in until\n    value = method(self._driver)\n            ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 348, in <lambda>\n    return self.wait.until(lambda _driver: text in self.element(selector).text)\n                                                   ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 203, in element\n    return self.wait.until(find)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/support/wait.py\", line 121, in until\n    raise TimeoutException(message, screen, stacktrace)\nselenium.common.exceptions.TimeoutException: Message: \n\n"
+          ]
+        },
+        {
+          "id": "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_file_upload_source_links_and_unavailable_ocr",
+          "status": "ERROR",
+          "diagnostics": [
+            "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 802, in test_file_upload_source_links_and_unavailable_ocr\n    source = self.upload_source(project)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 595, in upload_source\n    self.text_contains(\"#source-status\", \"Source image saved\")\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 348, in text_contains\n    return self.wait.until(lambda _driver: text in self.element(selector).text)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/support/wait.py\", line 112, in until\n    value = method(self._driver)\n            ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 348, in <lambda>\n    return self.wait.until(lambda _driver: text in self.element(selector).text)\n                                                   ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 203, in element\n    return self.wait.until(find)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/support/wait.py\", line 121, in until\n    raise TimeoutException(message, screen, stacktrace)\nselenium.common.exceptions.TimeoutException: Message: \n\n"
+          ]
+        },
+        {
+          "id": "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_manual_corrections_persist_and_native_downloads_match",
+          "status": "FAIL",
+          "diagnostics": [
+            "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 773, in test_manual_corrections_persist_and_native_downloads_match\n    self.select('[aria-label=\"Review status row 1\"]', \"reviewed\", expected=\"unreviewed\")\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/safari_product_browser_test.py\", line 270, in select\n    self.assertEqual(observation[\"observedValue\"], observation[\"expectedValue\"], observation)\nAssertionError: '' != 'unreviewed'\n+ unreviewed\n : {'selector': '[aria-label=\"Review status row 1\"]', 'requestedValue': 'reviewed', 'expectedValue': 'unreviewed', 'status': 'ATTEMPTED', 'transport': 'native WebDriver character cycling and Tab', 'control': {'multiple': False, 'size': 0, 'tag': 'SELECT', 'value': 'unreviewed', 'options': [{'disabled': False, 'value': 'unreviewed', 'label': 'Unreviewed', 'hidden': False}, {'disabled': False, 'value': 'reviewed', 'label': 'Reviewed', 'hidden': False}], 'disabled': False, 'selectedIndex': 0}, 'plan': {'character': 'r', 'cycles': 1, 'targetIndex': 1, 'initialValue': 'unreviewed', 'targetLabel': 'Reviewed'}, 'activeElementId': None, 'observedValue': '', 'overflow': False, 'events': []}\n"
+          ]
+        }
+      ],
+      "totals": {
+        "PASS": 0,
+        "FAIL": 1,
+        "ERROR": 2,
+        "NOT_RUN": 0,
+        "SKIP": 0,
+        "RUNNING": 0
+      },
+      "infrastructureErrors": [],
+      "nativeSessionSha256": "5dd458cbfb455834e46a9cc44cd94ff05f49fe93030bad957982dd1a519f21d5",
+      "nativeBrowserStable": true,
+      "rawSessionIdRetained": false,
+      "sessionDigestRecomputed": false,
+      "sourceEntriesVerified": 200
+    }
+  ],
+  "outcome": "Native select/control candidate does not pass the installed-Safari journeys. Preserve failures and inspect passive upload observations. No original upload-cause claim.",
+  "releaseAcceptance": false,
+  "additionalGoalCredit": 0
+}

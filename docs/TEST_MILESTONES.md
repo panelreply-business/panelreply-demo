@@ -1,5 +1,11 @@
 # Test milestones and counting policy
 
+## November 23 callback receipt counting
+
+Manifest `63d709515f0a3c44fa9b4369cbc18e772119bd9f8465ee225ef844b4e5d1f05e` verifies 9,283 distinct local cases across two recorded executions. The full run has 9,274 PASS and nine SKIP because socket testing was not enabled. The exact nine skipped IDs then pass with `WORKSPACE_HTTP_TESTS=1` on unchanged source. The union has 9,105 product passes and 178 excluded harness passes, retaining all 9,094 prior product IDs and adding 11. Original reports stay separate. Author/reviewer overlaps receive no extra credit. [Evidence](evidence/callback-receipts-root-integration-2026-11-23.json).
+
+The new callback browser method is collected but not executed locally. Run91's failed Windows component and blocked OCR host reports remain outside product counting. Run90 is still the latest complete reconciled ledger. Keep the policy, active 10,000 goal and unset firstGoalAchievedAt unchanged until every required platform scope passes.
+
 ## November 23 native-control candidate counting
 
 Final candidate manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da` adds verification-tool cases only. The complete pre-output-correction run passed 9,261 cases, including 9,094 product and 167 harness cases. On the corrected source, the affected selection passes 155: 152 harness plus three existing product cases. Eleven new output-boundary cases receive zero product credit. These focused overlaps are not added to the prior full run or run90 ledger. [Source-bound records](evidence/native-host-final-focused-2026-11-23.json).

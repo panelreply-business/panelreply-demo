@@ -1,5 +1,13 @@
 # Spreadsheet release acceptance
 
+Spreadsheet records one FAIL and two ERROR outcomes in installed Safari run91. These native failures remain open. [Source-bound verification](evidence/native-safari-run91-independent-2026-11-23.json).
+
+## November 23 actual OCR host comparison
+
+Run91 on `1562c8e` verifies the source-bound Ubuntu24 and Ubuntu26 reports separately. Ubuntu24 remains BLOCKED during loopback setup. Ubuntu26 reaches the engine/language checks but Python cannot open the mounted preprocessing script, so it also remains BLOCKED. Neither host executes any of the six native denial cases. No policy, privilege or host control changed. [Root verification](evidence/run91-native-independent-verification-2026-11-23.json).
+
+Windows still has two empty-DACL fixture failures and incomplete cleanup. Its component remains outside the applications. The later callback receipt change preserves spreadsheet runtime bytes, and its combined local checks cannot be treated as spreadsheet-only credit. Accuracy, actual Safari, Windows integration, native Mac extraction, ARM, devices, Excel and operating gates remain open. Spreadsheet remains an independent NO-GO decision.
+
 ## November 23 native controls and host comparison
 
 The reviewed candidate preserves native Safari upload actions, source confirmation, row persistence and download assertions while adding failure observations. Native select input now requires trusted keyboard/input/change events and exact values. Actual Safari verification is pending. The earlier upload failure cause remains unestablished. [Candidate](NATIVE_SAFARI_CONTROLS_2026_11_23.md).

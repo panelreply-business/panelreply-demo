@@ -1,0 +1,1080 @@
+{
+  "format": "panelreply-callback-receipt-repair-v1",
+  "baseCommit": "2882d4f836d4694c8b445f91f52d64df943cf213",
+  "sourceManifestSha256": "4ba6aa9b5c8699835af3ae6aaec01218dd7c74972071f334cc179c4c2dc34b68",
+  "sourceManifestEntries": 193,
+  "sourceHashes": {
+    "tests/callback-schedule-client.test.cjs": "ed7b7c3e24c8473e6293504428240c603cc1cdba2a7f7c8695291a687efc0c67",
+    "tests/callback-tasks-api.test.cjs": "783441512b5881b56c358d9ff49e5b31878d4b7ad780160a7987250522e96dd7",
+    "tests/callback-tasks.test.cjs": "c98ea78481ef46ace298e2a24be34ed06ba2bc286b3b49835939e524125328de",
+    "tests/platform-client-state.test.cjs": "bfee9e8e2defadac4c3e5387e80a680b7436aaa93fe3420e8809bcf6b66968c6",
+    "tests/product_browser_test.py": "6b85bad5d68bcabf2d2e1b2b19e68342d11a88048a6f7f5dc0ab16ff3fcb73b2",
+    "workspace/schedule.js": "d7477c86bb6594c3813e457efdc7de07cd02d20c7c8653027b22f57410fa0fa1"
+  },
+  "baselineAudit": {
+    "format": "panelreply-callback-receipt-readonly-audit-v1",
+    "scope": "Synthetic API success responses through the unchanged repository state-test helpers and shipped clients. No browser, native component, network, repository edits, or new release-credit tests.",
+    "sourceHashes": {
+      "workspace/schedule.js": "daa6f26cf85e04e155a44536a3da615f1ee3abf09916d6db7fca615159d33fb9",
+      "workspace/app.js": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989",
+      "tests/callback-schedule-client.test.cjs": "1a22def2562bd3442f3096de8de255430d4823a2af853d8d20e04806f220bbb8",
+      "tests/platform-client-state.test.cjs": "a6e3e38169ca0f2cc27fb5b40c502ca6f651886647e7f47a8d9b06c7c05378cd",
+      "workspace/callback-tasks.cjs": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff"
+    },
+    "helperPrefixes": {
+      "scheduler": {
+        "bytes": 5291,
+        "sha256": "9fa7d348a7a64b0b72acafe34a1fe10ec176567d0d6134acd9f1c0805bd6549a"
+      },
+      "platform": {
+        "bytes": 9316,
+        "sha256": "f3f9b16586b1fe5e7883df663546b4a1ec3bfe5b75f39282e21553813968be55"
+      }
+    },
+    "observations": [
+      {
+        "name": "wrong task receipt for task completion",
+        "action": "complete",
+        "command": {
+          "url": "/api/callback-tasks/33333333-3333-4333-8333-333333333333",
+          "method": "PATCH",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Keep this operator draft",
+            "version": 1,
+            "action": "complete",
+            "outcome": "no_answer"
+          },
+          "key": "fa938bf1-783e-4b54-9541-e09f9676c957"
+        },
+        "returned": {
+          "task": {
+            "id": "22222222-2222-4222-8222-222222222222",
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "leadVersion": 2,
+            "customerName": "Synthetic Customer",
+            "phone": "+15865550101",
+            "requestStatus": "new",
+            "contactAllowed": true,
+            "blockReason": null,
+            "kind": "callback",
+            "dueAt": "2026-11-23T14:00:00.000Z",
+            "timeZone": "America/Detroit",
+            "status": "completed",
+            "dueState": null,
+            "isDue": false,
+            "notes": "Keep this operator draft",
+            "outcome": "no_answer",
+            "version": 2,
+            "createdAt": "2026-11-23T15:00:00.000Z",
+            "updatedAt": "2026-11-23T15:00:00.000Z",
+            "completedAt": "2026-11-23T15:00:00.000Z",
+            "cancelledAt": null
+          },
+          "lead": {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "version": 2,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": false,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Keep this operator draft",
+          "localTime": "",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Call outcome saved. Schedule a follow-up if another call is needed.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            2
+          ]
+        }
+      },
+      {
+        "name": "unchanged parent revision on fresh completion",
+        "action": "complete",
+        "command": {
+          "url": "/api/callback-tasks/33333333-3333-4333-8333-333333333333",
+          "method": "PATCH",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Keep this operator draft",
+            "version": 1,
+            "action": "complete",
+            "outcome": "no_answer"
+          },
+          "key": "5b25c56c-aef8-403d-96f2-4c11fc55f8bd"
+        },
+        "returned": {
+          "task": {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "leadVersion": 1,
+            "customerName": "Synthetic Customer",
+            "phone": "+15865550101",
+            "requestStatus": "new",
+            "contactAllowed": true,
+            "blockReason": null,
+            "kind": "callback",
+            "dueAt": "2026-11-23T14:00:00.000Z",
+            "timeZone": "America/Detroit",
+            "status": "completed",
+            "dueState": null,
+            "isDue": false,
+            "notes": "Keep this operator draft",
+            "outcome": "no_answer",
+            "version": 2,
+            "createdAt": "2026-11-23T15:00:00.000Z",
+            "updatedAt": "2026-11-23T15:00:00.000Z",
+            "completedAt": "2026-11-23T15:00:00.000Z",
+            "cancelledAt": null
+          },
+          "lead": {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "version": 1,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": false,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Keep this operator draft",
+          "localTime": "",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Call outcome saved. Schedule a follow-up if another call is needed.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            1
+          ]
+        }
+      },
+      {
+        "name": "unchanged task revision on fresh completion",
+        "action": "complete",
+        "command": {
+          "url": "/api/callback-tasks/33333333-3333-4333-8333-333333333333",
+          "method": "PATCH",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Keep this operator draft",
+            "version": 1,
+            "action": "complete",
+            "outcome": "no_answer"
+          },
+          "key": "168c74c0-d7d2-4d54-bd52-c1b16dd9c8c9"
+        },
+        "returned": {
+          "task": {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "leadVersion": 2,
+            "customerName": "Synthetic Customer",
+            "phone": "+15865550101",
+            "requestStatus": "new",
+            "contactAllowed": true,
+            "blockReason": null,
+            "kind": "callback",
+            "dueAt": "2026-11-23T14:00:00.000Z",
+            "timeZone": "America/Detroit",
+            "status": "completed",
+            "dueState": null,
+            "isDue": false,
+            "notes": "Keep this operator draft",
+            "outcome": "no_answer",
+            "version": 1,
+            "createdAt": "2026-11-23T15:00:00.000Z",
+            "updatedAt": "2026-11-23T15:00:00.000Z",
+            "completedAt": "2026-11-23T15:00:00.000Z",
+            "cancelledAt": null
+          },
+          "lead": {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "version": 2,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": false,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Keep this operator draft",
+          "localTime": "",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Call outcome saved. Schedule a follow-up if another call is needed.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            2
+          ]
+        }
+      },
+      {
+        "name": "scheduled status accepted for fresh completion",
+        "action": "complete",
+        "command": {
+          "url": "/api/callback-tasks/33333333-3333-4333-8333-333333333333",
+          "method": "PATCH",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Keep this operator draft",
+            "version": 1,
+            "action": "complete",
+            "outcome": "no_answer"
+          },
+          "key": "f4581ab9-c326-4f95-9207-8f77c7b85076"
+        },
+        "returned": {
+          "task": {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "leadVersion": 2,
+            "customerName": "Synthetic Customer",
+            "phone": "+15865550101",
+            "requestStatus": "new",
+            "contactAllowed": true,
+            "blockReason": null,
+            "kind": "callback",
+            "dueAt": "2026-11-23T14:00:00.000Z",
+            "timeZone": "America/Detroit",
+            "status": "scheduled",
+            "dueState": "upcoming",
+            "isDue": false,
+            "notes": "Keep this operator draft",
+            "outcome": "",
+            "version": 2,
+            "createdAt": "2026-11-23T15:00:00.000Z",
+            "updatedAt": "2026-11-23T15:00:00.000Z",
+            "completedAt": null,
+            "cancelledAt": null
+          },
+          "lead": {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "version": 2,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": false,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Keep this operator draft",
+          "localTime": "",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Task scheduled. No call or message was sent.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            2
+          ]
+        }
+      },
+      {
+        "name": "different due time and notes on fresh reschedule",
+        "action": "reschedule",
+        "command": {
+          "url": "/api/callback-tasks/33333333-3333-4333-8333-333333333333",
+          "method": "PATCH",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Synthetic follow-up plan",
+            "dueAt": "2026-12-02T15:15:00.000Z",
+            "timeZone": "America/Detroit",
+            "version": 1,
+            "action": "reschedule"
+          },
+          "key": "5a0d0cb7-e901-4f49-90cd-569e6b64b316"
+        },
+        "returned": {
+          "task": {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "leadVersion": 2,
+            "customerName": "Synthetic Customer",
+            "phone": "+15865550101",
+            "requestStatus": "new",
+            "contactAllowed": true,
+            "blockReason": null,
+            "kind": "callback",
+            "dueAt": "2026-12-09T20:00:00.000Z",
+            "timeZone": "America/Detroit",
+            "status": "scheduled",
+            "dueState": "upcoming",
+            "isDue": false,
+            "notes": "Unrelated saved task notes",
+            "outcome": "",
+            "version": 2,
+            "createdAt": "2026-11-23T15:00:00.000Z",
+            "updatedAt": "2026-11-23T15:00:00.000Z",
+            "completedAt": null,
+            "cancelledAt": null
+          },
+          "lead": {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "version": 2,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": false,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Synthetic follow-up plan",
+          "localTime": "2026-12-02T10:15",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Task scheduled. No call or message was sent.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            2
+          ]
+        }
+      },
+      {
+        "name": "minimal task with no identity or schedule accepted as created",
+        "action": "create",
+        "command": {
+          "url": "/api/leads/11111111-1111-4111-8111-111111111111/tasks",
+          "method": "POST",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Synthetic follow-up plan",
+            "dueAt": "2026-12-01T14:30:00.000Z",
+            "timeZone": "America/Detroit",
+            "kind": "callback"
+          },
+          "key": "bbe8cd4b-04af-42df-9566-0f7789b93a3d"
+        },
+        "returned": {
+          "task": {
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "version": 1
+          },
+          "lead": {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "version": 2,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": true,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Synthetic follow-up plan",
+          "localTime": "2026-12-01T09:30",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Task scheduled. No call or message was sent.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            2
+          ]
+        }
+      },
+      {
+        "name": "existing wrong-parent rejection control",
+        "action": "create",
+        "command": {
+          "url": "/api/leads/11111111-1111-4111-8111-111111111111/tasks",
+          "method": "POST",
+          "body": {
+            "leadVersion": 1,
+            "notes": "Synthetic follow-up plan",
+            "dueAt": "2026-12-01T14:30:00.000Z",
+            "timeZone": "America/Detroit",
+            "kind": "callback"
+          },
+          "key": "5487e868-213a-46f5-8778-943f9292e42d"
+        },
+        "returned": {
+          "task": {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "leadId": "11111111-1111-4111-8111-111111111111",
+            "leadVersion": 2,
+            "customerName": "Synthetic Customer",
+            "phone": "+15865550101",
+            "requestStatus": "new",
+            "contactAllowed": true,
+            "blockReason": null,
+            "kind": "callback",
+            "dueAt": "2026-12-01T14:30:00.000Z",
+            "timeZone": "America/Detroit",
+            "status": "scheduled",
+            "dueState": "upcoming",
+            "isDue": false,
+            "notes": "Synthetic follow-up plan",
+            "outcome": "",
+            "version": 1,
+            "createdAt": "2026-11-23T15:00:00.000Z",
+            "updatedAt": "2026-11-23T15:00:00.000Z",
+            "completedAt": null,
+            "cancelledAt": null
+          },
+          "lead": {
+            "id": "22222222-2222-4222-8222-222222222222",
+            "version": 2,
+            "customerName": "Synthetic Customer",
+            "contactAllowed": true,
+            "contactPermission": "requested_callback",
+            "status": "new",
+            "optedOut": false,
+            "safetyHold": false
+          },
+          "created": true,
+          "replayed": false
+        },
+        "before": {
+          "pending": false,
+          "dirty": true,
+          "notes": "Synthetic follow-up plan",
+          "localTime": "2026-12-01T09:30",
+          "status": "",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        },
+        "after": {
+          "pending": true,
+          "dirty": true,
+          "notes": "Synthetic follow-up plan",
+          "localTime": "2026-12-01T09:30",
+          "status": "",
+          "error": "The task save response was incomplete. Retry to confirm the result.",
+          "uncertaintyVisible": true,
+          "retryDisabled": false,
+          "savedLeadCount": 0,
+          "savedLeadVersions": []
+        }
+      },
+      {
+        "name": "advanced current-state replay compatibility control",
+        "commandUnchanged": true,
+        "after": {
+          "pending": false,
+          "dirty": false,
+          "notes": "",
+          "localTime": "",
+          "status": "Task cancelled.",
+          "error": "",
+          "uncertaintyVisible": false,
+          "retryDisabled": true,
+          "savedLeadCount": 1,
+          "savedLeadVersions": [
+            5
+          ]
+        }
+      },
+      {
+        "name": "real app onLead renderer failure after malformed audit entry loses retry and draft",
+        "draftBefore": "Keep this integrated draft",
+        "after": {
+          "notes": "",
+          "localTime": "",
+          "error": "Cannot read properties of null (reading 'action')",
+          "retryDisabled": true,
+          "uncertaintyVisible": false,
+          "parentRevision": "Revision 2"
+        },
+        "explicitRetrySentNewCommand": false,
+        "usedShippedAppAndSchedule": true
+      },
+      {
+        "name": "adjacent request save accepts another request without revision advance",
+        "after": {
+          "customerName": "Different request",
+          "notes": "Other request saved notes",
+          "status": "Changes saved \u00b7 Nov 19, 2026, 12:00 AM",
+          "error": "",
+          "version": "Revision 1"
+        }
+      }
+    ],
+    "originalSourceBytesUnchanged": true,
+    "productCredit": 0
+  },
+  "baselineHandoff": {
+    "status": "FROZEN_REPRODUCED_BASELINE",
+    "head": "2882d4f836d4694c8b445f91f52d64df943cf213",
+    "files": {
+      "/tmp/panelreply-scheduler-receipt-audit-20261123.json": {
+        "bytes": 18832,
+        "sha256": "c125f2e433f7b9b3653c652fa56551ac922523ba3b7452509dae994997116ee0"
+      },
+      "/tmp/panelreply-scheduler-receipt-audit-20261123.cjs": {
+        "bytes": 11442,
+        "sha256": "23643c81d55c4a6cdc7a64dd68e160fd5e33f7bd143b604562cf3be46e493ec6"
+      }
+    },
+    "sourceHashes": {
+      "workspace/schedule.js": "daa6f26cf85e04e155a44536a3da615f1ee3abf09916d6db7fca615159d33fb9",
+      "workspace/app.js": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989",
+      "tests/callback-schedule-client.test.cjs": "1a22def2562bd3442f3096de8de255430d4823a2af853d8d20e04806f220bbb8",
+      "tests/platform-client-state.test.cjs": "a6e3e38169ca0f2cc27fb5b40c502ca6f651886647e7f47a8d9b06c7c05378cd",
+      "workspace/callback-tasks.cjs": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff"
+    },
+    "allSourcesEqualCommittedBase": true,
+    "cases": [
+      "wrong task receipt for task completion",
+      "unchanged parent revision on fresh completion",
+      "unchanged task revision on fresh completion",
+      "scheduled status accepted for fresh completion",
+      "different due time and notes on fresh reschedule",
+      "minimal task with no identity or schedule accepted as created",
+      "existing wrong-parent rejection control",
+      "advanced current-state replay compatibility control",
+      "real app onLead renderer failure after malformed audit entry loses retry and draft",
+      "adjacent request save accepts another request without revision advance"
+    ],
+    "productCredit": 0,
+    "scope": "Read-only synthetic response corruption through the existing state-test helper prefixes. No browser or native component execution. The API server was not observed emitting these malformed responses.",
+    "highestImpact": "Malformed parent audit entry triggers shipped app renderer after scheduler has cleared pending/draft, preventing retry. Wrong-task, stale-revision and incomplete receipts also show success and erase the draft.",
+    "adjacentDeferred": "app.js saveLead accepts a response from another request and a non-advancing revision. Preserve for next milestone."
+  },
+  "baselineOriginalTests": {
+    "passed": 31,
+    "failed": 0,
+    "log": {
+      "path": "/tmp/panelreply-scheduler-receipt-baseline31.log",
+      "bytes": 3016,
+      "sha256": "54e37d39ca2b128699944043c481e6d3ac5345f9ba28390ba0db498e0e903324"
+    }
+  },
+  "candidateOriginalTests": {
+    "passed": 31,
+    "failed": 0,
+    "log": {
+      "path": "/tmp/panelreply-scheduler-receipt-original31-after.log",
+      "bytes": 3014,
+      "sha256": "1916440790ab117ec78c6e98e77c41a4ed546d8dce29d49eeb69128e29077c2c"
+    }
+  },
+  "baselineNewRegressions": {
+    "tests": 8,
+    "failed": 6,
+    "passed": 2,
+    "skipped": 0,
+    "scope": "Six draft-preservation guards fail against the old scheduler. Two advanced-replay compatibility controls pass. The integration case later gained the intake prefix for correct callback product-scope classification, with its assertions unchanged.",
+    "log": {
+      "path": "/tmp/panelreply-callback-receipts-baseline-regressions.log",
+      "bytes": 5920,
+      "sha256": "998fbb5ee051afac7feff3eff26e8e6e3654a57c74c4478fcfa52f71ebf3111d"
+    },
+    "logText": "\u2716 callback wrong-task receipt keeps the same command through a rejected retry until the matching receipt arrives (31.102821ms)\n\u2716 callback fresh receipts require advancement of both the parent and the selected task revision (8.707882ms)\n\u2716 callback current-revision receipts must confirm the requested action and scheduling fields (3.476047ms)\n\u2716 callback incomplete task shape cannot erase a creation draft or report a saved schedule (5.739542ms)\n\u2716 callback consumed parent records are checked before handing a receipt to the request renderer (5.070162ms)\n\u2714 callback creation replay accepts later cancellation and current opt-out without repeating the write (8.351274ms)\n\u2714 callback reschedule replay accepts a later completed task while retaining its original identity (7.766882ms)\n\u2716 callback malformed parent history preserves the task draft, request and retry until a complete receipt arrives (38.13933ms)\n\u2139 tests 8\n\u2139 suites 0\n\u2139 pass 2\n\u2139 fail 6\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 197.006597\n\n\u2716 failing tests:\n\ntest at tests/callback-schedule-client.test.cjs:328:1\n\u2716 callback wrong-task receipt keeps the same command through a rejected retry until the matching receipt arrives (31.102821ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  false !== true\n  \n      at assertUnconfirmedTask (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:318:10)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:331:60)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/callback-schedule-client.test.cjs:343:1\n\u2716 callback fresh receipts require advancement of both the parent and the selected task revision (8.707882ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  false !== true\n  \n      at assertUnconfirmedTask (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:318:10)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:352:62)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/callback-schedule-client.test.cjs:355:1\n\u2716 callback current-revision receipts must confirm the requested action and scheduling fields (3.476047ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  false !== true\n  \n      at assertUnconfirmedTask (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:318:10)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:362:66)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/callback-schedule-client.test.cjs:370:1\n\u2716 callback incomplete task shape cannot erase a creation draft or report a saved schedule (5.739542ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  false !== true\n  \n      at assertUnconfirmedTask (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:318:10)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:373:60)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/callback-schedule-client.test.cjs:376:1\n\u2716 callback consumed parent records are checked before handing a receipt to the request renderer (5.070162ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  false !== true\n  \n      at assertUnconfirmedTask (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:318:10)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-baseline-check/tests/callback-schedule-client.test.cjs:379:60)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/platform-client-state.test.cjs:937:1\n\u2716 callback malformed parent history preserves the task draft, request and retry until a complete receipt arrives (38.13933ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + ''\n  - 'Keep the operator callback draft'\n  \n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-baseline-check/tests/platform-client-state.test.cjs:953:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '',\n    expected: 'Keep the operator callback draft',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+  },
+  "candidateFocusedNode": {
+    "report": "docs/evidence/callback-receipts-local-2026-11-23.json",
+    "sha256": "2525e6eebb08a02efa3c71d59f2a798a98a937139bcd2aeab69d19e3210cb3e5",
+    "totals": {
+      "passed": 173,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "cancelled": 0,
+      "harnessPassed": 0
+    },
+    "files": {
+      "tests/callback-schedule-client.test.cjs": 38,
+      "tests/platform-client-state.test.cjs": 38,
+      "tests/callback-tasks.test.cjs": 72,
+      "tests/callback-tasks-api.test.cjs": 14,
+      "tests/callback-task-parent-integrity.test.cjs": 11
+    },
+    "sourceChanged": false,
+    "infrastructureErrors": [],
+    "summarySuccess": true,
+    "runner": {
+      "sha256": "249bc4a66ea24d93860ba5d1f14ce01799a8213906d22cb548696c0f388e1541",
+      "source": "'use strict';\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst { run } = require('node:test');\nconst ROOT = '/workspace/scratch/8f544d546bb7/panelreply-callback-receipts';\nconst { sourceEvidence, platformEvidence, collectNodeResults } = require(path.join(ROOT, 'scripts/test-evidence.cjs'));\nconst files = ['tests/callback-schedule-client.test.cjs', 'tests/platform-client-state.test.cjs', 'tests/callback-tasks.test.cjs',\n  'tests/callback-tasks-api.test.cjs', 'tests/callback-task-parent-integrity.test.cjs'];\n(async () => {\n  const before = sourceEvidence(ROOT), platform = platformEvidence(), startedAt = new Date().toISOString(), events = [], log = [];\n  for await (const event of run({ files: files.map(file => path.join(ROOT, file)), concurrency: 4 })) {\n    if (['test:enqueue', 'test:start', 'test:pass', 'test:fail', 'test:summary'].includes(event.type)) events.push(event);\n    if (['test:stdout', 'test:stderr', 'test:diagnostic'].includes(event.type)) log.push(String(event.data.message || ''));\n    if (event.type === 'test:fail') log.push(String(event.data.details?.error?.stack || event.data.name));\n  }\n  const after = sourceEvidence(ROOT), results = collectNodeResults(events, ROOT, platform.platformKey);\n  const sourceChanged = before.sourceTreeSha256 !== after.sourceTreeSha256 || before.sourceCommit !== after.sourceCommit;\n  const evidence = { format: 'panelreply-node-evidence-v1', suite: 'callback-receipts-focused', ...before,\n    startedAt, completedAt: new Date().toISOString(), sourceTreeSha256After: after.sourceTreeSha256, sourceChanged,\n    platform, files, ...results, realProviderCalls: 0,\n    scope: 'Dirty isolated development source. Focused Node client-state, SQLite store and in-process API regressions. No browser, native Safari, physical device, production or release acceptance claim.',\n    creditedToPortfolioGoal: false };\n  fs.writeFileSync('/tmp/panelreply-callback-receipts-after-node.json', JSON.stringify(evidence, null, 2) + '\\n');\n  fs.writeFileSync('/tmp/panelreply-callback-receipts-after-node.log', log.join('\\n') + '\\n');\n  console.log(JSON.stringify({ sourceTreeSha256: before.sourceTreeSha256, sourceChanged, totals: results.totals,\n    summarySuccess: results.summarySuccess, infrastructureErrors: results.infrastructureErrors }));\n  if (!results.summarySuccess || sourceChanged) process.exitCode = 1;\n})().catch(error => { console.error(error); process.exitCode = 1; });\n"
+    }
+  },
+  "browser": {
+    "status": "NOT_RUN",
+    "collection": {
+      "suite": "callback",
+      "status": "COLLECTED_ONLY",
+      "ids": [
+        "product_browser_test.CallbackProductBrowserTests.test_callback_approved_business_answers_stay_in_this_program",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_closed_and_opted_out_tasks_can_be_cancelled_but_not_contacted",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_corrupt_task_receipts_preserve_drafts_until_matching_replays",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_data_survives_fixed_entrypoint_restart",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_export_and_request_deletion_include_task_records",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_login_navigation_and_server_boundaries",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_queue_filters_overdue_completed_and_open_requests",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_review_save_and_reopen_without_spreadsheet_requests",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_schedule_reschedule_outcome_and_follow_up_persist",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_sign_out_revokes_its_named_program_session",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_stop_persists_without_another_product_or_live_provider",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_task_clock_changes_require_an_exact_occurrence",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_task_concurrent_edit_keeps_draft_and_requires_reload",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+        "product_browser_test.CallbackProductBrowserTests.test_callback_task_uncertain_save_retries_once_without_duplicate_task"
+      ],
+      "expectedProfiles": {
+        "desktop": null
+      }
+    },
+    "collectionSha256": "3fcf5e3acd47d255318843991366e001ab6572db61059ec02c142aca600e1b98",
+    "newMethod": "product_browser_test.CallbackProductBrowserTests.test_callback_corrupt_task_receipts_preserve_drafts_until_matching_replays",
+    "preexistingClassMethodsUnchanged": 37,
+    "oldAssertionChanges": 0,
+    "syntaxPassed": true
+  },
+  "sourcePreservation": {
+    "original31ClientTestBodiesAndAssertionsBytePreserved": true,
+    "originalBrowserMethodBodiesAstPreserved": true,
+    "appJsChanged": false,
+    "backendChanged": false,
+    "policyChanged": false
+  },
+  "releaseCredit": false,
+  "nativeBrowserAcceptance": "OUTSTANDING",
+  "realProviderCalls": 0,
+  "remainingDefect": "app.js saveLead still accepts another request identity and a non-advancing revision. Reproduced in the baseline audit and deferred to the next milestone.",
+  "independentBoundaryReview": {
+    "original": {
+      "sourceSha256": "de17cf93b85a6f9068ed4b6ecfa7ebd978178c12667766b70d8eecca97f6e74f",
+      "results": [
+        {
+          "case": "extended-year fresh receipt",
+          "backendCreated": true,
+          "leadCreatedAt": "2026-11-23T15:00:00.000Z",
+          "leadUpdatedAt": "+010000-01-01T00:00:00.000Z",
+          "numericChronologyValid": true,
+          "lexicalChronologyRejects": true,
+          "recoveryValidated": true,
+          "taskCount": 1,
+          "validator": {
+            "accepted": false,
+            "message": "The task save response was incomplete. Retry to confirm the result."
+          }
+        },
+        {
+          "case": "legacy maximum request revision replay",
+          "replayed": true,
+          "created": false,
+          "sameTask": true,
+          "leadVersion": 9007199254740991,
+          "taskLeadVersion": 9007199254740991,
+          "taskVersion": 1,
+          "recoveryValidated": true,
+          "taskCount": 1,
+          "validator": {
+            "accepted": false,
+            "message": "The task save response was incomplete. Retry to confirm the result."
+          }
+        }
+      ],
+      "sourceEdits": 0,
+      "productionData": false,
+      "providerCalls": 0,
+      "browserExecutions": 0
+    },
+    "script": {
+      "path": "/tmp/panelreply-callback-receipt-boundary-review-20261123.cjs",
+      "bytes": 4233,
+      "sha256": "dc0d3684e4946902aee0a3e27d21ce0108af49a331e542d84c3a2c7d2bff7a88"
+    },
+    "correctiveBaseline": {
+      "tests": 2,
+      "failed": 2,
+      "passed": 0,
+      "log": {
+        "path": "/tmp/panelreply-callback-receipts-boundary-baseline-corrected.log",
+        "bytes": 1835,
+        "sha256": "77588f514c6a3a6d7f62db1e1573c5a69220722a59a70404e87272c05531aec4"
+      },
+      "logText": "\u2716 callback client receipts preserve extended-year chronology for fresh writes and current-parent replays (216.786445ms)\n\u2716 callback client receipts accept archive-valid maximum parent history revisions without relaxing task limits (10.236993ms)\n\u2139 tests 2\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 2\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 315.590888\n\n\u2716 failing tests:\n\ntest at tests/callback-tasks.test.cjs:59:1\n\u2716 callback client receipts preserve extended-year chronology for fresh writes and current-parent replays (216.786445ms)\n  Error: The task save response was incomplete. Retry to confirm the result.\n      at invalid (/tmp/panelreply-callback-receipts-boundary-baseline/workspace/schedule.js:95:35)\n      at validateSaveReceipt (/tmp/panelreply-callback-receipts-boundary-baseline/workspace/schedule.js:97:126)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-boundary-baseline/tests/callback-tasks.test.cjs:68:16)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n\ntest at tests/callback-tasks.test.cjs:82:1\n\u2716 callback client receipts accept archive-valid maximum parent history revisions without relaxing task limits (10.236993ms)\n  Error: The task save response was incomplete. Retry to confirm the result.\n      at invalid (/tmp/panelreply-callback-receipts-boundary-baseline/workspace/schedule.js:95:35)\n      at validateSaveReceipt (/tmp/panelreply-callback-receipts-boundary-baseline/workspace/schedule.js:97:126)\n      at TestContext.<anonymous> (/tmp/panelreply-callback-receipts-boundary-baseline/tests/callback-tasks.test.cjs:97:16)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)\n",
+      "sourceSha256": "de17cf93b85a6f9068ed4b6ecfa7ebd978178c12667766b70d8eecca97f6e74f",
+      "fixtureArchiveValidationRequired": true
+    },
+    "resolvedInCandidate": true,
+    "changes": [
+      "Numeric chronological comparisons for all three parent/task time comparisons",
+      "Safe positive parent/general-history read revisions remain distinct from the stricter task ceiling",
+      "The existing new API case now checks STOP-only parent advancement before task cancellation"
+    ],
+    "priorPassingCandidate": {
+      "report": {
+        "path": "/tmp/panelreply-callback-receipts-before-boundary-node.json",
+        "bytes": 116093,
+        "sha256": "62e7a8a1502827f1be8a1c35f566ab25fe62fb15619f449de56a5d2b594494c6"
+      },
+      "sourceManifestSha256": "713f275ba729ed3cc3b8621bdbe8a7768d242cc91d7b4a3cb6fffc4863546b51",
+      "passed": 171,
+      "superseded": true
+    },
+    "excludedIntermediateAttempts": [
+      {
+        "report": {
+          "path": "/tmp/panelreply-callback-receipts-invalid-legacy-fixture.json",
+          "bytes": 117511,
+          "sha256": "04ec5a07a1177a451e2b2bd2d334f8b796a26f8978279b778a75745fcb94c38e"
+        },
+        "sourceManifestSha256": "85882a67271c7c168de81be8b324447f74c5aeef5b278997f5a7b790c9c5829e",
+        "totals": {
+          "passed": 172,
+          "failed": 1,
+          "skipped": 0,
+          "todo": 0,
+          "cancelled": 0,
+          "harnessPassed": 0
+        },
+        "failedCases": [
+          {
+            "id": "tests/callback-tasks.test.cjs::callback client receipts accept archive-valid maximum parent history revisions without relaxing task limits",
+            "name": "callback client receipts accept archive-valid maximum parent history revisions without relaxing task limits",
+            "file": "tests/callback-tasks.test.cjs",
+            "platformKey": "linux/x86_64/node24",
+            "status": "FAIL",
+            "durationMs": 19.404985,
+            "generated": false,
+            "caseFamily": null,
+            "productScope": "callback",
+            "kind": "product",
+            "diagnostic": "The workspace contains invalid callback scheduling records.",
+            "code": "ERR_TEST_FAILURE"
+          }
+        ],
+        "reason": "The new legacy fixture incorrectly put MAX_SAFE_INTEGER in a callback audit event, which the unchanged archive validator rejects. The fixture was corrected to a general request audit event and archive validity is still required. No acceptance assertion was removed.",
+        "releaseCredit": false
+      },
+      {
+        "log": {
+          "path": "/tmp/panelreply-callback-receipts-boundary-baseline-missing-dependency.log",
+          "bytes": 1520,
+          "sha256": "d6ca4d8f7debffcf8567e85657234cdf23a51a98916f74548a43fd3a68ec4c8d"
+        },
+        "reason": "Temporary baseline copy omitted the existing src dependency. No product case executed. Dependencies were copied before the corrected baseline run.",
+        "releaseCredit": false
+      }
+    ]
+  },
+  "integrationBaseCheck": {
+    "base": "2882d4f836d4694c8b445f91f52d64df943cf213",
+    "integrationBase": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+    "allChangedSourceFilesByteIdenticalAtBothCommits": true,
+    "files": {
+      "workspace/schedule.js": "daa6f26cf85e04e155a44536a3da615f1ee3abf09916d6db7fca615159d33fb9",
+      "tests/callback-schedule-client.test.cjs": "1a22def2562bd3442f3096de8de255430d4823a2af853d8d20e04806f220bbb8",
+      "tests/callback-tasks.test.cjs": "1c6628fa3e9312f3e5ee91904ef192feedddc883fdf35051dd07c533e004d91d",
+      "tests/callback-tasks-api.test.cjs": "eaf876d1fb65ee4dff6161dafd5685d31372ab9a6b709a2a4bf0b2a797e1d2cd",
+      "tests/platform-client-state.test.cjs": "a6e3e38169ca0f2cc27fb5b40c502ca6f651886647e7f47a8d9b06c7c05378cd",
+      "tests/product_browser_test.py": "094974649dad1a4d9876bd4f08258184f6338a18ae4e3c34eb9aa442ba903a8e"
+    }
+  },
+  "finalIndependentReview": {
+    "recordSha256": "f51fc5c98edcaceba43c0fff94d43ac46aa7bb89d4f4ecb1519d1fbd4e6fc4f7",
+    "record": {
+      "format": "panelreply-independent-review-v1",
+      "reviewer": "ocr_quality",
+      "reviewedAt": "2026-11-23T19:28:55.972608+00:00",
+      "worktree": "/workspace/scratch/8f544d546bb7/panelreply-callback-receipts",
+      "source": {
+        "sourceCommit": "2882d4f836d4694c8b445f91f52d64df943cf213",
+        "sourceTreeSha256": "4ba6aa9b5c8699835af3ae6aaec01218dd7c74972071f334cc179c4c2dc34b68"
+      },
+      "fileHashes": {
+        "workspace/schedule.js": "d7477c86bb6594c3813e457efdc7de07cd02d20c7c8653027b22f57410fa0fa1",
+        "tests/callback-schedule-client.test.cjs": "ed7b7c3e24c8473e6293504428240c603cc1cdba2a7f7c8695291a687efc0c67",
+        "tests/callback-tasks-api.test.cjs": "783441512b5881b56c358d9ff49e5b31878d4b7ad780160a7987250522e96dd7",
+        "tests/callback-tasks.test.cjs": "c98ea78481ef46ace298e2a24be34ed06ba2bc286b3b49835939e524125328de",
+        "tests/platform-client-state.test.cjs": "bfee9e8e2defadac4c3e5387e80a680b7436aaa93fe3420e8809bcf6b66968c6",
+        "tests/product_browser_test.py": "6b85bad5d68bcabf2d2e1b2b19e68342d11a88048a6f7f5dc0ab16ff3fcb73b2"
+      },
+      "result": "PASS_SOURCE_REVIEW",
+      "findings": [
+        {
+          "issue": "Canonical ISO timestamp strings do not sort by numeric chronology across extended years",
+          "initialStatus": "REPRODUCED",
+          "finalStatus": "CORRECTED",
+          "correction": "Compare parsed numeric instants in parent and task chronological relations. Preserve canonical timestamp validation."
+        },
+        {
+          "issue": "Readable legacy request and general request audit revisions at MAX_SAFE_INTEGER rejected by shared task ceiling",
+          "initialStatus": "REPRODUCED",
+          "finalStatus": "CORRECTED",
+          "correction": "Allow every safe positive read revision for parent/general history while preserving strict task revision ceiling and backend mutation limits."
+        }
+      ],
+      "boundariesReviewed": [
+        "Complete consumed parent/task shape is checked before pending command, draft or renderer state is reset.",
+        "Fresh writes require exact next task and parent revisions and requested action, notes, schedule and outcome at the committed task revision.",
+        "Updates bind the known task ID, parent ID, task kind and creation instant to the issued command.",
+        "Replays accept the current parent and later task state after STOP, rescheduling, completion or cancellation within the actual backend replay contract.",
+        "STOP-only replay accepts unchanged committed task revision and newer restricted parent without a second write.",
+        "Terminal completion/cancellation task revisions remain immutable while later parent changes remain readable.",
+        "Malformed and mismatched successful receipts retain the same key/payload through later client rejections.",
+        "Existing app navigation and request-refresh locks prevent a pending task command from being replaced through the normal UI.",
+        "The new browser journey commits through the real API, corrupts only the delivered receipt, checks the same key/payload, and reads stored task identity/revision and parent increment independently."
+      ],
+      "preservation": {
+        "original31ClientTestBodiesAndAssertionsByteIdentical": true,
+        "originalClientBodySha256": "224abd0ac891b2dab9c86267e5311d8df4cf74f53312264f14c1e1c0c8b7989a",
+        "existingBrowserClassMethods": 37,
+        "existingBrowserClassMethodAstIdentical": true,
+        "newBrowserMethods": [
+          "CallbackProductBrowserTests.test_callback_corrupt_task_receipts_preserve_drafts_until_matching_replays"
+        ],
+        "appJsChanged": false,
+        "backendChanged": false
+      },
+      "independentVerification": {
+        "nodeVersion": "v24.22.3",
+        "executions": [
+          {
+            "command": [
+              "node",
+              "--test",
+              "tests/callback-schedule-client.test.cjs"
+            ],
+            "path": "/tmp/panelreply-callback-receipts-peer-client-20261123.log",
+            "sha256": "466a73eabffd2682f50fcedeec121898eb2bcbc52b750c5f1ab9e2dd2dbe605a",
+            "passed": 38,
+            "failed": 0,
+            "skipped": 0,
+            "cancelled": 0,
+            "log": "\u2714 callback local time resolves winter and summer offsets independently of the device zone (29.898651ms)\n\u2714 callback local time exposes both instants in the repeated fall hour (1.344848ms)\n\u2714 callback local time rejects the skipped spring hour without normalizing it forward (1.286871ms)\n\u2714 callback local time supports a half-hour clock transition (2.356024ms)\n\u2714 callback local time preserves quarter-hour offsets and date-boundary conversions (2.897491ms)\n\u2714 callback local time rejects impossible dates and unsupported zone identifiers (1.469717ms)\n\u2714 callback leap-day conversion retains the saved wall-clock minute (0.758815ms)\n\u2714 callback schedule submits the reviewed UTC instant, zone and current parent revision (18.087083ms)\n\u2714 callback ambiguous time cannot save until the operator chooses an occurrence (6.260272ms)\n\u2714 callback changing the time zone clears an earlier ambiguous occurrence selection (7.851974ms)\n\u2714 callback nonexistent wall-clock time never reaches the mutation API (6.19175ms)\n\u2714 callback lost save response retains the same idempotency key and payload for retry (12.565458ms)\n\u2714 callback malformed success is treated as an uncertain save instead of clearing the draft (3.703246ms)\n\u2714 callback a rejected retry cannot erase an earlier unknown save result (4.000595ms)\n\u2714 callback version rejection retains edits and requires a reload before another mutation (5.107865ms)\n\u2714 callback form correction remains possible after a definitive input rejection (6.513375ms)\n\u2714 callback opt-out blocks scheduling without hiding the saved request (6.294214ms)\n\u2714 callback safety hold blocks scheduling without hiding the saved request (3.055088ms)\n\u2714 callback closed request blocks scheduling without hiding the saved request (3.058023ms)\n\u2714 callback review request blocks scheduling without hiding the saved request (3.297244ms)\n\u2714 callback missing permission blocks scheduling without hiding the saved request (2.789507ms)\n\u2714 callback blocked task retains cancellation while contact actions remain disabled (3.464566ms)\n\u2714 callback rescheduling restores the saved occurrence in a repeated clock hour (8.042191ms)\n\u2714 callback completion requires a reported outcome and removes date requirements (2.878002ms)\n\u2714 callback completed and cancelled task cards expose no further mutation controls (2.504057ms)\n\u2714 callback task list rejects a record from another request (2.16808ms)\n\u2714 callback stale task read cannot repopulate the previous request (11.667069ms)\n\u2714 callback session expiration clears private task content and ignores in-flight queue results (6.535508ms)\n\u2714 callback saved markup remains literal text in task notes and customer names (1.872675ms)\n\u2714 callback queue paginates server totals and preserves the selected state filter (2.229143ms)\n\u2714 callback queue failure clears old cards instead of displaying them as refreshed (2.654074ms)\n\u2714 callback wrong-task receipt keeps the same command through a rejected retry until the matching receipt arrives (2.736478ms)\n\u2714 callback fresh receipts require advancement of both the parent and the selected task revision (3.395071ms)\n\u2714 callback current-revision receipts must confirm the requested action and scheduling fields (7.880137ms)\n\u2714 callback incomplete task shape cannot erase a creation draft or report a saved schedule (2.987256ms)\n\u2714 callback consumed parent records are checked before handing a receipt to the request renderer (6.626927ms)\n\u2714 callback creation replay accepts later cancellation and current opt-out without repeating the write (3.631638ms)\n\u2714 callback reschedule replay accepts a later completed task while retaining its original identity (5.514668ms)\n\u2139 tests 38\n\u2139 suites 0\n\u2139 pass 38\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 345.839997\n"
+          },
+          {
+            "command": [
+              "node",
+              "--test",
+              "--test-name-pattern=callback client receipt",
+              "tests/callback-tasks-api.test.cjs",
+              "tests/callback-tasks.test.cjs"
+            ],
+            "path": "/tmp/panelreply-callback-receipts-peer-api-boundaries-20261123.log",
+            "sha256": "20c21f921758b80218a8f1d757794f53d67d0e61be564d49620fb5d4f105e749",
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0,
+            "cancelled": 0,
+            "log": "\u2714 callback client receipt validation accepts real fresh writes and advanced replays after opt-out and cancellation (559.659898ms)\n\u2714 callback client receipts preserve extended-year chronology for fresh writes and current-parent replays (368.734049ms)\n\u2714 callback client receipts accept archive-valid maximum parent history revisions without relaxing task limits (7.892021ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 711.329974\n"
+          }
+        ],
+        "totalPassed": 41,
+        "totalFailed": 0,
+        "totalSkipped": 0,
+        "sourceHashesMatchedBeforeAndAfter": true,
+        "counterexamplesBefore": {
+          "path": "/tmp/panelreply-callback-receipt-boundary-review-20261123.json",
+          "sha256": "ad53249ba3aa20073d8123edd8e3c2f4a3233ef332058f46a76c2c6c1eba04ba",
+          "record": {
+            "sourceSha256": "de17cf93b85a6f9068ed4b6ecfa7ebd978178c12667766b70d8eecca97f6e74f",
+            "results": [
+              {
+                "case": "extended-year fresh receipt",
+                "backendCreated": true,
+                "leadCreatedAt": "2026-11-23T15:00:00.000Z",
+                "leadUpdatedAt": "+010000-01-01T00:00:00.000Z",
+                "numericChronologyValid": true,
+                "lexicalChronologyRejects": true,
+                "recoveryValidated": true,
+                "taskCount": 1,
+                "validator": {
+                  "accepted": false,
+                  "message": "The task save response was incomplete. Retry to confirm the result."
+                }
+              },
+              {
+                "case": "legacy maximum request revision replay",
+                "replayed": true,
+                "created": false,
+                "sameTask": true,
+                "leadVersion": 9007199254740991,
+                "taskLeadVersion": 9007199254740991,
+                "taskVersion": 1,
+                "recoveryValidated": true,
+                "taskCount": 1,
+                "validator": {
+                  "accepted": false,
+                  "message": "The task save response was incomplete. Retry to confirm the result."
+                }
+              }
+            ],
+            "sourceEdits": 0,
+            "productionData": false,
+            "providerCalls": 0,
+            "browserExecutions": 0
+          }
+        },
+        "counterexamplesAfter": {
+          "path": "/tmp/panelreply-callback-receipt-boundary-review-after-20261123.json",
+          "sha256": "cdc9c3b547b5f71bb1016077dd9845633b05257426cba9ee52c2714cd5008ac0",
+          "record": {
+            "sourceSha256": "d7477c86bb6594c3813e457efdc7de07cd02d20c7c8653027b22f57410fa0fa1",
+            "results": [
+              {
+                "case": "extended-year fresh receipt",
+                "backendCreated": true,
+                "leadCreatedAt": "2026-11-23T15:00:00.000Z",
+                "leadUpdatedAt": "+010000-01-01T00:00:00.000Z",
+                "numericChronologyValid": true,
+                "lexicalChronologyRejects": true,
+                "recoveryValidated": true,
+                "taskCount": 1,
+                "validator": {
+                  "accepted": true
+                }
+              },
+              {
+                "case": "legacy maximum request revision replay",
+                "replayed": true,
+                "created": false,
+                "sameTask": true,
+                "leadVersion": 9007199254740991,
+                "taskLeadVersion": 9007199254740991,
+                "taskVersion": 1,
+                "recoveryValidated": true,
+                "taskCount": 1,
+                "validator": {
+                  "accepted": true
+                }
+              }
+            ],
+            "sourceEdits": 0,
+            "productionData": false,
+            "providerCalls": 0,
+            "browserExecutions": 0
+          }
+        }
+      },
+      "limitations": [
+        "This is a source review plus focused Linux Node verification. The new browser journey has not been executed by this reviewer.",
+        "These 41 executions overlap the author selection and receive no extra portfolio goal credit.",
+        "Synthetic malformed receipt tests do not establish that the current server emits those values in normal operation.",
+        "The separate app.js request-save identity and revision defect remains outside this patch."
+      ],
+      "sourceEdits": 0,
+      "providerCalls": 0,
+      "productionData": false,
+      "browserExecutions": 0,
+      "nativeExecutions": 0,
+      "releaseAcceptance": false,
+      "additionalGoalCredit": 0
+    },
+    "sourceEdits": 0,
+    "browserExecutions": 0,
+    "includedInPortfolioProductGoal": false
+  }
+}

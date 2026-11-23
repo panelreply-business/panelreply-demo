@@ -346,6 +346,101 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         self.assertEqual(requests[0], requests[1])
         self.assertEqual(len(self.api("GET", "/api/callback-tasks?state=all")["tasks"]), 1)
 
+    def test_callback_corrupt_task_receipts_preserve_drafts_until_matching_replays(self):
+        self.login()
+        saved = self.create_request(customerName="Synthetic Receipt Check")
+        self.open_callback_request(saved)
+        self.fill_callback_time()
+        self.page.get_by_label("Task notes", exact=True).fill("Keep this creation draft")
+        create_url = self.origin + "/api/leads/" + saved["id"] + "/tasks"
+        create_commands, create_receipts = [], []
+
+        def corrupt_parent_once(route):
+            self.assertEqual(route.request.method, "POST")
+            create_commands.append((route.request.headers.get("idempotency-key"), route.request.post_data_json))
+            response = route.fetch()
+            self.assertEqual(response.status, 201 if len(create_commands) == 1 else 200)
+            actual = response.json()
+            create_receipts.append(actual)
+            delivered = json.loads(json.dumps(actual))
+            if len(create_commands) == 1:
+                delivered["lead"]["audit"] = [None]
+            route.fulfill(status=response.status, content_type="application/json", body=json.dumps(delivered))
+
+        self.page.route(create_url, corrupt_parent_once)
+        with self.page.expect_response(lambda response: response.url == create_url and response.request.method == "POST") as first:
+            self.page.locator("#save-callback-task").click()
+        self.assertEqual(first.value.status, 201)
+        expect(self.page.locator("#task-error")).to_contain_text("incomplete")
+        expect(self.page.locator("#task-uncertain")).to_be_visible()
+        expect(self.page.locator("#retry-task-save")).to_be_enabled()
+        expect(self.page.get_by_label("Task notes", exact=True)).to_have_value("Keep this creation draft")
+        expect(self.page.get_by_label("Callback date and time", exact=True)).to_have_value("2026-12-01T09:30")
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"]))
+        expect(self.page.locator("#task-save-status")).to_be_empty()
+        with self.page.expect_response(lambda response: response.url == create_url and response.request.method == "POST") as retry:
+            self.page.locator("#retry-task-save").click()
+        self.assertEqual(retry.value.status, 200)
+        self.assertTrue(retry.value.json()["replayed"])
+        expect(self.page.locator("#task-uncertain")).not_to_be_visible()
+        expect(self.page.locator("#task-save-status")).to_contain_text("Task scheduled")
+        self.assertEqual(len(create_commands), 2)
+        self.assertTrue(create_commands[0][0])
+        self.assertEqual(create_commands[0], create_commands[1])
+        self.assertEqual(create_receipts[0]["task"]["id"], create_receipts[1]["task"]["id"])
+
+        task_id = create_receipts[0]["task"]["id"]
+        card = self.page.locator('#lead-task-list [data-task-id="' + task_id + '"]')
+        expect(card).to_contain_text("Keep this creation draft")
+        card.get_by_role("button", name="Record outcome", exact=True).click()
+        self.page.get_by_label("Call outcome", exact=True).select_option("no_answer")
+        self.page.get_by_label("Task notes", exact=True).fill("Keep this outcome draft")
+        update_url = self.origin + "/api/callback-tasks/" + task_id
+        update_commands, update_receipts = [], []
+
+        def corrupt_task_once(route):
+            self.assertEqual(route.request.method, "PATCH")
+            update_commands.append((route.request.headers.get("idempotency-key"), route.request.post_data_json))
+            response = route.fetch()
+            self.assertEqual(response.status, 200)
+            actual = response.json()
+            update_receipts.append(actual)
+            delivered = json.loads(json.dumps(actual))
+            if len(update_commands) == 1:
+                delivered["task"]["id"] = str(uuid.uuid4())
+            route.fulfill(status=200, content_type="application/json", body=json.dumps(delivered))
+
+        self.page.route(update_url, corrupt_task_once)
+        with self.page.expect_response(lambda response: response.url == update_url and response.request.method == "PATCH") as update:
+            self.page.locator("#save-callback-task").click()
+        self.assertEqual(update.value.status, 200)
+        self.assertNotEqual(update.value.json()["task"]["id"], task_id)
+        expect(self.page.locator("#task-error")).to_contain_text("incomplete")
+        expect(self.page.locator("#task-uncertain")).to_be_visible()
+        expect(self.page.get_by_label("Task notes", exact=True)).to_have_value("Keep this outcome draft")
+        expect(self.page.get_by_label("Call outcome", exact=True)).to_have_value("no_answer")
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"] + 1))
+        expect(self.page.locator("#task-save-status")).to_be_empty()
+        with self.page.expect_response(lambda response: response.url == update_url and response.request.method == "PATCH") as update_retry:
+            self.page.locator("#retry-task-save").click()
+        self.assertEqual(update_retry.value.status, 200)
+        self.assertTrue(update_retry.value.json()["replayed"])
+        expect(self.page.locator("#task-uncertain")).not_to_be_visible()
+        expect(self.page.locator("#task-save-status")).to_contain_text("Call outcome saved")
+        self.assertEqual(len(update_commands), 2)
+        self.assertTrue(update_commands[0][0])
+        self.assertEqual(update_commands[0], update_commands[1])
+        self.assertEqual([receipt["task"]["id"] for receipt in update_receipts], [task_id, task_id])
+        self.assertEqual([receipt["task"]["version"] for receipt in update_receipts], [2, 2])
+        tasks = self.api("GET", "/api/callback-tasks?state=all&leadId=" + saved["id"])["tasks"]
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["id"], task_id)
+        self.assertEqual(tasks[0]["status"], "completed")
+        self.assertEqual(tasks[0]["outcome"], "no_answer")
+        self.assertEqual(tasks[0]["notes"], "Keep this outcome draft")
+        self.assertEqual(self.api("GET", "/api/leads/" + saved["id"])["lead"]["version"], saved["version"] + 2)
+        self.assert_product_navigation()
+
     def test_callback_task_concurrent_edit_keeps_draft_and_requires_reload(self):
         self.login()
         saved = self.create_request()
