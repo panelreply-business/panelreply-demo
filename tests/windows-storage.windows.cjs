@@ -88,6 +88,57 @@ function assertAbsent(observation) {
   assert.equal(observation.exists, false);
   assert.ok([2, 3].includes(observation.win32Code), 'Absence must be an actual not-found result, not an access/sharing failure.');
 }
+function assertEmptyDacl(metadata, kind) {
+  assert.equal(metadata.ownerSid, metadata.processUserSid);
+  assert.equal(metadata.protectedDacl, true);
+  assert.equal(metadata.daclPresent, true);
+  assert.equal(metadata.nullDacl, false);
+  assert.equal(metadata.aceCount, 0);
+  assert.match(metadata.fileId, /^[a-f0-9]{32}$/);
+  assert.match(metadata.volumeSerial, /^\d+$/);
+  assert.equal(metadata.filesystem, 'NTFS');
+  assert.equal(metadata.persistentAcls, true);
+  assert.equal(metadata.volumeType, 3);
+  assert.ok(Number.isInteger(metadata.fileAttributes));
+  assert.equal(metadata.fileAttributes & 0x400, 0);
+  assert.equal(Boolean(metadata.fileAttributes & 0x10), kind === 'directory');
+  if (kind === 'file') assert.equal(metadata.links, 1);
+}
+function trackEmptyFixture(t, filename, kind, record) {
+  let expected;
+  // Register before creation: a failed post-create metadata observation must
+  // still attempt cleanup, without pretending an unknown identity is safe.
+  t.after(() => {
+    try {
+      const parent = path.dirname(filename), name = path.basename(filename);
+      if (!expected) {
+        const observed = fixture(fixtureExecutable, ['info', filename], { allowFailure: true });
+        if (observed.error && observed.win32Code === 2 && !fs.readdirSync(parent).includes(name)) {
+          record('empty-dacl-cleanup-no-object', { kind, win32Code: 2 }); return;
+        }
+        record('empty-dacl-cleanup-identity-unestablished', { kind, observed });
+        if (observed.error) throw Object.assign(new Error('Cleanup could not observe the unconfirmed fixture: ' + observed.error), { win32Code: observed.win32Code });
+        throw new Error('Cleanup cannot adopt a present object without its original creation identity.');
+      }
+      const before = expected;
+      assertEmptyDacl(before, kind);
+      const wrongId = (before.fileId[0] === '0' ? '1' : '0') + before.fileId.slice(1);
+      const mismatch = fixture(fixtureExecutable, ['remove-empty', filename, before.volumeSerial, wrongId, kind], { allowFailure: true });
+      record('empty-dacl-cleanup-identity-control', { kind, result: mismatch });
+      assert.equal(mismatch.win32Code, 13, 'Cleanup must reject an identity mismatch before deletion.');
+      assert.deepEqual(raw(filename), before);
+      const result = fixture(fixtureExecutable, ['remove-empty', filename, before.volumeSerial, before.fileId, kind]);
+      assert.equal(result.deleteDispositionSet, true);
+      assert.deepEqual(result.metadata, before);
+      assert.equal(fs.readdirSync(parent).includes(name), false);
+      record('empty-dacl-cleanup-verified', { kind, identityMismatch: mismatch, result, absentFromParent: true });
+    } catch (error) {
+      record('empty-dacl-cleanup-failed', { kind, code: error.code || null, message: error.message, win32Code: error.win32Code ?? null });
+      throw error;
+    }
+  });
+  return metadata => { expected = metadata; };
+}
 
 componentCase('WNS.private_create_roundtrip', (t, base, record) => {
   const { directory, lease } = privateDirectory(t, base, 'private-🔌');
@@ -131,15 +182,16 @@ componentCase('WNS.exclusive_create_preserves_existing', (t, base, record) => {
 componentCase('WNS.root_security_rejection', (t, base, record) => {
   for (const policy of ['null', 'empty', 'unprotected', 'broad']) {
     const directory = path.join(base, policy);
+    const remember = policy === 'empty' ? trackEmptyFixture(t, directory, 'directory', record) : null;
     const created = fixture(fixtureExecutable, ['create-dir', directory, policy]);
     assert.equal(created.created, true);
+    if (remember) remember(created.metadata);
     const before = raw(directory);
+    if (policy === 'empty') { assertEmptyDacl(before, 'directory'); assert.deepEqual(before, created.metadata); }
     const parentEntries = fs.readdirSync(base).sort();
     rejectDacl(() => addon.openPrivateDirectory(directory));
     const after = raw(directory);
-    assert.equal(after.sddl, before.sddl);
-    assert.equal(after.ownerSid, before.ownerSid);
-    assert.equal(after.fileId, before.fileId);
+    assert.deepEqual(after, before);
     assert.deepEqual(fs.readdirSync(base).sort(), parentEntries);
     record('unchanged-rejected-root', { policy, before, after });
   }
@@ -164,12 +216,17 @@ componentCase('WNS.child_security_and_hardlink_rejection', (t, base, record) => 
   const { directory, lease } = privateDirectory(t, base);
   for (const policy of ['null', 'empty', 'unprotected', 'broad']) {
     const name = policy + '.bin', filename = path.join(directory, name);
-    assert.equal(fixture(fixtureExecutable, ['create-file', filename, policy]).created, true);
+    const remember = policy === 'empty' ? trackEmptyFixture(t, filename, 'file', record) : null;
+    const created = fixture(fixtureExecutable, ['create-file', filename, policy]);
+    assert.equal(created.created, true);
+    if (remember) remember(created.metadata);
     const before = raw(filename);
+    if (policy === 'empty') { assertEmptyDacl(before, 'file'); assert.deepEqual(before, created.metadata); }
     rejectDacl(() => lease.inspectFile(name));
     rejectDacl(() => lease.readFile(name, MAX_BYTES));
-    assert.deepEqual(raw(filename), before);
-    record('unchanged-rejected-child', { policy, metadata: before });
+    const after = raw(filename);
+    assert.deepEqual(after, before);
+    record('unchanged-rejected-child', { policy, metadata: before, after });
   }
   const saved = lease.createFile('original.bin', bytes);
   fs.linkSync(path.join(directory, 'original.bin'), path.join(directory, 'alias.bin'));

@@ -48,6 +48,49 @@ def command(args, env, stdin=None):
     return json.loads(result.stdout)
 
 
+def select_keyboard_plan(control, value):
+    """Plan native first-character cycling from the observed single select.
+
+    WebKit's TypeAhead cycles matching initial characters after the currently
+    selected option. No popup, option click, value setter or event dispatch is
+    needed. This fixed-product scope uses ASCII initial characters only.
+    """
+    if control.get("tag") != "SELECT" or control.get("multiple") is not False \
+            or control.get("disabled") is not False or control.get("size") not in (0, 1):
+        raise AssertionError("A usable native single-select control is required")
+    options = control.get("options")
+    selected = control.get("selectedIndex")
+    if not isinstance(options, list) or not 1 <= len(options) <= 32 \
+            or type(selected) is not int or not 0 <= selected < len(options):
+        raise AssertionError("The native select option inventory is invalid")
+    if any(not isinstance(option, dict) or not isinstance(option.get("value"), str)
+           or not isinstance(option.get("label"), str) or type(option.get("disabled")) is not bool
+           or type(option.get("hidden")) is not bool for option in options):
+        raise AssertionError("The native option metadata is incomplete")
+    matches = [index for index, option in enumerate(options) if option["value"] == value]
+    if len(matches) != 1 or options[matches[0]]["disabled"] or options[matches[0]]["hidden"]:
+        raise AssertionError("Exactly one enabled, visible target option is required")
+    target = matches[0]
+    label = options[target]["label"].lstrip()
+    if not label or not re.fullmatch(r"[A-Za-z0-9]", label[0]):
+        raise AssertionError("This native keyboard plan requires an ASCII initial character")
+    character = label[0].lower()
+    if control.get("value") != options[selected]["value"]:
+        raise AssertionError("The native select value and selected index disagree")
+    cycles = 0
+    if selected != target:
+        for offset in range(1, len(options) + 1):
+            index = (selected + offset) % len(options)
+            option = options[index]
+            if not option["disabled"] and not option["hidden"] \
+                    and option["label"].lstrip().lower().startswith(character):
+                cycles += 1
+            if index == target:
+                break
+    return {"character": character, "cycles": cycles, "targetIndex": target,
+            "initialValue": control["value"], "targetLabel": options[target]["label"]}
+
+
 class SafariProductHarness(unittest.TestCase):
     native = None  # Set only after the runner observes a native Safari session.
 
@@ -129,6 +172,9 @@ class SafariProductHarness(unittest.TestCase):
         self.download_evidence = []
         self.readback_evidence = []
         self.input_evidence = []
+        self.diagnostic_evidence = []
+        self.failure_captured = False
+        self.diagnostic_project_id = None
         self.driver.get(self.origin + "/login")
         self.driver.delete_all_cookies()
         type(self).counter += 1
@@ -171,8 +217,132 @@ class SafariProductHarness(unittest.TestCase):
 
     def select(self, selector, value, expected=None):
         element = self.element(selector)
-        self.native.select_type(element).select_by_value(value)
-        self.assertEqual(element.get_property("value"), value if expected is None else expected)
+        self.wait.until(lambda _driver: element.is_enabled())
+        observation = {"selector": selector, "requestedValue": value,
+                       "expectedValue": value if expected is None else expected,
+                       "status": "ATTEMPTED", "transport": "native WebDriver character cycling and Tab"}
+        self.input_evidence.append(observation)
+        control = self.driver.execute_script("""
+            const element = arguments[0];
+            return {tag: element.tagName, multiple: element.multiple, disabled: element.disabled,
+                size: element.size, value: element.value, selectedIndex: element.selectedIndex,
+                options: [...element.options].slice(0, 33).map(option => ({
+                    value: option.value, label: option.label,
+                    disabled: option.disabled || !!option.closest('optgroup[disabled]'),
+                    hidden: option.hidden || getComputedStyle(option).display === 'none'}))};
+        """, element)
+        observation["control"] = control
+        plan = select_keyboard_plan(control, value)
+        observation["plan"] = plan
+        if plan["cycles"] == 0:
+            self.assertEqual(element.get_property("value"), observation["expectedValue"])
+            observation.update({"status": "UNCHANGED", "observedValue": value, "events": []})
+            return
+        self.driver.execute_script("""
+            const element = arguments[0], events = [], types = ['keydown', 'keyup', 'input', 'change'];
+            const probe = {element, events, overflow: false};
+            probe.listener = event => {
+                if (events.length >= 128) { probe.overflow = true; return; }
+                events.push({type: event.type, key: event.key || null,
+                    trusted: event.isTrusted, value: element.value});
+            };
+            for (const type of types) element.addEventListener(type, probe.listener, true);
+            window.__panelreplyNativeSelectProbe = probe;
+        """, element)
+        try:
+            element.send_keys(plan["character"] * plan["cycles"], self.native.keys.TAB)
+        finally:
+            # Observers do not focus, set values, dispatch or cancel events.
+            # Diagnostic failure must not replace an original input failure.
+            try:
+                observation.update(self.driver.execute_script("""
+                    const probe = window.__panelreplyNativeSelectProbe;
+                    for (const type of ['keydown', 'keyup', 'input', 'change'])
+                        probe.element.removeEventListener(type, probe.listener, true);
+                    delete window.__panelreplyNativeSelectProbe;
+                    return {events: probe.events, overflow: probe.overflow,
+                        observedValue: probe.element.value,
+                        activeElementId: document.activeElement?.id || null};
+                """))
+            except Exception as error:
+                observation["observationError"] = str(error)[:1000]
+        self.assertNotIn("observationError", observation, observation)
+        self.assertEqual(observation["observedValue"], observation["expectedValue"], observation)
+        self.assertFalse(observation["overflow"])
+        self.assertTrue(observation["events"])
+        self.assertTrue(all(event["trusted"] for event in observation["events"]))
+        for kind in ("keydown", "keyup"):
+            self.assertEqual(sum(event["type"] == kind and str(event["key"]).lower() == plan["character"]
+                                 for event in observation["events"]), plan["cycles"], observation)
+        # Capture-phase observations preserve the attempted reviewed value even
+        # when the application rejects it because a required field is blank.
+        for kind in ("input", "change"):
+            self.assertTrue(any(event["type"] == kind and event["value"] == value
+                                for event in observation["events"]), observation)
+        observation["status"] = "OBSERVED"
+
+    def capture_failure_evidence(self):
+        """Read the synthetic page before teardown without changing its state."""
+        if getattr(self, "failure_captured", False) or not hasattr(self, "driver"):
+            return
+        self.failure_captured = True
+        if not hasattr(self, "diagnostic_evidence"):
+            self.diagnostic_evidence = []
+        observation = {"kind": "failure-state", "method": self._testMethodName}
+        self.diagnostic_evidence.append(observation)
+        try:
+            observation["ui"] = self.page_state()
+        except Exception as error:
+            observation["uiError"] = str(error)[:1000]
+        project_id = getattr(self, "diagnostic_project_id", None)
+        if project_id:
+            try:
+                project = self.api("GET", "/api/panel-projects/" + project_id)["project"]
+                observation["savedProject"] = {key: project[key] for key in ("id", "version", "rows", "sources")}
+            except Exception as error:
+                observation["readbackError"] = str(error)[:1000]
+        try:
+            directory = os.environ.get("PANELREPLY_CAPTURE_DIR")
+            if directory:
+                target = Path(directory).resolve() / (self.product_id + "-native-safari-" + self._testMethodName + "-failure.png")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                if not self.driver.save_screenshot(str(target)):
+                    raise RuntimeError("The native screenshot command returned false")
+                observation["screenshot"] = {"filename": target.name, "bytes": target.stat().st_size,
+                                             "sha256": hashlib.sha256(target.read_bytes()).hexdigest()}
+        except Exception as error:
+            observation["screenshotError"] = str(error)[:1000]
+
+    def page_state(self):
+        return self.driver.execute_script("""
+            const selectors = ['#source-selection-text', '#source-status', '#source-error',
+                '#project-error', '#project-save-status', '#project-dirty', '#project-version',
+                '#upload-source', '#panel-image', '#save-project', '#lead-permission',
+                '#lead-status-select', '#lead-status', '#lead-error', '#task-outcome', '#task-save-status',
+                '#task-error', '[aria-label="Review status row 1"]'];
+            const nodes = selectors.map(selector => {
+                const element = document.querySelector(selector);
+                if (!element) return {selector, exists: false};
+                const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
+                const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
+                const hit = document.elementFromPoint(x, y);
+                return {selector, exists: true, text: element.textContent.slice(0, 1200),
+                    value: element.type === 'file' ? null : String(element.value ?? '').slice(0, 1200),
+                    hidden: element.hidden, disabled: !!element.disabled, display: style.display,
+                    visibility: style.visibility, rect: {x: rect.x, y: rect.y, width: rect.width, height: rect.height},
+                    hit: hit ? {tag: hit.tagName, id: hit.id, inside: element === hit || element.contains(hit)} : null,
+                    files: element.files ? [...element.files].slice(0, 2).map(file => ({
+                        name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})) : null};
+            });
+            return {url: location.href, readyState: document.readyState, title: document.title,
+                activeElementId: document.activeElement?.id || null,
+                viewport: {width: innerWidth, height: innerHeight, scrollX, scrollY}, nodes,
+                sourceCount: document.querySelectorAll('#source-list > li').length,
+                rows: [...document.querySelectorAll('#panel-parts-body tr')].slice(0, 10).map(row => ({
+                    reviewed: row.dataset.reviewed,
+                    controls: [...row.querySelectorAll('input,select,textarea')].map(control => ({
+                        label: control.getAttribute('aria-label'), value: control.value.slice(0, 1200)}))}))};
+        """)
 
     def text_contains(self, selector, text):
         return self.wait.until(lambda _driver: text in self.element(selector).text)
@@ -390,6 +560,7 @@ class SafariProductHarness(unittest.TestCase):
         self.wait.until(lambda _driver: not self.element("#project-dirty", visible=False).is_displayed())
 
     def open_panel(self, identifier):
+        self.diagnostic_project_id = identifier
         self.driver.get(self.origin + "/panels?project=" + identifier)
         self.element("#project-content")
         self.text_contains("#project-version", "Version")
@@ -397,13 +568,48 @@ class SafariProductHarness(unittest.TestCase):
     def upload_source(self, project):
         file_input = self.element("#panel-image")
         self.assertTrue(file_input.is_enabled())
-        file_input.send_keys(str(IMAGE))
-        self.text_contains("#source-selection-text", "complete.png")
-        self.click("#upload-source")
-        self.text_contains("#source-status", "Source image saved")
-        saved = self.api("GET", "/api/panel-projects/" + project["id"])["project"]
-        self.assertEqual(len(saved["sources"]), 1)
-        return saved["sources"][0]
+        observation = {"kind": "source-upload", "status": "ATTEMPTED",
+                       "projectId": project["id"], "expectedFilename": IMAGE.name,
+                       "expectedBytes": IMAGE.stat().st_size,
+                       "expectedSha256": hashlib.sha256(IMAGE.read_bytes()).hexdigest()}
+        self.input_evidence.append(observation)
+        self.driver.execute_script("""
+            const events = [], probe = {events, overflow: false};
+            probe.listener = event => {
+                if (events.length >= 48) { probe.overflow = true; return; }
+                events.push({type: event.type, targetId: event.target?.id || null,
+                    trusted: event.isTrusted,
+                    message: String(event.message || event.reason || '').slice(0, 1000)});
+            };
+            probe.file = arguments[0]; probe.button = document.querySelector('#upload-source');
+            for (const type of ['input', 'change']) probe.file.addEventListener(type, probe.listener, true);
+            probe.button.addEventListener('click', probe.listener, true);
+            for (const type of ['error', 'unhandledrejection']) window.addEventListener(type, probe.listener, true);
+            window.__panelreplyNativeUploadProbe = probe;
+        """, file_input)
+        try:
+            file_input.send_keys(str(IMAGE))
+            self.text_contains("#source-selection-text", "complete.png")
+            observation["selectedState"] = self.page_state()
+            self.click("#upload-source")
+            self.text_contains("#source-status", "Source image saved")
+            saved = self.api("GET", "/api/panel-projects/" + project["id"])["project"]
+            self.assertEqual(len(saved["sources"]), 1)
+            observation["status"] = "OBSERVED"
+            return saved["sources"][0]
+        finally:
+            try:
+                observation.update(self.driver.execute_script("""
+                    const probe = window.__panelreplyNativeUploadProbe;
+                    for (const type of ['input', 'change']) probe.file.removeEventListener(type, probe.listener, true);
+                    probe.button.removeEventListener('click', probe.listener, true);
+                    for (const type of ['error', 'unhandledrejection']) window.removeEventListener(type, probe.listener, true);
+                    delete window.__panelreplyNativeUploadProbe;
+                    return {events: probe.events, overflow: probe.overflow};
+                """))
+                observation["finalState"] = self.page_state()
+            except Exception as error:
+                observation["observationError"] = str(error)[:1000]
 
     def download(self, project_id, extension):
         filename = f"panelreply-project-{project_id}.{extension}"

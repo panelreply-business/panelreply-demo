@@ -1,5 +1,23 @@
 # Release acceptance
 
+## November 23 reviewed native-control candidate
+
+Candidate manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da` has reviewed Windows fixture and Safari control repairs, passive diagnostics and the unchanged-policy Ubuntu24/Ubuntu26 isolation comparison. The final affected local selection passes 155 checks; the prior full 9,261 run remains bound to its earlier source. No local native execution or release acceptance follows from harness passes. [Final local record](evidence/native-host-final-focused-2026-11-23.json).
+
+Both product decisions remain NO-GO pending actual changed-source execution and their remaining requirements. The SQLite observer remains inactive pending its own output-boundary repair and native component prerequisites. The callback receipt repair remains separate work in progress. Public services stay suspended with automatic deployment/previews off.
+
+## November 23 final run90 ledger
+
+Root independently verifies run90 on committed `2882d4f`, manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4`: 24,852 product PASS and six ERROR outcomes across 9,375 distinct cases. All 35 release ZIPs and 37 reports match source and policy. The aggregate matches CI except generatedAt. [Final evidence](evidence/callback-scheduling-run90.json) and [independent verification](evidence/run90-independent-verification-2026-11-23.json).
+
+Automated requirements are 43 PASS, three FAIL and ten NOT_TESTED, with seven manual NOT_TESTED. The failures are Windows Firefox's static client and both installed-Safari product suites. ARM executed no steps. OCR accuracy, native isolation, private Windows integration and the provider/physical-device/host/operating gates remain open. Later candidate repairs require their own execution. Callback and spreadsheet remain separate NO-GO decisions, and the complete first test goal remains unachieved.
+
+## November 23 final run88 ledger
+
+Source `1322d063` has 24,829 product PASS/five native Safari ERROR outcomes across 9,367 distinct cases. All 35 release artifacts and 37 reports verify against its 193 source entries and exact policy. Root's independent aggregate matches CI except generatedAt. Harness checks (371) and duplicate observations (7,102) stay excluded. [Final run88 record](evidence/callback-scheduling-run88.json).
+
+Automated requirements are 44 PASS, two FAIL and ten NOT_TESTED. All seven manual gates remain NOT_TESTED. The unassigned ARM job ends cancelled without steps or cases. Native Windows component outcomes stay separate from product credit. Static Mac WebKit's 92 passes do not establish the cause of its earlier intermittent failure. OCR accuracy, required isolation, native/physical platforms, Excel and applicable provider/host/operating requirements remain open. Both product decisions remain NO-GO. Later source `2882d4f` needs its own completed verification.
+
 ## November 23 extraction-response validation checkpoint
 
 The next manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4` passes all 9,241 local checks: 9,094 product and 147 excluded harness cases, zero failures/skips and unchanged source. Eight new cases verify OCR identity/revision and data validation before publishing candidates, including rejected re-extraction and valid manual correction. Engine/dataset and release policy remain unchanged. Browser verification on changed source is pending. [Repair](OCR_RESPONSE_INTEGRITY_2026_11_23.md) and [local evidence](evidence/ocr-response-local-2026-11-23.json).

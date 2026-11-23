@@ -1,5 +1,13 @@
 # OCR benchmark and resource verification
 
+## Current measurement checkpoint — November 23, 2026
+
+The retained production pipeline matches all expected fields in 289 of 310 synthetic images. Twenty-one remain nonexact: 18 confusable part-character cases, two abbreviated-label cases and one part-number spacing case. All 263 expected blank fields remain blank, with zero native errors or review violations. The exact-image quality gate remains FAIL. These image measurements earn no product-test goal credit.
+
+The [small-text](OCR_SMALL_TEXT_2026_11_23.md) and [deskew](OCR_DESKEW_2026_11_23.md) changes account for the increase from 277. [Dependency evidence and rejected experiments](OCR_DEPENDENCY_EVIDENCE_2026_11_23.md) preserve the full local replay. [Final run88](evidence/callback-scheduling-run88.json) confirms 289/310 for its separately generated, dependency-bound CI dataset. The local and CI image/font hashes remain distinct.
+
+The later [response-integrity repair](OCR_RESPONSE_INTEGRITY_2026_11_23.md) changes receipt validation only. It does not alter the engine, parser, preprocessing, models or expected answers. Representative photographs and required native isolation remain unverified. The dated measurements below preserve their original source and results.
+
 ## 2026-11-20 remediation result
 
 The current pipeline exactly matched 277 of the same 310 synthetic images. The verified `36b2bf30990eb164f6327e1eaa71e1386432da4f` baseline matched 253. All 57 original nonexact cases were inspected. Twenty-four now match exactly. Thirty-three still need manual correction. None of the 253 previously exact images regressed. All 263 expected blank fields stayed blank. No native execution error or automatic-review violation occurred.

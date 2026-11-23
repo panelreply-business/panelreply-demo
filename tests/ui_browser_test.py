@@ -213,19 +213,84 @@ class WorkspaceBrowserTests(unittest.TestCase):
 
     def test_character_limit_counter_and_accessible_description_stay_in_sync(self):
         reply = self.page.get_by_role("textbox", name="Customer message", exact=True)
-        expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
-        described_by = reply.get_attribute("aria-describedby") or ""
-        self.assertIn("reply-count", described_by.split())
-        expect(reply).to_have_attribute("maxlength", "500")
-        reply.fill("x" * 500)
-        expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
-        reply.press("End")
-        reply.press_sequentially("y")
-        expect(reply).to_have_value("x" * 500)
-        expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
-        self.page.locator("#send").click()
-        expect(reply).to_have_value("")
-        expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
+        observation = {"kind": "character-limit-native-input", "status": "ATTEMPTED",
+                       "phase": "initial", "roleLocator": "textbox:Customer message:exact",
+                       "actionTimeoutMs": 5000}
+        self.interaction_evidence = [observation]
+        try:
+            expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
+            described_by = reply.get_attribute("aria-describedby") or ""
+            self.assertIn("reply-count", described_by.split())
+            expect(reply).to_have_attribute("maxlength", "500")
+            try:
+                self.page.locator("body").evaluate("""() => {
+                    const element = document.getElementById('reply');
+                    const types = ['keydown', 'keyup', 'beforeinput', 'input', 'change', 'focus', 'blur'];
+                    const probe = {element, events: [], overflow: false, started: performance.now()};
+                    probe.listener = event => {
+                        if (event.target !== probe.element) return;
+                        if (probe.events.length >= 16) { probe.overflow = true; return; }
+                        probe.events.push({type: event.type, key: event.key || null,
+                            inputType: event.inputType || null, trusted: event.isTrusted,
+                            elapsedMs: Math.round(performance.now() - probe.started),
+                            length: element.value.length, start: element.selectionStart, end: element.selectionEnd,
+                            activeId: document.activeElement?.id || null});
+                    };
+                    for (const type of types) document.addEventListener(type, probe.listener, true);
+                    window.__panelreplyCharacterLimitProbe = probe;
+                }""", timeout=1000)
+            except Exception as error:
+                observation["installError"] = str(error)[:1000]
+            reply.fill("x" * 500)
+            expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
+            observation["phase"] = "full-value-observed"
+            reply.press("End")
+            observation["phase"] = "end-command-completed"
+            reply.press_sequentially("y")
+            observation["phase"] = "overflow-key-command-completed"
+            expect(reply).to_have_value("x" * 500)
+            expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
+            self.page.locator("#send").click()
+            expect(reply).to_have_value("")
+            expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
+            observation.update({"status": "OBSERVED", "phase": "submitted-and-cleared"})
+        finally:
+            # Read state before teardown. These listeners never change values,
+            # focus, event defaults, requests, timeout or the input sequence.
+            try:
+                observation["state"] = self.page.locator("body").evaluate("""() => {
+                    const probe = window.__panelreplyCharacterLimitProbe;
+                    if (probe) {
+                        for (const type of ['keydown', 'keyup', 'beforeinput', 'input', 'change', 'focus', 'blur'])
+                            document.removeEventListener(type, probe.listener, true);
+                        delete window.__panelreplyCharacterLimitProbe;
+                    }
+                    const element = document.getElementById('reply');
+                    const rect = element?.getBoundingClientRect(), style = element ? getComputedStyle(element) : null;
+                    return {url: location.href, readyState: document.readyState,
+                        activeElement: {id: document.activeElement?.id || null, tag: document.activeElement?.tagName || null},
+                        replyCount: document.querySelectorAll('#reply').length,
+                        referenceConnected: probe?.element?.isConnected ?? null,
+                        sameReference: probe ? probe.element === element : null,
+                        control: element ? {tag: element.tagName, role: element.getAttribute('role'),
+                            labels: [...element.labels].map(label => label.textContent.slice(0, 100)),
+                            describedBy: element.getAttribute('aria-describedby'),
+                            disabled: element.disabled, readOnly: element.readOnly, hidden: element.hidden,
+                            length: element.value.length, maxLength: element.maxLength,
+                            start: element.selectionStart, end: element.selectionEnd,
+                            display: style.display, visibility: style.visibility,
+                            rect: {x: rect.x, y: rect.y, width: rect.width, height: rect.height}} : null,
+                        counter: document.getElementById('reply-count')?.textContent,
+                        events: probe?.events || [], overflow: probe?.overflow ?? null};
+                }""", timeout=1000)
+            except Exception as error:
+                observation["captureError"] = str(error)[:1000]
+            if observation["status"] != "OBSERVED":
+                try:
+                    observation["roleSnapshot"] = reply.aria_snapshot(timeout=1000)[:1500]
+                except Exception as error:
+                    observation["roleSnapshotError"] = str(error)[:1000]
+            observation["pageErrors"] = [str(error)[:1000] for error in self.errors[:5]]
 
     def test_sending_a_message_keeps_the_latest_reply_in_the_conversation_view(self):
         self.send(BUNDLED_MESSAGE)

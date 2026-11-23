@@ -18,6 +18,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import release_safari_runner as runner
+from safari_product_browser_test import select_keyboard_plan
 
 
 SOURCE = {"sourceCommit": "a" * 40, "gitTreeHash": "b" * 40, "dirty": True,
@@ -52,7 +53,151 @@ def date_harness(value, *, observed=None, untrusted=False, send_error=None, cont
     return case, element
 
 
+SELECT_CONTROL = {"tag": "SELECT", "multiple": False, "disabled": False, "size": 0,
+                  "value": "unreviewed", "selectedIndex": 0, "options": [
+                      {"value": "unreviewed", "label": "Unreviewed", "disabled": False, "hidden": False},
+                      {"value": "reviewed", "label": "Reviewed", "disabled": False, "hidden": False}]}
+
+
+def select_harness(*, observed="reviewed", untrusted=False, missing_change=False,
+                   send_error=None, observation_error=None, control=None):
+    """No browser is launched. Doubles validate fail-closed evidence handling."""
+    case = runner.SafariSpreadsheetBrowserTests("test_manual_corrections_persist_and_native_downloads_match")
+    case.input_evidence = []
+    case.native = types.SimpleNamespace(keys=types.SimpleNamespace(TAB="TAB"), select_type=Mock())
+    case.wait = types.SimpleNamespace(until=lambda predicate: predicate(None))
+    element = Mock()
+    element.is_enabled.return_value = True
+    element.get_property.return_value = "unreviewed"
+    element.send_keys.side_effect = send_error
+    case.element = Mock(return_value=element)
+    events = [{"type": kind, "key": "r", "trusted": True, "value": "unreviewed"}
+              for kind in ("keydown", "keyup")]
+    events.extend({"type": kind, "key": None, "trusted": not untrusted, "value": "reviewed"}
+                  for kind in (("input",) if missing_change else ("input", "change")))
+    trace = {"events": events, "overflow": False, "observedValue": observed, "activeElementId": None}
+    case.driver = types.SimpleNamespace(execute_script=Mock(
+        side_effect=[copy.deepcopy(control or SELECT_CONTROL), None, observation_error or trace]))
+    return case, element
+
+
 class SafariRunnerHarnessTests(unittest.TestCase):
+    def test_select_plan_handles_shared_initials_disabled_options_and_wraparound(self):
+        values = [("open", "Open tasks", False), ("done", "Completed", True),
+                  ("complete", "Completed tasks", False), ("cancel", "Cancelled", False)]
+        control = {**SELECT_CONTROL, "value": "open", "selectedIndex": 0,
+                   "options": [{"value": value, "label": label, "disabled": disabled, "hidden": False}
+                               for value, label, disabled in values]}
+        plan = select_keyboard_plan(control, "cancel")
+        self.assertEqual((plan["character"], plan["cycles"], plan["targetIndex"]), ("c", 2, 3))
+        self.assertEqual(select_keyboard_plan({**control, "value": "cancel", "selectedIndex": 3}, "complete")["cycles"], 1)
+        self.assertEqual(select_keyboard_plan(control, "open")["cycles"], 0)
+
+    def test_select_inventory_rejects_unusable_or_ambiguous_target_before_typing(self):
+        invalid = [{**SELECT_CONTROL, "multiple": True}, {**SELECT_CONTROL, "disabled": True},
+                   {**SELECT_CONTROL, "size": 3}, {**SELECT_CONTROL, "selectedIndex": -1},
+                   {**SELECT_CONTROL, "value": "reviewed"}, {**SELECT_CONTROL, "options": []}]
+        for field, value in [("disabled", True), ("hidden", True), ("label", "Ω unknown")]:
+            control = copy.deepcopy(SELECT_CONTROL)
+            control["options"][1][field] = value
+            invalid.append(control)
+        duplicate = copy.deepcopy(SELECT_CONTROL)
+        duplicate["options"].append(dict(duplicate["options"][1]))
+        invalid.append(duplicate)
+        for control in invalid:
+            case, element = select_harness(control=control)
+            with self.assertRaises(AssertionError):
+                case.select("#review", "reviewed")
+            element.send_keys.assert_not_called()
+            case.native.select_type.assert_not_called()
+            self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
+
+    def test_native_select_requires_trusted_change_and_preserves_application_rejection(self):
+        for observed, expected in [("reviewed", None), ("unreviewed", "unreviewed")]:
+            case, element = select_harness(observed=observed)
+            case.select("#review", "reviewed", expected=expected)
+            element.send_keys.assert_called_once_with("r", "TAB")
+            case.native.select_type.assert_not_called()
+            self.assertEqual(case.input_evidence[0]["status"], "OBSERVED")
+            self.assertEqual(case.input_evidence[0]["observedValue"], observed)
+        for options in [{"observed": "unreviewed"}, {"untrusted": True}, {"missing_change": True}]:
+            case, element = select_harness(**options)
+            with self.assertRaises(AssertionError):
+                case.select("#review", "reviewed")
+            element.send_keys.assert_called_once_with("r", "TAB")
+            self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
+
+    def test_select_transport_failure_keeps_trace_without_diagnostic_error_replacing_it(self):
+        for observation_error in [None, RuntimeError("Synthetic observer failure")]:
+            original = RuntimeError("Synthetic native input transport failure")
+            case, element = select_harness(send_error=original, observation_error=observation_error)
+            with self.assertRaisesRegex(RuntimeError, "Synthetic native input transport failure"):
+                case.select("#review", "reviewed")
+            element.send_keys.assert_called_once()
+            self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
+            if observation_error is not None:
+                self.assertIn("Synthetic observer failure", case.input_evidence[0]["observationError"])
+            else:
+                self.assertTrue(case.input_evidence[0]["events"])
+
+    def test_upload_diagnostics_retain_failure_and_original_native_actions(self):
+        case = runner.SafariSpreadsheetBrowserTests("test_file_upload_source_links_and_unavailable_ocr")
+        case.input_evidence = []
+        element = Mock()
+        element.is_enabled.return_value = True
+        case.element = Mock(return_value=element)
+        case.click = Mock()
+        case.text_contains = Mock(side_effect=[None, RuntimeError("Synthetic upload did not save")])
+        case.api = Mock()
+        case.page_state = Mock(side_effect=[{"phase": "selected"}, {"phase": "failed"}])
+        case.driver = types.SimpleNamespace(execute_script=Mock(side_effect=[None, {
+            "events": [{"type": "click", "targetId": "upload-source", "trusted": True}], "overflow": False}]))
+        with self.assertRaisesRegex(RuntimeError, "Synthetic upload did not save"):
+            case.upload_source({"id": "synthetic-project"})
+        element.send_keys.assert_called_once()
+        self.assertTrue(element.send_keys.call_args.args[0].endswith("/tests/fixtures/panels/complete.png"))
+        case.click.assert_called_once_with("#upload-source")
+        self.assertEqual(case.text_contains.call_args_list[-1].args, ("#source-status", "Source image saved"))
+        case.api.assert_not_called()
+        observation = case.input_evidence[0]
+        self.assertEqual((observation["status"], observation["finalState"]), ("ATTEMPTED", {"phase": "failed"}))
+        self.assertEqual(observation["events"][0]["trusted"], True)
+
+    def test_failure_snapshot_runs_before_teardown_and_never_changes_original_outcome(self):
+        for diagnostic_error in [False, True]:
+            order = []
+
+            class SyntheticCase(unittest.TestCase):
+                product_id = "spreadsheet"
+                native = types.SimpleNamespace(evidence={"sessionSha256": "d" * 64})
+
+                def test_failure(self):
+                    order.append("method")
+                    self.fail("Synthetic product assertion remains failed")
+
+                def capture_failure_evidence(self):
+                    order.append("capture")
+                    if diagnostic_error:
+                        raise RuntimeError("Synthetic diagnostic failure")
+                    self.diagnostic_evidence = [{"kind": "failure-state", "synthetic": True}]
+
+                def tearDown(self):
+                    order.append("teardown")
+
+            case = SyntheticCase("test_failure")
+            result = runner.SafariResult(unittest.runner._WritelnDecorator(io.StringIO()), True, 0)
+            case.run(result)
+            self.assertEqual(order, ["method", "capture", "teardown"])
+            record = result.records[case.id()]
+            self.assertEqual(record["status"], "FAIL")
+            self.assertIn("Synthetic product assertion remains failed", record["diagnostics"][0])
+            self.assertEqual(len(result.failures), 1)
+            self.assertEqual(len(result.errors), 0)
+            if diagnostic_error:
+                self.assertEqual(record["diagnosticCaptureErrors"], ["Synthetic diagnostic failure"])
+            else:
+                self.assertEqual(record["diagnosticEvidence"], [{"kind": "failure-state", "synthetic": True}])
+
     def test_product_title_contract_matches_existing_fixed_product_definitions(self):
         script = "const {productDefinition}=require('./workspace/products.cjs'); console.log(JSON.stringify(['callback','spreadsheet'].map(id=>productDefinition(id))))"
         result = subprocess.run(["node", "-e", script], cwd=runner.ROOT, check=True,

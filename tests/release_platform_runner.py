@@ -197,6 +197,8 @@ class EvidenceResult(unittest.TextTestResult):
             self.records[identifier]["emulation"] = test.descriptor
         if hasattr(test, "touch_evidence"):
             self.records[identifier]["touchEvidence"] = test.touch_evidence
+        if hasattr(test, "interaction_evidence"):
+            self.records[identifier]["interactionEvidence"] = test.interaction_evidence
         super().stopTest(test)
 
 

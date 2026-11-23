@@ -133,9 +133,9 @@ class NativeSafari:
         from selenium.webdriver.remote.file_detector import UselessFileDetector
         from selenium.webdriver.remote.remote_connection import RemoteConnection
         from selenium.webdriver.safari.service import Service
-        from selenium.webdriver.support.ui import Select, WebDriverWait
+        from selenium.webdriver.support.ui import WebDriverWait
 
-        self.keys, self.select_type, self.wait_type = Keys, Select, WebDriverWait
+        self.keys, self.wait_type = Keys, WebDriverWait
         options = webdriver.SafariOptions()
         # Preserve the pinned Selenium native default browserName='safari'.
         options.set_capability("browserVersion", self.evidence["before"]["browser"]["version"])
@@ -201,12 +201,34 @@ class SafariResult(EvidenceResult):
         self.records[test.id()].update({"platformKey": platform_key(), "productScope": test.product_id,
                                        "nativeSessionSha256": test.native.evidence["sessionSha256"]})
 
+    def capture_failure(self, test):
+        # unittest records a method failure before tearDown clears the page.
+        # Keep that state without replacing its original outcome if the
+        # browser is already unavailable or diagnostic collection fails.
+        capture = getattr(test, "capture_failure_evidence", None)
+        if capture is not None:
+            try:
+                capture()
+            except Exception as error:
+                record = self.records.get(test.id())
+                if record is not None:
+                    record.setdefault("diagnosticCaptureErrors", []).append(str(error)[:1000])
+
+    def addFailure(self, test, err):
+        self.capture_failure(test)
+        super().addFailure(test, err)
+
+    def addError(self, test, err):
+        self.capture_failure(test)
+        super().addError(test, err)
+
     def stopTest(self, test):
         record = self.records[test.id()]
         record["observedViewport"] = getattr(test, "viewport", None)
         record["downloadEvidence"] = getattr(test, "download_evidence", [])
         record["readbackEvidence"] = getattr(test, "readback_evidence", [])
         record["inputEvidence"] = getattr(test, "input_evidence", [])
+        record["diagnosticEvidence"] = getattr(test, "diagnostic_evidence", [])
         super().stopTest(test)
 
 
@@ -224,7 +246,8 @@ def missing_record(test):
     return {"id": test.id(), "status": "NOT_RUN", "durationMs": 0,
             "platformKey": platform_key(), "profile": "desktop", "emulated": False,
             "productScope": test.product_id, "nativeSessionSha256": None,
-            "observedViewport": None, "downloadEvidence": [], "readbackEvidence": [], "inputEvidence": []}
+            "observedViewport": None, "downloadEvidence": [], "readbackEvidence": [], "inputEvidence": [],
+            "diagnosticEvidence": []}
 
 
 def main():

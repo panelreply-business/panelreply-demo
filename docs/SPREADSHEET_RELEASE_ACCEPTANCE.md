@@ -1,5 +1,23 @@
 # Spreadsheet release acceptance
 
+## November 23 native controls and host comparison
+
+The reviewed candidate preserves native Safari upload actions, source confirmation, row persistence and download assertions while adding failure observations. Native select input now requires trusted keyboard/input/change events and exact values. Actual Safari verification is pending. The earlier upload failure cause remains unestablished. [Candidate](NATIVE_SAFARI_CONTROLS_2026_11_23.md).
+
+Ubuntu24 and Ubuntu26 will run the unchanged six-case restricted OCR verifier separately, with source/dependency binding and bounded read-only host evidence. The output-alias correction has passed focused and independent review, with zero native attempts locally. [Output repair](OCR_HOST_OUTPUT_BOUNDARY_2026_11_23.md). These changes do not repair the 21 OCR mismatches, accept a production host or enable private Windows support. The spreadsheet release remains NO-GO.
+
+## November 23 final run90 spreadsheet evidence
+
+On committed `2882d4f`, the spreadsheet bucket has 11,999 product PASS and three installed-Safari ERROR outcomes across 4,194 distinct cases. All six fixed spreadsheet suites pass: nine methods per Linux engine and ten per Intel Mac engine. Shared checks remain counted once outside product buckets. [Final evidence](evidence/callback-scheduling-run90.json).
+
+The response-integrity repair passes the source-bound Node/browser scopes executed in that run. Installed Safari still fails two source-upload confirmations and one reviewed-row persistence journey. OCR remains 289/310 exact, required native isolation remains BLOCKED, and Windows storage, native Mac extraction, ARM, physical devices, Excel, representative photographs and host/operating acceptance remain open. The independent spreadsheet release remains NO-GO.
+
+## November 23 final run88 spreadsheet evidence
+
+The spreadsheet bucket has 11,975 product PASS and three native Safari ERROR outcomes across 4,186 distinct cases on source `1322d063`. Shared checks are counted separately once. All six fixed spreadsheet suites pass their nine Linux or ten Intel Mac methods. Native Safari still fails source-upload confirmation in two workflows and reviewed-state persistence in one, so downloads/recovery are not accepted there. [Final run88 record](evidence/callback-scheduling-run88.json).
+
+OCR remains 289/310 exact synthetic images, with all 263 expected blank fields preserved. Required native isolation executes zero denial cases and remains BLOCKED. Windows/private macOS extraction, ARM, physical devices, actual Excel, representative photographs and operating approval remain open. Later OCR response source `2882d4f` requires its own platform results.
+
 ## November 23 extraction receipt and draft integrity
 
 Eight new cases reproduce and repair acceptance of a wrong-project OCR result and an error that left malformed candidates addable. Project/source/revision, candidate fields, warnings, confidence and unreviewed state now validate before result installation. Invalid re-extraction leaves no stale Add action and preserves saved corrections. Valid blank/Unicode/ambiguous output remains available for manual work. [Evidence](OCR_RESPONSE_INTEGRITY_2026_11_23.md).

@@ -1,5 +1,23 @@
 # Callback release acceptance
 
+## November 23 native-control and receipt work
+
+The installed-Safari candidate uses native keyboard selection with trusted input/change observations, retaining all scheduling, contact-hold, persistence and downloaded-data assertions. Its local harness passes do not establish Safari acceptance. Actual changed-source execution remains pending. [Candidate](NATIVE_SAFARI_CONTROLS_2026_11_23.md).
+
+A separate scheduler audit reproduced malformed/mismatched success receipts clearing the pending command and draft. A bounded repair is in progress and needs independent review, relevant regression and actual browser verification. The callback release remains NO-GO. Spreadsheet host-observation work does not activate or determine the callback release.
+
+## November 23 final run90 callback evidence
+
+On committed `2882d4f`, the callback bucket has 10,644 product PASS and three ERROR outcomes across 3,482 distinct cases. All six fixed callback browser suites pass 15/15. Both emulated mobile callback suites pass 12/12. Shared checks remain counted once outside the product buckets. [Final evidence](evidence/callback-scheduling-run90.json).
+
+The three callback-classified errors are two installed-Safari scheduling journeys and the Windows Firefox static-client overflow-key journey. Native intake/status/persistence/sign-out passes. These results do not establish complete installed-Safari, private Windows, ARM or physical-device acceptance. Applicable provider, host and operating gates remain open. The independent callback release remains NO-GO.
+
+## November 23 final run88 callback evidence
+
+The callback bucket has 10,645 product PASS and two native Safari ERROR outcomes across 3,482 distinct cases on source `1322d063`. Shared checks are counted separately once. All six fixed callback browser suites pass 15/15 and both emulated mobile callback suites pass 12/12. These results retain the previous reflow/focus and completed-save verification. [Final run88 record](evidence/callback-scheduling-run88.json).
+
+Native Safari verifies intake/status/persistence/sign-out and three exact trusted datetime inputs. Its two scheduling methods then fail native option clicking. Complete scheduling acceptance on Safari, Windows integration, ARM, physical devices and applicable provider/host/operating gates remain open. The independent callback release remains NO-GO.
+
 ## November 23 native datetime-entry verification
 
 Run88 on `1322d063` records three exact datetime-local values with trusted key/input/change events. Both scheduling methods progress past native date entry and then error in Selenium option clicking for contact permission or task outcome. Intake/status/persistence/sign-out remains the one complete native PASS. The two scheduling workflows remain ERROR, with no complete native callback acceptance. [Observed inputs and traces](evidence/native-safari-run88.json).

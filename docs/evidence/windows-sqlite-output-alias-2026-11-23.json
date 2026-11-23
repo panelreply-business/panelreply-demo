@@ -1,0 +1,14 @@
+{
+  "format": "panelreply-output-path-reproduction-v1",
+  "recordedAt": "2026-11-23T19:16:20.716Z",
+  "sourceCommit": "2882d4f836d4694c8b445f91f52d64df943cf213",
+  "sourceFile": "scripts/observe-windows-sqlite.cjs",
+  "sourceSha256": "f43c200643224140bed2d7374474daf9df4e37f8990aee8d6ce66147dfb8dce7",
+  "acceptedByArgumentGuard": true,
+  "canonicalParentInsideRepository": true,
+  "leafCreated": false,
+  "error": null,
+  "nativeAttempts": 0,
+  "scope": "Argument parser only. No output report or observation journal was created and no native component was loaded.",
+  "nextAction": "Canonicalize output containment and retain exclusive report/journal handles before integrating this inactive observer into Windows CI. Preserve the allowed artifacts directory only if its canonical identity stays inside that dedicated directory."
+}

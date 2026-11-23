@@ -1,5 +1,9 @@
 # Local OCR decision and verification
 
+## Current extraction status — November 23, 2026
+
+The implemented pipeline exactly matches 289/310 synthetic images, with 21 nonexact and all 263 expected blank fields preserved. Quality remains FAIL. Native worker isolation remains BLOCKED before any denial case, and representative photographs remain NOT TESTED. The programs require separate release approval. [Current benchmark checkpoint](OCR_BENCHMARK.md) and [source-bound run88 evidence](evidence/callback-scheduling-run88.json) supersede the older numeric measurements below without erasing them.
+
 Updated: 2026-11-20. Scope: the existing private, local PanelReply workspace. Earlier six-fixture measurements remain historical below.
 
 ## Decision

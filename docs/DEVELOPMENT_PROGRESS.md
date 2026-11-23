@@ -1,5 +1,35 @@
 # PanelReply development progress
 
+## Native controls and OCR host evidence — November 23, 2026
+
+This reviewed candidate follows `2882d4f` with executable/test/workflow/policy manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da` across 200 files. It repairs Windows empty-DACL fixture inspection/identity-bound cleanup and installed-Safari native select input. It adds passive Safari upload and Windows Firefox diagnostics, plus separate Ubuntu24/Ubuntu26 OCR host observations with unchanged worker policy and six-case verifier. Neither application imports the inactive Windows component or observation scripts. Actual native execution on this source remains pending.
+
+The complete local run before the final observer correction passed 9,261 checks: 9,094 product and 167 excluded harness cases, with zero failures/skips and stable manifest `8708faca…`. Independent review then reproduced and corrected an output-parent alias defect. Only the wrapper and its diagnostic test file changed afterward. Root passed all 155 affected checks on final manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da`: 152 harness and three overlapping product cases. The failed-build CLI path records six NOT_RUN cases, zero native attempts and matching saved/stdout evidence after exclusive output verification. This is not a new full-suite run or native denial proof. [Full prior-source record](evidence/native-host-local-before-review-correction-2026-11-23.json), [final focused record](evidence/native-host-final-focused-2026-11-23.json) and [independent review](evidence/ocr-host-context-independent-review-2026-11-23.json).
+
+The Safari helper has 15 separate Python harness passes and an independent source review. Windows component/SQLite observer harnesses receive no product credit. All six native Safari method bodies, 15 Windows component IDs, 92 Windows Firefox methods and the existing release policy remain. [Integrated review](evidence/native-controls-integration-2026-11-23.json).
+
+The standalone SQLite observer is present but inactive. Root reproduced its separate output-alias defect without creating a report or running native code. Canonical report/journal containment and held descriptors must be repaired before its guarded CI integration. [Reproduction](evidence/windows-sqlite-output-alias-2026-11-23.json). A separate callback task-receipt repair is in progress after reproduced draft/retry loss on malformed success responses.
+
+Read-only service checks confirm both public services remain suspended, automatic deployment disabled and previews off. The existing daily task retains 10 AM Detroit through December 20 and now resumes from the persistent checkpoint with an explicit development cycle. No duplicate task or public activation occurred. [Service state](evidence/public-suspension-before-native-controls-2026-11-23.json) and [task update](evidence/autonomous-daily-task-update-2026-11-23.json).
+
+## Final run90 verification — November 23, 2026
+
+Run90 tests committed `2882d4f836d4694c8b445f91f52d64df943cf213` through merge `f08bd8782d1997ba548ae7aad606cbcf8d1a9f04`. The tree is `96877604cacc257be59c87434f584f4488b557b0`, and the 193-file manifest is `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4`. Root verified all 35 release ZIPs, all 37 reports and every committed source entry, then reproduced CI's entire aggregate except generatedAt. [Final record](evidence/callback-scheduling-run90.json) and [independent verification](evidence/run90-independent-verification-2026-11-23.json).
+
+The ledger has 24,852 product PASS and six ERROR outcomes across 9,375 distinct cases. It excludes 371 harness passes and 7,110 duplicate observations. Automated requirements are 43 PASS, three FAIL and ten NOT_TESTED. Seven manual gates remain NOT_TESTED. The Apple Silicon job was cancelled with no assigned runner and no steps. No agent requested cancellation.
+
+All six fixed callback suites and all six fixed spreadsheet suites pass. Both emulated mobile engines pass their shared and callback methods. Installed Safari retains one full PASS and five ERROR outcomes. Windows Firefox adds one static-client ERROR after the 500-character counter assertions pass and the overflow-key locator times out. Static Mac WebKit passes, without establishing the earlier intermittent cause. Native Windows separately records 13 PASS, two empty-DACL fixture FAIL outcomes and cleanup EPERM, with zero product credit. OCR remains 289/310 exact; required native isolation remains BLOCKED with zero denial cases.
+
+This ledger verifies the OCR response-integrity commit. It does not verify later uncommitted native-control or host-observer changes. Both independent product releases remain NO-GO. The full first platform goal remains unachieved despite the numeric total.
+
+## Final run88 verification — November 23, 2026
+
+Run88 verifies source `1322d0630d377d9fe769dc15543321cb5f5fe373`, manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e`. All 35 release ZIPs and 37 reports pass digest/path/source/policy checks. Root independently rechecked all 193 source entries and reproduced the CI aggregate, excluding only generatedAt from the comparison. The 18:38 partial stays byte-preserved. [Final run88 record](evidence/callback-scheduling-run88.json).
+
+The final ledger has 24,829 product PASS and five native Safari ERROR outcomes across 9,367 distinct cases. It excludes 371 harness checks and 7,102 duplicate observations. Forty-four automated requirements pass, two fail and ten ARM requirements remain NOT_TESTED. Seven manual gates remain NOT_TESTED. ARM ends cancelled with runner zero and no steps; no agent requested cancellation.
+
+All six fixed callback and six fixed spreadsheet suites pass. Both emulated mobile engines pass their 40-method shared and 12-method callback suites. Static Mac WebKit passes 92 methods, which leaves the prior intermittent sample-action cause unresolved. Native Safari remains one PASS/five ERROR. OCR remains 289/310 exact images and required native isolation remains BLOCKED with zero denial cases. The numeric total does not complete either release or the full platform goal. Current source `2882d4f` contains the later OCR receipt repair and requires its own platform evidence.
+
 ## Spreadsheet extraction-response integrity — November 23, 2026
 
 The client now rejects wrong-project/source/revision OCR receipts and malformed candidate/warning/confidence data before installing a result. A rejected re-extraction cannot leave prior or malformed candidates addable. Saved corrections remain intact, and valid blank/Unicode/ambiguous output still supports explicit Add and Save. The same eight cases move from two PASS/six FAIL to eight PASS. Engine, preprocessing, parser and dataset bytes remain unchanged. [Repair](OCR_RESPONSE_INTEGRITY_2026_11_23.md).

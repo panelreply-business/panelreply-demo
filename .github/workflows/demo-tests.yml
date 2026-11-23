@@ -151,9 +151,17 @@ jobs:
           NODE
 
   ocr-isolation:
-    name: Restricted OCR worker verification
-    runs-on: ubuntu-24.04
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 6
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: Restricted OCR worker verification
+          - os: ubuntu-26.04
+            name: Restricted OCR host compatibility (ubuntu-26.04)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -164,6 +172,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil build-essential meson ninja-build pkg-config libcap-dev libselinux1-dev git ca-certificates
       - name: Build pinned non-setuid isolation dependency
+        id: isolation_build
         shell: bash
         run: |
           set -euo pipefail
@@ -187,14 +196,25 @@ jobs:
           /usr/bin/bwrap --version
           sha256sum /usr/bin/bwrap
       - name: Verify isolation or report the startup restriction
+        if: always()
+        env:
+          PANELREPLY_ISOLATION_BUILD_OUTCOME: ${{ steps.isolation_build.outcome }}
         run: |
           result=0
-          node scripts/test-ocr-isolation.cjs || result=$?
+          node scripts/observe-ocr-isolation.cjs "$RUNNER_TEMP/panelreply-ocr-isolation-${{ matrix.os }}.json" --build-outcome "$PANELREPLY_ISOLATION_BUILD_OUTCOME" || result=$?
           if [ "$result" -eq 2 ]; then
             echo '::warning::OCR isolation BLOCKED on this host. No fallback or privileged retry. This job is not isolation acceptance.'
           elif [ "$result" -ne 0 ]; then
             exit "$result"
           fi
+      - name: Preserve host observations and native result outside product counts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocr-isolation-host-${{ matrix.os }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-ocr-isolation-${{ matrix.os }}.json
+          if-no-files-found: error
+          retention-days: 30
 
   http-workload:
     name: Synthetic concurrent HTTP workload

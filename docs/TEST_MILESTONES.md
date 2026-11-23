@@ -1,5 +1,31 @@
 # Test milestones and counting policy
 
+## November 23 native-control candidate counting
+
+Final candidate manifest `14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da` adds verification-tool cases only. The complete pre-output-correction run passed 9,261 cases, including 9,094 product and 167 harness cases. On the corrected source, the affected selection passes 155: 152 harness plus three existing product cases. Eleven new output-boundary cases receive zero product credit. These focused overlaps are not added to the prior full run or run90 ledger. [Source-bound records](evidence/native-host-final-focused-2026-11-23.json).
+
+Separate Python/native-component/SQLite-observer harness checks, OCR host context, build-failure reporting and future SQLite measurements remain outside the goal. The 56 automated and seven manual requirements, active 10,000 target and unachieved complete first goal remain unchanged. Actual changed-source CI is pending.
+
+## November 23 final run90 accounting
+
+The verified source is `2882d4f`, tested through merge `f08bd878`, with manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4`. Root rechecks all 35 ZIPs, 37 source-bound reports and the immutable collector/policy, then reproduces CI's aggregate except generatedAt. [Final record](evidence/callback-scheduling-run90.json) and [verification](evidence/run90-independent-verification-2026-11-23.json).
+
+- Product executions: 24,852 PASS and six ERROR.
+- Distinct product cases: 9,375. Cases passing on every observed platform: 9,369.
+- Callback: 10,644 PASS and three ERROR across 3,482 distinct cases.
+- Spreadsheet: 11,999 PASS and three ERROR across 4,194 distinct cases.
+- Shared: 2,209 PASS across 1,699 distinct cases, counted once.
+- Excluded: 371 harness passes and 7,110 duplicate observations.
+- Required coverage: 43 automated PASS, three FAIL, ten NOT_TESTED, and seven manual NOT_TESTED.
+
+The numeric thresholds are exceeded, but the complete 10,000 goal is not achieved. Active target stays 10,000 and firstGoalAchievedAt remains unset. Do not activate the conditional 20,000 goal, convert reruns into new cases, or use measurements/native component checks as product credit. Later source changes need separate evidence.
+
+## Latest reconciled progress — November 23, 2026
+
+Run88 on source `1322d063` records 24,829 product case/platform passes and five native Safari errors across 9,367 distinct cases. It excludes 371 harness checks and 7,102 duplicate observations. All 37 source-bound reports reconcile with the CI aggregate. [Final run88 record](evidence/callback-scheduling-run88.json).
+
+The callback bucket has 10,645 PASS/two ERROR, the spreadsheet bucket 11,975 PASS/three ERROR, and the shared bucket 2,209 PASS counted once. Forty-four automated requirements pass, two fail, ten ARM requirements remain untested, and all seven manual gates remain untested. The complete first goal remains unachieved, `firstGoalAchievedAt` remains unset and the active target remains 10,000. These counts do not transfer to later changed source.
+
 This implementation checkpoint supersedes the planning-only record in commit `d5d270f8dd7866c905076d25dfac9efbc7de471d`. That commit and its unimplemented status remain in history. Runtime separation is implemented and has committed integration evidence in run76. Each program still needs its own release decision.
 
 Owner requirements, November 20, 2026:

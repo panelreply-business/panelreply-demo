@@ -66,6 +66,77 @@ std::wstring tokenSid(HANDLE token, TOKEN_INFORMATION_CLASS kind) {
   return sidText(sid);
 }
 std::wstring processUser() { return tokenSid(GetCurrentProcessToken(), TokenUser); }
+template <typename T> T tokenValue(HANDLE token, TOKEN_INFORMATION_CLASS kind) {
+  T value{}; DWORD size = 0;
+  require(GetTokenInformation(token, kind, &value, static_cast<DWORD>(sizeof(value)), &size),
+      "Could not read process token observation");
+  if (size != sizeof(value)) throw Error("Unexpected process token observation size", ERROR_INVALID_DATA);
+  return value;
+}
+std::wstring filetimeText(const FILETIME& value) {
+  return std::to_wstring((static_cast<unsigned long long>(value.dwHighDateTime) << 32) | value.dwLowDateTime);
+}
+std::wstring luidText(const LUID& value) {
+  return std::to_wstring((static_cast<unsigned long long>(static_cast<DWORD>(value.HighPart)) << 32) | value.LowPart);
+}
+void processToken(const std::wstring& argument, const std::wstring& expectedCreation) {
+  if (argument.empty() || argument.size() > 10) throw Error("A bounded owned process ID is required", ERROR_INVALID_PARAMETER);
+  unsigned long long number = 0;
+  for (const wchar_t digit : argument) {
+    if (digit < L'0' || digit > L'9') throw Error("Invalid owned process ID", ERROR_INVALID_PARAMETER);
+    number = number * 10 + static_cast<unsigned long long>(digit - L'0');
+  }
+  if (number == 0 || number > MAXDWORD || std::to_wstring(number) != argument)
+    throw Error("Invalid owned process ID", ERROR_INVALID_PARAMETER);
+  if (!expectedCreation.empty() && (expectedCreation.size() > 20 ||
+      std::any_of(expectedCreation.begin(), expectedCreation.end(), [](wchar_t c) { return c < L'0' || c > L'9'; })))
+    throw Error("Invalid expected process creation identity", ERROR_INVALID_PARAMETER);
+  const DWORD pid = static_cast<DWORD>(number);
+  // Query only. No debug privilege, token adjustment, impersonation, process
+  // termination or permission change is performed by this observation helper.
+  Handle process(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid));
+  require(process.value != nullptr, "Could not query owned process");
+  require(GetProcessId(process.value) == pid, "The process query returned another process ID");
+  FILETIME created{}, exited{}, kernel{}, userTime{};
+  require(GetProcessTimes(process.value, &created, &exited, &kernel, &userTime), "Could not observe process creation identity");
+  const std::wstring creation = filetimeText(created);
+  if (!expectedCreation.empty() && creation != expectedCreation)
+    throw Error("The owned process creation identity changed", ERROR_INVALID_DATA);
+  DWORD exitCode = 0;
+  require(GetExitCodeProcess(process.value, &exitCode), "Could not observe owned process liveness");
+  if (exitCode != STILL_ACTIVE) throw Error("The observed owned process has exited", ERROR_INVALID_STATE);
+  wchar_t image[8192]{}; DWORD imageLength = static_cast<DWORD>(std::size(image));
+  require(QueryFullProcessImageNameW(process.value, 0, image, &imageLength) && imageLength > 0,
+      "Could not observe owned process image");
+  HANDLE rawToken = nullptr;
+  require(OpenProcessToken(process.value, TOKEN_QUERY, &rawToken), "Could not query owned process token");
+  Handle token(rawToken);
+  const auto statisticsBefore = tokenValue<TOKEN_STATISTICS>(token.value, TokenStatistics);
+  const std::wstring sid = tokenSid(token.value, TokenUser);
+  const std::wstring observerSid = processUser();
+  if (sid != observerSid) throw Error("The observed process belongs to another user", ERROR_ACCESS_DENIED);
+  const std::wstring owner = tokenSid(token.value, TokenOwner);
+  const auto type = tokenValue<TOKEN_TYPE>(token.value, TokenType);
+  if (type != TokenPrimary) throw Error("The observed process token is not primary", ERROR_INVALID_DATA);
+  const auto elevation = tokenValue<TOKEN_ELEVATION>(token.value, TokenElevation);
+  const auto elevationType = tokenValue<TOKEN_ELEVATION_TYPE>(token.value, TokenElevationType);
+  const auto statistics = tokenValue<TOKEN_STATISTICS>(token.value, TokenStatistics);
+  if (luidText(statistics.TokenId) != luidText(statisticsBefore.TokenId) ||
+      luidText(statistics.ModifiedId) != luidText(statisticsBefore.ModifiedId))
+    throw Error("The process token changed during its query", ERROR_INVALID_DATA);
+  require(GetExitCodeProcess(process.value, &exitCode), "Could not recheck owned process liveness");
+  if (exitCode != STILL_ACTIVE) throw Error("The observed owned process exited during its query", ERROR_INVALID_STATE);
+  std::cout << "{\"pid\":" << pid << ",\"creationFiletime\":" << quote(creation)
+            << ",\"imagePath\":" << quote(std::wstring(image, imageLength))
+            << ",\"userSid\":" << quote(sid) << ",\"defaultOwnerSid\":" << quote(owner)
+            << ",\"observerUserSid\":" << quote(observerSid)
+            << ",\"tokenType\":\"primary\",\"elevated\":" << (elevation.TokenIsElevated ? "true" : "false")
+            << ",\"elevationType\":" << static_cast<unsigned int>(elevationType)
+            << ",\"tokenId\":" << quote(luidText(statistics.TokenId))
+            << ",\"tokenModifiedId\":" << quote(luidText(statistics.ModifiedId))
+            << ",\"authenticationId\":" << quote(luidText(statistics.AuthenticationId))
+            << ",\"processAccess\":\"PROCESS_QUERY_LIMITED_INFORMATION\",\"tokenAccess\":\"TOKEN_QUERY\"}\n";
+}
 std::wstring canonical(const std::wstring& path) {
   const DWORD needed = GetFullPathNameW(path.c_str(), 0, nullptr, nullptr);
   require(needed > 0 && needed < 8192, "Fixture path must be bounded");
@@ -83,12 +154,15 @@ void mutationPath(const std::wstring& path) {
       prefix.data(), static_cast<int>(prefix.size()), TRUE) == CSTR_EQUAL, "Fixture mutation is outside its disposable root");
 }
 Handle openMetadata(const std::wstring& path) {
+  // Owner READ_CONTROL does not imply SYNCHRONIZE. These handles perform
+  // metadata queries only, so do not request synchronous file I/O.
+  const DWORD flags = FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_OVERLAPPED;
   HANDLE raw = CreateFileW(path.c_str(), READ_CONTROL | FILE_READ_ATTRIBUTES,
       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      flags, nullptr);
   if (raw == INVALID_HANDLE_VALUE && GetLastError() == ERROR_ACCESS_DENIED) {
     raw = CreateFileW(path.c_str(), READ_CONTROL, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-        nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+        nullptr, OPEN_EXISTING, flags, nullptr);
   }
   require(raw != INVALID_HANDLE_VALUE, "Could not inspect fixture path");
   return Handle(raw);
@@ -455,12 +529,72 @@ void observerClient(const std::wstring& name) {
   std::cout.write(data, count); std::cout << '\n';
 }
 
+void removeEmptyFixture(const std::wstring& path, const std::wstring& volume,
+    const std::wstring& expectedId, const std::wstring& kind) {
+  mutationPath(path);
+  if (volume.empty() || volume.size() > 20 ||
+      std::any_of(volume.begin(), volume.end(), [](wchar_t c) { return c < L'0' || c > L'9'; }) ||
+      expectedId.size() != 32 || std::any_of(expectedId.begin(), expectedId.end(), [](wchar_t c) {
+        return !(c >= L'0' && c <= L'9') && !(c >= L'a' && c <= L'f');
+      }) || (kind != L"file" && kind != L"directory"))
+    throw Error("A recorded disposable fixture identity and type are required", ERROR_INVALID_PARAMETER);
+  // No handle with DELETE access survives a product rejection check. Cleanup
+  // opens a fresh handle afterward, with only query rights plus DELETE. The
+  // parent may authorize deletion through FILE_DELETE_CHILD. Never repair an
+  // ACL, clear attributes or enable a privilege to make cleanup succeed.
+  Handle handle(CreateFileW(path.c_str(), READ_CONTROL | FILE_READ_ATTRIBUTES | DELETE,
+      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
+      FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_OVERLAPPED, nullptr));
+  require(handle.value != INVALID_HANDLE_VALUE, "Could not open disposable empty-DACL fixture for cleanup");
+  FILE_ID_INFO identity{};
+  require(GetFileInformationByHandleEx(handle.value, FileIdInfo, &identity, sizeof(identity)),
+      "Could not verify disposable fixture identity");
+  std::wstring actualId;
+  const wchar_t hex[] = L"0123456789abcdef";
+  for (const unsigned char byte : identity.FileId.Identifier) {
+    actualId += hex[byte >> 4]; actualId += hex[byte & 15];
+  }
+  if (actualId != expectedId || std::to_wstring(identity.VolumeSerialNumber) != volume)
+    throw Error("The disposable fixture identity changed before cleanup", ERROR_INVALID_DATA);
+  const std::wstring expectedPath = L"\\\\?\\" + canonical(path);
+  const std::wstring actualPath = observedPath(handle.value, VOLUME_NAME_DOS);
+  if (actualPath.empty() || CompareStringOrdinal(expectedPath.c_str(), -1, actualPath.c_str(), -1, TRUE) != CSTR_EQUAL)
+    throw Error("The disposable fixture path changed before cleanup", ERROR_INVALID_DATA);
+  BY_HANDLE_FILE_INFORMATION file{};
+  require(GetFileInformationByHandle(handle.value, &file), "Could not verify disposable fixture type");
+  if ((file.dwFileAttributes & (FILE_ATTRIBUTE_REPARSE_POINT | FILE_ATTRIBUTE_READONLY)) != 0 ||
+      ((file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) != (kind == L"directory") ||
+      (kind == L"file" && file.nNumberOfLinks != 1))
+    throw Error("The disposable fixture is not an ordinary single object", ERROR_INVALID_DATA);
+  PSECURITY_DESCRIPTOR descriptor = nullptr;
+  PSID owner = nullptr; PACL dacl = nullptr;
+  const DWORD error = GetSecurityInfo(handle.value, SE_FILE_OBJECT, OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION,
+      &owner, nullptr, &dacl, nullptr, &descriptor);
+  if (error != ERROR_SUCCESS) throw Error("Could not verify disposable fixture security", error);
+  Local security; security.value = descriptor;
+  SECURITY_DESCRIPTOR_CONTROL control = 0; DWORD revision = 0;
+  BOOL present = FALSE, defaulted = FALSE;
+  require(GetSecurityDescriptorControl(descriptor, &control, &revision) &&
+      GetSecurityDescriptorDacl(descriptor, &present, &dacl, &defaulted), "Could not verify disposable fixture DACL");
+  if (sidText(owner) != processUser() || !(control & SE_DACL_PROTECTED) || !present || !dacl || dacl->AceCount != 0)
+    throw Error("Cleanup accepts only the owned protected empty-DACL fixture", ERROR_ACCESS_DENIED);
+  const std::string metadata = information(handle.value);
+  FILE_DISPOSITION_INFO disposition{TRUE};
+  require(SetFileInformationByHandle(handle.value, FileDispositionInfo, &disposition, sizeof(disposition)),
+      "Could not mark disposable empty-DACL fixture for deletion");
+  // Deletion completes after this handle closes. The parent independently
+  // verifies absence through its accessible directory listing after exit.
+  std::cout << "{\"deleteDispositionSet\":true,\"metadata\":" << metadata << "}\n";
+}
+
 }  // namespace
 
 int wmain(int argc, wchar_t** argv) {
   try {
     if (argc == 3 && std::wstring(argv[1]) == L"info") {
       Handle handle = openMetadata(argv[2]); std::cout << information(handle.value) << '\n';
+    } else if ((argc == 3 || argc == 4) && std::wstring(argv[1]) == L"process-token") {
+      processToken(argv[2], argc == 4 ? argv[3] : L"");
     } else if (argc == 4 && (std::wstring(argv[1]) == L"create-file" || std::wstring(argv[1]) == L"create-dir")) {
       createFixture(argv[2], argv[3], std::wstring(argv[1]) == L"create-dir");
     } else if (argc == 5 && std::wstring(argv[1]) == L"junction") {
@@ -476,6 +610,8 @@ int wmain(int argc, wchar_t** argv) {
       observerServer(argv[2], argv[3], argv[4], argv[5]);
     } else if (argc == 3 && std::wstring(argv[1]) == L"observe-client") {
       observerClient(argv[2]);
+    } else if (argc == 6 && std::wstring(argv[1]) == L"remove-empty") {
+      removeEmptyFixture(argv[2], argv[3], argv[4], argv[5]);
     } else {
       throw Error("Unknown or malformed disposable fixture operation", ERROR_INVALID_PARAMETER);
     }
