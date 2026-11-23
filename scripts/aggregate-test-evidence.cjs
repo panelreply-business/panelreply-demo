@@ -11,8 +11,14 @@ const FORMATS = new Set(['panelreply-node-evidence-v1', 'panelreply-platform-evi
 const STATUSES = Object.freeze(['PASS', 'SKIP', 'TODO', 'EXPECTED_FAILURE', 'BLOCKED', 'NOT_RUN', 'RUNNING', 'CANCELLED', 'UNEXPECTED_SUCCESS', 'FAIL', 'ERROR']);
 const SEVERITY = new Map(STATUSES.map((status, index) => [status, index]));
 const NODE_SUITES = new Set(['node-all', 'node-portable']);
-const BROWSER_SUITES = new Set(['portable', 'portable-extra', 'portable-complement', 'baseline', 'private', 'mobile', 'callback', 'callback-mobile', 'spreadsheet', 'spreadsheet-manual']);
+const BROWSER_SUITES = new Set(['portable', 'portable-extra', 'portable-complement', 'baseline', 'private', 'mobile', 'callback', 'callback-mobile', 'spreadsheet', 'spreadsheet-manual', 'callback-safari', 'spreadsheet-manual-safari']);
 const CALLBACK_MOBILE_PROFILES = new Set(['phone_portrait', 'phone_landscape', 'tablet_portrait', 'tablet_landscape']);
+const SAFARI_CASES = Object.freeze({
+  'callback-safari': ['test_contact_hold_and_keyboard_dirty_edit_guard', 'test_intake_status_persistence_and_sign_out', 'test_schedule_reschedule_outcome_follow_up_and_cancel']
+    .map(name => 'safari_product_browser_test.SafariCallbackBrowserTests.' + name),
+  'spreadsheet-manual-safari': ['test_bound_recovery_revokes_archived_sessions_and_credentials', 'test_file_upload_source_links_and_unavailable_ocr', 'test_manual_corrections_persist_and_native_downloads_match']
+    .map(name => 'safari_product_browser_test.SafariSpreadsheetBrowserTests.' + name)
+});
 const SHA1 = /^[a-f0-9]{40}$/;
 const SHA256 = /^[a-f0-9]{64}$/;
 const MAX_REPORT_BYTES = 128 * 1024 * 1024;
@@ -56,13 +62,65 @@ function canonicalPlatform(report, item) {
   }
   requireValue(['chromium', 'firefox', 'webkit'].includes(raw.browserEngine), 'INVALID_PLATFORM', 'A supported observed browser engine is required.');
   const browserChannel = raw.browserChannel === undefined ? 'bundled' : raw.browserChannel;
-  requireValue(['bundled', 'chrome', 'msedge', 'explicit-executable'].includes(browserChannel), 'INVALID_PLATFORM', 'Unknown browser channel.');
-  requireValue(browserChannel === 'bundled' || raw.browserEngine === 'chromium', 'INVALID_PLATFORM', 'A Chromium channel cannot establish another engine.');
+  requireValue(['bundled', 'chrome', 'msedge', 'explicit-executable', 'safari'].includes(browserChannel), 'INVALID_PLATFORM', 'Unknown browser channel.');
+  requireValue(browserChannel === 'bundled' || browserChannel === 'safari' && raw.browserEngine === 'webkit' || raw.browserEngine === 'chromium' && browserChannel !== 'safari', 'INVALID_PLATFORM', 'A native browser channel cannot establish another engine.');
   requireValue(string(item.profile, 100) && /^[A-Za-z0-9_.-]+$/.test(item.profile), 'INVALID_PLATFORM', 'Every browser case needs an explicit profile.');
   requireValue(typeof item.emulated === 'boolean' && item.emulated === (item.profile !== 'desktop'), 'INVALID_PLATFORM', 'Emulated profiles must be identified explicitly.');
+  if (browserChannel === 'safari') requireValue(os === 'darwin' && architecture === 'x86_64'
+    && item.profile === 'desktop' && item.emulated === false && raw.emulated === false
+    && Object.hasOwn(SAFARI_CASES, report.suite), 'INVALID_PLATFORM', 'Native Safari evidence requires its explicit Intel macOS desktop product scope.');
   return { kind: 'browser', os, architecture, browserEngine: raw.browserEngine, browserChannel,
     profile: item.profile, emulated: item.emulated,
     key: ['browser', os, architecture, raw.browserEngine, browserChannel, item.profile].join('/') };
+}
+function validateNativeSafari(report, item) {
+  const native = report.platform.nativeSafari;
+  requireValue(object(native) && native.format === 'apple-safaridriver-v1'
+    && ['UNAVAILABLE', 'OBSERVED'].includes(native.state), 'MISSING_NATIVE_SAFARI', 'Native Safari provenance must be explicit, including unavailability.');
+  if (item.status !== 'PASS') return;
+  requireValue(native.state === 'OBSERVED' && native.stable === true && object(native.before) && object(native.after)
+    && JSON.stringify(native.before) === JSON.stringify(native.after), 'UNSTABLE_NATIVE_SAFARI', 'Passing Safari evidence requires unchanged installed browser and driver observations.');
+  const { driver, browser, host } = native.before;
+  requireValue(object(driver) && driver.path === '/usr/bin/safaridriver' && SHA256.test(driver.sha256)
+    && string(driver.version, 500) && /safari/i.test(driver.version), 'INVALID_NATIVE_SAFARI_DRIVER', 'The actual Apple driver path, hash and version are required.');
+  const driverIdentity = /^Included with Safari (\S+) \(([^()\s]+)\)$/.exec(driver.version);
+  requireValue(object(browser) && browser.path === '/Applications/Safari.app' && browser.bundleIdentifier === 'com.apple.Safari'
+    && string(browser.version, 100) && string(browser.build, 100) && driverIdentity?.[1] === browser.version && driverIdentity?.[2] === browser.build
+    && SHA256.test(browser.infoPlistSha256) && browser.executablePath === '/Applications/Safari.app/Contents/MacOS/Safari'
+    && SHA256.test(browser.executableSha256), 'INVALID_NATIVE_SAFARI_BROWSER', 'The installed release Safari bundle, executable and driver must agree.');
+  requireValue(object(host) && string(host.osVersion, 100) && string(host.osBuild, 100)
+    && normalizeArchitecture(host.architecture) === 'x86_64', 'INVALID_NATIVE_SAFARI_HOST', 'Native Safari needs observed Intel macOS version/build metadata.');
+  const requested = native.requestedCapabilities, session = native.session;
+  requireValue(object(requested) && requested.browserName === 'safari' && requested.platformName === 'mac'
+    && requested.browserVersion === browser.version && requested['safari:useSimulator'] === false,
+    'INVALID_NATIVE_SAFARI_SESSION', 'The native session must explicitly request desktop Safari without a simulator.');
+  requireValue(object(session) && String(session.browserName).toLowerCase() === 'safari'
+    && session.browserVersion === browser.version && ['mac', 'macos'].includes(String(session.platformName).toLowerCase())
+    && (session['safari:useSimulator'] === undefined || session['safari:useSimulator'] === false)
+    && (!Object.hasOwn(session, 'safari:platformVersion') || session['safari:platformVersion'] === host.osVersion)
+    && (!Object.hasOwn(session, 'safari:platformBuildVersion') || session['safari:platformBuildVersion'] === host.osBuild)
+    && SHA256.test(native.sessionSha256) && item.nativeSessionSha256 === native.sessionSha256,
+  'INVALID_NATIVE_SAFARI_SESSION', 'Each pass must identify the observed installed desktop Safari session.');
+  const absent = ['safari:platformVersion', 'safari:platformBuildVersion'].filter(key => !Object.hasOwn(session, key));
+  requireValue(Array.isArray(native.unavailableSessionCapabilities) && JSON.stringify(native.unavailableSessionCapabilities) === JSON.stringify(absent),
+    'INVALID_NATIVE_SAFARI_SESSION', 'Absent optional native host capabilities must remain explicit.');
+  requireValue(report.platform.selenium === '4.54.0' && report.platform.observedBrowsers.some(observed =>
+    observed.engine === 'webkit' && observed.channel === 'safari' && observed.version === session.browserVersion),
+  'INVALID_NATIVE_SAFARI_SESSION', 'Native Safari evidence needs the pinned client and matching measured browser version.');
+  const viewport = item.observedViewport;
+  requireValue(object(viewport) && Number.isFinite(viewport.width) && viewport.width >= 900
+    && Number.isFinite(viewport.height) && viewport.height >= 500 && Number.isFinite(viewport.devicePixelRatio) && viewport.devicePixelRatio > 0,
+  'MISSING_NATIVE_SAFARI_VIEWPORT', 'The desktop Safari viewport must be observed, not assumed.');
+  if (item.id.endsWith('.test_manual_corrections_persist_and_native_downloads_match')) {
+    const downloads = item.downloadEvidence;
+    requireValue(Array.isArray(downloads) && downloads.length === 2 && new Set(downloads.map(entry => entry.format)).size === 2
+      && downloads.every(entry => object(entry) && ['csv', 'xlsx'].includes(entry.format) && entry.status === 'OBSERVED'
+        && entry.trigger === 'native WebDriver export button'
+        && new RegExp('^panelreply-project-[a-f0-9-]{36}\\.' + entry.format + '$').test(entry.filename)
+        && Number.isSafeInteger(entry.bytes) && entry.bytes > 0 && entry.bytes === entry.expectedBytes
+        && SHA256.test(entry.sha256) && entry.sha256 === entry.expectedSha256),
+    'UNOBSERVED_NATIVE_DOWNLOAD', 'The Safari export case must observe both newly downloaded files with the exact saved bytes. API readback is insufficient.');
+  }
 }
 function validateManifest(report) {
   requireValue(Array.isArray(report.sourceManifest) && report.sourceManifest.length > 0, 'MISSING_SOURCE_MANIFEST', 'A nonempty tested-source manifest is required.');
@@ -96,6 +154,14 @@ function validateReport(report, label = 'report') {
   if (report.suite === 'spreadsheet-manual') {
     requireValue(report.deploymentMode === 'spreadsheet', 'INVALID_DEPLOYMENT_MODE', 'Manual spreadsheet evidence must use the fixed spreadsheet entrypoint.');
     requireValue(normalizeOs(report.platform?.os) === 'darwin', 'INVALID_PLATFORM', 'The macOS manual spreadsheet suite cannot establish another platform.');
+  }
+  if (Object.hasOwn(SAFARI_CASES, report.suite)) {
+    requireValue(report.deploymentMode === (report.suite === 'callback-safari' ? 'callback' : 'spreadsheet'),
+      'INVALID_DEPLOYMENT_MODE', 'Native Safari must use the corresponding fixed product entrypoint.');
+    requireValue(report.platform?.browserEngine === 'webkit' && report.platform?.browserChannel === 'safari',
+      'INVALID_PLATFORM', 'A bundled engine cannot satisfy the native Safari suite.');
+    requireValue(Array.isArray(report.tests) && report.tests.length === 3 && report.tests.every(item => SAFARI_CASES[report.suite].includes(item?.id)),
+      'INVALID_NATIVE_SAFARI_CASES', 'Native Safari scope is exactly the three reviewed journeys per product.');
   }
   requireValue(Array.isArray(report.tests) && report.tests.length <= MAX_TESTS, 'INVALID_TESTS', 'A bounded list of case outcomes is required: ' + label);
   requireValue(Array.isArray(report.infrastructureErrors), 'MISSING_INFRASTRUCTURE_STATUS', 'Infrastructure outcomes must be explicit: ' + label);
@@ -143,6 +209,10 @@ function validateReport(report, label = 'report') {
     requireValue(!generated || string(item.caseFamily, 80), 'INVALID_CASE', 'Generated cases need an explicit family.');
     if (!node && item.status === 'PASS') {
       requireValue(Array.isArray(report.platform.observedBrowsers) && report.platform.observedBrowsers.some(browser => object(browser) && browser.engine === platform.browserEngine && browser.channel === platform.browserChannel && string(browser.version, 100)), 'UNOBSERVED_BROWSER', 'A configured but unobserved browser cannot count as a pass.');
+    }
+    if (!node && platform.browserChannel === 'safari') {
+      requireValue(kind === 'product' && productScope === report.deploymentMode, 'INVALID_PRODUCT_SCOPE', 'Native Safari methods must retain their fixed product scope.');
+      validateNativeSafari(report, item);
     }
     return { id: item.id, status: item.status, durationMs: item.durationMs, kind, productScope, generated,
       caseFamily: generated ? item.caseFamily : null, platform, suite: report.suite,

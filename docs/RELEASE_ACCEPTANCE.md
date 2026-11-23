@@ -1,5 +1,13 @@
 # Release acceptance
 
+## November 23 Safari and reflow checkpoint
+
+The next candidate passes 9,202 local Node/API/HTTP checks: 9,056 product cases and 146 excluded harness checks, with zero failures or skips and unchanged source. [Local record](evidence/safari-reflow-local-2026-11-23.json). It adds six actual-Safari journeys and two automated scopes while retaining all seven manual gates. Native Safari execution is NOT TESTED until committed-source CI. [Native scope](NATIVE_SAFARI_SCOPE.md).
+
+Run84 on integrity commit `7a0a93a` resolves the private WebKit recovery-navigation error, with 132/132 methods passing. Both selected callback WebKit reflow failures remain and ARM is unassigned in the recorded snapshot. A control-only overflow repair plus heading wrapping and stronger screen-bound checks awaits browser execution. [Failure and candidate](CALLBACK_REFLOW_2026_11_23.md).
+
+The full 10,000 platform goal and both product release decisions remain open. Counts do not close OCR accuracy, native isolation, actual/physical platform, owner-dependent provider, selected-host or operating requirements. [Current next steps](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 current integrity checkpoint
 
 Current local candidate verification is 9,192 PASS, zero failures/skips/cancellations/TODOs/infrastructure errors, across 55 files. Product credit is 9,056 after 136 harness exclusions. Manifest `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3` remains unchanged during execution. These results verify the recorded dirty-tree candidate, not an unexecuted committed browser/platform pass. [Local evidence](evidence/integrity-local-2026-11-23.json).

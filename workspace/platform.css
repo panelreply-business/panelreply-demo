@@ -228,6 +228,12 @@ input:focus, textarea:focus, select:focus { border-color: #2466dd; box-shadow: 0
 .callback-schedule .form-footer .button-row { margin-left: auto; }
 /* Native control minimums must not enlarge the request grid at enlarged text sizes. */
 .inbox-grid input, .inbox-grid select, .inbox-grid textarea { min-width: 0; max-width: 100%; }
+/* Keep a closed native menu's long option text inside its own control box.
+   Its native popup and keyboard behavior remain available. Do not clip the
+   form or page, where overflow could conceal labels or actions. */
+#lead-permission { overflow: hidden; text-overflow: ellipsis; }
+.request-list-panel .panel-heading, .callback-queue-panel .panel-heading { flex-wrap: wrap; }
+.request-list-panel .panel-heading > div, .callback-queue-panel .panel-heading > div { min-width: 0; }
 .callback-schedule #task-time-preview { overflow-wrap: anywhere; }
 .task-history-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px; }
 .callback-task-list { list-style: none; padding: 0; margin: 12px 0; }

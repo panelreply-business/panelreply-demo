@@ -453,6 +453,46 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+  native-safari-products:
+    name: Installed Safari fixed product workflows
+    runs-on: macos-15-intel
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install the pinned native WebDriver client
+        run: python -m pip install -r tests/safari-requirements.txt
+      - name: Check native Safari evidence handling without product-test credit
+        run: python -m unittest discover -s tests -p safari_runner_test.py -v
+      - name: Exercise the installed Safari with six product journeys
+        # The standard image already enables Safari automation. No sudo,
+        # preference/TCC changes, simulator, alternate driver or browser retry.
+        env:
+          TMPDIR: ${{ runner.temp }}
+          PANELREPLY_CAPTURE_DIR: ${{ runner.temp }}/panelreply-native-safari-previews
+        run: python tests/release_safari_runner.py --output-dir "${{ runner.temp }}/panelreply-native-safari-evidence"
+      - name: Preserve actual Safari results and unexecuted cases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-native-safari-macos-15-intel-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-native-safari-evidence/*.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve native Safari screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-native-safari-macos-15-intel-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-native-safari-previews/*.png
+          if-no-files-found: ignore
+          retention-days: 30
+
   apple-silicon-release:
     name: Apple Silicon contracts and selected products
     # Standard public-repository arm64 runner, never a paid -large/-xlarge label.
@@ -514,7 +554,7 @@ jobs:
   release-evidence:
     name: Account for distinct product and platform tests
     if: always()
-    needs: [demo-tests, browser-compatibility, portable-release-node, portable-release-browsers, branded-release-browsers, emulated-release-mobile, separated-product-browsers, apple-silicon-release]
+    needs: [demo-tests, browser-compatibility, portable-release-node, portable-release-browsers, branded-release-browsers, emulated-release-mobile, separated-product-browsers, apple-silicon-release, native-safari-products]
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:

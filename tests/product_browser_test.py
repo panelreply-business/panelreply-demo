@@ -413,9 +413,25 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
                     "e => parseFloat(getComputedStyle(e).fontSize)")
                 self.assertAlmostEqual(scaled_control_font, original_control_font * 2, places=2)
         self.assert_no_overflow()
+        # A clipped parent can hide an off-screen action without increasing
+        # document width. Require the actual controls to stay on screen too.
+        for selector in ["#refresh-requests", *control_selectors]:
+            with self.subTest(enlarged_control=selector):
+                bounds = self.page.locator(selector).bounding_box()
+                self.assertIsNotNone(bounds)
+                self.assertGreaterEqual(bounds["x"], 0)
+                self.assertLessEqual(bounds["x"] + bounds["width"], 321)
+        self.page.get_by_label("Contact permission", exact=True).focus()
+        self.page.keyboard.press("Tab")
+        expect(self.page.get_by_label("Internal notes", exact=True)).to_be_focused()
         self.page.locator("#nav-schedule").click()
         self.page.locator("#discard-changes").click()
         expect(self.page.locator("#schedule-view")).to_be_visible()
+        self.assert_no_overflow()
+        queue_refresh = self.page.locator("#refresh-callback-queue").bounding_box()
+        self.assertIsNotNone(queue_refresh)
+        self.assertGreaterEqual(queue_refresh["x"], 0)
+        self.assertLessEqual(queue_refresh["x"] + queue_refresh["width"], 321)
         self.assertEqual(self.api("GET", "/api/callback-tasks?state=all")["tasks"], [])
 
     def test_callback_export_and_request_deletion_include_task_records(self):

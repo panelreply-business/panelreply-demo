@@ -1,5 +1,21 @@
 # PanelReply development progress
 
+## Native Safari coverage and callback reflow — November 23, 2026
+
+The next integrated milestone passes all 9,202 local Node/API/HTTP checks across 55 files, with zero failures, skips, cancellations or infrastructure errors. The 9,056 product cases are unchanged from the integrity milestone. Ten added evidence-tool checks bring the excluded Node harness count to 146. Four Python harness cases also pass without product credit. The tested manifest is `208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd`. [Local evidence](evidence/safari-reflow-local-2026-11-23.json).
+
+This milestone adds six workflows in installed Safari on the standard Intel Mac runner, three per fixed product. It verifies native browser/driver/host/session identity and requires actual downloaded CSV/XLSX files. An unavailable native session records every method as NOT_RUN. The policy adds two scopes while preserving all existing requirements and seven manual gates. Safari execution remains pending. [Scope and limitations](NATIVE_SAFARI_SCOPE.md).
+
+All 34 emitted run84 release artifacts and 35 reports pass independent digest/path/source verification with the exact committed collector and policy. Its partial ledger has 24,796 product passes, two failures and zero errors across 9,331 distinct cases. It excludes 340 harness checks and 7,092 duplicate observations. Forty automated requirements pass, four fail and ten ARM scopes have no execution; seven manual gates remain untested. All six selected-spreadsheet suites pass their nine Linux or ten Mac journeys, including both new receipt regressions. [Verified partial record](evidence/callback-scheduling-run84.json).
+
+[Run84](https://github.com/panelreply-business/panelreply-demo/actions/runs/45225565320) tests committed integrity source `7a0a93a`. At 17:28:28 UTC, 34 assigned jobs succeeded, two callback WebKit jobs failed, and ARM remained queued without a runner or steps. Private WebKit passes all 132 methods, resolving the recovery-navigation error for this source. Both callback WebKit suites still fail at 200% text: the permission-control contents enlarge the page to 521px on Linux and 443px on Mac. The Requests refresh action also exceeds the viewport on Linux. [Geometry evidence](evidence/callback-reflow-run84.json).
+
+The candidate constrains only the closed native permission menu's overflow and wraps the affected headings. It retains native control semantics and all prior font/viewport assertions. The browser journey now checks on-screen control bounds, keyboard focus and queue reflow after discarding the draft. Actual changed-source browser verification is still required. [Repair](CALLBACK_REFLOW_2026_11_23.md).
+
+Independent work found a spreadsheet read race that mixes saved rows with newer source metadata, producing inconsistent CSV and a failed XLSX export. A transaction-snapshot repair is in progress outside this frozen milestone. The Windows storage component also remains isolated and unimported while native ACL, sharing and reparse-race boundaries are implemented and reviewed. [Exact continuation](AUTONOMOUS_CONTINUATION.md).
+
+No goal or release gate is closed by this local count. The six Safari methods have not run locally. Public activation, production merge, purchases, provider calls and customer contact remain unperformed.
+
 ## Storage, account and spreadsheet response integrity — November 23, 2026
 
 The integrated repair batch passes 9,192 local Node/API/HTTP cases across 55 files. Failures, skips, cancellations, TODOs and infrastructure errors are zero. The executable/test/workflow/policy manifest stays `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3` throughout. The product total is 9,056 after excluding 136 harness checks. Sixty-nine new product cases reproduce and guard actual data/retry failure paths. [Source-bound local evidence](evidence/integrity-local-2026-11-23.json).

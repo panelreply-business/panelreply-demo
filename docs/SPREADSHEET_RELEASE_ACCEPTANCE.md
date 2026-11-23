@@ -1,5 +1,15 @@
 # Spreadsheet release acceptance
 
+## November 23 native-browser candidate
+
+Run84 on `7a0a93a` passes all fixed-spreadsheet jobs on Linux (9/9 each) and Intel Mac (10/10 each), including both new receipt/retry journeys across all six jobs. All 34 emitted release ZIPs and 35 reports pass independent source/policy reconciliation. The run remains partial while ARM is queued. Private WebKit recovery passes all 132 methods. These observations belong to that committed source. [Verified snapshot](evidence/callback-scheduling-run84.json).
+
+Three new fixed-spreadsheet journeys target installed Safari: manual correction with actual CSV/XLSX downloads, image retention/source links with unavailable OCR, and product-bound encrypted recovery. A pass requires native file observations and exact bytes; API readback cannot replace a download. No native Safari product method has run locally. All manual and extraction gates remain. [Scope](NATIVE_SAFARI_SCOPE.md).
+
+The candidate's shared local regression passes 9,202 checks with zero failures/skips, including 9,056 product cases and 146 excluded harness checks. [Local evidence](evidence/safari-reflow-local-2026-11-23.json). A separately reproduced concurrent project/source read defect is being repaired next and is not included in this candidate.
+
+OCR accuracy, required isolation, representative photos, actual Excel, remaining actual/physical platforms, selected-host/offsite recovery and operating approval remain open. No spreadsheet trial or release is approved.
+
 ## November 23 current spreadsheet checkpoint
 
 [Run83](evidence/callback-scheduling-run83.json) completes on source `1b35490` with 11,865 passing spreadsheet case/platform executions across 4,125 distinct spreadsheet cases. Shared cases remain counted once separately, and the shared private WebKit recovery navigation error is unresolved on that source. All three Intel Mac manual spreadsheet suites pass 8/8. Their scope excludes native macOS extraction.

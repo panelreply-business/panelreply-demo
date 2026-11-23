@@ -712,9 +712,37 @@
         "suite": "portable"
       },
       "minimumCases": 92
+    },
+    {
+      "id": "callback-program-darwin-x86_64-safari",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "safari",
+        "profile": "desktop",
+        "suite": "callback-safari",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "spreadsheet-program-darwin-x86_64-safari",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "safari",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual-safari",
+        "deploymentMode": "spreadsheet"
+      },
+      "minimumCases": 3
     }
   ],
   "releaseDecision": "Independent for callback and spreadsheet. Numeric targets never override product release gates.",
-  "manualEvidenceRule": "Automated reports do not certify actual Safari, physical devices or private workflows on untested client OSes.",
+  "manualEvidenceRule": "Scoped browser reports, including native desktop Safari, do not certify the remaining manual acceptance gates, physical devices or private workflows on untested client OSes.",
   "authorization": "Synthetic isolated development/tests only. No deployment, merge, paid provider, customer data/contact or Render changes."
 }

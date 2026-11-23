@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+## November 23 native-browser candidate
+
+Run84 on `7a0a93a` passes private WebKit recovery (132/132 methods) but retains both selected callback WebKit enlarged-text failures (14/15 each). New geometry identifies the permission control's own overflowing contents and an off-screen Refresh button. The candidate repairs those boundaries while retaining 200% text, 320px width, keyboard and unsaved-draft requirements. Actual browser acceptance is pending. [Evidence and repair](CALLBACK_REFLOW_2026_11_23.md).
+
+Three new fixed-callback journeys target installed Safari with observed native identity and source-bound results. No Safari product execution has run locally and the manual Safari gate remains. The shared local regression passes 9,202 checks, including 9,056 product cases and 146 excluded harness checks. [Native scope](NATIVE_SAFARI_SCOPE.md) and [local evidence](evidence/safari-reflow-local-2026-11-23.json).
+
+CB-12, the full platform goal and the separate callback trial/release decision remain incomplete. ARM assignment, native Windows, physical devices, applicable provider and operating gates remain open.
+
 ## November 23 current callback checkpoint
 
 [Run83](evidence/callback-scheduling-run83.json) verifies all 24 fixed callback touch executions on source `1b35490`. Chromium and Firefox selected callback suites pass 15/15 on Linux and Intel Mac. Both selected WebKit suites pass 14/15 and fail the 320px doubled-text reflow requirement. The final callback ledger is 10,623 PASS and two FAIL across 3,460 distinct cases; shared cases remain counted once separately. One shared private WebKit recovery navigation error also remains recorded. Touch emulation does not establish physical devices.

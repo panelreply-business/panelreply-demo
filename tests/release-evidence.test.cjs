@@ -77,6 +77,44 @@ function callbackMobileRequirements() {
   return JSON.parse(fs.readFileSync(path.join(__dirname, '..', MILESTONE_POLICY_PATH), 'utf8'))
     .requiredPlatforms.filter(entry => entry.match.suite === 'callback-mobile');
 }
+const SAFARI_METHODS = {
+  'callback-safari': ['test_contact_hold_and_keyboard_dirty_edit_guard', 'test_intake_status_persistence_and_sign_out', 'test_schedule_reschedule_outcome_follow_up_and_cancel'],
+  'spreadsheet-manual-safari': ['test_bound_recovery_revokes_archived_sessions_and_credentials', 'test_file_upload_source_links_and_unavailable_ocr', 'test_manual_corrections_persist_and_native_downloads_match']
+};
+function safari(suite = 'callback-safari', statuses = ['PASS', 'PASS', 'PASS']) {
+  const product = suite === 'callback-safari' ? 'callback' : 'spreadsheet';
+  const name = product === 'callback' ? 'SafariCallbackBrowserTests' : 'SafariSpreadsheetBrowserTests';
+  const installation = {
+    driver: { path: '/usr/bin/safaridriver', version: 'Included with Safari 26.6 (20624.4.5.18.1)', sha256: sha('native Apple driver') },
+    browser: { path: '/Applications/Safari.app', bundleIdentifier: 'com.apple.Safari', version: '26.6', build: '20624.4.5.18.1',
+      infoPlistSha256: sha('installed Safari metadata'), executablePath: '/Applications/Safari.app/Contents/MacOS/Safari', executableSha256: sha('installed Safari executable') },
+    host: { osVersion: '15.7.9', osBuild: '24G507', architecture: 'x86_64' }
+  };
+  const nativeSafari = { format: 'apple-safaridriver-v1', state: 'OBSERVED', before: installation,
+    after: structuredClone(installation), stable: true,
+    requestedCapabilities: { browserName: 'safari', platformName: 'mac', browserVersion: '26.6', 'safari:useSimulator': false, pageLoadStrategy: 'normal' },
+    session: { browserName: 'Safari', browserVersion: '26.6', platformName: 'mac', 'safari:useSimulator': false,
+      'safari:platformVersion': '15.7.9', 'safari:platformBuildVersion': '24G507' },
+    unavailableSessionCapabilities: [], sessionSha256: sha('native session identity') };
+  const raw = browser(statuses, { suite, deploymentMode: product, platform: {
+    os: 'Darwin', architecture: 'x86_64', browserEngine: 'webkit', browserChannel: 'safari', emulated: false, selenium: '4.54.0',
+    observedBrowsers: [{ engine: 'webkit', channel: 'safari', version: '26.6' }], nativeSafari
+  } });
+  raw.tests.forEach((item, index) => Object.assign(item, {
+    id: 'safari_product_browser_test.' + name + '.' + SAFARI_METHODS[suite][index], productScope: product,
+    nativeSessionSha256: nativeSafari.sessionSha256, observedViewport: { width: 1400, height: 850, devicePixelRatio: 2 },
+    downloadEvidence: index === 2 && product === 'spreadsheet' ? ['csv', 'xlsx'].map(format => ({
+      format, filename: `panelreply-project-00000000-0000-4000-8000-000000000001.${format}`, status: 'OBSERVED',
+      trigger: 'native WebDriver export button', bytes: 200, expectedBytes: 200,
+      sha256: sha(format + ' actual file'), expectedSha256: sha(format + ' actual file')
+    })) : []
+  }));
+  return raw;
+}
+function safariRequirements() {
+  return JSON.parse(fs.readFileSync(path.join(__dirname, '..', MILESTONE_POLICY_PATH), 'utf8'))
+    .requiredPlatforms.filter(entry => Object.hasOwn(SAFARI_METHODS, entry.match.suite));
+}
 function refreshSourceHash(report) {
   report.sourceTreeSha256 = sha(JSON.stringify(report.sourceManifest));
   report.sourceTreeSha256After = report.sourceTreeSha256;
@@ -380,6 +418,138 @@ test('reused spreadsheet method IDs count once per actual OS and architecture', 
   assert.equal(report.product.PASS, 3);
   assert.equal(report.distinctCases.total, 1);
   assert.equal(report.duplicateObservationsExcluded, 1);
+});
+
+test('native Safari product scopes count six observed journeys while all manual gates stay open', () => {
+  const requiredPlatforms = [...safariRequirements(), { id: 'actual-safari-acceptance', kind: 'manual', match: {} },
+    { id: 'physical-iphone', kind: 'manual', match: {} }];
+  assert.equal(safariRequirements().length, 2);
+  const report = aggregate([safari(), safari('spreadsheet-manual-safari')], { milestones: policy({ requiredPlatforms }) });
+  assert.equal(report.product.PASS, 6);
+  assert.deepEqual(report.requiredPlatforms.map(item => item.status), ['PASS', 'PASS', 'NOT_TESTED', 'NOT_TESTED']);
+  assert.equal(report.platformCoverageComplete, false);
+  assert.equal(report.productScopes.callback.executions.PASS, 3);
+  assert.equal(report.productScopes.spreadsheet.executions.PASS, 3);
+});
+
+test('native Safari reruns add no cases and bundled WebKit cannot satisfy native requirements', () => {
+  const requiredPlatforms = safariRequirements();
+  const report = aggregate([safari(), safari(), safari('spreadsheet-manual-safari')], { milestones: policy({ requiredPlatforms }) });
+  assert.equal(report.product.PASS, 6);
+  assert.equal(report.duplicateObservationsExcluded, 3);
+  const bundled = browser(['PASS'], { suite: 'callback', deploymentMode: 'callback',
+    platform: { os: 'Darwin', browserEngine: 'webkit', observedBrowsers: [{ engine: 'webkit', channel: 'bundled', version: '26.6' }] } });
+  const other = aggregate([bundled], { milestones: policy({ requiredPlatforms }) });
+  assert.deepEqual(other.requiredPlatforms.map(item => item.status), ['NOT_TESTED', 'NOT_TESTED']);
+});
+
+test('native Safari rejects combined deployment, another product, invented methods and hidden methods', () => {
+  const combined = safari(); combined.deploymentMode = 'combined';
+  expectCode(() => validateReport(combined), 'INVALID_DEPLOYMENT_MODE');
+  const wrong = safari(); wrong.tests[0].productScope = 'spreadsheet';
+  expectCode(() => validateReport(wrong), 'INVALID_PRODUCT_SCOPE');
+  const invented = safari(); invented.tests[0].id += '_duplicate';
+  expectCode(() => validateReport(invented), 'INVALID_NATIVE_SAFARI_CASES');
+  const missing = safari(); missing.tests.pop(); missing.expectedMethods--;
+  expectCode(() => validateReport(missing), 'INVALID_NATIVE_SAFARI_CASES');
+});
+
+test('native Safari cannot be established by another OS, architecture, engine or emulated profile', () => {
+  for (const [key, value] of [['os', 'Linux'], ['architecture', 'arm64'], ['browserEngine', 'chromium'], ['browserChannel', 'bundled'], ['emulated', true]]) {
+    const raw = safari(); raw.platform[key] = value;
+    expectCode(() => validateReport(raw), 'INVALID_PLATFORM');
+  }
+  const mobile = safari(); mobile.tests[0].profile = 'phone_portrait'; mobile.tests[0].emulated = true;
+  expectCode(() => validateReport(mobile), 'INVALID_PLATFORM');
+  const portable = safari(); portable.suite = 'portable';
+  expectCode(() => validateReport(portable), 'INVALID_PLATFORM');
+});
+
+test('native Safari requires observed unchanged Apple driver and release app identity', () => {
+  const missing = safari(); delete missing.platform.nativeSafari;
+  expectCode(() => validateReport(missing), 'MISSING_NATIVE_SAFARI');
+  const changed = safari(); changed.platform.nativeSafari.after.driver.sha256 = sha('replacement driver');
+  expectCode(() => validateReport(changed), 'UNSTABLE_NATIVE_SAFARI');
+  const unobserved = safari(); unobserved.platform.nativeSafari.state = 'UNAVAILABLE';
+  expectCode(() => validateReport(unobserved), 'UNSTABLE_NATIVE_SAFARI');
+  const driver = safari(); driver.platform.nativeSafari.before.driver.path = '/tmp/safaridriver';
+  driver.platform.nativeSafari.after = structuredClone(driver.platform.nativeSafari.before);
+  expectCode(() => validateReport(driver), 'INVALID_NATIVE_SAFARI_DRIVER');
+  const preview = safari(); preview.platform.nativeSafari.before.browser.bundleIdentifier = 'com.apple.SafariTechnologyPreview';
+  preview.platform.nativeSafari.after = structuredClone(preview.platform.nativeSafari.before);
+  expectCode(() => validateReport(preview), 'INVALID_NATIVE_SAFARI_BROWSER');
+  for (const version of ['Included with Safari 26.6.1 (20624.4.5.18.1)', 'Included with Safari 26.6 (20624.4.5.18.12)']) {
+    const suffix = safari(); suffix.platform.nativeSafari.before.driver.version = version;
+    suffix.platform.nativeSafari.after = structuredClone(suffix.platform.nativeSafari.before);
+    expectCode(() => validateReport(suffix), 'INVALID_NATIVE_SAFARI_BROWSER');
+  }
+});
+
+test('native Safari passes are bound to the requested desktop and measured native session', () => {
+  for (const change of [
+    raw => { raw.platform.nativeSafari.session.platformName = 'iOS'; },
+    raw => { raw.platform.nativeSafari.session.browserName = 'Safari Technology Preview'; },
+    raw => { raw.platform.nativeSafari.session.browserVersion = '26.5'; },
+    raw => { raw.platform.nativeSafari.session['safari:useSimulator'] = true; },
+    raw => { raw.platform.nativeSafari.session['safari:platformVersion'] = '15.7.8'; },
+    raw => { raw.platform.nativeSafari.session['safari:platformBuildVersion'] = '24G508'; },
+    raw => { raw.platform.nativeSafari.requestedCapabilities['safari:useSimulator'] = true; },
+    raw => { raw.platform.nativeSafari.requestedCapabilities.browserName = 'Safari'; },
+    raw => { delete raw.platform.nativeSafari.requestedCapabilities.browserVersion; },
+    raw => { delete raw.platform.nativeSafari.session['safari:platformVersion']; },
+    raw => { raw.tests[0].nativeSessionSha256 = sha('different session'); },
+    raw => { raw.platform.observedBrowsers[0].version = '26.5'; },
+    raw => { raw.platform.selenium = 'unmeasured'; }
+  ]) {
+    const raw = safari(); change(raw);
+    expectCode(() => validateReport(raw), 'INVALID_NATIVE_SAFARI_SESSION');
+  }
+  const absent = safari();
+  absent.platform.nativeSafari.unavailableSessionCapabilities = ['safari:platformVersion', 'safari:platformBuildVersion'];
+  for (const key of absent.platform.nativeSafari.unavailableSessionCapabilities) delete absent.platform.nativeSafari.session[key];
+  assert.equal(validateReport(absent).complete, true);
+});
+
+test('native Safari must report the actual desktop viewport without inventing narrow-screen coverage', () => {
+  for (const viewport of [null, { width: 320, height: 1000, devicePixelRatio: 2 },
+    { width: 1400, height: 850 }, { width: 1400, height: 850, devicePixelRatio: 0 }]) {
+    const raw = safari(); raw.tests[0].observedViewport = viewport;
+    expectCode(() => validateReport(raw), 'MISSING_NATIVE_SAFARI_VIEWPORT');
+  }
+});
+
+test('native Safari export passes require both browser-created files rather than API-only data', () => {
+  for (const change of [
+    raw => { raw.tests[2].downloadEvidence = []; },
+    raw => { raw.tests[2].downloadEvidence[1].format = 'csv'; },
+    raw => { raw.tests[2].downloadEvidence[1].status = 'NOT_OBSERVED'; },
+    raw => { raw.tests[2].downloadEvidence[1].trigger = 'HTTP readback'; },
+    raw => { raw.tests[2].downloadEvidence[1].sha256 = sha('truncated bytes'); },
+    raw => { raw.tests[2].downloadEvidence[1].bytes = 0; }
+  ]) {
+    const raw = safari('spreadsheet-manual-safari'); change(raw);
+    expectCode(() => validateReport(raw), 'UNOBSERVED_NATIVE_DOWNLOAD');
+  }
+});
+
+test('an unavailable native Safari driver leaves all product cases unexecuted', () => {
+  const raw = safari('callback-safari', ['NOT_RUN', 'NOT_RUN', 'NOT_RUN']);
+  raw.status = 'BLOCKED';
+  raw.infrastructureErrors = [{ id: 'native-safari-session', status: 'ERROR', classification: 'NATIVE_SAFARI_UNAVAILABLE' }];
+  raw.platform.observedBrowsers = [];
+  raw.platform.nativeSafari = { format: 'apple-safaridriver-v1', state: 'UNAVAILABLE' };
+  for (const item of raw.tests) { item.nativeSessionSha256 = null; item.observedViewport = null; }
+  const report = aggregate([raw], { milestones: policy({ requiredPlatforms: safariRequirements() }) });
+  assert.equal(report.product.PASS, 0);
+  assert.equal(report.product.NOT_RUN, 3);
+  assert.equal(report.requiredPlatforms[0].complete, false);
+});
+
+test('native Safari runner, cases and pinned dependency files enter the shared source manifest', () => {
+  const manifest = new Map(sourceEvidence(path.join(__dirname, '..')).sourceManifest.map(item => [item.path, item.sha256]));
+  for (const filename of ['tests/release_safari_runner.py', 'tests/safari_product_browser_test.py', 'tests/safari-requirements.txt']) {
+    assert.equal(manifest.get(filename), sha(fs.readFileSync(path.join(__dirname, '..', filename))));
+  }
 });
 
 test('callback scheduling and task cases stay in the callback product ledger', () => {

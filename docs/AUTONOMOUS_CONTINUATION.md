@@ -10,7 +10,23 @@ Purchases, customer contact, production customer data, public deployment, produc
 
 The two products have separate release decisions and independent entrypoints, data binding, sessions and recovery. December 31, 2026 remains the first-release target. The existing daily check runs at 10 AM America/Detroit through December 20 inclusive. Do not duplicate it. Product order and the second release date remain undecided. Real-world testing needs its applicable technical gates and owner approval.
 
-## Last committed CI checkpoint
+## Current source and next verified milestone
+
+The integrity milestone is committed as `7a0a93aee098918de7bac251fc7eb929ffec16f3`, Git tree `caffb6cb99cb7a6354fb7ca15bbfa08fde1a73bf`. [Run84](https://github.com/panelreply-business/panelreply-demo/actions/runs/45225565320) tests it through merge `0be57f078d28f075cd15876d61519c4b00371685`, with the same tree and manifest `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3`.
+
+At 17:28:28 UTC (12:28:28 PM America/Detroit), all 36 assigned jobs are complete: 34 succeed and two selected callback WebKit jobs fail. ARM remains queued with runner ID zero and no steps, so the run and aggregate job are not final. All 34 emitted release ZIPs and 35 reports pass digest, path, source and exact-policy verification. The partial ledger records 24,796 product passes, two failures, zero errors and 9,331 distinct cases. It excludes 340 harness checks and 7,092 duplicate observations. Forty automated requirements pass, four fail, ten ARM scopes are untested and seven manual gates remain untested. [Verified partial snapshot](evidence/callback-scheduling-run84.json).
+
+Private WebKit passes all 132 methods, including recovery navigation. Linux fixed spreadsheet passes 9/9 and Intel Mac manual spreadsheet 10/10 in each engine; both new receipt journeys pass across all six jobs. Each callback touch suite passes 12/12. Both callback WebKit jobs still fail enlarged-text reflow. New geometry identifies native permission-control overflow and a separate off-screen Refresh action. [Failure evidence](evidence/callback-reflow-run84.json). OCR accuracy remains FAIL at 289/310 with identity PASS, and native isolation remains BLOCKED before any denial cases. Measurements stay outside the product goal.
+
+The next Safari/reflow candidate passes all 9,202 local Node/API/HTTP checks across 55 files, with zero failures, skips, cancellations, TODOs or infrastructure errors. It contains 9,056 product cases, unchanged from the integrity milestone, and 146 excluded harness checks. Ten added Node verifier cases and four separate Python verifier cases earn zero product credit. The stable manifest is `208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd` across 177 files. [Local evidence](evidence/safari-reflow-local-2026-11-23.json). Find its eventual commit by this manifest.
+
+The candidate contains the closed native permission select's own overflow and wraps Requests/Callback queue headings. It retains every font/viewport assertion and adds on-screen control bounds, keyboard focus and queue reflow after discarding a draft. The changed browser result remains NOT TESTED locally. [Reflow repair](CALLBACK_REFLOW_2026_11_23.md).
+
+Six new Safari journeys use the installed Safari and explicit `/usr/bin/safaridriver` on the standard Intel Mac runner, three per fixed product. A pass requires exact observed native browser/driver/host/session provenance and unchanged installation evidence. Both export files must be newly downloaded with exact saved bytes. Missing native execution stays NOT_RUN. No automation-setting change, simulator, alternate browser or paid runner is allowed. [Native Safari scope](NATIVE_SAFARI_SCOPE.md).
+
+This candidate adds two automated Safari requirements, bringing the policy to 56 automated and seven unchanged manual requirements. Its policy SHA256 is `1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216`. No Safari product test has run locally. The full 10,000 goal remains incomplete.
+
+## Prior final CI checkpoint
 
 [Run83](https://github.com/panelreply-business/panelreply-demo/actions/runs/45217347462) is complete, with failures retained. It tested branch source `1b35490335203348572e938bcc30dfc0f05d93e1` through merge `017a1b39b00851f2fbacb4bed7f8ffbd3e23c880`. Both have Git tree `510bc73ebc676725e166ae6b29ba0ac276c3589b`. The executable/test/workflow/policy manifest is `a635027376caf189c9d11b0db747196683387e6d0b2783b85dded4124999803a`. [Final source-bound record](evidence/callback-scheduling-run83.json).
 
@@ -23,9 +39,9 @@ All 34 emitted release artifacts and 35 reports were inspected. Independent aggr
 - Native OCR dependency identity passes. All 310 field outcomes match run82 on unchanged CI pipeline and dataset bytes. Accuracy stays FAIL at 289/310, with 263 blank fields preserved and zero native errors/review violations. [Dependency evidence](evidence/ocr-dependency-ci-run83.json).
 - Required native isolation remains BLOCKED before denial cases at bubblewrap loopback setup. Do not use a privilege exception or silent fallback. The nine HTTP workload checks and two public suspension guards pass as separate measurements, outside product-goal totals.
 
-## Next integrated integrity milestone
+## Committed integrity milestone
 
-This batch follows `1b35490`. Locate its eventual commit in branch history by the executable/test/workflow/policy manifest `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3`. The full local Node/API/HTTP run passes 9,192 cases across 55 files with zero failures, skips, cancellations, TODOs or infrastructure errors and no source change during execution. Product passes are 9,056 after excluding 136 harness checks. Sixty-nine meaningful product cases are new relative to the preceding 9,123-case source. Focused runs and local/CI overlap receive no duplicate credit. [Local manifest, case inventory and file totals](evidence/integrity-local-2026-11-23.json).
+This batch follows `1b35490` and is committed as `7a0a93a`, with executable/test/workflow/policy manifest `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3`. The full local Node/API/HTTP run passes 9,192 cases across 55 files with zero failures, skips, cancellations, TODOs or infrastructure errors and no source change during execution. Product passes are 9,056 after excluding 136 harness checks. Sixty-nine meaningful product cases are new relative to the preceding 9,123-case source. Focused runs and local/CI overlap receive no duplicate credit. [Local manifest, case inventory and file totals](evidence/integrity-local-2026-11-23.json).
 
 Implemented and locally verified:
 
@@ -36,7 +52,7 @@ Implemented and locally verified:
 - Keep session activity monotonic, preserve stored deadlines and return controlled invalid-clock/profile-exhaustion errors before writes. Arbitrary clock jumps still do not establish true elapsed-time expiry. [Account invariants](ACCOUNT_INVARIANTS_2026_11_23.md).
 - Retain unconfirmed spreadsheet commands through later 4xx replies. Validate full project/row/source receipts, target IDs and matching upload metadata before replacing a draft. Require revision advancement for update/upload confirmation. [Unconfirmed saves](PANEL_UNCERTAIN_SAVE_2026_11_23.md) and [response integrity](PANEL_RESPONSE_INTEGRITY_2026_11_23.md).
 
-Browser corrections and additions still need actual committed-source CI:
+Browser corrections and additions included in `7a0a93a`; run84 outcomes are recorded above:
 
 - Constrain native request controls and narrow grid track minima for WebKit reflow. Keep 320px overflow and actual root/body/control font-doubling assertions. Failure-only geometry will identify any remaining overflow without recording field content.
 - Synchronize completed task reads, actual UI logout response and loaded login page before rejecting another restored owner's old password. Do not suppress navigation errors or weaken recovery assertions. [Navigation change](RECOVERY_BROWSER_NAVIGATION_2026_11_23.md).
@@ -48,12 +64,20 @@ The policy still has 54 automated requirements and seven manual gates. Nine fixe
 
 ## Exact next steps
 
-1. Finish review of this integrated milestone, commit verified source/docs to the existing development branch with a current-head lease, and keep PR8 draft/main unchanged. Verify the committed executable manifest equals the local tested manifest above. Do not include unrelated worktree changes.
-2. Inspect that commit's actual PR workflow. Prioritize both selected callback WebKit reflow cases, the private WebKit recovery case and both new fixed-spreadsheet receipt journeys on all configured Linux/Mac engines. Preserve failures and investigate before changing assertions. Strict response validation needs the full browser regression, not just the local client-state selection.
-3. Download every emitted report, verify artifact digests and tested merge/tree, and aggregate using the new committed policy. Preserve zero ARM executions if no runner is assigned. Do not transfer run83 passes or measurements to a changed source.
-4. Update this checkpoint, development progress, both product acceptance records and PR metadata with exact source, actual outcomes and next tasks. Continue authorized implementation.
-5. Independently investigate actual Safari verification on the existing standard Intel Mac runner using Apple's WebDriver and exact browser provenance. Research/design is in progress; no Safari execution or new gate satisfaction is claimed. Keep it separate from bundled WebKit and physical devices.
-6. Follow [Windows storage gap](WINDOWS_STORAGE_GAP.md) before proposing private Windows tests. Owner SID/DACL, handle/reparse/link safety and atomic publication need an implemented and tested adapter. Removing POSIX checks or accepting Windows static-browser passes does not close this gate.
+1. Refresh run84 when its ARM job reaches a terminal state. Collect any new ARM reports and the CI aggregate, verify them against the same exact `7a0a93a` collector/policy, and reconcile with the verified partial snapshot. Do not wait indefinitely or call the partial aggregate final.
+2. Commit the locally verified Safari/reflow milestone plus evidence/docs to the existing development branch with a current-head lease. Verify its committed manifest equals `208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd`. Keep PR8 draft and main unchanged.
+3. Inspect that commit's actual CI. Prioritize both selected callback WebKit reflow cases, the six native Safari journeys, all fixed-spreadsheet receipt journeys and ARM assignment. Preserve native session, date-input and download failures. Investigate before changing assertions.
+4. Integrate the independently reviewed spreadsheet read-consistency repair described below. Reproduce the race, verify affected store/API/CSV/XLSX/recovery behavior, run a stable-source regression and commit the next milestone.
+5. Continue the isolated Windows component through native compilation and deterministic race/ACL countertests. Do not import it into the application before native, SQLite sidecar and atomic recovery-publication boundaries pass. [Windows storage gap](WINDOWS_STORAGE_GAP.md).
+6. Update this checkpoint, development progress, both product acceptance records and PR metadata with exact source and outcomes. Continue the next authorized requirement. Compaction is not a stopping point.
+
+## Independent implementation in progress
+
+A spreadsheet audit reproduced a mixed-read defect on committed `7a0a93a`. `getPanelProject` reads project rows and source metadata in separate autocommit queries. A real second connection can delete a source between reads, returning old reviewed rows with missing source metadata. CSV emits a reviewed row with a blank source name and XLSX rejects the result. A deferred read-snapshot repair must reuse existing transactions, avoid committing caller work, and verify coordinated deletion/upload, export consistency and failure cleanup. Worktree `/workspace/scratch/8f544d546bb7/panelreply-spreadsheet-files`; reproducer `/tmp/panelreply-spreadsheet-read-race-repro-20261123.cjs`. This is not included in the frozen Safari/reflow candidate.
+
+An isolated Node-API/Win32 private directory lease component is in progress at `/workspace/scratch/8f544d546bb7/panelreply-windows-storage`, with no application import. It requires observed NTFS, protected owner-SID DACLs, relative handle-bound creation, reparse/link rejection and explicit cleanup failure. The creation lease remains exclusive until close because it retains DELETE for same-handle rollback. No close/reopen gap is acceptable merely to downgrade access.
+
+Independent Windows review disproved two premises: metadata-only directory handles do not establish a rename sharing lock, and excluding write sharing does not prove attribute-only reparse mutation impossible. The candidate now requests a qualifying directory access right. A separate compile-time test probe must pause after validation, attempt root mutation, then observe the opened child and both independently held directories. Any redirected creation fails even if later cleanup removes it. Normal artifacts must have no probe hook. Anonymous-token denial requires actual IO with an explicit anonymous positive control and guaranteed reversion; it does not establish standard-user SQLite sidecar ownership. Native execution and application integration remain pending.
 
 ## Remaining requirements
 
