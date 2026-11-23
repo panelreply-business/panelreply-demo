@@ -1,5 +1,11 @@
 # PanelReply development progress
 
+## Workflow validation repair — November 23, 2026
+
+Implementation checkpoint `86a778903c86e32b3bb8f39700fd0a59ef0cd264` is committed on the existing development branch. [Run80](https://github.com/panelreply-business/panelreply-demo/actions/runs/45209441494) failed before creating any job, so it produced zero application test results. Review reproduced three job-level `runner.temp` environment expressions that GitHub's context-availability table does not permit. The correction moves those expressions into the verification steps, where the runner context is available. The no-symlink private-storage rule and Mac fixture location remain intact. YAML/context validation passes; the corrected workflow still needs actual execution. [Failure record](evidence/callback-scheduling-run80.json).
+
+The application and tests retain the locally verified implementation. No failed or unexecuted platform check is counted as a pass. The source-bound CI ledger remains pending.
+
 ## Autonomous implementation — November 23, 2026
 
 Development resumed from the existing documentation head `9175d905c74ff060a3f8e8fcbe01e15accb7342b`, on the same branch and draft PR8. This environment has Node 24.22.3, a working checkout and permitted loopback HTTP tests. The earlier daily audit's runtime/checkout blocks do not describe this session.

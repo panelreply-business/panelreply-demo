@@ -397,10 +397,6 @@ jobs:
             browser: webkit
     env:
       PANELREPLY_BROWSER: ${{ matrix.browser }}
-      # /var is a symlink on macOS. Use the runner-owned physical workspace
-      # temporary directory; keep the app's no-symlink storage rule intact.
-      TMPDIR: ${{ runner.temp }}
-      PANELREPLY_CAPTURE_DIR: ${{ runner.temp }}/panelreply-selected-product-previews
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -419,6 +415,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil
       - name: Verify this fixed product entrypoint and its own browser workflows
+        # The runner context exists at step scope. Keep private fixture paths
+        # outside macOS's /var symlink without weakening the storage contract.
+        env:
+          TMPDIR: ${{ runner.temp }}
+          PANELREPLY_CAPTURE_DIR: ${{ runner.temp }}/panelreply-selected-product-previews
         run: python tests/release_platform_runner.py --suite "${{ matrix.product }}" --output "${{ runner.temp }}/panelreply-selected-product.json"
       - name: Preserve selected-product browser evidence
         if: always()
@@ -443,8 +444,6 @@ jobs:
     # Standard public-repository arm64 runner, never a paid -large/-xlarge label.
     runs-on: macos-26
     timeout-minutes: 35
-    env:
-      TMPDIR: ${{ runner.temp }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -458,6 +457,8 @@ jobs:
           node -e "if (process.platform !== 'darwin' || process.arch !== 'arm64') throw new Error('Expected actual macOS arm64'); console.log(process.platform, process.arch, process.version)"
           sw_vers
       - name: Exercise portable Node contracts on arm64
+        env:
+          TMPDIR: ${{ runner.temp }}
         run: node scripts/run-release-node.cjs --portable --output "${{ runner.temp }}/panelreply-arm-evidence/node.json"
       - name: Install the three browser engines
         run: |
@@ -467,6 +468,8 @@ jobs:
         # Continue independent suites to preserve failures and coverage. No retry
         # or fallback engine may turn an unavailable platform into a pass.
         shell: bash
+        env:
+          TMPDIR: ${{ runner.temp }}
         run: |
           result=0
           for browser in chromium firefox webkit; do
