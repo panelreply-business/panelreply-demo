@@ -1,5 +1,11 @@
 # Release acceptance
 
+## November 23 active development acceptance
+
+Development has resumed beyond the earlier daily audit. Callback scheduling and follow-up are implemented in the separate callback product. Run81 verifies the changed source's full Linux Node/API/HTTP scope but retains nine browser-job failures and an unassigned Apple Silicon job. Corrections address the tablet sign-out defect and strict-CSP test helpers. [Current failure record](evidence/callback-scheduling-run81.json).
+
+The next OCR candidate measures 289/310 exact locally, preserving prior matches, unknown fields and manual review. CI independently measured the preceding small-text pipeline at 285/310. Neither measurement closes OCR quality. Required isolation, actual Safari and physical devices, native private Windows/macOS scope gaps, actual Excel, real-model quality, selected-host/offsite recovery and operating decisions remain open. Both product trial and release decisions remain NO-GO. [Persistent next work](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 daily acceptance review
 
 [Main CI run79](https://github.com/panelreply-business/panelreply-demo/actions/runs/45194906999) passed 396 main-only checks and both public suspension guards at 9:33 AM EST, but did not test unmerged PR8. Fresh full PR8 execution is **BLOCKED** by source-checkout/runtime/full-dispatch limits. PR8 executable/test/workflow files remain identical to source `ca5f0cb`, previously verified in [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): 24,372 PASS, 9,114 distinct cases, no product failures. Seven required platform scopes remain NOT TESTED and therefore the 10,000 platform-qualified goal remains open. Callback real-model is BLOCKED (zero calls); spreadsheet OCR accuracy FAIL (277/310) and required native isolation BLOCKED (zero denial tests). Actual Safari/physical devices, representative photos, actual Excel, selected-host/offsite recovery, support/pricing/legal and activation approval remain open. Both public services remain suspended. **Both product trials and releases remain NO-GO.** [Daily evidence](evidence/daily-audit-2026-11-23.json).

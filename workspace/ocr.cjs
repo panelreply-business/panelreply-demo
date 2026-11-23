@@ -266,7 +266,7 @@ const BINARY = '/usr/bin/tesseract';
 const ISOLATION_BINARY = '/usr/bin/bwrap';
 const NORMALIZER_BINARY = '/usr/bin/python3';
 const NORMALIZER_SCRIPT = path.join(__dirname, 'ocr-preprocess.py');
-const NORMALIZER_METHOD = 'median3-small-text-v2';
+const NORMALIZER_METHOD = 'median3-deskew-small-text-v3';
 const PROCESS_BINARY = '/usr/bin/prlimit';
 const PROCESS_PREFIX = Object.freeze([
   `--as=${LIMITS.nativeAddressSpaceBytes}:${LIMITS.nativeAddressSpaceBytes}`,
@@ -278,6 +278,35 @@ const PROCESS_PREFIX = Object.freeze([
 const OCR_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '6', 'tsv']);
 const ORIENTATION_ARGS = Object.freeze(['stdin', 'stdout', '-l', 'eng', '--oem', '1', '--psm', '1', 'tsv']);
 const CHILD_ENV = Object.freeze({ PATH: '/usr/bin:/bin', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8', OMP_THREAD_LIMIT: '1', OMP_NUM_THREADS: '1' });
+
+function expandedImageSize(width, height, angle) {
+  if (angle === 0) return { width, height };
+  const radians = -(((angle % 360) + 360) % 360) * (Math.PI / 180);
+  const a = Number(Math.cos(radians).toFixed(15)), b = Number(Math.sin(radians).toFixed(15));
+  const c = a * (-width / 2) + b * (-height / 2) + width / 2;
+  const f = -b * (-width / 2) + a * (-height / 2) + height / 2;
+  const corners = [[0, 0], [width, 0], [width, height], [0, height]].map(([x, y]) => [a * x + b * y + c, -b * x + a * y + f]);
+  return { width: Math.ceil(Math.max(...corners.map(point => point[0]))) - Math.floor(Math.min(...corners.map(point => point[0]))),
+    height: Math.ceil(Math.max(...corners.map(point => point[1]))) - Math.floor(Math.min(...corners.map(point => point[1]))) };
+}
+
+function validateDeskew(deskew, image) {
+  const angle = value => typeof value === 'number' && Number.isFinite(value) && Math.abs(value) <= 5 && Number.isInteger(value * 4);
+  const score = value => Number.isSafeInteger(value) && value >= 0 && value <= 1_000_000_000;
+  if (!deskew || typeof deskew !== 'object' || Array.isArray(deskew)
+    || !angle(deskew.angle) || !angle(deskew.candidateAngle) || !score(deskew.scoreBefore) || !score(deskew.scoreAfter)
+    || deskew.scoreAfter < deskew.scoreBefore || (deskew.scoreBefore === 0 && deskew.scoreAfter !== 0)
+    || !Number.isSafeInteger(deskew.analysisPixels) || deskew.analysisPixels < 1 || deskew.analysisPixels > Math.min(650 * 650, image.width * image.height)
+    || (deskew.candidateAngle !== 0) !== (deskew.scoreBefore > 0 && deskew.scoreAfter * 10 >= deskew.scoreBefore * 11)) fail('OCR_OUTPUT_INVALID');
+  const candidateSize = expandedImageSize(image.width, image.height, deskew.candidateAngle);
+  const reason = deskew.candidateAngle === 0 ? 'not_needed'
+    : candidateSize.width > LIMITS.imageDimension || candidateSize.height > LIMITS.imageDimension ? 'dimension_limit'
+      : candidateSize.width * candidateSize.height > LIMITS.imagePixels ? 'pixel_limit' : 'applied';
+  const expectedAngle = reason === 'applied' ? deskew.candidateAngle : 0;
+  const dimensions = expandedImageSize(image.width, image.height, expectedAngle);
+  if (deskew.reason !== reason || deskew.angle !== expectedAngle || deskew.width !== dimensions.width || deskew.height !== dimensions.height) fail('OCR_OUTPUT_INVALID');
+  return dimensions;
+}
 
 function supportedIsolationVersion(output) {
   // CVE-2026-87766 is fixed upstream in 0.12.0. Reject prerelease, vendor,
@@ -441,23 +470,25 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       let normalization;
       try { normalization = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(normalized.subarray(0, separator))); }
       catch { fail('OCR_OUTPUT_INVALID'); }
+      if (!normalization || typeof normalization !== 'object' || Array.isArray(normalization)) fail('OCR_OUTPUT_INVALID');
+      const normalizedSize = validateDeskew(normalization.deskew, image);
       if (normalization.method !== NORMALIZER_METHOD || normalization.pillowVersion !== status.normalizer.pillowVersion || typeof normalization.applied !== 'boolean'
         || !Number.isSafeInteger(normalization.isolatedNoisePixels) || normalization.isolatedNoisePixels < 0 || normalization.isolatedNoisePixels > image.width * image.height
         || normalization.imagePixels !== image.width * image.height || normalization.thresholdPixels !== Math.max(32, Math.ceil(image.width * image.height / 1000))
         || normalization.applied !== (normalization.isolatedNoisePixels >= normalization.thresholdPixels)
-        || !Number.isSafeInteger(normalization.inkBandCount) || normalization.inkBandCount < 0 || normalization.inkBandCount > image.height
-        || !Number.isSafeInteger(normalization.medianInkBandHeight) || normalization.medianInkBandHeight < 0 || normalization.medianInkBandHeight > image.height
+        || !Number.isSafeInteger(normalization.inkBandCount) || normalization.inkBandCount < 0 || normalization.inkBandCount > normalizedSize.height
+        || !Number.isSafeInteger(normalization.medianInkBandHeight) || normalization.medianInkBandHeight < 0 || normalization.medianInkBandHeight > normalizedSize.height
         || (normalization.inkBandCount === 0 ? normalization.medianInkBandHeight !== 0 : normalization.medianInkBandHeight < 3)) fail('OCR_OUTPUT_INVALID');
       const expectedScale = normalization.medianInkBandHeight >= 3 && normalization.medianInkBandHeight < 16
-        && image.width <= LIMITS.imageDimension / 2 && image.height <= LIMITS.imageDimension / 2 && image.width * image.height <= LIMITS.imagePixels / 4 ? 2 : 1;
+        && normalizedSize.width <= LIMITS.imageDimension / 2 && normalizedSize.height <= LIMITS.imageDimension / 2 && normalizedSize.width * normalizedSize.height <= LIMITS.imagePixels / 4 ? 2 : 1;
       if (normalization.rescaleFactor !== expectedScale) fail('OCR_OUTPUT_INVALID');
       const normalizedBytes = normalized.subarray(separator + 1);
-      if (normalization.applied || expectedScale !== 1) {
+      if (normalization.applied || expectedScale !== 1 || normalization.deskew.angle !== 0) {
         if (!normalizedBytes.length || normalizedBytes.length > LIMITS.normalizedImageBytes
           || !normalizedBytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) fail('OCR_OUTPUT_INVALID');
         let dimensions;
         try { dimensions = inspectPng(normalizedBytes); } catch { fail('OCR_OUTPUT_INVALID'); }
-        if (dimensions.width !== image.width * expectedScale || dimensions.height !== image.height * expectedScale) fail('OCR_OUTPUT_INVALID');
+        if (dimensions.width !== normalizedSize.width * expectedScale || dimensions.height !== normalizedSize.height * expectedScale) fail('OCR_OUTPUT_INVALID');
         input = pngRecognitionBytes(normalizedBytes);
       } else if (normalizedBytes.length) fail('OCR_OUTPUT_INVALID');
       const recognizePass = async args => {
@@ -477,6 +508,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
         }
       }
       if (expectedScale !== 1) result.warnings.push('Small text was enlarged for OCR. Review every character against the original source image.');
+      if (normalization.deskew.angle !== 0) result.warnings.push('Tilt was corrected for OCR. Review every character against the original source image.');
       return { engine: 'tesseract', engineVersion: status.version, ...result,
         processing: { passes, orientationFallbackUsed, normalization }, durationMs: Math.max(0, Math.round(now() - start)) };
     } finally { activeRecognition = false; processingImage = false; }
@@ -497,4 +529,4 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
 }
 
 const localOcr = createOcrService();
-module.exports = { inspectImage, parseTsv, OcrError, LIMITS, createOcrService, getOcrStatus: localOcr.getOcrStatus, recognizeImage: localOcr.recognizeImage, shutdown: localOcr.shutdown };
+module.exports = { inspectImage, parseTsv, expandedImageSize, OcrError, LIMITS, createOcrService, getOcrStatus: localOcr.getOcrStatus, recognizeImage: localOcr.recognizeImage, shutdown: localOcr.shutdown };

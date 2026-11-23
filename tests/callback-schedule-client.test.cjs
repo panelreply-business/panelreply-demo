@@ -95,6 +95,12 @@ test('callback local time rejects impossible dates and unsupported zone identifi
   assert.throws(() => localInstants('2026-02-30T09:30', 'UTC'), /calendar date/);
   assert.throws(() => localInstants('2026-12-01 09:30', 'UTC'), /date and time/);
   assert.throws(() => localInstants('2026-12-01T09:30', 'Synthetic/Zone'), /valid time zone/);
+  // Intl accepts abbreviations and fixed offsets that the saved named-zone
+  // contract rejects. The form must reject them before offering a save.
+  for (const zone of ['CET', 'GMT', '+05:30', 'utc']) {
+    assert.throws(() => localInstants('2026-12-01T09:30', zone), /valid time zone/);
+  }
+  assert.deepEqual(localInstants('2026-12-01T09:30', 'Etc/GMT+5'), ['2026-12-01T14:30:00.000Z']);
 });
 test('callback leap-day conversion retains the saved wall-clock minute', () => {
   const instant = localInstants('2028-02-29T23:59', 'UTC')[0];

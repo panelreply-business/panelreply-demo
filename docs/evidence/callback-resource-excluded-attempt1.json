@@ -1,0 +1,172 @@
+{
+  "format": "panelreply-callback-resource-review-v1",
+  "startedAt": "2026-11-23T15:51:43.994Z",
+  "sourceCommit": "86a778903c86e32b3bb8f39700fd0a59ef0cd264",
+  "platform": {
+    "node": "v24.22.3",
+    "platform": "linux",
+    "arch": "x64",
+    "release": "6.18.57",
+    "cpus": 9
+  },
+  "fixture": {
+    "businesses": 1,
+    "leads": 500,
+    "tasks": 2000,
+    "operations": 20000,
+    "transcriptCharactersPerLead": 20000,
+    "taskNoteCharacters": 2000,
+    "maximumReadPage": 500
+  },
+  "goalPassesClaimed": 0,
+  "scope": "Synthetic selected callback loopback process on one development host. Not a selected-host capacity, real-user or physical-device acceptance result.",
+  "results": [
+    {
+      "name": "fixture-seeding",
+      "durationMs": 28184.460535
+    },
+    {
+      "name": "validate-full-schema4-fixture",
+      "durationMs": 24873.990424999996
+    },
+    {
+      "name": "fixture-verified",
+      "counts": {
+        "businesses": 1,
+        "users": 1,
+        "leads": 500,
+        "messages": 5000,
+        "audit": 20500,
+        "optOuts": 0,
+        "panelProjects": 0,
+        "panelSources": 0,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 0,
+        "assistantUsage": 0,
+        "callbackTasks": 2000,
+        "callbackOperations": 20000
+      },
+      "databaseBytes": 64491520,
+      "walBytes": 4239512,
+      "queryPlans": {
+        "queue": [
+          {
+            "id": 8,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH callback_tasks USING INDEX callback_tasks_business_due (business_id=? AND status=?)"
+          }
+        ],
+        "taskOperations": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 62,
+            "detail": "SEARCH callback_operations USING INDEX sqlite_autoindex_callback_operations_1 (business_id=?)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "queue-component-500-distinct-requests",
+      "durationMs": 314.534762999996
+    },
+    {
+      "name": "queue-materialization",
+      "taskCount": 500,
+      "total": 2000,
+      "getLeadCalls": 500,
+      "transcriptCharsMaterialized": 10000000,
+      "auditRowsMaterialized": 20500,
+      "returnedBodyBytes": 3267478
+    },
+    {
+      "name": "queue-component-500-page-distribution",
+      "samplesMs": [
+        267.86782200000016,
+        328.37991399999737,
+        217.05818700000236,
+        308.04778900000383,
+        269.3552169999966
+      ],
+      "medianMs": 269.3552169999966,
+      "maxMs": 328.37991399999737
+    },
+    {
+      "name": "encrypted-backup-at-capacity",
+      "durationMs": 75989.18391600001,
+      "archiveBytes": 63942736,
+      "counts": {
+        "businesses": 1,
+        "users": 1,
+        "leads": 500,
+        "messages": 5000,
+        "audit": 20500,
+        "optOuts": 0,
+        "panelProjects": 0,
+        "panelSources": 0,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 0,
+        "assistantUsage": 0,
+        "callbackTasks": 2000,
+        "callbackOperations": 20000
+      }
+    },
+    {
+      "name": "encrypted-restore-at-capacity",
+      "durationMs": 48020.598815000005,
+      "counts": {
+        "businesses": 1,
+        "users": 1,
+        "leads": 500,
+        "messages": 5000,
+        "audit": 20500,
+        "optOuts": 0,
+        "panelProjects": 0,
+        "panelSources": 0,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 0,
+        "assistantUsage": 0,
+        "callbackTasks": 2000,
+        "callbackOperations": 20000
+      }
+    },
+    {
+      "name": "http-sequential-queue-20",
+      "requests": 5,
+      "samplesMs": [
+        16.328062999993563,
+        14.691902999999002,
+        12.204644999990705,
+        11.28561299998546,
+        11.808050999999978
+      ],
+      "medianMs": 12.204644999990705,
+      "maxMs": 16.328062999993563,
+      "bodyBytes": 130757
+    },
+    {
+      "name": "http-sequential-queue-100",
+      "requests": 5,
+      "samplesMs": [
+        54.826364999986254,
+        49.920501000015065,
+        53.01379500000621,
+        59.80184400000144,
+        51.845796000008704
+      ],
+      "medianMs": 53.01379500000621,
+      "maxMs": 59.80184400000144,
+      "bodyBytes": 653478
+    }
+  ],
+  "unexpectedErrors": 1,
+  "error": {
+    "message": "HTTP queue result mismatch",
+    "stack": "Error: HTTP queue result mismatch\n    at read (/tmp/panelreply-callback-perf-20261123.cjs:67:409)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/tmp/panelreply-callback-perf-20261123.cjs:69:126)"
+  },
+  "completedAt": "2026-11-23T15:54:45.276Z"
+}

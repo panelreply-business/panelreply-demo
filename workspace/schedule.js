@@ -6,6 +6,7 @@
   // The offset candidates come from the requested IANA zone, never the device
   // offset or Date's implicit local-time normalization.
   function zoneFormatter(timeZone) {
+    if (typeof timeZone !== 'string' || timeZone.length > 100 || !/^(?:UTC|[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+)+)$/.test(timeZone)) throw new Error('Enter a valid time zone, such as America/Detroit or UTC.');
     return new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
   }
@@ -18,7 +19,6 @@
   }
   function localInstants(value, timeZone) {
     if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) throw new Error('Enter a date and time.');
-    if (typeof timeZone !== 'string' || !timeZone || timeZone.length > 100) throw new Error('Enter a valid time zone.');
     let formatter;
     try { formatter = zoneFormatter(timeZone); } catch (_) { throw new Error('Enter a valid time zone, such as America/Detroit or UTC.'); }
     const naive = Date.parse(value + ':00.000Z');
@@ -48,7 +48,13 @@
     let tasks = [], taskTotal = 0, taskLoading = false, taskSerial = 0;
     let queueOffset = 0, queueTotal = 0, queueLoading = false, queueSerial = 0;
     const PAGE_SIZE = 50;
-    const deviceZone = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (_) { return 'UTC'; } })();
+    const deviceZone = (() => {
+      try {
+        const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        zoneFormatter(zone);
+        return zone;
+      } catch (_) { return 'UTC'; }
+    })();
     function node(tag, text, className) {
       const result = document.createElement(tag);
       if (text !== undefined) result.textContent = text;

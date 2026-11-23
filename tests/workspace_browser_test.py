@@ -316,9 +316,19 @@ class PrivateWorkspaceBrowserTests(unittest.TestCase):
         emit = os.environ.get("PANELREPLY_EMIT_WORKSPACE_PREVIEWS") == "1"
         if not directory and not emit:
             return
+        if os.environ.get("PANELREPLY_BROWSER", "chromium") == "webkit":
+            # Playwright's WebKit screenshot preparation inserts a stylesheet
+            # even with animation/caret changes disabled. Only this optional
+            # artifact is unavailable. Keep all workflow and console assertions.
+            print("PANELREPLY_PREVIEW_UNAVAILABLE=" + json.dumps({
+                "case": self.id(), "filename": filename, "engine": "webkit",
+                "reason": "Playwright screenshot preparation injects an inline stylesheet under the workspace's strict CSP. No preview captured; product assertions remain active.",
+            }), flush=True)
+            return
         self.page.evaluate("() => scrollTo({top: 0, left: 0, behavior: 'instant'})")
+        # Keep the page's animation and caret state unchanged during capture.
         options = {"type": "jpeg", "quality": 65, "full_page": True,
-                   "animations": "disabled"}
+                   "animations": "allow", "caret": "initial"}
         if directory:
             target = Path(directory).resolve()
             target.mkdir(parents=True, exist_ok=True)

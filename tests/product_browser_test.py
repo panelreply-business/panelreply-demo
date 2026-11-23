@@ -159,6 +159,10 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         cookies = [item["name"] for item in self.context.cookies()]
         self.assertIn("PanelReplyCallbackLocalSession", cookies)
         self.assertNotIn("PanelReplySpreadsheetLocalSession", cookies)
+        # A short desktop/tablet viewport must still expose the session control.
+        # The sticky menu must scroll within the screen instead of placing the
+        # sign-out button below a fixed minimum-height sidebar.
+        self.page.set_viewport_size({"width": 1024, "height": 480})
         self.page.locator("#sign-out").click()
         expect(self.page).to_have_url(self.origin + "/login")
         self.api("GET", "/api/session", status=401)
@@ -359,7 +363,15 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
                 self.page.set_viewport_size({"width": width, "height": 1000})
                 self.assert_no_overflow()
         self.page.set_viewport_size({"width": 320, "height": 1000})
-        self.page.add_style_tag(content="html { font-size: 200% !important; }")
+        original_font = self.page.locator("html").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
+        original_body_font = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
+        # Use CSSOM to exercise font scaling without inserting an inline style
+        # element that the application's strict stylesheet CSP must reject.
+        self.page.evaluate("() => document.documentElement.style.fontSize = '200%'")
+        scaled_font = self.page.locator("html").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
+        scaled_body_font = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
+        self.assertAlmostEqual(scaled_font, original_font * 2, places=2)
+        self.assertAlmostEqual(scaled_body_font, original_body_font * 2, places=2)
         self.assert_no_overflow()
         self.page.locator("#nav-schedule").click()
         self.page.locator("#discard-changes").click()

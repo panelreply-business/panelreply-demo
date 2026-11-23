@@ -6,8 +6,10 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { performance } = require('node:perf_hooks');
 const { spawn, spawnSync } = require('node:child_process');
 const { createOcrService, getOcrStatus, LIMITS } = require('../workspace/ocr.cjs');
+const { createProcessSampler } = require('./ocr-process-metrics.cjs');
 const IMAGE = fs.readFileSync(path.join(__dirname, '../tests/fixtures/panels/complete.png'));
 const HEADER = 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext';
 const TSV = HEADER + '\n5\t1\t1\t1\t1\t1\t0\t0\t1\t1\t95\tPART NUMBER: LIMITS-OK\n';
@@ -44,6 +46,7 @@ async function verifyPixelNormalization({ width, height, bands, inverted = false
     assert.equal(result.processing.normalization.medianInkBandHeight, median);
     assert.equal(result.processing.normalization.inkBandCount, bands.filter(value => value >= 3).length);
     assert.equal(result.processing.normalization.applied, false);
+    assert.equal(result.processing.normalization.deskew.reason, 'not_needed');
     assert.deepEqual(input, original);
     assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
     assert.equal(injection.calls.length, 1);
@@ -52,11 +55,63 @@ async function verifyPixelNormalization({ width, height, bands, inverted = false
   } finally { await service.shutdown(); }
 }
 
+function syntheticTilt(width, height, inverted = false, edgeMarks = false) {
+  const code = [
+    'import sys', 'from PIL import Image,ImageDraw',
+    `im=Image.new('RGB',(${width},${height}),${inverted ? "'black'" : "'white'"})`,
+    'draw=ImageDraw.Draw(im)', `band=max(18,${Math.floor(height / 30)})`,
+    `for y in [${Math.floor(height * .35)},${Math.floor(height * .5)},${Math.floor(height * .65)}]:`,
+    ` draw.rectangle((${Math.floor(width * .1)},y,${Math.floor(width * .9)},y+band-1),fill=${inverted ? "'white'" : "'black'"})`,
+    `im=im.rotate(3,resample=Image.Resampling.BICUBIC,expand=False,fillcolor=${inverted ? "'black'" : "'white'"})`,
+    ...(edgeMarks ? [
+      'draw=ImageDraw.Draw(im)',
+      `for x,y,color in [(0,0,(220,0,0)),(${width - 6},0,(0,220,0)),(0,${height - 6},(0,0,220)),(${width - 6},${height - 6},(220,0,220))]:`,
+      ' draw.rectangle((x,y,x+5,y+5),fill=color)',
+    ] : []),
+    'im.save(sys.stdout.buffer,format="PNG")',
+  ].join('\n');
+  const result = spawnSync('/usr/bin/prlimit', [
+    `--as=${LIMITS.nativeAddressSpaceBytes}:${LIMITS.nativeAddressSpaceBytes}`, '--cpu=10:10', '--fsize=0:0', '--core=0:0', '--nofile=64:64', '--',
+    '/usr/bin/python3', '-I', '-B', '-c', code,
+  ], { maxBuffer: LIMITS.imageBytes, timeout: LIMITS.recognitionTimeoutMs, env: { PATH: '/usr/bin:/bin', LANG: 'C.UTF-8' } });
+  assert.equal(result.status, 0, result.stderr?.toString());
+  return result.stdout;
+}
+
+async function verifyDeskewNormalization({ width, height, inverted = false, edgeMarks = false, reason }) {
+  const input = syntheticTilt(width, height, inverted, edgeMarks), original = Buffer.from(input);
+  const sampler = createProcessSampler();
+  const injection = injector({ nativeSpawn: sampler.spawnProcess, code: [
+    'import io,sys', 'from PIL import Image',
+    'im=Image.open(io.BytesIO(sys.stdin.buffer.read()))',
+    `assert im.width<=6000 and im.height<=6000 and im.width*im.height<=16000000`,
+    ...(edgeMarks ? [
+      'for color in [(220,0,0),(0,220,0),(0,0,220),(220,0,220)]:',
+      ' assert any(pixel==color for pixel in im.convert("RGB").getdata())',
+    ] : []),
+    `sys.stdout.write(${JSON.stringify(TSV)})`,
+  ].join('\n') });
+  const service = createOcrService(injection), started = performance.now();
+  try {
+    const result = await service.recognizeImage(input), deskew = result.processing.normalization.deskew;
+    assert.equal(deskew.reason, reason);
+    assert.ok(Math.abs(deskew.candidateAngle + 3) <= .5, 'pixel projection should identify the synthetic tilt');
+    assert.equal(deskew.angle === 0, reason !== 'applied');
+    assert.ok(deskew.analysisPixels <= 650 * 650);
+    assert.deepEqual(input, original);
+    assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+    assert.equal(injection.calls.length, 1);
+    assert.equal(isAlive(injection.calls[0]), false);
+    return { sourceWidth: width, sourceHeight: height, deskew, edgeMarksPreserved: edgeMarks ? 4 : null,
+      elapsedMs: Math.round(performance.now() - started), nativeProcess: sampler.summarize() };
+  } finally { await service.shutdown(); }
+}
+
 function isAlive(child) {
   if (!child?.pid) return false;
   try { process.kill(child.pid, 0); return true; } catch (error) { if (error.code === 'ESRCH') return false; throw error; }
 }
-function injector({ code, cpuSeconds, onRecognition, stage = 'engine' } = {}) {
+function injector({ code, cpuSeconds, onRecognition, stage = 'engine', nativeSpawn = spawn } = {}) {
   const calls = [];
   return { calls, spawnProcess(binary, args, options) {
     let actual = [...args];
@@ -68,7 +123,7 @@ function injector({ code, cpuSeconds, onRecognition, stage = 'engine' } = {}) {
       actual = [...actual.slice(0, engine), '/usr/bin/python3', '-c', code];
       if (cpuSeconds) actual[1] = `--cpu=${cpuSeconds}:${cpuSeconds}`;
     }
-    const child = spawn(binary, actual, options);
+    const child = nativeSpawn(binary, actual, options);
     if (recognition) { calls.push(child); onRecognition?.(child); }
     return child;
   } };
@@ -180,7 +235,7 @@ async function main() {
       `assert resource.getrlimit(resource.RLIMIT_CPU) == (${LIMITS.nativeCpuSeconds}, ${LIMITS.nativeCpuSeconds})`,
       `assert resource.getrlimit(resource.RLIMIT_NOFILE) == (${LIMITS.nativeOpenFiles}, ${LIMITS.nativeOpenFiles})`,
       'assert resource.getrlimit(resource.RLIMIT_CORE) == (0, 0)', 'assert resource.getrlimit(resource.RLIMIT_FSIZE) == (0, 0)',
-      'print(json.dumps({"method":"median3-small-text-v2","pillowVersion":__version__,"applied":False,"isolatedNoisePixels":0,"imagePixels":704000,"thresholdPixels":704,"inkBandCount":0,"medianInkBandHeight":0,"rescaleFactor":1}))',
+      'print(json.dumps({"method":"median3-deskew-small-text-v3","pillowVersion":__version__,"applied":False,"isolatedNoisePixels":0,"imagePixels":704000,"thresholdPixels":704,"inkBandCount":0,"medianInkBandHeight":0,"rescaleFactor":1,"deskew":{"candidateAngle":0,"angle":0,"scoreBefore":0,"scoreAfter":0,"analysisPixels":1,"width":1600,"height":440,"reason":"not_needed"}}))',
     ].join('\n');
     const injection = injector({ code, stage: 'normalizer' });
     const service = createOcrService(injection);
@@ -240,6 +295,20 @@ async function main() {
     const observations = [];
     for (const [width, scale] of [[2000, 2], [2001, 1]]) observations.push(await verifyPixelNormalization({ width, height: 2000, bands: [11, 11], scale, median: 11 }));
     return { observations, pixelCeiling: LIMITS.imagePixels };
+  });
+  await check('native deskew measures and corrects tilted dark and inverted pixel bands', async () => {
+    const observations = [];
+    for (const inverted of [false, true]) observations.push(await verifyDeskewNormalization({ width: 640, height: 360, inverted, reason: 'applied' }));
+    return { observations, scope: 'Actual bounded normalizer. Recognition adapter checks pixel output, not text accuracy.' };
+  });
+  await check('native expanded deskew retains colored evidence at all four original image corners', async () => {
+    return verifyDeskewNormalization({ width: 640, height: 360, edgeMarks: true, reason: 'applied' });
+  });
+  await check('native deskew skips correction before allocating an image beyond the dimension ceiling', async () => {
+    return verifyDeskewNormalization({ width: 6000, height: 1500, reason: 'dimension_limit' });
+  });
+  await check('native deskew skips correction before allocating an image beyond the pixel ceiling', async () => {
+    return verifyDeskewNormalization({ width: 4000, height: 4000, reason: 'pixel_limit' });
   });
   const failures = results.filter(result => result.status === 'FAIL').length;
   const blocked = results.filter(result => result.status === 'BLOCKED').length;

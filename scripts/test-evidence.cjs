@@ -4,13 +4,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
+const MILESTONE_POLICY_PATH = 'docs/test-milestones.json';
 
 function git(root, ...args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024, windowsHide: true }).trim();
 }
 function sourceEvidence(root) {
   const sourceRoots = new Set(['src', 'workspace', 'design-preview', 'scripts', 'tests', '.github']);
-  const sourceFiles = new Set(['index.html', 'robots.txt', 'server.cjs', 'workspace-server.cjs', 'callback-server.cjs', 'spreadsheet-server.cjs', '.env.example', '.gitignore', '.gitattributes']);
+  const sourceFiles = new Set(['index.html', 'robots.txt', 'server.cjs', 'workspace-server.cjs', 'callback-server.cjs', 'spreadsheet-server.cjs', '.env.example', '.gitignore', '.gitattributes', MILESTONE_POLICY_PATH]);
   const names = git(root, 'ls-files', '--cached', '--others', '--exclude-standard', '-z').split('\0');
   const manifest = [];
   for (const relative of [...new Set(names)].filter(Boolean).sort()) {
@@ -124,7 +125,7 @@ function collectNodeResults(events, root, platformKey) {
       && totals.failed === 0 && totals.cancelled === 0 };
 }
 
-module.exports = { sourceEvidence, platformEvidence, collectNodeResults, productScope };
+module.exports = { sourceEvidence, platformEvidence, collectNodeResults, productScope, MILESTONE_POLICY_PATH };
 if (require.main === module) {
   if (process.argv[2] !== '--source') throw new Error('Usage: node scripts/test-evidence.cjs --source');
   process.stdout.write(JSON.stringify(sourceEvidence(path.resolve(__dirname, '..'))) + '\n');

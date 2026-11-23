@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+## November 23 continued verification
+
+Run81 executes the new scheduling source and passes the full Linux Node/API/HTTP scope. The selected callback suites run all 15 methods on Linux and Intel Mac Chromium/Firefox/WebKit. They retain failures from the inline 200% font injection and WebKit optional capture under strict CSP. The mobile Chromium suite also reproduces a real tablet sign-out reachability defect. The next candidate repairs those issues without relaxing CSP, console checks, keyboard or geometry assertions. It also aligns named-zone validation between the form and server. Fresh corrected-source browser evidence is required before CB-12 passes. [Run81 record](evidence/callback-scheduling-run81.json).
+
+The resource candidate preserves queue contact/tenant checks and encrypted recovery at 2,000 tasks/20,000 operations while removing repeated history reads and ledger scans. [Measured scope](CALLBACK_RESOURCE_VERIFICATION.md). These synthetic observations do not establish selected-host capacity.
+
+The queued Apple Silicon job has no runner or executed tests. Real-provider, actual/physical-platform and operating gates remain separate. This source is not ready for a customer trial or release.
+
 ## November 23 scheduling candidate
 
 The active development candidate adds operator-controlled scheduling, a due/overdue queue, recorded outcomes, cancellation and follow-ups. It includes schema-4 persistence/recovery and JSON export v2. [Workflow, boundaries and verification contract](CALLBACK_SCHEDULING.md). The existing requested callback/work dates remain preferences. No call, message or work appointment is initiated.

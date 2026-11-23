@@ -5,6 +5,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const { MILESTONE_POLICY_PATH } = require('./test-evidence.cjs');
 
 const FORMATS = new Set(['panelreply-node-evidence-v1', 'panelreply-platform-evidence-v1']);
 const STATUSES = Object.freeze(['PASS', 'SKIP', 'TODO', 'EXPECTED_FAILURE', 'BLOCKED', 'NOT_RUN', 'RUNNING', 'CANCELLED', 'UNEXPECTED_SUCCESS', 'FAIL', 'ERROR']);
@@ -166,14 +167,19 @@ function matches(requirement, execution) {
   }
   return true;
 }
-function aggregateReports(inputs, { milestones, source, now = new Date().toISOString() } = {}) {
+function aggregateReports(inputs, { milestones, policySha256, source, now = new Date().toISOString() } = {}) {
   const policy = validateMilestones(milestones);
+  requireValue(policySha256 !== undefined, 'MISSING_POLICY_HASH', 'The SHA256 of the milestone policy bytes is required.');
+  requireValue(typeof policySha256 === 'string' && SHA256.test(policySha256), 'INVALID_POLICY_HASH', 'The milestone policy SHA256 must be a complete lowercase digest.');
   requireValue(Array.isArray(inputs) && inputs.length > 0 && inputs.length <= MAX_REPORTS, 'NO_REPORTS', 'No recognized evidence reports were supplied.');
   requireValue(Number.isFinite(Date.parse(now)), 'INVALID_TIME', 'Aggregation time must be valid.');
   if (source !== undefined) requireValue(SHA1.test(source), 'INVALID_SOURCE', 'The requested source must be a complete commit SHA.');
   const reports = inputs.map((value, index) => value && Object.hasOwn(value, 'report') ? validateReport(value.report, value.label || 'report-' + index) : validateReport(value, 'report-' + index));
   const reference = reports[0].source;
   for (const report of reports) {
+    const recordedPolicy = report.raw.sourceManifest.find(entry => entry.path === MILESTONE_POLICY_PATH);
+    requireValue(recordedPolicy, 'MISSING_POLICY_SOURCE', 'The tested-source manifest omits the milestone policy: ' + report.label);
+    requireValue(recordedPolicy.sha256 === policySha256, 'POLICY_HASH_MISMATCH', 'The aggregation policy differs from the tested milestone policy: ' + report.label);
     requireValue(report.source.sourceCommit === reference.sourceCommit && report.source.gitTreeHash === reference.gitTreeHash && report.source.sourceTreeSha256 === reference.sourceTreeSha256, 'MIXED_SOURCE', 'Reports do not describe the same tested source.');
     if (source) requireValue(report.source.sourceCommit === source, 'UNEXPECTED_SOURCE', 'Report source does not match --source.');
   }
@@ -248,6 +254,7 @@ function aggregateReports(inputs, { milestones, source, now = new Date().toISOSt
   const fullGoalAchieved = numericTargetReached && cleanSource && allObservedChecksPassed && platformCoverageComplete;
   const earlyTargetEligible = initialGoalAchieved && Date.parse(now) < Date.parse(policy.deadline);
   return { format: 'panelreply-aggregate-evidence-v1', valid: true, generatedAt: now,
+    policy: { path: MILESTONE_POLICY_PATH, sha256: policySha256 },
     source: { ...reference, dirty: !cleanSource, cleanCommittedEvidence: cleanSource },
     counting: 'Product case/platform executions only. Reruns, assertions, container outcomes and evidence-harness tests do not increase the target. Any unresolved same-source observation prevents that execution from becoming PASS. Generated counts include explicitly marked generated cases; other cases are not assumed to be hand-authored.',
     reports: reports.map(report => ({ label: report.label, format: report.raw.format, suite: report.raw.suite, tests: report.tests.length,
@@ -305,14 +312,19 @@ function main(args) {
     else throw new EvidenceError('USAGE', 'Usage: node scripts/aggregate-test-evidence.cjs --input DIR --output FILE [--source SHA]');
   }
   requireValue(input && output, 'USAGE', 'An input directory and output file are required.');
-  let result;
+  let result, policyEvidence;
   try {
+    // Hash and parse one read. The CLI has no caller-supplied policy digest or
+    // alternate path that could reinterpret earlier reports under new gates.
+    const policyBytes = fs.readFileSync(path.join(__dirname, '..', MILESTONE_POLICY_PATH));
+    policyEvidence = { path: MILESTONE_POLICY_PATH, sha256: hash(policyBytes) };
+    const milestones = JSON.parse(policyBytes.toString('utf8'));
     const read = readReportDirectory(input);
-    const milestones = JSON.parse(fs.readFileSync(path.join(__dirname, '../docs/test-milestones.json'), 'utf8'));
-    result = aggregateReports(read.reports, { milestones, source });
+    result = aggregateReports(read.reports, { milestones, policySha256: policyEvidence.sha256, source });
     result.ignoredFiles = read.ignored;
   } catch (error) {
     result = { format: 'panelreply-aggregate-evidence-v1', valid: false,
+      ...(policyEvidence ? { policy: policyEvidence } : {}),
       errors: [{ code: error.code || 'AGGREGATION_ERROR', message: error.message }],
       numericTargetReached: false, platformCoverageComplete: false, fullGoalAchieved: false,
       releaseDecision: 'NOT_DETERMINED_BY_TEST_COUNT' };
@@ -321,6 +333,7 @@ function main(args) {
   fs.mkdirSync(path.dirname(path.resolve(output)), { recursive: true });
   fs.writeFileSync(path.resolve(output), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify({ output: path.resolve(output), valid: result.valid, sourceCommit: result.source?.sourceCommit,
+    policySha256: result.policy?.sha256,
     product: result.product, distinctCases: result.distinctCases, harness: result.harness,
     numericTargetReached: result.numericTargetReached, platformCoverageComplete: result.platformCoverageComplete,
     fullGoalAchieved: result.fullGoalAchieved, errors: result.errors }));

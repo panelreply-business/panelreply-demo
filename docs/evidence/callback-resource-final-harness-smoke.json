@@ -1,0 +1,320 @@
+{
+  "format": "panelreply-callback-resource-review-v1",
+  "startedAt": "2026-11-23T16:09:32.176Z",
+  "sourceCommit": "1f7b6dc766d8d59b351c09d44d2a138a24583ccb",
+  "platform": {
+    "node": "v24.22.3",
+    "platform": "linux",
+    "arch": "x64",
+    "release": "6.18.57",
+    "cpus": 9
+  },
+  "fixture": {
+    "businesses": 1,
+    "leads": 500,
+    "tasks": 2000,
+    "operations": 20000,
+    "transcriptCharactersPerLead": 20000,
+    "taskNoteCharacters": 2000,
+    "maximumReadPage": 500,
+    "specificationSha256": "02094353afc6008e41772f5738563bf8816d5e16b9a7281a19def5fbb11e1ff7",
+    "databaseSha256": "0ae46edeba169232b81898aa0bbea05d2338008b3e6bff832bbc2f696d3366d8",
+    "databaseBytes": 64561152
+  },
+  "goalPassesClaimed": 0,
+  "scope": "Synthetic selected callback loopback process on one development host. Not a selected-host capacity, real-user or physical-device acceptance result.",
+  "results": [
+    {
+      "name": "fixture-seeding",
+      "durationMs": 24982.278884
+    },
+    {
+      "name": "validate-full-schema4-fixture",
+      "durationMs": 696.2982880000018
+    },
+    {
+      "name": "fixture-verified",
+      "counts": {
+        "businesses": 1,
+        "users": 1,
+        "leads": 500,
+        "messages": 5000,
+        "audit": 20500,
+        "optOuts": 0,
+        "panelProjects": 0,
+        "panelSources": 0,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 0,
+        "assistantUsage": 0,
+        "callbackTasks": 2000,
+        "callbackOperations": 20000
+      },
+      "databaseBytes": 64495616,
+      "walBytes": 4260112,
+      "queryPlans": {
+        "queue": [
+          {
+            "id": 8,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH callback_tasks USING INDEX callback_tasks_business_due (business_id=? AND status=?)"
+          }
+        ],
+        "taskOperations": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 62,
+            "detail": "SEARCH callback_operations USING INDEX sqlite_autoindex_callback_operations_1 (business_id=?)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "queue-component-500-distinct-requests",
+      "durationMs": 21.870056000003387
+    },
+    {
+      "name": "queue-materialization",
+      "taskCount": 500,
+      "total": 2000,
+      "getLeadCalls": 0,
+      "transcriptCharsMaterialized": 0,
+      "auditRowsMaterialized": 0,
+      "returnedBodyBytes": 3267478
+    },
+    {
+      "name": "queue-component-500-page-distribution",
+      "samplesMs": [
+        18.47768499999802,
+        17.53616300000067,
+        18.540099000001646,
+        18.386617000000115,
+        19.011029999997845
+      ],
+      "medianMs": 18.47768499999802,
+      "maxMs": 19.011029999997845
+    },
+    {
+      "name": "encrypted-backup-at-capacity",
+      "durationMs": 3303.4214520000023,
+      "archiveBytes": 63942736,
+      "counts": {
+        "businesses": 1,
+        "users": 1,
+        "leads": 500,
+        "messages": 5000,
+        "audit": 20500,
+        "optOuts": 0,
+        "panelProjects": 0,
+        "panelSources": 0,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 0,
+        "assistantUsage": 0,
+        "callbackTasks": 2000,
+        "callbackOperations": 20000
+      }
+    },
+    {
+      "name": "encrypted-restore-at-capacity",
+      "durationMs": 2013.804003000001,
+      "counts": {
+        "businesses": 1,
+        "users": 1,
+        "leads": 500,
+        "messages": 5000,
+        "audit": 20500,
+        "optOuts": 0,
+        "panelProjects": 0,
+        "panelSources": 0,
+        "deletedRecords": 0,
+        "deletionOperations": 0,
+        "safetyHolds": 0,
+        "assistantUsage": 0,
+        "callbackTasks": 2000,
+        "callbackOperations": 20000
+      }
+    },
+    {
+      "name": "http-sequential-queue-20",
+      "requests": 5,
+      "samplesMs": [
+        5.67963299999974,
+        4.279429999998683,
+        3.110735999998724,
+        3.1051769999976386,
+        2.791493000000628
+      ],
+      "medianMs": 3.110735999998724,
+      "maxMs": 5.67963299999974,
+      "bodyBytes": 130757
+    },
+    {
+      "name": "http-sequential-queue-100",
+      "requests": 5,
+      "samplesMs": [
+        8.623286000001826,
+        9.021717999999964,
+        8.778080000000045,
+        11.89994200000001,
+        8.032594000000245
+      ],
+      "medianMs": 8.778080000000045,
+      "maxMs": 11.89994200000001,
+      "bodyBytes": 653478
+    },
+    {
+      "name": "http-sequential-queue-500",
+      "requests": 5,
+      "samplesMs": [
+        37.449101999998675,
+        40.085596000000805,
+        34.211709999999584,
+        34.5963699999993,
+        32.585213999998814
+      ],
+      "medianMs": 34.5963699999993,
+      "maxMs": 40.085596000000805,
+      "bodyBytes": 3267478
+    },
+    {
+      "name": "http-12-client-queue-20",
+      "durationMs": 23.855367999996815,
+      "requests": 12,
+      "p50Ms": 12.57779500000106,
+      "p95Ms": 20.949561999997968,
+      "maxMs": 20.949561999997968,
+      "responseBytes": 1569183,
+      "concurrentHealthMs": 21.327131999998528
+    },
+    {
+      "name": "http-12-client-queue-500",
+      "durationMs": 354.5661160000018,
+      "requests": 12,
+      "p50Ms": 182.36907900000006,
+      "p95Ms": 352.77220699999816,
+      "maxMs": 352.77220699999816,
+      "responseBytes": 39214260,
+      "concurrentHealthMs": 349.6195590000025
+    },
+    {
+      "name": "callback-process-resources",
+      "before": {
+        "event": "metrics",
+        "id": "1915da0c-7aab-4346-b5fe-ddd34b26c17d",
+        "memory": {
+          "rss": 47247360,
+          "heapTotal": 13160448,
+          "heapUsed": 9563376,
+          "external": 4079811,
+          "arrayBuffers": 212347
+        },
+        "usage": {
+          "userCPUTime": 299618,
+          "systemCPUTime": 20051,
+          "maxRSS": 374264,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 20433,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 123,
+          "involuntaryContextSwitches": 11
+        },
+        "eventLoop": {
+          "minMs": 9.363456,
+          "maxMs": 12.222463,
+          "meanMs": 10.167389090909092,
+          "p99Ms": 12.222463
+        }
+      },
+      "after": {
+        "event": "metrics",
+        "id": "830d53a5-d2aa-4808-a6e8-40c485109d6d",
+        "memory": {
+          "rss": 77578240,
+          "heapTotal": 28626944,
+          "heapUsed": 8961408,
+          "external": 4079625,
+          "arrayBuffers": 212185
+        },
+        "usage": {
+          "userCPUTime": 813960,
+          "systemCPUTime": 107652,
+          "maxRSS": 374264,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 58434,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 289,
+          "involuntaryContextSwitches": 13
+        },
+        "eventLoop": {
+          "minMs": 9.6256,
+          "maxMs": 318.504959,
+          "meanMs": 47.32266338461538,
+          "p99Ms": 318.504959
+        }
+      }
+    },
+    {
+      "name": "http-export-at-capacity",
+      "durationMs": 730.6296800000018,
+      "bytes": 48839613
+    },
+    {
+      "name": "operation-quota-refusal",
+      "status": 503,
+      "code": "callback_history_limit"
+    }
+  ],
+  "label": "bounded-final",
+  "runtimeHashes": {
+    "workspace/callback-tasks.cjs": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff",
+    "workspace/store.cjs": "ad432dfdc5597a46c66af180bd8205c15f76d66c595bbd4385268fccfdf5fa0f",
+    "workspace/api.cjs": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e",
+    "workspace/backup.cjs": "c1a3690060753cf6539d8f784b3c6c660a7765ff6fb557724dc26ac0c3bc5675",
+    "workspace/lifecycle.cjs": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec",
+    "workspace/retention.cjs": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4",
+    "workspace/products.cjs": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf",
+    "workspace/auth.cjs": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5",
+    "workspace-server.cjs": "a9bc61d6bfe55408943efb15b923632b22b552da6fda735135aba8614524e34c"
+  },
+  "harnessSha256": "9df23dd408dbb5eb00724bd864aec42e15b72b2ddf66a17e227cca3e5b22a96b",
+  "httpQueueRequests": 39,
+  "unexpectedErrors": 0,
+  "cleanup": {
+    "clean": true,
+    "exitCode": 0,
+    "signal": null,
+    "forced": false
+  },
+  "completedAt": "2026-11-23T16:10:05.590Z",
+  "runtimeHashesAfter": {
+    "workspace/callback-tasks.cjs": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff",
+    "workspace/store.cjs": "ad432dfdc5597a46c66af180bd8205c15f76d66c595bbd4385268fccfdf5fa0f",
+    "workspace/api.cjs": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e",
+    "workspace/backup.cjs": "c1a3690060753cf6539d8f784b3c6c660a7765ff6fb557724dc26ac0c3bc5675",
+    "workspace/lifecycle.cjs": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec",
+    "workspace/retention.cjs": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4",
+    "workspace/products.cjs": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf",
+    "workspace/auth.cjs": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5",
+    "workspace-server.cjs": "a9bc61d6bfe55408943efb15b923632b22b552da6fda735135aba8614524e34c"
+  },
+  "runtimeChanged": false
+}

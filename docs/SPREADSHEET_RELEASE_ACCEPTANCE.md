@@ -1,5 +1,11 @@
 # Spreadsheet release acceptance
 
+## November 23 deskew and platform follow-up
+
+The next production OCR candidate measures 289/310 exact on the same local synthetic image bytes, with four gains over the small-text candidate, no earlier exact-image regression, all 263 expected blank fields preserved and zero native errors/review violations. Twenty-one nonexact images keep the quality gate FAIL. Independent review and actual native geometry/resource/cancellation checks pass their named scopes. [Deskew measurements and reproduction](OCR_DESKEW_2026_11_23.md).
+
+Run81 independently measures the preceding pipeline at 285/310 on its recorded CI dataset and Tesseract build. [CI evidence](evidence/ocr-small-text-ci-run81.json). Intel Mac manual spreadsheet suites pass 8/8 in Chromium and Firefox. WebKit runs all eight methods but fails two teardown console checks because optional screenshot preparation injects a forbidden stylesheet. The capture correction preserves every product and console assertion. Fresh corrected-source CI is required. Native macOS OCR remains unsupported, Apple Silicon is unassigned, and OS isolation, photos, actual Excel/physical devices and operating gates remain open. No customer trial or release is approved.
+
 ## November 23 small-text OCR candidate
 
 Conditional image enlargement improved the unchanged local 310-image benchmark from 277 to 285 exact images. Eight failures became exact, no earlier exact image regressed, all 263 expected blank fields stayed blank, and native errors/review violations remained zero. Twenty-five images remain nonexact, so OCR quality remains FAIL. [Source hashes, before/after outcomes and limits](OCR_SMALL_TEXT_2026_11_23.md).

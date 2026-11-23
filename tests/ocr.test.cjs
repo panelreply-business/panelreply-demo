@@ -7,7 +7,7 @@ const path = require('node:path');
 const zlib = require('node:zlib');
 const { EventEmitter } = require('node:events');
 const { PassThrough, Writable } = require('node:stream');
-const { inspectImage, parseTsv, OcrError, LIMITS, createOcrService } = require('../workspace/ocr.cjs');
+const { inspectImage, parseTsv, expandedImageSize, OcrError, LIMITS, createOcrService } = require('../workspace/ocr.cjs');
 
 const fixture = name => fs.readFileSync(path.join(__dirname, 'fixtures/panels', name));
 const HEADER = 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext';
@@ -40,6 +40,10 @@ function tinyPng({ width = 1, height = 1, extra = [], depth = 8, colorType = 2 }
   header[8] = depth;
   header[9] = colorType;
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', header), ...extra, chunk('IDAT', zlib.deflateSync(Buffer.from([0, 255, 255, 255]))), chunk('IEND')]);
+}
+
+function flatDeskew(width, height) {
+  return { candidateAngle: 0, angle: 0, scoreBefore: 0, scoreAfter: 0, analysisPixels: Math.min(width, 650) * Math.min(height, 650), width, height, reason: 'not_needed' };
 }
 
 function fakeSpawner({ recognize, normalize, normalizerProbe, probe, isolationProbe, isolationVersion = 'bubblewrap 0.12.0\n', version = 'tesseract 5.5.0\n', languages = 'List of available languages in private-path (1):\neng\n', spawnError, killDelay = 0 } = {}) {
@@ -75,11 +79,11 @@ function fakeSpawner({ recognize, normalize, normalizerProbe, probe, isolationPr
       if (spawnError) return child.emit('error', Object.assign(new Error('PRIVATE PATH OR SECRET'), { code: spawnError }));
       if (isIsolationVersion) return isolationProbe ? isolationProbe(call) : call.finish(isolationVersion);
       if (isNormalizer) {
-        if (args[0] === '--probe') return normalizerProbe ? normalizerProbe(call) : call.finish(JSON.stringify({ method: 'median3-small-text-v2', pillowVersion: '11.1.0' }));
+        if (args[0] === '--probe') return normalizerProbe ? normalizerProbe(call) : call.finish(JSON.stringify({ method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0' }));
         if (normalize) return normalize(call);
         const image = inspectImage(Buffer.concat(call.input));
-        return call.finish(JSON.stringify({ method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false,
-          isolatedNoisePixels: 0, thresholdPixels: Math.max(32, Math.ceil(image.width * image.height / 1000)), imagePixels: image.width * image.height, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1 }) + '\n');
+        return call.finish(JSON.stringify({ method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+          isolatedNoisePixels: 0, thresholdPixels: Math.max(32, Math.ceil(image.width * image.height / 1000)), imagePixels: image.width * image.height, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1, deskew: flatDeskew(image.width, image.height) }) + '\n');
       }
       if (probe && args[0].startsWith('--')) return probe(call);
       if (args[0] === '--version') return call.finish(version);
@@ -228,7 +232,7 @@ test('readiness uses only fixed binary probes and caches a successful result', a
   const fake = fakeSpawner();
   const service = createOcrService({ spawnProcess: fake.spawnProcess, now: () => clock });
   const [first, concurrent] = await Promise.all([service.getOcrStatus(), service.getOcrStatus()]);
-  assert.deepEqual(first, { available: true, engine: 'tesseract', version: '5.5.0', language: 'eng', normalizer: { method: 'median3-small-text-v2', pillowVersion: '11.1.0' }, orientationAvailable: false });
+  assert.deepEqual(first, { available: true, engine: 'tesseract', version: '5.5.0', language: 'eng', normalizer: { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0' }, orientationAvailable: false });
   assert.deepEqual(first, concurrent);
   first.available = false;
   assert.equal((await service.getOcrStatus()).available, true);
@@ -638,7 +642,7 @@ test('normalizer uses only the fixed installed interpreter and fixed isolated sc
 test('conditional normalization sends bounded pixel output to OCR and never changes source bytes', async () => {
   const source = tinyPng({ width: 200, height: 200, extra: [chunk('tEXt', Buffer.from('source metadata'))] });
   const original = Buffer.from(source), normalized = tinyPng({ width: 200, height: 200 });
-  const header = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: true, isolatedNoisePixels: 50, thresholdPixels: 40, imagePixels: 40000, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1 };
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: true, isolatedNoisePixels: 50, thresholdPixels: 40, imagePixels: 40000, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1, deskew: flatDeskew(200, 200) };
   const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), normalized])) });
   const service = createOcrService({ spawnProcess: fake.spawnProcess });
   const result = await service.recognizeImage(source);
@@ -653,8 +657,8 @@ test('conditional normalization sends bounded pixel output to OCR and never chan
 test('small ink bands select one bounded pixel enlargement without changing source bytes or review status', async () => {
   const source = tinyPng({ width: 200, height: 100 });
   const original = Buffer.from(source), enlarged = tinyPng({ width: 400, height: 200 });
-  const header = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false,
-    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2 };
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2, deskew: flatDeskew(200, 100) };
   const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), enlarged])) });
   const service = createOcrService({ spawnProcess: fake.spawnProcess });
   const result = await service.recognizeImage(source);
@@ -668,8 +672,8 @@ test('small ink bands select one bounded pixel enlargement without changing sour
 });
 
 test('enlargement never repairs recognized punctuation, case or confusable characters', async () => {
-  const header = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false,
-    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2 };
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2, deskew: flatDeskew(200, 100) };
   const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), tinyPng({ width: 400, height: 200 })])),
     recognize: call => call.finish(tsv(['PART NUMBER: 00-I1_o.7', 'MANUFACTURER: Test Maker.', 'DESCRIPTION: Mixed CASE'])) });
   const service = createOcrService({ spawnProcess: fake.spawnProcess });
@@ -682,8 +686,8 @@ test('enlargement never repairs recognized punctuation, case or confusable chara
 });
 
 test('small-text enlargement metadata must agree with measured bands and output dimensions', async () => {
-  const header = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false,
-    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2 };
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2, deskew: flatDeskew(200, 100) };
   const invalid = [
     { inkBandCount: -1 }, { inkBandCount: 101 }, { inkBandCount: 0 }, { medianInkBandHeight: 0 },
     { medianInkBandHeight: 2 }, { medianInkBandHeight: 16 }, { medianInkBandHeight: 11.5 },
@@ -705,9 +709,9 @@ test('small-text enlargement metadata must agree with measured bands and output 
 test('small-text enlargement cannot exceed the native image dimensions or pixel ceiling', async () => {
   for (const [width, height] of [[3001, 100], [100, 3001], [2001, 2000]]) {
     const source = tinyPng({ width, height });
-    const base = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false,
+    const base = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
       isolatedNoisePixels: 0, thresholdPixels: Math.max(32, Math.ceil(width * height / 1000)), imagePixels: width * height,
-      inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 1 };
+      inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 1, deskew: flatDeskew(width, height) };
     const valid = fakeSpawner({ normalize: call => call.finish(JSON.stringify(base) + '\n') });
     const service = createOcrService({ spawnProcess: valid.spawnProcess });
     assert.equal((await service.recognizeImage(source)).processing.normalization.rescaleFactor, 1);
@@ -721,8 +725,96 @@ test('small-text enlargement cannot exceed the native image dimensions or pixel 
   }
 });
 
+test('rotation bounds match independently measured native corner expansion for odd, even and thin images', () => {
+  // Expected dimensions were read from native Pillow expand=True results.
+  for (const [width, height, angle, expectedWidth, expectedHeight] of [
+    [200, 100, 3, 206, 112], [200, 100, -3, 206, 112], [201, 101, .25, 203, 103], [201, 101, -.25, 203, 103],
+    [1, 1, 5, 3, 3], [6000, 10, 3, 5994, 326], [4000, 4000, 3, 4204, 4204], [320, 200, 1, 324, 206], [320, 200, -5, 338, 228], [40, 250, 2.5, 52, 252],
+  ]) assert.deepEqual(expandedImageSize(width, height, angle), { width: expectedWidth, height: expectedHeight });
+});
+
+test('deskew uses the validated expanded image once and preserves original pixels and manual review', async () => {
+  const source = tinyPng({ width: 200, height: 100 }), original = Buffer.from(source), normalized = tinyPng({ width: 206, height: 112 });
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 20, rescaleFactor: 1,
+    deskew: { candidateAngle: 3, angle: 3, scoreBefore: 1000, scoreAfter: 1200, analysisPixels: 20000, width: 206, height: 112, reason: 'applied' } };
+  const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), normalized])) });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const result = await service.recognizeImage(source);
+  assert.deepEqual(result.processing.normalization, header);
+  assert.deepEqual(Buffer.concat(fake.calls.at(-1).input), normalized);
+  assert.deepEqual(source, original);
+  assert.equal(result.processing.passes, 1);
+  assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+  assert.match(result.warnings.join(' '), /Tilt was corrected/);
+  await service.shutdown();
+});
+
+test('small-text enlargement checks the deskewed dimensions and preserves both transformations', async () => {
+  const source = tinyPng({ width: 200, height: 100 }), normalized = tinyPng({ width: 412, height: 224 });
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 11, rescaleFactor: 2,
+    deskew: { candidateAngle: -3, angle: -3, scoreBefore: 1000, scoreAfter: 1200, analysisPixels: 20000, width: 206, height: 112, reason: 'applied' } };
+  const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), normalized])) });
+  const service = createOcrService({ spawnProcess: fake.spawnProcess });
+  const result = await service.recognizeImage(source);
+  assert.deepEqual(Buffer.concat(fake.calls.at(-1).input), normalized);
+  assert.equal(result.processing.normalization.rescaleFactor, 2);
+  assert.equal(result.processing.normalization.deskew.angle, -3);
+  assert.match(result.warnings.join(' '), /Small text was enlarged/);
+  await service.shutdown();
+});
+
+test('unsafe, inconsistent or unbounded deskew metadata fails before native recognition', async () => {
+  const base = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+    isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 20000, inkBandCount: 3, medianInkBandHeight: 20, rescaleFactor: 1,
+    deskew: { candidateAngle: 3, angle: 3, scoreBefore: 1000, scoreAfter: 1200, analysisPixels: 20000, width: 206, height: 112, reason: 'applied' } };
+  const invalid = [
+    null, [], false, '3', { angle: 6 }, { candidateAngle: -6 }, { angle: .1 }, { candidateAngle: '3' },
+    { scoreBefore: -1 }, { scoreAfter: 1000000001 }, { scoreBefore: 0 }, { scoreAfter: 1099 },
+    { analysisPixels: 0 }, { analysisPixels: 20001 }, { width: 200 }, { height: 100 }, { reason: 'not_needed' },
+  ];
+  for (const change of invalid) {
+    const deskew = change && typeof change === 'object' && !Array.isArray(change) ? { ...base.deskew, ...change } : change;
+    const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify({ ...base, deskew }) + '\n'), tinyPng({ width: 206, height: 112 })])) });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    await assert.rejects(service.recognizeImage(tinyPng({ width: 200, height: 100 })), isError('OCR_OUTPUT_INVALID', 422));
+    assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+    await service.shutdown();
+  }
+});
+
+test('deskew that would exceed a dimension or pixel ceiling retains the original image', async () => {
+  for (const [width, height, reason] of [[6000, 1500, 'dimension_limit'], [4000, 4000, 'pixel_limit']]) {
+    const source = tinyPng({ width, height });
+    const base = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false,
+      isolatedNoisePixels: 0, thresholdPixels: Math.ceil(width * height / 1000), imagePixels: width * height, inkBandCount: 3, medianInkBandHeight: 20, rescaleFactor: 1,
+      deskew: { candidateAngle: 3, angle: 0, scoreBefore: 1000, scoreAfter: 1200, analysisPixels: 650 * 650, width, height, reason } };
+    const fake = fakeSpawner({ normalize: call => call.finish(JSON.stringify(base) + '\n') });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    assert.equal((await service.recognizeImage(source)).processing.normalization.deskew.reason, reason);
+    assert.deepEqual(Buffer.concat(fake.calls.at(-1).input), source);
+    await service.shutdown();
+    const bad = fakeSpawner({ normalize: call => call.finish(JSON.stringify({ ...base, deskew: { ...base.deskew, angle: 3, reason: 'applied' } }) + '\n') });
+    const rejected = createOcrService({ spawnProcess: bad.spawnProcess });
+    await assert.rejects(rejected.recognizeImage(source), isError('OCR_OUTPUT_INVALID', 422));
+    assert.equal(bad.calls.some(call => call.args[0] === 'stdin'), false);
+    await rejected.shutdown();
+  }
+});
+
+test('native normalizer JSON primitives return the generic contract error instead of a property exception', async () => {
+  for (const metadata of [null, false, 0, 'invalid', []]) {
+    const fake = fakeSpawner({ normalize: call => call.finish(JSON.stringify(metadata) + '\n') });
+    const service = createOcrService({ spawnProcess: fake.spawnProcess });
+    await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_OUTPUT_INVALID', 422));
+    assert.equal(fake.calls.some(call => call.args[0] === 'stdin'), false);
+    await service.shutdown();
+  }
+});
+
 test('invalid normalizer metadata or inconsistent pixel output is rejected before OCR', async () => {
-  const base = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false, isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 1, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1 };
+  const base = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false, isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 1, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1, deskew: flatDeskew(1, 1) };
   const invalid = [Buffer.from('PRIVATE unreadable'), Buffer.from(JSON.stringify({ ...base, pillowVersion: '1.0.0' }) + '\n'),
     Buffer.from(JSON.stringify({ ...base, applied: true }) + '\n'), Buffer.from(JSON.stringify({ ...base, isolatedNoisePixels: 2 }) + '\n'),
     Buffer.concat([Buffer.from(JSON.stringify(base) + '\n'), tinyPng()])];
@@ -736,7 +828,7 @@ test('invalid normalizer metadata or inconsistent pixel output is rejected befor
 });
 
 test('normalizer may not change dimensions or pass invalid PNG bytes to the engine', async () => {
-  const header = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: true, isolatedNoisePixels: 50, thresholdPixels: 40, imagePixels: 40000, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1 };
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: true, isolatedNoisePixels: 50, thresholdPixels: 40, imagePixels: 40000, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1, deskew: flatDeskew(200, 200) };
   for (const bytes of [Buffer.from('not pixels'), tinyPng(), Buffer.from([])]) {
     const fake = fakeSpawner({ normalize: call => call.finish(Buffer.concat([Buffer.from(JSON.stringify(header) + '\n'), bytes])) });
     const service = createOcrService({ spawnProcess: fake.spawnProcess });
@@ -758,7 +850,7 @@ test('normalizer output overflow terminates and reaps the process before any OCR
 
 test('normalization consumes the same wall deadline as recognition', async () => {
   let clock = 0;
-  const header = { method: 'median3-small-text-v2', pillowVersion: '11.1.0', applied: false, isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 1, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1 };
+  const header = { method: 'median3-deskew-small-text-v3', pillowVersion: '11.1.0', applied: false, isolatedNoisePixels: 0, thresholdPixels: 32, imagePixels: 1, inkBandCount: 0, medianInkBandHeight: 0, rescaleFactor: 1, deskew: flatDeskew(1, 1) };
   const fake = fakeSpawner({ normalize: call => { clock += 20; call.finish(JSON.stringify(header) + '\n'); } });
   const service = createOcrService({ spawnProcess: fake.spawnProcess, now: () => clock, recognitionTimeoutMs: 20 });
   await assert.rejects(service.recognizeImage(tinyPng()), isError('OCR_TIMEOUT', 504));

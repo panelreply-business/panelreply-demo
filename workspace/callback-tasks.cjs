@@ -42,7 +42,7 @@ function taskBlockReason(lead) {
   return null;
 }
 
-function createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudit, enabled }) {
+function createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudit, readLeadSummary, enabled }) {
   const fail = (status, code, message, fields) => { throw new StoreError(status, code, message, fields); };
   const invalid = (message, fields) => fail(400, 'invalid_input', message, fields);
   function requireSchema(actor) { getActor(actor); if (!enabled) fail(409, 'upgrade_required', 'Start the current workspace version before scheduling callbacks.'); }
@@ -163,15 +163,15 @@ function createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudi
       const at = clock();
       db.exec('BEGIN');
       try {
-        if (leadId !== undefined) store.getLead(actor, leadId);
+        const leadCache = new Map();
+        if (leadId !== undefined) leadCache.set(leadId, readLeadSummary(actor, leadId));
         const values = [actor.businessId], where = ['business_id=?'];
         if (leadId !== undefined) { where.push('lead_id=?'); values.push(leadId); }
         if (state !== 'all') { where.push('status=?'); values.push(['open', 'due'].includes(state) ? 'scheduled' : state); }
         if (state === 'due') { where.push('due_at<=?'); values.push(at); }
         const total = Number(db.prepare('SELECT count(*) AS n FROM callback_tasks WHERE ' + where.join(' AND ')).get(...values).n);
-        const leadCache = new Map();
         const tasks = db.prepare('SELECT * FROM callback_tasks WHERE ' + where.join(' AND ') + ' ORDER BY due_at,id LIMIT ? OFFSET ?').all(...values, limit, offset).map(row => {
-          if (!leadCache.has(row.lead_id)) leadCache.set(row.lead_id, store.getLead(actor, row.lead_id));
+          if (!leadCache.has(row.lead_id)) leadCache.set(row.lead_id, readLeadSummary(actor, row.lead_id));
           return materialize(row, actor, at, leadCache.get(row.lead_id));
         });
         db.exec('COMMIT');
@@ -184,7 +184,7 @@ function createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudi
       // Caller owns the export's consistent read transaction.
       const leadCache = new Map();
       return db.prepare('SELECT * FROM callback_tasks WHERE business_id=? ORDER BY due_at,id').all(actor.businessId).map(row => {
-        if (!leadCache.has(row.lead_id)) leadCache.set(row.lead_id, store.getLead(actor, row.lead_id));
+        if (!leadCache.has(row.lead_id)) leadCache.set(row.lead_id, readLeadSummary(actor, row.lead_id));
         return materialize(row, actor, at, leadCache.get(row.lead_id));
       });
     }
@@ -195,22 +195,43 @@ function validateCallbackDatabase(db, fail) {
   const invalid = () => fail('invalid_database', 'The workspace contains invalid callback scheduling records.');
   if (db.prepare('SELECT 1 FROM callback_tasks t JOIN leads l ON l.id=t.lead_id WHERE t.business_id<>l.business_id LIMIT 1').get()) invalid();
   if (db.prepare('SELECT 1 FROM callback_tasks GROUP BY business_id HAVING count(*)>? LIMIT 1').get(MAX_TASKS_PER_BUSINESS)) invalid();
-  if (db.prepare('SELECT count(*) AS n FROM callback_operations').get().n > MAX_TASK_OPERATIONS) invalid();
+  const operationCount = db.prepare('SELECT count(*) AS n FROM callback_operations').get().n;
+  if (operationCount > MAX_TASK_OPERATIONS) invalid();
+  // Every task revision has exactly one operation and one audit event. These
+  // bounds follow from the per-task checks below and keep validation maps
+  // bounded even when an authenticated archive contains inconsistent records.
+  if (db.prepare('SELECT count(*) AS n FROM callback_tasks').get().n > operationCount
+    || db.prepare("SELECT count(*) AS n FROM audit WHERE action LIKE 'callback.%'").get().n !== operationCount) invalid();
+  const tasksById = new Map();
+  for (const row of db.prepare('SELECT t.id,t.business_id,t.lead_id,t.created_at,t.updated_at,l.version AS parent_version,l.business_id AS parent_business_id FROM callback_tasks t LEFT JOIN leads l ON l.id=t.lead_id').iterate()) {
+    if (row.parent_business_id !== row.business_id) invalid();
+    tasksById.set(row.id, row);
+  }
+  const operationStats = new Map();
+  // Scan the bounded ledger once. A per-task query on its business/key index
+  // would repeatedly scan every operation belonging to the same business.
+  for (const row of db.prepare('SELECT * FROM callback_operations').iterate()) {
+    const task = tasksById.get(row.task_id);
+    if (!/^[A-Za-z0-9_-]{16,128}$/.test(row.operation_key) || !/^[a-f0-9]{64}$/.test(row.request_hash) || !timestamp(row.created_at) || !task || task.business_id !== row.business_id || task.lead_id !== row.lead_id || row.created_at < task.created_at || row.created_at > task.updated_at) invalid();
+    const stats = operationStats.get(row.task_id) || { n: 0, first: Infinity, last: -Infinity };
+    stats.n++; stats.first = Math.min(stats.first, row.created_at); stats.last = Math.max(stats.last, row.created_at);
+    operationStats.set(row.task_id, stats);
+  }
   const auditByTask = new Map();
   const actionFields = { 'callback.scheduled': ['kind', 'dueAt', 'timeZone', 'notes', 'status'], 'callback.rescheduled': ['dueAt', 'timeZone', 'notes'], 'callback.completed': ['status', 'outcome', 'notes'], 'callback.cancelled': ['status', 'notes'] };
   for (const entry of db.prepare("SELECT * FROM audit WHERE action LIKE 'callback.%' ORDER BY created_at,rowid").iterate()) {
     let details; try { details = JSON.parse(entry.details_json); } catch (_) { invalid(); }
     if (!Object.hasOwn(actionFields, entry.action) || !details || typeof details !== 'object' || Array.isArray(details) || Object.keys(details).length !== 2 || !panels.UUID.test(details.taskId) || JSON.stringify(details.fields) !== JSON.stringify(actionFields[entry.action]) || !timestamp(entry.created_at) || !version(entry.version)) invalid();
-    const task = db.prepare('SELECT id FROM callback_tasks WHERE id=? AND business_id=? AND lead_id=?').get(details.taskId, entry.business_id, entry.lead_id);
-    if (!task) invalid();
-    const entries = auditByTask.get(task.id) || []; entries.push(entry); auditByTask.set(task.id, entries);
+    const task = tasksById.get(details.taskId);
+    if (!task || task.business_id !== entry.business_id || task.lead_id !== entry.lead_id) invalid();
+    const entries = auditByTask.get(task.id) || []; entries.push({ action: entry.action, version: entry.version, created_at: entry.created_at }); auditByTask.set(task.id, entries);
   }
   for (const row of db.prepare('SELECT * FROM callback_tasks').iterate()) {
     if (!panels.UUID.test(row.id) || !KINDS.includes(row.kind) || !timestamp(row.due_at) || instant(new Date(row.due_at).toISOString()) === null || !validTimeZone(row.time_zone) || !STATUSES.includes(row.status) || !note(row.notes) || row.notes.trim() !== row.notes || !version(row.version) || !timestamp(row.created_at) || !timestamp(row.updated_at) || row.updated_at < row.created_at) invalid();
     if (row.status === 'completed' ? !OUTCOMES.includes(row.outcome) || row.completed_at !== row.updated_at || row.cancelled_at !== null : row.outcome !== '' || row.completed_at !== null || (row.status === 'cancelled' ? row.cancelled_at !== row.updated_at : row.cancelled_at !== null)) invalid();
-    const operations = db.prepare('SELECT count(*) AS n,min(created_at) AS first,max(created_at) AS last FROM callback_operations WHERE business_id=? AND task_id=? AND lead_id=?').get(row.business_id, row.id, row.lead_id);
-    if (operations.n !== row.version || operations.first !== row.created_at || operations.last !== row.updated_at) invalid();
-    const entries = auditByTask.get(row.id) || [], parentVersion = db.prepare('SELECT version FROM leads WHERE id=? AND business_id=?').get(row.lead_id, row.business_id)?.version;
+    const operations = operationStats.get(row.id);
+    if (!operations || operations.n !== row.version || operations.first !== row.created_at || operations.last !== row.updated_at) invalid();
+    const entries = auditByTask.get(row.id) || [], parentVersion = tasksById.get(row.id)?.parent_version;
     if (entries.length !== row.version || entries[0]?.action !== 'callback.scheduled' || entries[0]?.created_at !== row.created_at || entries.at(-1)?.created_at !== row.updated_at) invalid();
     for (let index = 0; index < entries.length; index++) {
       const entry = entries[index], terminal = index === entries.length - 1 && row.status !== 'scheduled';
@@ -218,10 +239,6 @@ function validateCallbackDatabase(db, fail) {
       if (entry.action !== expected || entry.version < 2 || entry.version > parentVersion || (index && entry.version <= entries[index - 1].version)) invalid();
     }
     if (row.status !== 'scheduled' && entries.length < 2) invalid();
-  }
-  for (const row of db.prepare('SELECT * FROM callback_operations').iterate()) {
-    const task = db.prepare('SELECT created_at,updated_at FROM callback_tasks WHERE id=? AND business_id=? AND lead_id=?').get(row.task_id, row.business_id, row.lead_id);
-    if (!/^[A-Za-z0-9_-]{16,128}$/.test(row.operation_key) || !/^[a-f0-9]{64}$/.test(row.request_hash) || !timestamp(row.created_at) || !task || row.created_at < task.created_at || row.created_at > task.updated_at) invalid();
   }
 }
 

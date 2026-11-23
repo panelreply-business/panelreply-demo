@@ -1,5 +1,9 @@
 # Autonomous development checkpoint
 
+## Integrated local checkpoint — November 23, 2026
+
+The integrated callback resource, browser repair, time-zone validation, OCR deskew and policy-binding candidate passed all 9,091 local Node/API/HTTP checks: 9,000 product executions and 91 excluded harness checks. Zero failures, skips, cancellations or infrastructure errors occurred across 50 test files. The executable/test/workflow/policy manifest remained `0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62` throughout. [Exact-source local record](evidence/integrated-candidate-2026-11-23.json). This candidate still needs committed-source browser/platform CI. Historical and overlapping results are not added to its count.
+
 Updated November 23, 2026, America/Detroit. Continue the existing `feature/interactive-dual-product-site` branch and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Do not restart the project.
 
 ## Current authority
@@ -13,7 +17,8 @@ The two products need separate release decisions and independent functioning wor
 ## Candidate work in this continuation
 
 - Callback scheduling/follow-up: schema 4, per-business task queue, create/reschedule/complete/cancel, exact UTC and named zone, explicit clock-change handling, request/task revisions, retry safety, contact restrictions, JSON export v2, deletion, retention review and encrypted recovery. [Contract and verification requirements](CALLBACK_SCHEDULING.md).
-- OCR: conditional pixel-based enlargement of small text, preserving unknown fields and manual review. The frozen local benchmark improved 277/310 to 285/310 with eight gains and no regressions. Twenty-five nonexact images remain. [Measured results and artifact](OCR_SMALL_TEXT_2026_11_23.md).
+- OCR: conditional pixel-based enlargement of small text, preserving unknown fields and manual review. Small-text normalization improved the frozen local benchmark 277/310 to 285/310. The reviewed bounded deskew candidate reaches 289/310 with four further gains and no regressions. Twenty-one nonexact images remain. [Small-text measurements](OCR_SMALL_TEXT_2026_11_23.md) and [deskew measurements](OCR_DESKEW_2026_11_23.md).
+- Callback resources: bounded queue summaries and linear archive validation preserve the current contract while removing measured near-capacity stalls. [Evidence and reproduction](CALLBACK_RESOURCE_VERIFICATION.md).
 - Platforms: Intel Mac callback and manual spreadsheet workflows plus standard Apple Silicon Node/client/product coverage. Native Mac OCR remains unsupported by the current Linux-native launcher. [Exact scope](PLATFORM_EXPANSION.md).
 
 The candidate's changed source needs its own committed CI evidence. The last full verified checkpoint before these changes remains [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151), source `ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a`. Its 24,372 product case/platform passes are historical and must not be assigned to the new implementation. Do not add reruns or overlapping reports to the milestone count.
@@ -22,9 +27,9 @@ The candidate's changed source needs its own committed CI evidence. The last ful
 
 1. Completed candidate review: outcome-note preservation, uncertain retries, revision exhaustion and malformed Unicode were reproduced and repaired.
 2. Completed stable local Node/SQLite/API/HTTP regression: 9,072 PASS, zero failures/skips, 83 harness checks excluded, 8,989 product executions. [Source-bound local candidate record](evidence/callback-scheduling-local-2026-11-23.json). Native OCR measurements remain separately scoped.
-3. Commit the verified candidate to the existing development branch, using the current remote head as a lease. Keep PR8 draft and main unchanged.
+3. The first candidate was committed as `86a7789`; workflow context validation was repaired as `1f7b6dc`. Run81 executed that corrected source and retained the failures in [its record](evidence/callback-scheduling-run81.json). Review and verify the next integrated fixes, then commit using the current remote head as a lease. Keep PR8 draft and main unchanged.
 4. Inspect all jobs of that commit's PR workflow. Execute actual selected-product browser journeys and native Linux checks. Repair real failures without weakening assertions or substituting emulation for an actual platform.
-5. Download the source-bound reports and aggregate deduplicated results. Check every required platform against the matching source, browser, architecture and scope. Reassess the Apple Silicon/Mac gaps only to the extent the executed evidence supports them.
+5. Download the source-bound reports and aggregate deduplicated results. The corrected aggregator requires every report to bind the exact `docs/test-milestones.json` SHA-256; older reports that omit it cannot qualify through the new CLI. Check every required platform against the matching source, browser, architecture and scope. Reassess the Apple Silicon/Mac gaps only to the extent the executed evidence supports them.
 6. Update progress, separate release acceptance records and the persistent evidence checkpoint. Record exact commits, source hashes, executed cases, unresolved failures and approval-dependent requirements.
 7. Continue the next highest-impact unfinished milestone. Remaining independent work includes the residual OCR recognition failures, accessibility/state regressions revealed by the expanded matrix, and approved-scope recovery/performance evidence. Do not stop after a count or a written assessment.
 

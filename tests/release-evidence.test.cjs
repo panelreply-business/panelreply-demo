@@ -8,14 +8,16 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const { execFileSync, spawnSync } = require('node:child_process');
 const { aggregateReports, validateReport, validateMilestones, readReportDirectory } = require('../scripts/aggregate-test-evidence.cjs');
-const { collectNodeResults, productScope } = require('../scripts/test-evidence.cjs');
+const { collectNodeResults, productScope, sourceEvidence, MILESTONE_POLICY_PATH } = require('../scripts/test-evidence.cjs');
 
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const FILE = 'tests/synthetic-product.test.cjs';
 const NOW = '2026-11-20T17:00:00.000Z';
 function source() {
-  const sourceManifest = [{ path: 'workspace/example.cjs', sha256: sha('synthetic application source') }];
+  const sourceManifest = [{ path: MILESTONE_POLICY_PATH, sha256: sha(JSON.stringify(policy())) },
+    { path: 'workspace/example.cjs', sha256: sha('synthetic application source') }];
   const sourceTreeSha256 = sha(JSON.stringify(sourceManifest));
   return { sourceCommit: 'a'.repeat(40), gitTreeHash: 'b'.repeat(40), sourceManifest,
     sourceTreeSha256, sourceTreeSha256After: sourceTreeSha256, dirty: false };
@@ -51,7 +53,25 @@ function browser(statuses = ['PASS'], overrides = {}) {
   delete result.profile;
   return result;
 }
-function aggregate(reports, overrides = {}) { return aggregateReports(reports, { milestones: policy(), now: NOW, ...overrides }); }
+function refreshSourceHash(report) {
+  report.sourceTreeSha256 = sha(JSON.stringify(report.sourceManifest));
+  report.sourceTreeSha256After = report.sourceTreeSha256;
+  return report;
+}
+function bindSyntheticPolicy(report, policySha256) {
+  const result = structuredClone(report);
+  result.sourceManifest = result.sourceManifest.filter(entry => entry.path !== MILESTONE_POLICY_PATH);
+  result.sourceManifest.push({ path: MILESTONE_POLICY_PATH, sha256: policySha256 });
+  result.sourceManifest.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+  return refreshSourceHash(result);
+}
+function aggregate(reports, overrides = {}) {
+  const milestones = overrides.milestones || policy(), policySha256 = sha(JSON.stringify(milestones));
+  // Existing counter tests select synthetic policies before their synthetic
+  // executions. Binding rejection tests supply their hashes/reports directly.
+  const inputs = overrides.milestones ? reports.map(report => bindSyntheticPolicy(report, policySha256)) : reports;
+  return aggregateReports(inputs, { milestones, policySha256, now: NOW, ...overrides });
+}
 function expectCode(action, code) { assert.throws(action, error => error.code === code); }
 
 test('evidence deduplicates same-source reruns and Node minor updates', () => {
@@ -231,7 +251,7 @@ for (const field of ['sourceCommit', 'gitTreeHash']) test('evidence rejects mixe
 });
 
 test('evidence rejects differing source bytes even when the commit is unchanged', () => {
-  const other = node(); other.sourceManifest[0].sha256 = sha('changed bytes');
+  const other = node(); other.sourceManifest.find(entry => entry.path === 'workspace/example.cjs').sha256 = sha('changed bytes');
   other.sourceTreeSha256 = sha(JSON.stringify(other.sourceManifest)); other.sourceTreeSha256After = other.sourceTreeSha256;
   expectCode(() => aggregate([node(), other]), 'MIXED_SOURCE');
 });
@@ -258,6 +278,108 @@ test('manifest bytes must substantiate the declared source hash', () => {
 test('duplicate source paths cannot pad a provenance manifest', () => {
   const raw = node(); raw.sourceManifest.push(structuredClone(raw.sourceManifest[0]));
   expectCode(() => validateReport(raw), 'INVALID_SOURCE_MANIFEST');
+});
+
+test('shared source evidence includes exact policy bytes and detects policy changes during execution', t => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-policy-source-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(directory, 'docs'));
+  fs.mkdirSync(path.join(directory, 'workspace'));
+  const policyFile = path.join(directory, MILESTONE_POLICY_PATH), bytes = JSON.stringify(policy(), null, 2) + '\n';
+  fs.writeFileSync(policyFile, bytes);
+  fs.writeFileSync(path.join(directory, 'docs/progress.md'), 'Synthetic progress.\n');
+  fs.writeFileSync(path.join(directory, 'workspace/example.cjs'), 'module.exports = true;\n');
+  const git = args => execFileSync('git', ['-c', 'core.autocrlf=false', '-c', 'commit.gpgsign=false',
+    '-c', 'user.name=Evidence Fixture', '-c', 'user.email=evidence@example.test', ...args], { cwd: directory, encoding: 'utf8', windowsHide: true });
+  git(['init', '--quiet']); git(['add', '.']); git(['commit', '--quiet', '-m', 'Synthetic evidence fixture']);
+  const before = sourceEvidence(directory);
+  assert.deepEqual(before.sourceManifest.find(entry => entry.path === MILESTONE_POLICY_PATH), { path: MILESTONE_POLICY_PATH, sha256: sha(bytes) });
+  fs.writeFileSync(path.join(directory, 'docs/progress.md'), 'Synthetic progress changed.\n');
+  assert.equal(sourceEvidence(directory).sourceTreeSha256, before.sourceTreeSha256);
+  fs.writeFileSync(policyFile, JSON.stringify(policy()) + '\n');
+  const after = sourceEvidence(directory);
+  assert.equal(after.sourceCommit, before.sourceCommit);
+  assert.notEqual(after.sourceTreeSha256, before.sourceTreeSha256);
+  assert.notEqual(after.sourceManifest.find(entry => entry.path === MILESTONE_POLICY_PATH).sha256,
+    before.sourceManifest.find(entry => entry.path === MILESTONE_POLICY_PATH).sha256);
+  expectCode(() => validateReport({ ...node(), ...before, sourceTreeSha256After: after.sourceTreeSha256 }), 'SOURCE_CHANGED');
+});
+
+test('aggregation requires an explicit policy digest and records the matched policy identity', () => {
+  expectCode(() => aggregateReports([node()], { milestones: policy() }), 'MISSING_POLICY_HASH');
+  for (const policySha256 of [null, '', 'not-a-digest', 'A'.repeat(64)]) {
+    expectCode(() => aggregateReports([node()], { milestones: policy(), policySha256 }), 'INVALID_POLICY_HASH');
+  }
+  const report = aggregate([node(), browser()]);
+  assert.deepEqual(report.policy, { path: MILESTONE_POLICY_PATH, sha256: sha(JSON.stringify(policy())) });
+});
+
+test('every report must contain the policy even when the first report binds it', () => {
+  const missing = browser();
+  missing.sourceManifest = missing.sourceManifest.filter(entry => entry.path !== MILESTONE_POLICY_PATH);
+  refreshSourceHash(missing);
+  expectCode(() => aggregate([node(), missing]), 'MISSING_POLICY_SOURCE');
+});
+
+test('a policy mismatch in any report fails before combining its passing cases', () => {
+  const mismatched = bindSyntheticPolicy(browser(), sha('different policy bytes'));
+  expectCode(() => aggregate([node(), mismatched]), 'POLICY_HASH_MISMATCH');
+  expectCode(() => aggregate([mismatched, node()]), 'POLICY_HASH_MISMATCH');
+});
+
+function policyCliFixture(t, { policyBytes = JSON.stringify(policy(), null, 2) + '\n', reports = [node(), browser()] } = {}) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-policy-cli-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  for (const name of ['scripts', 'docs', 'input']) fs.mkdirSync(path.join(directory, name));
+  for (const name of ['aggregate-test-evidence.cjs', 'test-evidence.cjs']) {
+    fs.copyFileSync(path.join(__dirname, '../scripts', name), path.join(directory, 'scripts', name));
+  }
+  const policyFile = path.join(directory, MILESTONE_POLICY_PATH), output = path.join(directory, 'aggregate.json');
+  fs.writeFileSync(policyFile, policyBytes);
+  const boundReports = reports.map(report => bindSyntheticPolicy(report, sha(policyBytes)));
+  const writeReport = (index, report) => fs.writeFileSync(path.join(directory, 'input', index + '.json'), JSON.stringify(report));
+  boundReports.forEach((report, index) => writeReport(index, report));
+  return { policyFile, policyBytes, reports: boundReports, writeReport,
+    run() {
+      const execution = spawnSync(process.execPath, [path.join(directory, 'scripts/aggregate-test-evidence.cjs'),
+        '--input', path.join(directory, 'input'), '--output', output, '--source', 'a'.repeat(40)],
+      { encoding: 'utf8', maxBuffer: 1024 * 1024, windowsHide: true });
+      assert.ifError(execution.error);
+      return { execution, result: JSON.parse(fs.readFileSync(output, 'utf8')) };
+    } };
+}
+
+test('the CLI hashes the exact policy bytes it parses instead of a JSON reserialization', t => {
+  const f = policyCliFixture(t), { execution, result } = f.run();
+  assert.equal(execution.status, 0, execution.stderr); assert.equal(result.valid, true);
+  assert.deepEqual(result.policy, { path: MILESTONE_POLICY_PATH, sha256: sha(f.policyBytes) });
+  assert.notEqual(result.policy.sha256, sha(JSON.stringify(JSON.parse(f.policyBytes))));
+  assert.equal(result.product.PASS, 2);
+});
+
+for (const missing of [true, false]) test('the CLI fails closed for a ' + (missing ? 'missing' : 'mismatched') + ' source-policy entry', t => {
+  const f = policyCliFixture(t), report = f.reports[1];
+  if (missing) report.sourceManifest = report.sourceManifest.filter(entry => entry.path !== MILESTONE_POLICY_PATH);
+  else report.sourceManifest.find(entry => entry.path === MILESTONE_POLICY_PATH).sha256 = sha('other policy bytes');
+  f.writeReport(1, refreshSourceHash(report));
+  const { execution, result } = f.run();
+  assert.equal(execution.status, 1); assert.equal(result.valid, false);
+  assert.equal(result.errors[0].code, missing ? 'MISSING_POLICY_SOURCE' : 'POLICY_HASH_MISMATCH');
+  assert.equal(result.policy.sha256, sha(f.policyBytes));
+  assert.equal(result.numericTargetReached, false); assert.equal(result.platformCoverageComplete, false); assert.equal(result.fullGoalAchieved, false);
+});
+
+test('changing targets and platform gates cannot reinterpret earlier reports through the CLI', t => {
+  const original = policy({ activeTarget: 4, requiredPlatforms: [{ id: 'actual-safari', kind: 'manual', match: { os: 'darwin' } }] });
+  const f = policyCliFixture(t, { policyBytes: JSON.stringify(original) + '\n', reports: [node(['PASS', 'PASS'])] });
+  const before = f.run();
+  assert.equal(before.execution.status, 0); assert.equal(before.result.numericTargetReached, false); assert.equal(before.result.platformCoverageComplete, false);
+  const changed = JSON.stringify(policy({ initialTarget: 1, earlyTarget: 2, activeTarget: 2 })) + '\n';
+  fs.writeFileSync(f.policyFile, changed);
+  const { execution, result } = f.run();
+  assert.equal(execution.status, 1); assert.equal(result.valid, false); assert.equal(result.errors[0].code, 'POLICY_HASH_MISMATCH');
+  assert.equal(result.policy.sha256, sha(changed)); assert.notEqual(result.policy.sha256, before.result.policy.sha256);
+  assert.equal(result.numericTargetReached, false); assert.equal(result.platformCoverageComplete, false); assert.equal(result.fullGoalAchieved, false);
 });
 
 test('missing source stability metadata is not assumed safe', () => {

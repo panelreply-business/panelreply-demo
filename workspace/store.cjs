@@ -289,13 +289,27 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     }
     return inserted;
   }
+  function leadContact(actor, data) {
+    const optedOut = suppressed(actor.businessId, data.phone);
+    return { contactPermission: optedOut ? 'opted_out' : data.contactPermission, optedOut,
+      contactAllowed: !optedOut && !data.safetyHold && data.contactPermission === 'requested_callback' };
+  }
+  function callbackLeadSummary(actor, id) {
+    // Internal callback reads authenticate before opening their read snapshot.
+    // Keep the tenant predicate here; queue rows need no transcript or audit.
+    const row = db.prepare('SELECT id,version,status,data_json FROM leads WHERE id=? AND business_id=?').get(id, actor.businessId);
+    if (!row) throw new StoreError(404, 'not_found', 'The request was not found.');
+    const data = JSON.parse(row.data_json);
+    return { id: row.id, version: row.version, status: row.status, customerName: data.customerName,
+      phone: data.phone, safetyHold: data.safetyHold, ...leadContact(actor, data) };
+  }
   function materializeLead(row, actor) {
     if (!row) throw new StoreError(404, 'not_found', 'The request was not found.');
     const data = JSON.parse(row.data_json);
-    const optedOut = suppressed(actor.businessId, data.phone);
+    const contact = leadContact(actor, data);
     const transcript = db.prepare('SELECT role, text FROM messages WHERE lead_id = ? AND business_id = ? ORDER BY position').all(row.id, actor.businessId).map(item => ({ role: item.role, text: item.text }));
     const audit = db.prepare('SELECT * FROM audit WHERE business_id = ? AND lead_id = ? ORDER BY created_at, rowid').all(actor.businessId, row.id).map(item => ({ id: item.id, actorId: item.actor_id, action: item.action, version: item.version, createdAt: iso(item.created_at), details: JSON.parse(item.details_json) }));
-    return { id: row.id, version: row.version, createdAt: iso(row.created_at), updatedAt: iso(row.updated_at), status: row.status, ...data, contactPermission: optedOut ? 'opted_out' : data.contactPermission, optedOut, contactAllowed: !optedOut && !data.safetyHold && data.contactPermission === 'requested_callback', conversation: transcript, audit };
+    return { id: row.id, version: row.version, createdAt: iso(row.created_at), updatedAt: iso(row.updated_at), status: row.status, ...data, ...contact, conversation: transcript, audit };
   }
   function sourceMetadata(row) {
     return { id: row.id, name: row.name, mime: row.mime, bytes: row.byte_count, width: row.width, height: row.height, createdAt: iso(row.created_at) };
@@ -598,7 +612,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
   const usage = createUsageLedger({ db, tx, now, getActor, StoreError });
   const retentionReview = createRetentionReview({ db, now, getActor, StoreError, callbackTasksEnabled: schemaVersion >= 4 });
   const lifecycle = createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 3, callbackTasksEnabled: schemaVersion >= 4 });
-  const callbackTasks = createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 4 });
+  const callbackTasks = createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudit, readLeadSummary: callbackLeadSummary, enabled: schemaVersion >= 4 });
   return store;
 }
 

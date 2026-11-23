@@ -1,0 +1,3407 @@
+{
+  "format": "panelreply-integrated-candidate-v1",
+  "status": "PASS_WITHIN_RECORDED_LOCAL_SCOPE",
+  "source": {
+    "sourceCommit": "1f7b6dc766d8d59b351c09d44d2a138a24583ccb",
+    "gitTreeHash": "db729477d6e59d9d4921a7cb532978cdd96cc1ed",
+    "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+    "sourceTreeSha256After": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+    "sourceChanged": false,
+    "dirty": true,
+    "workingTreeStatus": [
+      "M README.md",
+      " M docs/AUTONOMOUS_CONTINUATION.md",
+      " M docs/CALLBACK_RELEASE_ACCEPTANCE.md",
+      " M docs/DAILY_QUALITY_CHECKLIST.md",
+      " M docs/DEVELOPMENT_PROGRESS.md",
+      " M docs/PLATFORM_EXPANSION.md",
+      " M docs/RELEASE_ACCEPTANCE.md",
+      " M docs/SPREADSHEET_RELEASE_ACCEPTANCE.md",
+      " M scripts/aggregate-test-evidence.cjs",
+      " M scripts/test-evidence.cjs",
+      " M scripts/test-ocr-resource-limits.cjs",
+      " M tests/callback-schedule-client.test.cjs",
+      " M tests/ocr.test.cjs",
+      " M tests/product_browser_test.py",
+      " M tests/release-evidence.test.cjs",
+      " M tests/workspace_browser_test.py",
+      " M workspace/callback-tasks.cjs",
+      " M workspace/ocr-preprocess.py",
+      " M workspace/ocr.cjs",
+      " M workspace/platform.css",
+      " M workspace/schedule.js",
+      " M workspace/store.cjs",
+      "?? docs/CALLBACK_RESOURCE_VERIFICATION.md",
+      "?? docs/OCR_DESKEW_2026_11_23.md",
+      "?? docs/evidence/callback-resource-baseline.json",
+      "?? docs/evidence/callback-resource-candidate.json",
+      "?? docs/evidence/callback-resource-excluded-attempt1.json",
+      "?? docs/evidence/callback-resource-final-harness-smoke.json",
+      "?? docs/evidence/callback-resource-harness-used.cjs.txt",
+      "?? docs/evidence/callback-resource-server-harness-used.cjs.txt",
+      "?? docs/evidence/callback-resource-verification.json",
+      "?? docs/evidence/callback-scheduling-run81.json",
+      "?? docs/evidence/ocr-deskew-2026-11-23.json",
+      "?? docs/evidence/ocr-small-text-ci-run81.json",
+      "?? scripts/callback-workload.cjs",
+      "?? tests/callback-task-resources.test.cjs",
+      "?? tests/helpers/callback-capacity-fixture.cjs",
+      "?? tests/helpers/callback-workload-server.cjs"
+    ],
+    "sourceManifest": [
+      {
+        "path": ".env.example",
+        "sha256": "9a0c513f779546e2b38736986743a2551de11532a0b9c4edc1b5da41f4029db8"
+      },
+      {
+        "path": ".gitattributes",
+        "sha256": "c8b8ee9e85458eacee1610cfceb0b6270b26655dd9b1f2050a94733eaf95ea3d"
+      },
+      {
+        "path": ".github/workflows/demo-tests.yml",
+        "sha256": "3fad5ad85bdb86b4093bc5b40667505ef86d2709194e2ff2580cb5bf530e265e"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "8a44f4036516ee90069b07d52d7d14b7289bd648a923b772006260b30faadd6e"
+      },
+      {
+        "path": "callback-server.cjs",
+        "sha256": "7007993d24140e2cb110a9c6ad84d9ce0e65ac0815fc90d7ab49c0d784f0ef22"
+      },
+      {
+        "path": "design-preview/app.js",
+        "sha256": "708cd186fdd0373b8d9b9833235d7069a5500b0c9ff665ce8fe566c2121249a5"
+      },
+      {
+        "path": "design-preview/demo-core.js",
+        "sha256": "ea52186803e712820a1b78ec72e95f708d4c2529bbadd564d4d98c979ec7dafe"
+      },
+      {
+        "path": "design-preview/index.html",
+        "sha256": "035e9e8c839a66923c7fdb82ffb869d12b863f764070cc73e251faefd590cf87"
+      },
+      {
+        "path": "design-preview/mark-on-dark.svg",
+        "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+      },
+      {
+        "path": "design-preview/mark-on-light.svg",
+        "sha256": "790faba6500e601710b0904141fdfdbba522d383cc3624e0eb72bafef9632b20"
+      },
+      {
+        "path": "design-preview/mark.svg",
+        "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+      },
+      {
+        "path": "design-preview/sample-label.svg",
+        "sha256": "f19e565c0d7c19421053102c1e368b361a9da6719bf251823cc569fd7c1e21e4"
+      },
+      {
+        "path": "design-preview/styles.css",
+        "sha256": "0155dbbe1f4f8f614a0173bb9712fdac1c70c77d04728f49b7cd2da61890e2d6"
+      },
+      {
+        "path": "docs/test-milestones.json",
+        "sha256": "0bae74dae8fa8906003e88ab2fe7c5f2e65640114f72450aab255027d9ff6005"
+      },
+      {
+        "path": "index.html",
+        "sha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82"
+      },
+      {
+        "path": "robots.txt",
+        "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+      },
+      {
+        "path": "scripts/aggregate-test-evidence.cjs",
+        "sha256": "e6fc977a09212c3285abb78885a9a2c0a077a3bc57dbb029c32792c9bfc08237"
+      },
+      {
+        "path": "scripts/benchmark-ocr.cjs",
+        "sha256": "43663bb797781049ece3ea674723912f248c937c8140464d9a19d57178bc0460"
+      },
+      {
+        "path": "scripts/build-demo.cjs",
+        "sha256": "dd197c8874e4bf5093f1083043b528acf72f1df5b485ab674704674e7f1c52f8"
+      },
+      {
+        "path": "scripts/callback-workload.cjs",
+        "sha256": "9df23dd408dbb5eb00724bd864aec42e15b72b2ddf66a17e227cca3e5b22a96b"
+      },
+      {
+        "path": "scripts/evaluate-assistant.cjs",
+        "sha256": "f018e8c5d789b2de370775b39c0b48d2d94278e6147a0514850c3418d1c84117"
+      },
+      {
+        "path": "scripts/http-workload.cjs",
+        "sha256": "3bd437d7e03be2f520886b4c97b25fe5b3f7ce70167df38bff793c174772e5d5"
+      },
+      {
+        "path": "scripts/ocr-isolation-diagnostics.cjs",
+        "sha256": "dbfc5aaf5d97e65ca0804078e0cf78f16d5428341e8ed822b8d7405e1f8b8f20"
+      },
+      {
+        "path": "scripts/ocr-process-metrics.cjs",
+        "sha256": "fd9637a0b89be8f556288a71453c65d8f4dfe46b1a09e0236ed9e9f986fd8789"
+      },
+      {
+        "path": "scripts/prelaunch-stress.cjs",
+        "sha256": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c"
+      },
+      {
+        "path": "scripts/run-release-node.cjs",
+        "sha256": "96db3c3d1cd21e2b4a7a0dc7710d3a891f57ca710c8f299fdbcf8590db776575"
+      },
+      {
+        "path": "scripts/test-evidence.cjs",
+        "sha256": "e6e1570da75b0018983dc91e6430d457c546cce2c10fd8a889396dcce9517584"
+      },
+      {
+        "path": "scripts/test-ocr-fixtures.cjs",
+        "sha256": "f606a742a326bafb4407725facf60a59913af06a6b78c06ed9bffb7c077f19b7"
+      },
+      {
+        "path": "scripts/test-ocr-isolation.cjs",
+        "sha256": "b3d1f65514aae5f13ef722b58f7ac36f0766b4a58df5d13cbb2868b53c0a67bd"
+      },
+      {
+        "path": "scripts/test-ocr-resource-limits.cjs",
+        "sha256": "89e951cff6b4f49f79e0b0c39d23b09ffc7f3a1c72b5417a3ad0ee73b3f995d4"
+      },
+      {
+        "path": "scripts/test-xlsx-reader.py",
+        "sha256": "8ef1e79dfb505203781518a992d707e4827c4be532723051a978861f3c486f3b"
+      },
+      {
+        "path": "scripts/workspace-admin.cjs",
+        "sha256": "cbbf45967c6b9302bab4ab82d4c8572b27816befcd6fc0f8150b08e304370f0a"
+      },
+      {
+        "path": "scripts/workspace-backup.cjs",
+        "sha256": "99e4beec53cd2ea3514cb8cb0bcdb469bcbb424d0f189d664ea595d7f3d80e40"
+      },
+      {
+        "path": "scripts/workspace-reset-password.cjs",
+        "sha256": "95c773fbfe4253e8e979c38a77c250704e5a6a5af7fa1c2b3562e15ceca23372"
+      },
+      {
+        "path": "server.cjs",
+        "sha256": "5b88a11280ab7086468995c6a70cf6169f643d8a035b52e9829c1294f9c08b71"
+      },
+      {
+        "path": "spreadsheet-server.cjs",
+        "sha256": "f552f097b884ce1ba77ee6afd6a0eaa34aea108dc2bf6745346bbe26abcd5a94"
+      },
+      {
+        "path": "src/business-info.js",
+        "sha256": "f1d9187d31d2e5a953614fa3824a9b54ad1683a7f0944d96943d4f643e9753a1"
+      },
+      {
+        "path": "src/demo.js",
+        "sha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974"
+      },
+      {
+        "path": "src/intake.js",
+        "sha256": "bf33576b3472b29d9375cc0ed422e279e6bf5cb9787e35fd42a66f7565358895"
+      },
+      {
+        "path": "src/questions.js",
+        "sha256": "96defee8d12af867f4d29672bb7c8a31c1cbb84a6cca5d707ba2e1ed31ec637a"
+      },
+      {
+        "path": "tests/assistant-adversarial.test.cjs",
+        "sha256": "706bcc87e313133af6a4ba2900496a85bae719f44687e46bb16e879bdb5ada85"
+      },
+      {
+        "path": "tests/assistant-api.test.cjs",
+        "sha256": "5b64d383fc1ad6e454790b9c8df9351e92eba6a9aed24ecf554e9e208e827593"
+      },
+      {
+        "path": "tests/assistant-evaluation.test.cjs",
+        "sha256": "e4216a886fa585bbea7ed3adb1d055578bac2bee7f62504a50812f3a1988149f"
+      },
+      {
+        "path": "tests/assistant-provider.test.cjs",
+        "sha256": "d319fda86badbf14f5ea5b259e383a157db391fe79ba7610051698229c44c398"
+      },
+      {
+        "path": "tests/assistant-usage.test.cjs",
+        "sha256": "4558bc4c0ae8256e0bb4c107fa028a0c4fac3a179a5c26addc83dbbc5cbacc28"
+      },
+      {
+        "path": "tests/assistant_browser_test.py",
+        "sha256": "c8d1c289c6b06d38838000e8159d4f80cf0cee3d40a8a98b29010f8524f254fd"
+      },
+      {
+        "path": "tests/browser-requirements.txt",
+        "sha256": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82"
+      },
+      {
+        "path": "tests/browser_engine.py",
+        "sha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5"
+      },
+      {
+        "path": "tests/browser_test.py",
+        "sha256": "93380a727c1a215128095457d11714064325f05036ce2abcb345eeb96bf2cbcf"
+      },
+      {
+        "path": "tests/callback-schedule-client.test.cjs",
+        "sha256": "1a22def2562bd3442f3096de8de255430d4823a2af853d8d20e04806f220bbb8"
+      },
+      {
+        "path": "tests/callback-task-resources.test.cjs",
+        "sha256": "24203d1f9b393df6a5fdd3824647854d26e76fcb264a4437596077acd704cf47"
+      },
+      {
+        "path": "tests/callback-tasks-api.test.cjs",
+        "sha256": "eaf876d1fb65ee4dff6161dafd5685d31372ab9a6b709a2a4bf0b2a797e1d2cd"
+      },
+      {
+        "path": "tests/callback-tasks.test.cjs",
+        "sha256": "1c6628fa3e9312f3e5ee91904ef192feedddc883fdf35051dd07c533e004d91d"
+      },
+      {
+        "path": "tests/data-lifecycle.test.cjs",
+        "sha256": "60cd78b78b597955b3b9dfbc9d77c044be7e2a51a587ddc3d3a057ffca18220c"
+      },
+      {
+        "path": "tests/deletion-client-review.test.cjs",
+        "sha256": "54d241e05fbc071bf3d6cd363dbbf97bd87137d05a858cd06b7a44af7cb8d33b"
+      },
+      {
+        "path": "tests/demo.test.cjs",
+        "sha256": "a18839cc242acc94865de602b5a627e9c3b010206ecc8f6fd8bafd9a62dd2b11"
+      },
+      {
+        "path": "tests/design-preview.test.cjs",
+        "sha256": "6e27175539d9ec2ae7ccc86e82bff771413417b7bfa4f2ef4605c6f96eea3f8a"
+      },
+      {
+        "path": "tests/design_browser_test.py",
+        "sha256": "174f1279dcd853bb3abee0842ed73b4da5b4dc2ae10f57e78f0eef759cb1376f"
+      },
+      {
+        "path": "tests/fixtures/assistant/corpus.json",
+        "sha256": "7cf62e652dbf9d059ab13a3c8b94a50655a11913412dbbb65ea43c895c4b5e22"
+      },
+      {
+        "path": "tests/fixtures/assistant/remediation-corpus.json",
+        "sha256": "a397bc55d927b231eb5a4f4122d64d87c9cff77085b96e36f20c584e044dec47"
+      },
+      {
+        "path": "tests/fixtures/fake-assistant-server.cjs",
+        "sha256": "bf9d3ffe96b4cd3dacfda24cbb95f74376215cc40bb91b49a36dc31af47555d0"
+      },
+      {
+        "path": "tests/fixtures/panels-benchmark/generate.py",
+        "sha256": "8a514a230e1864c5fbfd89e92bf5734a47e782226546130210e14a1a5cce0446"
+      },
+      {
+        "path": "tests/fixtures/panels/blank.png",
+        "sha256": "f0f703c91e3ebd1b2b6e36e248ef975bfdcadf79874e2dc01f5d18e6ff808d65"
+      },
+      {
+        "path": "tests/fixtures/panels/complete.jpg",
+        "sha256": "dc5a70009e1ffb39a72b52aa57ba53b0e2f9800896e4771906f6d97042b2de93"
+      },
+      {
+        "path": "tests/fixtures/panels/complete.png",
+        "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18"
+      },
+      {
+        "path": "tests/fixtures/panels/conflicting-parts.png",
+        "sha256": "f7a2abb5abaaee64f97c55bcf087c9d235afeb78efbef1e20665bb29ad5f3375"
+      },
+      {
+        "path": "tests/fixtures/panels/generate.py",
+        "sha256": "63f5b9ac99fb03ae33a510fdc980f0d743f331dd727e9996a9d954a25b7445c9"
+      },
+      {
+        "path": "tests/fixtures/panels/manifest.json",
+        "sha256": "df089f76f59a22abccd9904c6f4988abeaecb6d016c52a9930ab635ce3db5608"
+      },
+      {
+        "path": "tests/fixtures/panels/missing-manufacturer.png",
+        "sha256": "d9bba9861d3deebdff4f538fdbfd065ec2050ce37e73c5e9b4910fa1ef515964"
+      },
+      {
+        "path": "tests/fixtures/panels/unlabelled.png",
+        "sha256": "420326aad796fd00d5a1bf6ee679616eab8b1f1678e5040f112d880579f8ebd2"
+      },
+      {
+        "path": "tests/fixtures/release-api-matrix.cjs",
+        "sha256": "8c729270d45cf05074bb71228349227358b95080c9047dd45fe136ca860032b4"
+      },
+      {
+        "path": "tests/fixtures/xlsx-projects.cjs",
+        "sha256": "02671d7d22a639a9526dc69b1f697cf4a6a632c609f5897fa0eac90dad195c63"
+      },
+      {
+        "path": "tests/helpers/callback-capacity-fixture.cjs",
+        "sha256": "a5a05af78e533279f2ad37170e4378626761bf84a8fcf8b1f60d9e79bc7f7dac"
+      },
+      {
+        "path": "tests/helpers/callback-workload-server.cjs",
+        "sha256": "f57609f05c61580ead7dc2d297e9a1c7a243bb0767cd907fba61fa98a8f46e8b"
+      },
+      {
+        "path": "tests/helpers/concurrent-store.cjs",
+        "sha256": "fcb8e2d14a36cffc50280ffff309b9e1814ea80b146c0a32019a4a625536ab8c"
+      },
+      {
+        "path": "tests/helpers/fake-assistant.cjs",
+        "sha256": "4fd9688487fb4a550a7f5ee91241cab30cb4fbca15d95760987c95628dbe9fe1"
+      },
+      {
+        "path": "tests/helpers/http-workload-worker.cjs",
+        "sha256": "e23ab077993e70f55ef83400b8132b51b56f98a24604908afebab244e7c95fd6"
+      },
+      {
+        "path": "tests/helpers/lifecycle-worker.cjs",
+        "sha256": "65691db014882661747842c78c12ba89b299c27cec76b4da7042a01f61c38852"
+      },
+      {
+        "path": "tests/helpers/release-xlsx-reader.py",
+        "sha256": "b6f828b71309f9de45a56a459fa96fa56b28749303cdb5b84eeb45b495d579c8"
+      },
+      {
+        "path": "tests/helpers/usage-worker.cjs",
+        "sha256": "57855a14e0afc84d98582d6ba19ad447c5e377f98688e3425b25601d5a5d8b78"
+      },
+      {
+        "path": "tests/intake.test.cjs",
+        "sha256": "9a72732fda70299db244b234ded86038ebc1652351d042c5dd72c27381290d59"
+      },
+      {
+        "path": "tests/intake_browser_test.py",
+        "sha256": "75bce2172ec53c70b3a5022cdb2034aec18533d7a589ac620b05845b5ad4db9e"
+      },
+      {
+        "path": "tests/lifecycle-api.test.cjs",
+        "sha256": "f10ab6b25f465e0ce8b68f23ed421c83ed839eea8c0f0a3f2267b831a8f717f7"
+      },
+      {
+        "path": "tests/lifecycle_browser_test.py",
+        "sha256": "cb0da6df66fe8fb7b07fd518209b94639f46a273ef6e807571b8fab69c614489"
+      },
+      {
+        "path": "tests/live-smoke.test.cjs",
+        "sha256": "b6f11d3e4f3dbfca8c284f67c613830e3aebc5ccf6ca4a712997b4d9772afd3f"
+      },
+      {
+        "path": "tests/macos_product_browser_test.py",
+        "sha256": "05dd5e9e30e7141886d96849b3bdfdca060df498277f2f2d8b7f59e9658af50f"
+      },
+      {
+        "path": "tests/ocr-benchmark.test.cjs",
+        "sha256": "0a32b2fb16a85b107a75a460dbe74fd5015ca98f4677a55426f4b4008d900146"
+      },
+      {
+        "path": "tests/ocr-isolation-diagnostics.test.cjs",
+        "sha256": "0985944b34f0063e212609a14f4f9f4299eb21a5e0afb784a3a9a58cbc1cc2b5"
+      },
+      {
+        "path": "tests/ocr-isolation.test.cjs",
+        "sha256": "e7f6abc192ce85a2d09998b91503a656650fd587bfefc0786ca930bc3acd125d"
+      },
+      {
+        "path": "tests/ocr.test.cjs",
+        "sha256": "a83fc9f30da273019d177c8b4acc775e711df9b260a014adea165347a3988d4c"
+      },
+      {
+        "path": "tests/panel-api.test.cjs",
+        "sha256": "8e8055cfadd4d4cbc1dbc4ce5d5c2f21f18423cb61876384ed2dc05e47ece310"
+      },
+      {
+        "path": "tests/panel-store.test.cjs",
+        "sha256": "ebb80df565a9ff3846e760fe814403f75487d975b3c7e650a110886b3ef7b139"
+      },
+      {
+        "path": "tests/panel-xlsx.test.cjs",
+        "sha256": "90c7f1096c25d1c41690cf084192fd0018a2f3ba64a622c5b8ef01efbace0143"
+      },
+      {
+        "path": "tests/panel_browser_test.py",
+        "sha256": "3b2c0393be8a4dff46877ce2f67ef0cdcba51d989a8b4bc77cd10847ca89d4bf"
+      },
+      {
+        "path": "tests/platform-client-state.test.cjs",
+        "sha256": "6c58b873e1a3aa4959674c2b567917b22e37cdd5fba5dca71539987fdf32c140"
+      },
+      {
+        "path": "tests/platform_visual_browser_test.py",
+        "sha256": "22f3ab35929bdc072223bb664dada30311566ff763b5b65f653cca5d8c319639"
+      },
+      {
+        "path": "tests/prelaunch-concurrency.test.cjs",
+        "sha256": "e7b95be6ca08bdb02e02f0397e24fe11f662d1caf3debeb714fba8d4ffc7ec83"
+      },
+      {
+        "path": "tests/prelaunch-requirements.txt",
+        "sha256": "1b10a90ffd4411fa0fa250fc18fe206264df027453cb3f27b20414992bf3bd57"
+      },
+      {
+        "path": "tests/product-backup.test.cjs",
+        "sha256": "fb100876cad6e5aee275bd16a0afc6d8cd84e694613a14be73bedcbf8cf88114"
+      },
+      {
+        "path": "tests/product-boundaries.test.cjs",
+        "sha256": "653b26afd4db28951daa00a8d418a0bb8afb61cf95b9f2a8ed7c752f54c1774f"
+      },
+      {
+        "path": "tests/product-config.test.cjs",
+        "sha256": "f80d374597b0467593ce8f47f53686ec2ec010fb8245f7567b2f30b0618ad571"
+      },
+      {
+        "path": "tests/product-ui.test.cjs",
+        "sha256": "6d0db0ea3fe41bd873bd5db68963c214bd45cd26e3794f3af8cee9916dd7e9b0"
+      },
+      {
+        "path": "tests/product_browser_test.py",
+        "sha256": "bbd9f6c93574fc7eb3c380ef10b6a6d30388d001f04459cd62aea514f18753ef"
+      },
+      {
+        "path": "tests/questions.test.cjs",
+        "sha256": "949f917c506ec4b027113697802ffe143988ab03e23ee254bb6a241df1e6897c"
+      },
+      {
+        "path": "tests/release-api-matrix.test.cjs",
+        "sha256": "726ae18c83b7623d87091601bd340848614490e917844e6db77eb536e236594b"
+      },
+      {
+        "path": "tests/release-assistant-matrix.test.cjs",
+        "sha256": "2a39ec5242c2a1339b385cb7e28c0abbcf0a16c8dab052b92b76c9a500177808"
+      },
+      {
+        "path": "tests/release-deletion-model.test.cjs",
+        "sha256": "faf08d80e804a87a2a32c1b48bef325315802f93a104003c56d3a14b590bb15f"
+      },
+      {
+        "path": "tests/release-evidence.test.cjs",
+        "sha256": "9ee1bbd00f541e978be5471c687342b2c675398dce92f53fea684eb57ee96216"
+      },
+      {
+        "path": "tests/release-export-matrix.test.cjs",
+        "sha256": "6b1cec655128f5d71467be5f8c15059248097313666567b065622a5db9ae03c5"
+      },
+      {
+        "path": "tests/release-name-grounding.test.cjs",
+        "sha256": "3b236166ef2ae58102b5aeec63ead501f4621e861ad069146fc15a6dc098691b"
+      },
+      {
+        "path": "tests/release_mobile_browser_test.py",
+        "sha256": "8e4cc24298d9c221bdf9ecd5aad8771224790a65b42bacadd0e25f0457293b32"
+      },
+      {
+        "path": "tests/release_platform_runner.py",
+        "sha256": "c1198d7d4c3cc00d1f9a503b20c31c37e9a97052578fbbcfe47460b679f795aa"
+      },
+      {
+        "path": "tests/remediation-adversarial.test.cjs",
+        "sha256": "4f90f9efe510e5b2f5ece015a3ccdef048f8a3ea69cc24836d04792756270f91"
+      },
+      {
+        "path": "tests/remediation-review.test.cjs",
+        "sha256": "5bf239eb25a792e6eaba5bfd199f2d2cc89bf225111e08df502eb627fcb6b1b2"
+      },
+      {
+        "path": "tests/retention-review.test.cjs",
+        "sha256": "8bf0d5fc95f2a592065ca69b31def36cfbd8ad0ab9f042cb42923dd33ad3c01d"
+      },
+      {
+        "path": "tests/server-http.test.cjs",
+        "sha256": "270bc063c9b7203089264155bb0bf2295609ea9e780d6ce5b8a65d1960efa2e9"
+      },
+      {
+        "path": "tests/server.test.cjs",
+        "sha256": "9ed981af6c05c6743f8aaa4fe86f5469d057bdb94db27914b56ddf8491fdd4f4"
+      },
+      {
+        "path": "tests/ui_browser_test.py",
+        "sha256": "2babe308ea87a4c42fc0b84e574439242799cd4df3e614456aa931be9518821c"
+      },
+      {
+        "path": "tests/workspace-api.test.cjs",
+        "sha256": "08527d865d6af58b02dab1e93c87397549509dbaaa7b6c83f654a2ba485d260b"
+      },
+      {
+        "path": "tests/workspace-assistant.test.cjs",
+        "sha256": "4c1c50646faba3a4a9ced0ce841788c4156d8ce9add2372911ccdd10f1b6c6f1"
+      },
+      {
+        "path": "tests/workspace-backup.test.cjs",
+        "sha256": "5372337544d7eb3dd5e33954be5df1fca35f178f59be0d4224bc2b5a82ad7f6d"
+      },
+      {
+        "path": "tests/workspace-conversation.test.cjs",
+        "sha256": "403314e9600f5001a14ec347fe2a982ba36b2bf2786019130cc9557ed7bebdf8"
+      },
+      {
+        "path": "tests/workspace-export.test.cjs",
+        "sha256": "a4b43f56bde86e3221c8aedd990372f6a71084a19726ea3211267d58d9598abd"
+      },
+      {
+        "path": "tests/workspace-file-safety.test.cjs",
+        "sha256": "b8fcdc2bbe6d58bb65dc0eed4d281c7814ad873fd16b8efb23a116c69ba03cbe"
+      },
+      {
+        "path": "tests/workspace-http.test.cjs",
+        "sha256": "40bbb53eba37b13a83c88ed4e43075b90e28fd0dba6648447b0656092eaab1a1"
+      },
+      {
+        "path": "tests/workspace-recovery-auth.test.cjs",
+        "sha256": "4f1b17f263e67fc733f9fe5327687c2d665905771531a72f3f51a5d887ffc811"
+      },
+      {
+        "path": "tests/workspace-revocation.test.cjs",
+        "sha256": "749c3c194fd715624ff8688351fd3363467fdc852eca46c6d95827de13569515"
+      },
+      {
+        "path": "tests/workspace-store.test.cjs",
+        "sha256": "86e93de8156440b2ccdb43b414e4d9427de24f9eeeb65b4683188dd74e615792"
+      },
+      {
+        "path": "tests/workspace_browser_test.py",
+        "sha256": "4ddf7eb6c28ce6410664b6cbd30f127d887ece8f68a9f7f263e301a9a53c8cac"
+      },
+      {
+        "path": "tests/workspace_recovery_browser_test.py",
+        "sha256": "d9665c37f08c818d2acc19109e4f6d49d3691aabbc00414ebe2671814e0947cb"
+      },
+      {
+        "path": "tests/xlsx_browser_test.py",
+        "sha256": "4afba86c2653bf7b3c2ec0b4d9cd0695e87f1954558a46848ce0cbd9f086d984"
+      },
+      {
+        "path": "workspace-server.cjs",
+        "sha256": "a9bc61d6bfe55408943efb15b923632b22b552da6fda735135aba8614524e34c"
+      },
+      {
+        "path": "workspace/api.cjs",
+        "sha256": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e"
+      },
+      {
+        "path": "workspace/app.js",
+        "sha256": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989"
+      },
+      {
+        "path": "workspace/assistant-config.cjs",
+        "sha256": "fd982824e867685ca34a4f6e0aca65dd1afeed292dfd2a53f25c3d255cf49b69"
+      },
+      {
+        "path": "workspace/assistant-provider.cjs",
+        "sha256": "f6304a1496d6fdf3f961ce5de451d32ab5a0cbad64d59209ca7ad3554dfd0fc0"
+      },
+      {
+        "path": "workspace/assistant.cjs",
+        "sha256": "b7d5cdcd8372a79a3ddd622fdb623d85d30cb97988623955cdea117ef5b1e0f5"
+      },
+      {
+        "path": "workspace/auth.cjs",
+        "sha256": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5"
+      },
+      {
+        "path": "workspace/backup.cjs",
+        "sha256": "c1a3690060753cf6539d8f784b3c6c660a7765ff6fb557724dc26ac0c3bc5675"
+      },
+      {
+        "path": "workspace/callback-tasks.cjs",
+        "sha256": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff"
+      },
+      {
+        "path": "workspace/conversation.cjs",
+        "sha256": "edbf75aec1764aa77b905c93aa8d6912baaf420c2cfdf2d0bc565ca6c306b390"
+      },
+      {
+        "path": "workspace/dashboard.html",
+        "sha256": "d4b2d33efa7c8ac6143b005ac3f82c6784e5c4a9eaeca3d4bacc642598c582f2"
+      },
+      {
+        "path": "workspace/dashboard.js",
+        "sha256": "6dc659c482c5279f40b109bd415ea59cbd1ecadb0fcd5bfb067d53921ba139b4"
+      },
+      {
+        "path": "workspace/deletion.js",
+        "sha256": "0b15e7b7d9387c8e9ed62005b13933e1c6a5703a3c06e773bed40ac14acf0fc3"
+      },
+      {
+        "path": "workspace/file-safety.cjs",
+        "sha256": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad"
+      },
+      {
+        "path": "workspace/index.html",
+        "sha256": "62d2292361c936decbf07a01b5baef02ae46f0c6e0d27dda181abfdf93e063c4"
+      },
+      {
+        "path": "workspace/lifecycle.cjs",
+        "sha256": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec"
+      },
+      {
+        "path": "workspace/login.html",
+        "sha256": "0cbe93901a23a571b7d1ac021462273aa951b4c6b420691ec2e8257143e91029"
+      },
+      {
+        "path": "workspace/login.js",
+        "sha256": "7756811688ab7c5d19f3abc0652fea6c895d7f81938005ff75b906a777aa0dec"
+      },
+      {
+        "path": "workspace/ocr-isolation.cjs",
+        "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
+      },
+      {
+        "path": "workspace/ocr-preprocess.py",
+        "sha256": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014"
+      },
+      {
+        "path": "workspace/ocr.cjs",
+        "sha256": "75638551bd43b0fd5a37d059e1486f399b9941614650537961ea79f968771da1"
+      },
+      {
+        "path": "workspace/panels.cjs",
+        "sha256": "a8d342850cb2b43f206c41d6a8522894da5bb52d3e2a177a4e08bca85cecd637"
+      },
+      {
+        "path": "workspace/panels.html",
+        "sha256": "5899e9bba17bfaf45e5409931e0857a9aa9ab8ed001b81890e880ae9bb1fdef6"
+      },
+      {
+        "path": "workspace/panels.js",
+        "sha256": "3cc498bf100701342511beaf5c86680bedec9eb880d7e26794eec15091ed4c1c"
+      },
+      {
+        "path": "workspace/platform.css",
+        "sha256": "7f2d28a78d7f0d390295e9b997b407c62fa309de9337fabff88e999cc6cd883e"
+      },
+      {
+        "path": "workspace/preview.html",
+        "sha256": "0bd1a6617845ab02ade2a9ce1cd786755ab93401884ad0a3c5e69d2b082a90cd"
+      },
+      {
+        "path": "workspace/preview.js",
+        "sha256": "17dd4784b569170a96dc46b5f696bac19c0d73f39484da16837855112f5b3149"
+      },
+      {
+        "path": "workspace/product-ui.cjs",
+        "sha256": "a63ae23a7240d5f5c443959521ef818f5e50d9298c82bfc955a2f713f2387c0d"
+      },
+      {
+        "path": "workspace/products.cjs",
+        "sha256": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf"
+      },
+      {
+        "path": "workspace/retention.cjs",
+        "sha256": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4"
+      },
+      {
+        "path": "workspace/schedule.js",
+        "sha256": "daa6f26cf85e04e155a44536a3da615f1ee3abf09916d6db7fca615159d33fb9"
+      },
+      {
+        "path": "workspace/store.cjs",
+        "sha256": "ad432dfdc5597a46c66af180bd8205c15f76d66c595bbd4385268fccfdf5fa0f"
+      },
+      {
+        "path": "workspace/styles.css",
+        "sha256": "f285c96afb73440a933010e0b668f9e315c6622de6d30568182d87cf54730b99"
+      },
+      {
+        "path": "workspace/usage.cjs",
+        "sha256": "6a0e1e60fd6e3318e590e0786f5bbedf2975ed0e3e6f21a3a2cadb1dd2b4bee2"
+      },
+      {
+        "path": "workspace/xlsx.cjs",
+        "sha256": "51027a82df044bf444fe31965bbd39118fdaa6ed306022c7d3fadef083b4c217"
+      }
+    ]
+  },
+  "startedAt": "2026-11-23T16:11:13.790Z",
+  "completedAt": "2026-11-23T16:11:51.165Z",
+  "platform": {
+    "os": "linux",
+    "osRelease": "6.18.57",
+    "architecture": "x86_64",
+    "node": "v24.22.3",
+    "platformKey": "linux/x86_64/node24"
+  },
+  "command": "WORKSPACE_HTTP_TESTS=1 node scripts/run-release-node.cjs --output /tmp/panelreply-nov23-integrated-node.json",
+  "totals": {
+    "passed": 9091,
+    "failed": 0,
+    "skipped": 0,
+    "todo": 0,
+    "cancelled": 0,
+    "harnessPassed": 91
+  },
+  "productPassing": 9000,
+  "infrastructureErrors": [],
+  "perFile": {
+    "tests/assistant-adversarial.test.cjs": {
+      "PASS": 11
+    },
+    "tests/assistant-api.test.cjs": {
+      "PASS": 15
+    },
+    "tests/assistant-evaluation.test.cjs": {
+      "PASS": 334
+    },
+    "tests/assistant-provider.test.cjs": {
+      "PASS": 31
+    },
+    "tests/assistant-usage.test.cjs": {
+      "PASS": 17
+    },
+    "tests/callback-schedule-client.test.cjs": {
+      "PASS": 31
+    },
+    "tests/callback-task-resources.test.cjs": {
+      "PASS": 5
+    },
+    "tests/callback-tasks-api.test.cjs": {
+      "PASS": 13
+    },
+    "tests/callback-tasks.test.cjs": {
+      "PASS": 70
+    },
+    "tests/data-lifecycle.test.cjs": {
+      "PASS": 41
+    },
+    "tests/deletion-client-review.test.cjs": {
+      "PASS": 11
+    },
+    "tests/demo.test.cjs": {
+      "PASS": 56
+    },
+    "tests/design-preview.test.cjs": {
+      "PASS": 25
+    },
+    "tests/intake.test.cjs": {
+      "PASS": 65
+    },
+    "tests/lifecycle-api.test.cjs": {
+      "PASS": 24
+    },
+    "tests/ocr-benchmark.test.cjs": {
+      "PASS": 5
+    },
+    "tests/ocr-isolation-diagnostics.test.cjs": {
+      "PASS": 8
+    },
+    "tests/ocr-isolation.test.cjs": {
+      "PASS": 3
+    },
+    "tests/ocr.test.cjs": {
+      "PASS": 82
+    },
+    "tests/panel-api.test.cjs": {
+      "PASS": 24
+    },
+    "tests/panel-store.test.cjs": {
+      "PASS": 24
+    },
+    "tests/panel-xlsx.test.cjs": {
+      "PASS": 13
+    },
+    "tests/platform-client-state.test.cjs": {
+      "PASS": 8
+    },
+    "tests/prelaunch-concurrency.test.cjs": {
+      "PASS": 6
+    },
+    "tests/product-backup.test.cjs": {
+      "PASS": 39
+    },
+    "tests/product-boundaries.test.cjs": {
+      "PASS": 92
+    },
+    "tests/product-config.test.cjs": {
+      "PASS": 62
+    },
+    "tests/product-ui.test.cjs": {
+      "PASS": 34
+    },
+    "tests/questions.test.cjs": {
+      "PASS": 18
+    },
+    "tests/release-api-matrix.test.cjs": {
+      "PASS": 1296
+    },
+    "tests/release-assistant-matrix.test.cjs": {
+      "PASS": 983
+    },
+    "tests/release-deletion-model.test.cjs": {
+      "PASS": 2920
+    },
+    "tests/release-evidence.test.cjs": {
+      "PASS": 91
+    },
+    "tests/release-export-matrix.test.cjs": {
+      "PASS": 2268
+    },
+    "tests/release-name-grounding.test.cjs": {
+      "PASS": 24
+    },
+    "tests/remediation-adversarial.test.cjs": {
+      "PASS": 20
+    },
+    "tests/remediation-review.test.cjs": {
+      "PASS": 12
+    },
+    "tests/retention-review.test.cjs": {
+      "PASS": 8
+    },
+    "tests/server-http.test.cjs": {
+      "PASS": 1
+    },
+    "tests/server.test.cjs": {
+      "PASS": 32
+    },
+    "tests/workspace-api.test.cjs": {
+      "PASS": 17
+    },
+    "tests/workspace-assistant.test.cjs": {
+      "PASS": 116
+    },
+    "tests/workspace-backup.test.cjs": {
+      "PASS": 28
+    },
+    "tests/workspace-conversation.test.cjs": {
+      "PASS": 34
+    },
+    "tests/workspace-export.test.cjs": {
+      "PASS": 10
+    },
+    "tests/workspace-file-safety.test.cjs": {
+      "PASS": 6
+    },
+    "tests/workspace-http.test.cjs": {
+      "PASS": 7
+    },
+    "tests/workspace-recovery-auth.test.cjs": {
+      "PASS": 25
+    },
+    "tests/workspace-revocation.test.cjs": {
+      "PASS": 8
+    },
+    "tests/workspace-store.test.cjs": {
+      "PASS": 18
+    }
+  },
+  "changedFocusedCases": [
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time resolves winter and summer offsets independently of the device zone",
+      "name": "callback local time resolves winter and summer offsets independently of the device zone",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 21.566494,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time exposes both instants in the repeated fall hour",
+      "name": "callback local time exposes both instants in the repeated fall hour",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.310508,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time rejects the skipped spring hour without normalizing it forward",
+      "name": "callback local time rejects the skipped spring hour without normalizing it forward",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.337248,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time supports a half-hour clock transition",
+      "name": "callback local time supports a half-hour clock transition",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.416428,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time preserves quarter-hour offsets and date-boundary conversions",
+      "name": "callback local time preserves quarter-hour offsets and date-boundary conversions",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.63006,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time rejects impossible dates and unsupported zone identifiers",
+      "name": "callback local time rejects impossible dates and unsupported zone identifiers",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.033489,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback leap-day conversion retains the saved wall-clock minute",
+      "name": "callback leap-day conversion retains the saved wall-clock minute",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.800148,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback schedule submits the reviewed UTC instant, zone and current parent revision",
+      "name": "callback schedule submits the reviewed UTC instant, zone and current parent revision",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 15.296229,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback ambiguous time cannot save until the operator chooses an occurrence",
+      "name": "callback ambiguous time cannot save until the operator chooses an occurrence",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.185055,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback changing the time zone clears an earlier ambiguous occurrence selection",
+      "name": "callback changing the time zone clears an earlier ambiguous occurrence selection",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.305246,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback nonexistent wall-clock time never reaches the mutation API",
+      "name": "callback nonexistent wall-clock time never reaches the mutation API",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.899545,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback lost save response retains the same idempotency key and payload for retry",
+      "name": "callback lost save response retains the same idempotency key and payload for retry",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.700402,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback malformed success is treated as an uncertain save instead of clearing the draft",
+      "name": "callback malformed success is treated as an uncertain save instead of clearing the draft",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.535176,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback a rejected retry cannot erase an earlier unknown save result",
+      "name": "callback a rejected retry cannot erase an earlier unknown save result",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.945376,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback version rejection retains edits and requires a reload before another mutation",
+      "name": "callback version rejection retains edits and requires a reload before another mutation",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.686284,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback form correction remains possible after a definitive input rejection",
+      "name": "callback form correction remains possible after a definitive input rejection",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.200559,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback opt-out blocks scheduling without hiding the saved request",
+      "name": "callback opt-out blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.858253,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback safety hold blocks scheduling without hiding the saved request",
+      "name": "callback safety hold blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.863451,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback closed request blocks scheduling without hiding the saved request",
+      "name": "callback closed request blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.621477,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback review request blocks scheduling without hiding the saved request",
+      "name": "callback review request blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.741879,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback missing permission blocks scheduling without hiding the saved request",
+      "name": "callback missing permission blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.326211,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback blocked task retains cancellation while contact actions remain disabled",
+      "name": "callback blocked task retains cancellation while contact actions remain disabled",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.584441,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback rescheduling restores the saved occurrence in a repeated clock hour",
+      "name": "callback rescheduling restores the saved occurrence in a repeated clock hour",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.86993,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback completion requires a reported outcome and removes date requirements",
+      "name": "callback completion requires a reported outcome and removes date requirements",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.759513,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback completed and cancelled task cards expose no further mutation controls",
+      "name": "callback completed and cancelled task cards expose no further mutation controls",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.76913,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback task list rejects a record from another request",
+      "name": "callback task list rejects a record from another request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.415423,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback stale task read cannot repopulate the previous request",
+      "name": "callback stale task read cannot repopulate the previous request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.300282,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback session expiration clears private task content and ignores in-flight queue results",
+      "name": "callback session expiration clears private task content and ignores in-flight queue results",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.579524,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback saved markup remains literal text in task notes and customer names",
+      "name": "callback saved markup remains literal text in task notes and customer names",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.533114,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback queue paginates server totals and preserves the selected state filter",
+      "name": "callback queue paginates server totals and preserves the selected state filter",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.911906,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback queue failure clears old cards instead of displaying them as refreshed",
+      "name": "callback queue failure clears old cards instead of displaying them as refreshed",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.738925,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-task-resources.test.cjs::callback queue reads no transcript or audit history and keeps current tenant/contact controls",
+      "name": "callback queue reads no transcript or audit history and keeps current tenant/contact controls",
+      "file": "tests/callback-task-resources.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 276.445032,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-task-resources.test.cjs::queue summary preserves every request restriction without changing the full request contract",
+      "name": "queue summary preserves every request restriction without changing the full request contract",
+      "file": "tests/callback-task-resources.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 15.413116,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-task-resources.test.cjs::task-only export materialization does not read request histories a second time",
+      "name": "task-only export materialization does not read request histories a second time",
+      "file": "tests/callback-task-resources.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.892353,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-task-resources.test.cjs::callback recovery validation scans ledgers a bounded number of times as record count grows",
+      "name": "callback recovery validation scans ledgers a bounded number of times as record count grows",
+      "file": "tests/callback-task-resources.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 147.918363,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-task-resources.test.cjs::near-capacity callback archive restores all task states, histories, restrictions and page boundaries",
+      "name": "near-capacity callback archive restores all task states, histories, restrictions and page boundaries",
+      "file": "tests/callback-task-resources.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8261.033636,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::image inspection detects PNG and progressive JPEG bytes with bounded dimensions",
+      "name": "image inspection detects PNG and progressive JPEG bytes with bounded dimensions",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.245917,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::image inspection rejects paths, URLs, SVG, PDF, empty and unsupported bytes",
+      "name": "image inspection rejects paths, URLs, SVG, PDF, empty and unsupported bytes",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.493405,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::image byte and pixel limits reject oversized uploads before recognition",
+      "name": "image byte and pixel limits reject oversized uploads before recognition",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.873108,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::PNG validation rejects corrupt CRCs, truncation, trailing bytes and missing image data",
+      "name": "PNG validation rejects corrupt CRCs, truncation, trailing bytes and missing image data",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.441677,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::PNG validation rejects animation, unsupported critical chunks, invalid palette and bit depth",
+      "name": "PNG validation rejects animation, unsupported critical chunks, invalid palette and bit depth",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.607637,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::JPEG validation rejects malformed framing, unsupported depth and appended content",
+      "name": "JPEG validation rejects malformed framing, unsupported depth and appended content",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.421326,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::explicit OCR labels produce exact candidate text with per-field confidence",
+      "name": "explicit OCR labels produce exact candidate text with per-field confidence",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.991567,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::missing labels stay blank and never infer a manufacturer from other words",
+      "name": "missing labels stay blank and never infer a manufacturer from other words",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.282106,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::unlabelled and empty output require manual entry without invented fields",
+      "name": "unlabelled and empty output require manual entry without invented fields",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.266813,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::supported explicit label abbreviations are case insensitive",
+      "name": "supported explicit label abbreviations are case insensitive",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.299652,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::conflicting repeated fields are blanked instead of selecting a component",
+      "name": "conflicting repeated fields are blanked instead of selecting a component",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.191148,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::repeated identical fields retain their text and require component confirmation",
+      "name": "repeated identical fields retain their text and require component confirmation",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.132059,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::multiple labels on one line are treated as ambiguous",
+      "name": "multiple labels on one line are treated as ambiguous",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.107743,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::overlong fields remain in raw text but are not silently truncated into candidates",
+      "name": "overlong fields remain in raw text but are not silently truncated into candidates",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.096466,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::low confidence and unavailable confidence never mark OCR values reviewed",
+      "name": "low confidence and unavailable confidence never mark OCR values reviewed",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.262767,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::recognized HTML and spreadsheet expressions remain inert text for review",
+      "name": "recognized HTML and spreadsheet expressions remain inert text for review",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.134773,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::malformed TSV and confidence outside the engine scale are rejected",
+      "name": "malformed TSV and confidence outside the engine scale are rejected",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.184558,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::raw text and process-output bounds fail explicitly instead of discarding data silently",
+      "name": "raw text and process-output bounds fail explicitly instead of discarding data silently",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.543681,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::readiness uses only fixed binary probes and caches a successful result",
+      "name": "readiness uses only fixed binary probes and caches a successful result",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.975981,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::expired readiness is rechecked before the next recognition",
+      "name": "expired readiness is rechecked before the next recognition",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.613824,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::recognition uses shell-free stdin with fixed args and no inherited credentials",
+      "name": "recognition uses shell-free stdin with fixed args and no inherited credentials",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.658403,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::PNG compressed metadata is not passed to the native decoder and source is unchanged",
+      "name": "PNG compressed metadata is not passed to the native decoder and source is unchanged",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.403519,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::recognition snapshots validated source bytes before asynchronous readiness",
+      "name": "recognition snapshots validated source bytes before asynchronous readiness",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.304799,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::invalid files fail before any process starts",
+      "name": "invalid files fail before any process starts",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.235605,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::missing engine is reported unavailable without leaking private process errors",
+      "name": "missing engine is reported unavailable without leaking private process errors",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.57632,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::missing English data and unsupported engines keep manual review available",
+      "name": "missing English data and unsupported engines keep manual review available",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.53699,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::readiness output is bounded and process details remain private",
+      "name": "readiness output is bounded and process details remain private",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.484671,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::readiness probes time out, reap the child and return a bounded unavailable state",
+      "name": "readiness probes time out, reap the child and return a bounded unavailable state",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 11.389152,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::synchronous process launch errors return no implementation or credential details",
+      "name": "synchronous process launch errors return no implementation or credential details",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.284931,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::nonzero recognition exits give generic failures and permit a later retry",
+      "name": "nonzero recognition exits give generic failures and permit a later retry",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.706717,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::invalid UTF-8 and malformed engine output are rejected without exposing output",
+      "name": "invalid UTF-8 and malformed engine output are rejected without exposing output",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.585053,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::stdout and stderr share one output cap and overflow kills the child",
+      "name": "stdout and stderr share one output cap and overflow kills the child",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.181942,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::recognition timeout kills and reaps the process before a retry",
+      "name": "recognition timeout kills and reaps the process before a retry",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 11.73873,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::already-cancelled recognition starts no child",
+      "name": "already-cancelled recognition starts no child",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.317519,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::cancellation kills the child and keeps the OCR slot occupied until it closes",
+      "name": "cancellation kills the child and keeps the OCR slot occupied until it closes",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 21.314523,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::concurrent recognition is rejected without spawning a second OCR process",
+      "name": "concurrent recognition is rejected without spawning a second OCR process",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.098688,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::stream failures terminate the recognition child without returning stream error details",
+      "name": "stream failures terminate the recognition child without returning stream error details",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.186941,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::production bounds cannot be relaxed through the injected service options",
+      "name": "production bounds cannot be relaxed through the injected service options",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.234654,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::multiple conflicting component fields cannot borrow a remaining field from another component",
+      "name": "multiple conflicting component fields cannot borrow a remaining field from another component",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.29817,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::bullet-prefixed labelled conflicts remain unknown without correcting OCR field characters",
+      "name": "bullet-prefixed labelled conflicts remain unknown without correcting OCR field characters",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.38434,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::shutdown cancels recognition and awaits native close before resolving",
+      "name": "shutdown cancels recognition and awaits native close before resolving",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 21.099119,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::shutdown during readiness prevents a recognition process from starting",
+      "name": "shutdown during readiness prevents a recognition process from starting",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 10.875256,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::shutting down an idle service starts no process and invalidates cached readiness",
+      "name": "shutting down an idle service starts no process and invalidates cached readiness",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.772395,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::missing resource limiter never falls back to an unbounded engine",
+      "name": "missing resource limiter never falls back to an unbounded engine",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.406033,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::unexpected native crash releases the slot only after close and permits retry",
+      "name": "unexpected native crash releases the slot only after close and permits retry",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.619865,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::orientation fallback uses a second fixed pass only after unlabelled text and preserves source bytes",
+      "name": "orientation fallback uses a second fixed pass only after unlabelled text and preserves source bytes",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.304389,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::orientation never replaces an existing partial or ambiguous candidate",
+      "name": "orientation never replaces an existing partial or ambiguous candidate",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.615529,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::orientation fallback is unavailable without OSD and is unnecessary for blank text",
+      "name": "orientation fallback is unavailable without OSD and is unnecessary for blank text",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.551231,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::unsuccessful orientation preserves the original unlabelled text for manual entry",
+      "name": "unsuccessful orientation preserves the original unlabelled text for manual entry",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.427095,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::recognition passes share one text output limit including discarded stderr",
+      "name": "recognition passes share one text output limit including discarded stderr",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.458711,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::second pass cannot obtain a new recognition wall deadline",
+      "name": "second pass cannot obtain a new recognition wall deadline",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.992388,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::cancellation during orientation retains the slot and reaps the second process",
+      "name": "cancellation during orientation retains the slot and reaps the second process",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 22.005837,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::failed orientation returns a generic failure instead of claiming recovered fields",
+      "name": "failed orientation returns a generic failure instead of claiming recovered fields",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.171348,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::missing or unsupported pixel normalizer fails readiness without unnormalized OCR fallback",
+      "name": "missing or unsupported pixel normalizer fails readiness without unnormalized OCR fallback",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.340544,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::normalizer uses only the fixed installed interpreter and fixed isolated script",
+      "name": "normalizer uses only the fixed installed interpreter and fixed isolated script",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.971296,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::conditional normalization sends bounded pixel output to OCR and never changes source bytes",
+      "name": "conditional normalization sends bounded pixel output to OCR and never changes source bytes",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.204058,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::small ink bands select one bounded pixel enlargement without changing source bytes or review status",
+      "name": "small ink bands select one bounded pixel enlargement without changing source bytes or review status",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.008342,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::enlargement never repairs recognized punctuation, case or confusable characters",
+      "name": "enlargement never repairs recognized punctuation, case or confusable characters",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.055113,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::small-text enlargement metadata must agree with measured bands and output dimensions",
+      "name": "small-text enlargement metadata must agree with measured bands and output dimensions",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.388343,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::small-text enlargement cannot exceed the native image dimensions or pixel ceiling",
+      "name": "small-text enlargement cannot exceed the native image dimensions or pixel ceiling",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.158588,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::rotation bounds match independently measured native corner expansion for odd, even and thin images",
+      "name": "rotation bounds match independently measured native corner expansion for odd, even and thin images",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.133511,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::deskew uses the validated expanded image once and preserves original pixels and manual review",
+      "name": "deskew uses the validated expanded image once and preserves original pixels and manual review",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.170678,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::small-text enlargement checks the deskewed dimensions and preserves both transformations",
+      "name": "small-text enlargement checks the deskewed dimensions and preserves both transformations",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.002494,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::unsafe, inconsistent or unbounded deskew metadata fails before native recognition",
+      "name": "unsafe, inconsistent or unbounded deskew metadata fails before native recognition",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.867235,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::deskew that would exceed a dimension or pixel ceiling retains the original image",
+      "name": "deskew that would exceed a dimension or pixel ceiling retains the original image",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.080881,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::native normalizer JSON primitives return the generic contract error instead of a property exception",
+      "name": "native normalizer JSON primitives return the generic contract error instead of a property exception",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.161593,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::invalid normalizer metadata or inconsistent pixel output is rejected before OCR",
+      "name": "invalid normalizer metadata or inconsistent pixel output is rejected before OCR",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.388645,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::normalizer may not change dimensions or pass invalid PNG bytes to the engine",
+      "name": "normalizer may not change dimensions or pass invalid PNG bytes to the engine",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.567587,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::normalizer output overflow terminates and reaps the process before any OCR starts",
+      "name": "normalizer output overflow terminates and reaps the process before any OCR starts",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.813206,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::normalization consumes the same wall deadline as recognition",
+      "name": "normalization consumes the same wall deadline as recognition",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.885957,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::shutdown cancels and reaps active normalization without starting an OCR engine",
+      "name": "shutdown cancels and reaps active normalization without starting an OCR engine",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 21.928871,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::required isolation checks the fixed dependency version before wrapping engine probes or image stages",
+      "name": "required isolation checks the fixed dependency version before wrapping engine probes or image stages",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.388746,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::a rejected isolation launcher fails closed without a privileged or resource-only retry",
+      "name": "a rejected isolation launcher fails closed without a privileged or resource-only retry",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.804124,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::required isolation rejects vulnerable, prerelease and malformed versions before namespace setup",
+      "name": "required isolation rejects vulnerable, prerelease and malformed versions before namespace setup",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.272009,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::required isolation accepts the fixed upstream release and later stable numeric versions",
+      "name": "required isolation accepts the fixed upstream release and later stable numeric versions",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.954921,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::a missing or failed isolation version read cannot reach the namespace launcher",
+      "name": "a missing or failed isolation version read cannot reach the namespace launcher",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.009043,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::the isolation version read bounds combined stdout and stderr and reaps an oversized child",
+      "name": "the isolation version read bounds combined stdout and stderr and reaps an oversized child",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 20.971816,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::the isolation version deadline kills and reaps the probe before returning unavailable",
+      "name": "the isolation version deadline kills and reaps the probe before returning unavailable",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 20.670922,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::shutdown cancels and reaps an in-flight isolation version read without starting namespaces",
+      "name": "shutdown cancels and reaps an in-flight isolation version read without starting namespaces",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 10.653152,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::readiness refresh rechecks the isolation dependency and rejects a downgraded version",
+      "name": "readiness refresh rechecks the isolation dependency and rejects a downgraded version",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.05996,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::resource-limits mode does not query or require Bubblewrap",
+      "name": "resource-limits mode does not query or require Bubblewrap",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.846458,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/ocr.test.cjs::default readiness age and shared recognition deadline do not depend on the host wall clock",
+      "name": "default readiness age and shared recognition deadline do not depend on the host wall clock",
+      "file": "tests/ocr.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.096355,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence deduplicates same-source reruns and Node minor updates",
+      "name": "evidence deduplicates same-source reruns and Node minor updates",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 18.93349,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence separates distinct cases from three actual OS executions",
+      "name": "evidence separates distinct cases from three actual OS executions",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.563049,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence normalizes Windows and architecture aliases without double counting",
+      "name": "evidence normalizes Windows and architecture aliases without double counting",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.58926,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence records different Node major runtimes as separate executions",
+      "name": "evidence records different Node major runtimes as separate executions",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.984105,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::browser patch versions preserve provenance without increasing the count",
+      "name": "browser patch versions preserve provenance without increasing the count",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.765485,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::browser emulation has a separate profile and never supplies manual evidence",
+      "name": "browser emulation has a separate profile and never supplies manual evidence",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.709581,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::explicitly generated cases are counted once across platforms and kept separate from unmarked cases",
+      "name": "explicitly generated cases are counted once across platforms and kept separate from unmarked cases",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.571012,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::harness cases do not contribute to the numeric product target",
+      "name": "harness cases do not contribute to the numeric product target",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.406153,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::the evidence test module cannot be relabeled as product coverage",
+      "name": "the evidence test module cannot be relabeled as product coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.549429,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::same-source case classification cannot change between reports",
+      "name": "same-source case classification cannot change between reports",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.497411,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::callback, spreadsheet and shared coverage stay separate without duplicating the portfolio count",
+      "name": "callback, spreadsheet and shared coverage stay separate without duplicating the portfolio count",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.539064,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::legacy cases default to shared evidence without claiming app-specific readiness",
+      "name": "legacy cases default to shared evidence without claiming app-specific readiness",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.999428,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::same-source product-scope relabeling is rejected",
+      "name": "same-source product-scope relabeling is rejected",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.310048,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::unknown product evidence scope is rejected",
+      "name": "unknown product evidence scope is rejected",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.141724,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an explicitly empty product scope is not treated as missing legacy metadata",
+      "name": "an explicitly empty product scope is not treated as missing legacy metadata",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.155414,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an explicitly empty case kind cannot default to product coverage",
+      "name": "an explicitly empty case kind cannot default to product coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.160241,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an explicitly empty browser channel cannot default to a bundled browser",
+      "name": "an explicitly empty browser channel cannot default to a bundled browser",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.180052,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::selected-product browser reports require the matching deployment mode",
+      "name": "selected-product browser reports require the matching deployment mode",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.23166,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::manual spreadsheet evidence retains the fixed product and actual macOS boundary",
+      "name": "manual spreadsheet evidence retains the fixed product and actual macOS boundary",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.322086,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::macOS manual spreadsheet passes cannot satisfy the extraction suite or full platform acceptance",
+      "name": "macOS manual spreadsheet passes cannot satisfy the extraction suite or full platform acceptance",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.462207,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::reused spreadsheet method IDs count once per actual OS and architecture",
+      "name": "reused spreadsheet method IDs count once per actual OS and architecture",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.518232,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::callback scheduling and task cases stay in the callback product ledger",
+      "name": "callback scheduling and task cases stay in the callback product ledger",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.404671,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::shared browser cases keep deployment provenance without double counting the portfolio",
+      "name": "shared browser cases keep deployment provenance without double counting the portfolio",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.411031,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::duplicates inside one report are rejected rather than silently discarded",
+      "name": "duplicates inside one report are rejected rather than silently discarded",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.214945,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence rejects mixed sourceCommit",
+      "name": "evidence rejects mixed sourceCommit",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.429408,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence rejects mixed gitTreeHash",
+      "name": "evidence rejects mixed gitTreeHash",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.267054,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence rejects differing source bytes even when the commit is unchanged",
+      "name": "evidence rejects differing source bytes even when the commit is unchanged",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.322166,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence enforces an explicit requested source commit",
+      "name": "evidence enforces an explicit requested source commit",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.251549,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence rejects a source change reported by sourceChanged",
+      "name": "evidence rejects a source change reported by sourceChanged",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.186492,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::evidence rejects a source change reported by sourceChangedDuringRun",
+      "name": "evidence rejects a source change reported by sourceChangedDuringRun",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.107292,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a post-run hash mismatch rejects all outcomes from that report",
+      "name": "a post-run hash mismatch rejects all outcomes from that report",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.177458,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::manifest bytes must substantiate the declared source hash",
+      "name": "manifest bytes must substantiate the declared source hash",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.164038,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::duplicate source paths cannot pad a provenance manifest",
+      "name": "duplicate source paths cannot pad a provenance manifest",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.129265,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::shared source evidence includes exact policy bytes and detects policy changes during execution",
+      "name": "shared source evidence includes exact policy bytes and detects policy changes during execution",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 48.444166,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::aggregation requires an explicit policy digest and records the matched policy identity",
+      "name": "aggregation requires an explicit policy digest and records the matched policy identity",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.823613,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::every report must contain the policy even when the first report binds it",
+      "name": "every report must contain the policy even when the first report binds it",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.504282,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a policy mismatch in any report fails before combining its passing cases",
+      "name": "a policy mismatch in any report fails before combining its passing cases",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.541217,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::the CLI hashes the exact policy bytes it parses instead of a JSON reserialization",
+      "name": "the CLI hashes the exact policy bytes it parses instead of a JSON reserialization",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 69.077581,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::the CLI fails closed for a missing source-policy entry",
+      "name": "the CLI fails closed for a missing source-policy entry",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 83.547463,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::the CLI fails closed for a mismatched source-policy entry",
+      "name": "the CLI fails closed for a mismatched source-policy entry",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 70.178152,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::changing targets and platform gates cannot reinterpret earlier reports through the CLI",
+      "name": "changing targets and platform gates cannot reinterpret earlier reports through the CLI",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 133.806654,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::missing source stability metadata is not assumed safe",
+      "name": "missing source stability metadata is not assumed safe",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.266923,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::invalid case duration is rejected: -1",
+      "name": "invalid case duration is rejected: -1",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.154673,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::invalid case duration is rejected: NaN",
+      "name": "invalid case duration is rejected: NaN",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.143867,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::invalid case duration is rejected: Infinity",
+      "name": "invalid case duration is rejected: Infinity",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.089505,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::invalid case duration is rejected: 1",
+      "name": "invalid case duration is rejected: 1",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.190047,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::unknown outcomes never count as a pass",
+      "name": "unknown outcomes never count as a pass",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.124198,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a zero-case successful report cannot establish coverage",
+      "name": "a zero-case successful report cannot establish coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.10605,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an infrastructure-only failure remains visible without inventing test executions",
+      "name": "an infrastructure-only failure remains visible without inventing test executions",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.360143,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::missing browser methods make the evidence invalid",
+      "name": "missing browser methods make the evidence invalid",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.13932,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unlaunched browser cannot supply a PASS case",
+      "name": "an unlaunched browser cannot supply a PASS case",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.140712,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a version observed for another engine does not prove this browser ran",
+      "name": "a version observed for another engine does not prove this browser ran",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.128344,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::forged platform keys cannot multiply execution counts",
+      "name": "forged platform keys cannot multiply execution counts",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.122615,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a browser run labeled PASS cannot contain a skipped method",
+      "name": "a browser run labeled PASS cannot contain a skipped method",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.183297,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a Node runner success flag cannot override failed cases",
+      "name": "a Node runner success flag cannot override failed cases",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.203587,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a failed same-source execution cannot be overwritten by a later pass",
+      "name": "a failed same-source execution cannot be overwritten by a later pass",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.629761,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved SKIP observation cannot inflate passing coverage",
+      "name": "an unresolved SKIP observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.613716,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved TODO observation cannot inflate passing coverage",
+      "name": "an unresolved TODO observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.269417,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved EXPECTED_FAILURE observation cannot inflate passing coverage",
+      "name": "an unresolved EXPECTED_FAILURE observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.320584,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved BLOCKED observation cannot inflate passing coverage",
+      "name": "an unresolved BLOCKED observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.286472,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved NOT_RUN observation cannot inflate passing coverage",
+      "name": "an unresolved NOT_RUN observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.258971,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved RUNNING observation cannot inflate passing coverage",
+      "name": "an unresolved RUNNING observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.271019,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved CANCELLED observation cannot inflate passing coverage",
+      "name": "an unresolved CANCELLED observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.331901,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved UNEXPECTED_SUCCESS observation cannot inflate passing coverage",
+      "name": "an unresolved UNEXPECTED_SUCCESS observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.265771,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an unresolved ERROR observation cannot inflate passing coverage",
+      "name": "an unresolved ERROR observation cannot inflate passing coverage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.27137,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::numeric success remains distinct from an untested required OS",
+      "name": "numeric success remains distinct from an untested required OS",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.354394,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a platform report must meet its minimum case inventory",
+      "name": "a platform report must meet its minimum case inventory",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.275716,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::dirty working-tree passes stay visible without becoming committed goal evidence",
+      "name": "dirty working-tree passes stay visible without becoming committed goal evidence",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.250277,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a previous infrastructure failure is not erased by a complete same-source rerun",
+      "name": "a previous infrastructure failure is not erased by a complete same-source rerun",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.42363,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an early verified initial goal proposes doubling without mutating policy or claiming release",
+      "name": "an early verified initial goal proposes doubling without mutating policy or claiming release",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.471332,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::the early rule uses the Detroit cutoff instant and excludes the cutoff itself",
+      "name": "the early rule uses the Detroit cutoff instant and excludes the cutoff itself",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.444752,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::meeting the initial number does not satisfy an active doubled target",
+      "name": "meeting the initial number does not satisfy an active doubled target",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.276818,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a recorded milestone date cannot bypass unverified physical platforms",
+      "name": "a recorded milestone date cannot bypass unverified physical platforms",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.360754,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"initialTarget\":0}",
+      "name": "malformed milestone policy is rejected: {\"initialTarget\":0}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.134794,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"earlyTarget\":3}",
+      "name": "malformed milestone policy is rejected: {\"earlyTarget\":3}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.03994,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"activeTarget\":3}",
+      "name": "malformed milestone policy is rejected: {\"activeTarget\":3}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.027641,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"deadline\":\"2026-12-31\"}",
+      "name": "malformed milestone policy is rejected: {\"deadline\":\"2026-12-31\"}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.028574,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"timezone\":\"Unknown/Place\"}",
+      "name": "malformed milestone policy is rejected: {\"timezone\":\"Unknown/Place\"}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.101343,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"requiredPlatforms\":[]}",
+      "name": "malformed milestone policy is rejected: {\"requiredPlatforms\":[]}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.118599,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::malformed milestone policy is rejected: {\"requiredPlatforms\":[{\"id\":\"linux\",\"kind\":\"node\",\"match\":{\"operating_system\":\"linux\"}}]}",
+      "name": "malformed milestone policy is rejected: {\"requiredPlatforms\":[{\"id\":\"linux\",\"kind\":\"node\",\"match\":{\"operating_system\":\"linux\"}}]}",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.123006,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::recursive input discovery reads recognized reports and ignores other valid formats",
+      "name": "recursive input discovery reads recognized reports and ignores other valid formats",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.82847,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::truncated JSON cannot silently hide a failed report",
+      "name": "truncated JSON cannot silently hide a failed report",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.410981,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an empty recognized-report inventory cannot establish a goal",
+      "name": "an empty recognized-report inventory cannot establish a goal",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.204549,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::Node event collection excludes parent containers while retaining leaf lineage",
+      "name": "Node event collection excludes parent containers while retaining leaf lineage",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.554527,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::an empty Node suite and successful file wrapper contribute no product cases",
+      "name": "an empty Node suite and successful file wrapper contribute no product cases",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.140612,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::Node testId values reused by different files remain separate leaf identities",
+      "name": "Node testId values reused by different files remain separate leaf identities",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.229036,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::a Node file crash is infrastructure failure rather than a passing phantom case",
+      "name": "a Node file crash is infrastructure failure rather than a passing phantom case",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.167152,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::Node skip and todo event outcomes stay separate from passes",
+      "name": "Node skip and todo event outcomes stay separate from passes",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.177818,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::Node generated family and evidence-harness classification are explicit",
+      "name": "Node generated family and evidence-harness classification are explicit",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.141704,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::Node duplicate named leaf identities fail collection",
+      "name": "Node duplicate named leaf identities fail collection",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.195425,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    },
+    {
+      "id": "tests/release-evidence.test.cjs::selected program case labels retain their own product scope and shared boundaries count once",
+      "name": "selected program case labels retain their own product scope and shared boundaries count once",
+      "file": "tests/release-evidence.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.824435,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "harness"
+    }
+  ],
+  "rawReportSha256": "4e83d09a5ce59738e3fd93af03c6d1db20d82d83b9eaf7128034209ab4a239cc",
+  "rawLogSha256": "fd5d7ae9e1a74add4cae0047a684555e93d38686ba2e30c1749d4499778e4bb7",
+  "scope": "Stable uncommitted integrated candidate on Linux Node24, with actual API/HTTP/SQLite/recovery cases. Source remained unchanged. Browser/OS matrix, actual native OCR accuracy and physical or operational gates are separately scoped. This is not a clean committed-source all-platform ledger.",
+  "goalCredit": "Do not add overlapping focused runs, benchmark operations or earlier source reports. CI must verify the committed candidate and its exact policy.",
+  "realProviderCalls": 0,
+  "publicActivation": false,
+  "productionCustomerData": false
+}

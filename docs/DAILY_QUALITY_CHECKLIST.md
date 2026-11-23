@@ -10,7 +10,7 @@ Maintain separate records for the callback program and spreadsheet program. Each
 
 December 31 remains the target for the first release. The owner has not selected which program launches first or a date for the second release. December 20 is the readiness review for real-world testing, not automatic permission to use a provider, spend money, contact a customer, load customer data or deploy.
 
-Use PASS, FAIL, BLOCKED and NOT TESTED. Mark a row PASS only from completed execution or the explicitly named review. Record the tested commit, source manifest, platform, result file and completion time. A historical pass is not today's execution.
+Use PASS, FAIL, BLOCKED and NOT TESTED. Mark a row PASS only from completed execution or the explicitly named review. Record the tested commit, source manifest, exact milestone-policy SHA-256, platform, result file and completion time. A historical pass is not today's execution.
 
 ## Daily sequence
 

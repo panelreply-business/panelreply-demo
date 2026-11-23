@@ -14,6 +14,14 @@ The Apple Silicon job asserts `process.platform === 'darwin'` and `process.arch 
 
 Selected-product screenshots are retained in separate `preview-*` artifacts for visual review. Apple Silicon captures use separate engine/suite folders. These artifacts never enter the `release-*` test-accounting input. Callback requirements include the 15-method selected suite with its scheduling, follow-up, conflict, retry, export/deletion, keyboard and reflow journeys.
 
+### Run81 screenshot finding
+
+[Run81](https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769) on the workflow-corrected candidate exposed a screenshot harness conflict with the workspace's CSP. In [Intel Mac callback WebKit](https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051081), the queue and scheduling journeys reached their optional capture calls, which emitted inline-stylesheet violations. The console assertions correctly failed those cases. A separate inline-font test injection also failed and is addressed by the application test follow-up.
+
+Inspection of the installed Playwright 1.62.0 bundle confirms the cause. `inPagePrepareForScreenshots` inserts a `body {}` style when `syncAnimations` is true, before the early return for unchanged styles, caret and animations. WebKit's `shouldToggleStyleSheetToSyncAnimations()` returns true. Executing that preparation function with no screenshot style and both `hideCaret` and `disableAnimations` false still inserts the style. Changing screenshot options alone cannot prevent it.
+
+The follow-up capture helper records `PANELREPLY_PREVIEW_UNAVAILABLE` for WebKit and returns from the optional artifact capture only. Every business, geometry, accessibility and console-error assertion continues. Chromium and Firefox captures retain `animations="allow"` and `caret="initial"`. No CSP allowance, error filter, browser fallback or test skip is introduced. The already-captured failed-run WebKit images remain diagnostic artifacts, not clean execution evidence. Actual verification of the corrected source requires its subsequent CI run.
+
 The workflow uses standard labels only. GitHub's [runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) lists `macos-15-intel` as Intel and `macos-26` as arm64. It identifies standard runner use for public repositories as free. No larger runner, billing setting or public service is configured.
 
 ## Spreadsheet scope
@@ -34,6 +42,14 @@ The [milestone policy](test-milestones.json) adds 16 explicit automated requirem
 The counter recognizes `spreadsheet-manual` only for an actual macOS report with the fixed spreadsheet deployment mode. That suite cannot satisfy the full `spreadsheet` requirement. Reused methods remain one distinct case across platforms and one execution per actual case/platform configuration. Scheduling and task Node tests belong to the callback product ledger. Evidence-harness tests remain excluded from the product test goal.
 
 Windows private-server workflows, native macOS OCR, actual Safari, physical iPhone/iPad/Android and full assistive-technology testing remain open. The ARM workflow may also remain unexecuted if a standard runner is not assigned. A queued job is not a pass. The prior unassigned macOS15 ARM jobs remain in their historical reports.
+
+### ARM runner assignment checkpoint
+
+The November 23 review found [run81's `macos-26` job](https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051203) still queued, with `runner_id: 0`, an empty runner name and no executed steps. The [run74 jobs](https://github.com/panelreply-business/panelreply-demo/actions/runs/44784712205) requested `macos-15`. Their four ARM jobs now have a cancelled conclusion, also with no assigned runner or steps. Neither run supplies ARM test evidence. The cause of the assignment failure remains unconfirmed.
+
+GitHub's [standard runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) lists `macos-15`, `macos-26`, `macos-latest` and `xcode-27` as free arm64 labels for public repositories. The [image inventory](https://github.com/actions/runner-images/blob/main/README.md) maps `macos-latest` to the macOS26 ARM image, so it is not a separate verified capacity option. `macos-15` already has the unassigned observations above. The [`xcode-27` image](https://github.com/actions/runner-images/blob/main/images/macos/xcode-27-arm64-Readme.md) runs macOS27 and is labelled a public preview. It changes the operating-system and preview scope and has no repository execution evidence.
+
+Keep the `macos-26` acceptance gate and its unexecuted status. This review changes no label, requests no paid runner, repeats no unavailable job and cancels no gate. A runner assignment followed by complete source-bound test reports is still required. Other authorized development can continue while this infrastructure blocker remains open.
 
 ## Local preparation results
 
