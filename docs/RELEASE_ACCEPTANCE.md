@@ -1,5 +1,13 @@
 # Release acceptance
 
+## November 23 final run91 and next native candidate
+
+Run91 is now independently reconciled: 24,852 product PASS, four FAIL and two ERROR, with 44 automated requirements PASS, two FAIL, ten NOT_TESTED and seven manual NOT_TESTED. Neither product passes installed-Safari acceptance. Windows storage and both restricted OCR host reports also remain unresolved outside product counting. [Verified ledger](evidence/run91-independent-verification-2026-11-23.json).
+
+The next 202-file candidate has final manifest `13df01f3f697ec9f586a62de9e8ca3203d4692c9f877a9c924f629f4c2195603`. Its earlier workflow source passed 9,290 local checks. A workflow-only selection correction then passed the exact 19-case portable command. Full native/committed CI remains required. Local harness/model results do not establish native permissions, OCR denial enforcement or Safari success. [Candidate evidence](evidence/native-compatibility-root-integration-2026-11-23.json).
+
+Callback task-receipt changes are committed in `7fec73b`; run92 requires its own reconciliation. Request-save receipts remain a separate implementation milestone. Both products remain independent NO-GO decisions, and the complete first test goal remains unachieved. No production activation follows from these records.
+
 ## November 23 callback receipts and native run91
 
 The reviewed callback receipt repair has 9,283 distinct same-source local checks verified through the full run plus the exact nine initially disabled socket cases. This includes 9,105 product cases and 178 excluded harness checks. Its new browser journey still needs committed CI. [Local evidence](evidence/callback-receipts-root-integration-2026-11-23.json).

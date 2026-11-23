@@ -1,0 +1,84 @@
+{
+  "format": "panelreply-independent-review-v1",
+  "reviewer": "ocr_quality",
+  "reviewedAt": "2026-11-23T19:35:20.670378+00:00",
+  "worktree": "/workspace/scratch/8f544d546bb7/panelreply-windows-sqlite-output",
+  "source": {
+    "sourceCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+    "sourceTreeSha256": "756671dd7ee5c75ddd87339a066955b06259422fed021df4aca2f93508e88e23",
+    "dirty": true
+  },
+  "fileHashes": {
+    "tests/windows-sqlite-output-support.cjs": "0be1484d9eb560a142cb98cd7f197ad77fedc70fb68808e613913755c8e23450",
+    "scripts/observe-windows-sqlite.cjs": "eaa2e47d8ad219206bfeda0d6dc8e46cee0ca49ddcdf81f451b078bd30f40e20",
+    "tests/windows-sqlite-observation.harness.cjs": "a2f904ba89103294734c87e81cf63e2e2a20d09e0aee8fe6431aaa7a4a18bfcc"
+  },
+  "result": "PASS_SOURCE_REVIEW",
+  "concreteRemainingFindings": [],
+  "reviewedBoundaries": [
+    "Raw output parent spelling reaches native realpath before path normalization. Canonical output/repository overlap rejects both ancestor directions before native collection.",
+    "Both existing or dangling report/journal leaves reject before creation. Exclusive opens protect against a leaf created after the precheck.",
+    "Separate retained report and append-mode journal descriptors eliminate pathname reopen during writes.",
+    "Held/named identity, link count, mode, size and observed timestamps are checked around writes and at finish. Repository and parent identities are rechecked.",
+    "Partial writes, creation collisions and replacements retain owned evidence without deleting a raced pathname. A failure closes both descriptors where possible and keeps the original error primary.",
+    "The 16 MiB journal limit preserves the verified prefix. Its digest is explicitly expected appended bytes, not an independently read content hash.",
+    "Final journal failure makes the report INCOMPLETE. Final report/descriptor verification must complete before stdout claims saved evidence.",
+    "The fixed native scenario body and the complete original 12-case harness prefix remain unchanged. No source/runtime/policy/workflow or application acceptance is introduced."
+  ],
+  "independentVerification": {
+    "tests": {
+      "files": {
+        "tests/windows-sqlite-output-support.cjs": "0be1484d9eb560a142cb98cd7f197ad77fedc70fb68808e613913755c8e23450",
+        "scripts/observe-windows-sqlite.cjs": "eaa2e47d8ad219206bfeda0d6dc8e46cee0ca49ddcdf81f451b078bd30f40e20",
+        "tests/windows-sqlite-observation.harness.cjs": "a2f904ba89103294734c87e81cf63e2e2a20d09e0aee8fe6431aaa7a4a18bfcc"
+      },
+      "sourceStable": true,
+      "original12TestPrefixUnchanged": true,
+      "observeScenarioBytesUnchanged": true,
+      "scenarioBodySha256": "97930908d43cb53aeb8a382963234545238a64afb461a2dff246646a22470be8",
+      "selectedNames": [
+        "SQLite output repository aliases fail before artifact preparation or native collection",
+        "SQLite outputs resolve raw alias parent traversal and reject in-repository artifacts directories",
+        "SQLite output missing or unresolved parents create neither report nor journal",
+        "SQLite report and journal existing or dangling leaves are rejected before either creation",
+        "a journal creation collision closes and retains the report without touching the collision file",
+        "SQLite report and journal use two exclusive held descriptors with UTF8 byte and hash evidence",
+        "SQLite journal limit rejects overflow before writing and preserves the verified prefix",
+        "parent replacement during output creation closes the report before journal or native work",
+        "replaced journal leaves remain untouched while a separate retained report preserves the error",
+        "replaced report leaves cannot receive held writes or be deleted during cleanup",
+        "journal changes after the last append fail final evidence verification",
+        "partial journal write failures retain bytes and permit a separate incomplete report",
+        "SQLite collection errors remain primary while both output descriptors close after a close error"
+      ],
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=^(?:SQLite\\ output\\ repository\\ aliases\\ fail\\ before\\ artifact\\ preparation\\ or\\ native\\ collection|SQLite\\ outputs\\ resolve\\ raw\\ alias\\ parent\\ traversal\\ and\\ reject\\ in\\-repository\\ artifacts\\ directories|SQLite\\ output\\ missing\\ or\\ unresolved\\ parents\\ create\\ neither\\ report\\ nor\\ journal|SQLite\\ report\\ and\\ journal\\ existing\\ or\\ dangling\\ leaves\\ are\\ rejected\\ before\\ either\\ creation|a\\ journal\\ creation\\ collision\\ closes\\ and\\ retains\\ the\\ report\\ without\\ touching\\ the\\ collision\\ file|SQLite\\ report\\ and\\ journal\\ use\\ two\\ exclusive\\ held\\ descriptors\\ with\\ UTF8\\ byte\\ and\\ hash\\ evidence|SQLite\\ journal\\ limit\\ rejects\\ overflow\\ before\\ writing\\ and\\ preserves\\ the\\ verified\\ prefix|parent\\ replacement\\ during\\ output\\ creation\\ closes\\ the\\ report\\ before\\ journal\\ or\\ native\\ work|replaced\\ journal\\ leaves\\ remain\\ untouched\\ while\\ a\\ separate\\ retained\\ report\\ preserves\\ the\\ error|replaced\\ report\\ leaves\\ cannot\\ receive\\ held\\ writes\\ or\\ be\\ deleted\\ during\\ cleanup|journal\\ changes\\ after\\ the\\ last\\ append\\ fail\\ final\\ evidence\\ verification|partial\\ journal\\ write\\ failures\\ retain\\ bytes\\ and\\ permit\\ a\\ separate\\ incomplete\\ report|SQLite\\ collection\\ errors\\ remain\\ primary\\ while\\ both\\ output\\ descriptors\\ close\\ after\\ a\\ close\\ error)$",
+        "tests/windows-sqlite-observation.harness.cjs"
+      ],
+      "log": "/tmp/panelreply-windows-sqlite-output-peer-20261123.log",
+      "logSha256": "4be96bd50b0fff1092e350fb861a57af066ccf95c2802bf53d6d8ab56b5aa7dd",
+      "exitCode": 0,
+      "nativeExecutions": 0,
+      "sourceEdits": 0,
+      "additionalGoalCredit": 0
+    },
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "testsRecordSha256": "822d06d72cc491100f8bbef49e32660f18eebb0e88a80cfe6a3ef0c6269bc59d"
+  },
+  "limits": [
+    "A trusted CI output parent remains required. Identity rechecks do not provide atomic protection against every concurrent parent rename.",
+    "An empty created artifact or bytes written through a held descriptor can remain after a detected parent mutation. The implementation does not claim to undo those writes.",
+    "The digest records verified expected appends. Downloaded journal bytes still require comparison against that digest.",
+    "Linux portable verification does not establish Windows ACL, reparse or storage durability properties. Opening with mode 0600 is not proof of a Windows DACL."
+  ],
+  "sourceEdits": 0,
+  "nativeExecutions": 0,
+  "providerCalls": 0,
+  "additionalGoalCredit": 0,
+  "releaseAcceptance": false
+}

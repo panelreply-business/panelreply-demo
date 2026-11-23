@@ -10,6 +10,7 @@ const { fixture, selectNtfsParent } = require('../tests/windows-storage-support.
 const { spawnObserver } = require('../tests/windows-sqlite-observer-process.cjs');
 const { DATABASE, FILES, DATA, SCENARIOS, equalData, forcedExitObserved, emptyScenario, setPhase, finishScenario,
   sameWindowsPath, validateToken, fileObservation } = require('../tests/windows-sqlite-observation-support.cjs');
+const { outputLocation, prepareOutputs } = require('../tests/windows-sqlite-output-support.cjs');
 const ROOT = path.resolve(__dirname, '..');
 
 function argumentsFor(args) {
@@ -19,16 +20,15 @@ function argumentsFor(args) {
     if (seen.has(name)) throw new Error('Repeated observation argument: ' + name);
     seen.add(name);
     if (['--build-directory', '--output'].includes(name) && args[index + 1] && !args[index + 1].startsWith('--')) {
-      options[name === '--output' ? 'output' : 'buildDirectory'] = path.resolve(args[++index]);
+      const value = args[++index];
+      options[name === '--output' ? 'output' : 'buildDirectory'] = name === '--output' ? value : path.resolve(value);
     } else if (name === '--build-failed') options.buildFailed = true;
     else throw new Error('Usage: node scripts/observe-windows-sqlite.cjs --build-directory DIR --output FILE [--build-failed]');
   }
   if (!options.buildDirectory || !options.output || !options.output.endsWith('.json')) throw new Error('Use a component build directory and explicit JSON observation output.');
-  const relative = path.relative(ROOT, options.output);
-  if (!relative.startsWith('..' + path.sep) && !path.isAbsolute(relative) && !relative.startsWith('artifacts' + path.sep)) {
-    throw new Error('Keep generated observation reports outside the source tree or in artifacts/.');
-  }
-  if (path.basename(options.output).startsWith('release-')) throw new Error('SQLite observations cannot masquerade as release evidence.');
+  // Read-only canonical validation. Output preparation repeats it before
+  // opening either exclusive artifact and before any component/child work.
+  outputLocation(options.output, { root: ROOT });
   return options;
 }
 const detail = error => ({ message: String(error.message || error).slice(0, 4000), code: error.code || null,
@@ -219,8 +219,8 @@ async function observeScenario(spec, record, candidate, root, deadline, append) 
   }
 }
 
-async function main(args) {
-  const options = argumentsFor(args), records = SCENARIOS.map(emptyScenario), failures = [];
+async function collectObservation(options, outputs) {
+  const records = SCENARIOS.map(emptyScenario), failures = [];
   const report = { format: 'panelreply-windows-sqlite-observation-v1', suite: 'windows-sqlite-observation',
     status: 'INCOMPLETE', acceptance: 'NOT_ESTABLISHED', releaseCredit: false, productPassing: 0,
     startedAt: new Date().toISOString(), platform: platformEvidence(), spec: { ...DATA, main: DATABASE, files: FILES },
@@ -233,16 +233,8 @@ async function main(args) {
       'Token evidence is the fixed non-impersonating child primary token, not arbitrary thread-token or standard-user acceptance.',
       'Executable hashes identify pinned image files, not the process mapped executable pages.',
       'Full temp-file, sidecar-recreation, custom VFS and restore-publication requirements remain open.'] };
-  fs.mkdirSync(path.dirname(options.output), { recursive: true });
-  report.observationsPath = options.output.replace(/\.json$/, '.observations.jsonl');
-  if (fs.existsSync(options.output) || fs.existsSync(report.observationsPath)) throw new Error('Preserve existing observations by choosing a new output path.');
-  fs.writeFileSync(report.observationsPath, '', { flag: 'wx' });
-  let logBytes = 0;
-  const append = value => {
-    const line = JSON.stringify(value) + '\n'; logBytes += Buffer.byteLength(line);
-    if (logBytes > 16 * 1024 * 1024) throw new Error('The observation log exceeded its bound.');
-    fs.appendFileSync(report.observationsPath, line);
-  };
+  report.observationsPath = outputs.journalPath;
+  const append = value => outputs.appendJournal(value);
   let candidate = null, root = null, before = null;
   const deadline = performance.now() + 180000;
   try {
@@ -292,12 +284,38 @@ async function main(args) {
   if (report.totals.observed === SCENARIOS.length && !failures.length && report.cleanup.status === 'OBSERVED'
       && report.nativeIdentityAfter && !report.sourceChanged && !report.nativeRuntimeChanged) report.status = 'OBSERVATIONS_COMPLETE';
   report.completedAt = new Date().toISOString();
-  fs.writeFileSync(options.output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
-  console.log(JSON.stringify({ output: options.output, status: report.status, totals: report.totals,
-    infrastructureErrors: failures.length, acceptance: report.acceptance, releaseCredit: false, productPassing: 0 }));
-  if (report.status !== 'OBSERVATIONS_COMPLETE') process.exitCode = 1;
+  report.journalEvidence = outputs.journalEvidence();
+  if (report.journalEvidence.failed) {
+    failures.push({ stage: 'observation-journal-identity', code: report.journalEvidence.errorCode || 'OUTPUT_NOT_VERIFIED',
+      message: 'The retained observation journal could not establish its expected identity and bytes.' });
+    report.status = 'INCOMPLETE';
+  }
+  outputs.writeReport(report);
   return report;
 }
 
-module.exports = { argumentsFor, verifyLive, snapshot, requireObservedFiles, observeScenario, main };
-if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error.stack); process.exitCode = 1; });
+async function main(args, { collect = collectObservation, prepare = prepareOutputs } = {}) {
+  const options = argumentsFor(args);
+  // Both exclusive descriptors exist outside the repository before source
+  // observation, native loading, fixture creation or any owned child starts.
+  const outputs = prepare(options.output, { root: ROOT });
+  try {
+    const report = await collect(options, outputs);
+    outputs.finish();
+    console.log(JSON.stringify({ output: outputs.reportPath, status: report.status, totals: report.totals,
+      infrastructureErrors: report.infrastructureErrors.length, acceptance: report.acceptance, releaseCredit: false, productPassing: 0,
+      outputState: outputs.state() }));
+    if (report.status !== 'OBSERVATIONS_COMPLETE') process.exitCode = 1;
+    return report;
+  } catch (error) {
+    try { outputs.close(); } catch { /* Preserve the primary failure and report retained output state. */ }
+    throw outputs.annotate(error);
+  }
+}
+
+module.exports = { argumentsFor, verifyLive, snapshot, requireObservedFiles, observeScenario, collectObservation, main };
+if (require.main === module) main(process.argv.slice(2)).catch(error => {
+  console.error(JSON.stringify({ status: 'INCOMPLETE', code: error.code || null, message: String(error.message || error).slice(0, 4000),
+    ...(error.outputState ? { outputState: error.outputState } : {}), releaseCredit: false, productPassing: 0 }));
+  process.exitCode = 1;
+});

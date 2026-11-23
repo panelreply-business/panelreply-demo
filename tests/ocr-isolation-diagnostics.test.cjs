@@ -151,7 +151,7 @@ function hostFiles(values = {}, options = {}) {
     fstatSync(fd) {
       const descriptor = descriptors.get(fd); descriptor.statCalls++;
       return { isFile: () => options.regular !== false, dev: 1n, ino: 2n, mode: 0o100755n,
-        size: options.reportSizeZero ? 0n : BigInt(descriptor.value.length),
+        size: options.reportedSize ?? (options.reportSizeZero ? 0n : BigInt(descriptor.value.length)),
         mtimeNs: options.changeIdentity && descriptor.statCalls > 1 ? 2n : 1n, ctimeNs: 1n };
     },
     readSync(fd, buffer, offset, length) {
@@ -219,6 +219,35 @@ test('host context retains only named OS and security fields and two bounded run
   assert.equal(JSON.stringify(context).includes('PRIVATE'), false);
   assert.deepEqual(fixture.calls.opened.map(item => item.filename).sort(), Object.entries(HOST_FILES).filter(([key]) => key !== 'bubblewrap').map(([, value]) => value.path).sort());
   assert.deepEqual(fixture.calls.listed, [...PROFILE_FILES]);
+});
+
+test('sysfs attribute metadata size does not conceal a bounded observed control value', () => {
+  const target = HOST_FILES.apparmorEnabled;
+  const fixture = hostFiles({ [target.path]: 'Y\n' }, { reportedSize: 4096n, chunk: 1 });
+  const context = observeHostContext({ fsImpl: fixture.impl, platform: 'linux', env: {} });
+  assert.deepEqual(context.fields.apparmorEnabled, { state: 'OBSERVED', value: 'Y', bytes: 2 });
+  assert.equal(fixture.calls.readBytes, 2);
+  assert.equal(fixture.calls.closed.length, 1);
+  const changed = hostFiles({ [target.path]: 'Y\n' }, { reportedSize: 4096n, changeIdentity: true });
+  assert.deepEqual(readHostFile('apparmorEnabled', changed.impl), { state: 'UNAVAILABLE', reason: 'FILE_CHANGED' });
+  assert.equal(changed.calls.closed.length, 1);
+});
+
+test('sysfs control reads retain their byte cap when metadata reports a page size', () => {
+  const target = HOST_FILES.apparmorEnabled;
+  const fixture = hostFiles({ [target.path]: 'Y'.repeat(4096) }, { reportedSize: 4096n, chunk: 3 });
+  assert.deepEqual(readHostFile('apparmorEnabled', fixture.impl), { state: 'UNAVAILABLE', reason: 'SIZE_LIMIT' });
+  assert.equal(fixture.calls.readBytes, target.limit + 1);
+  assert.equal(fixture.calls.closed.length, 1);
+  assert.ok(fixture.calls.readRequests.every(length => length <= target.limit + 1));
+});
+
+test('sysfs size handling preserves ordinary executable size rejection before any read', () => {
+  const target = HOST_FILES.bubblewrap;
+  const fixture = hostFiles({ [target.path]: 'synthetic' }, { reportedSize: BigInt(target.limit + 1) });
+  assert.deepEqual(observeBubblewrap(fixture.impl), { state: 'UNAVAILABLE', reason: 'SIZE_LIMIT' });
+  assert.equal(fixture.calls.readBytes, 0);
+  assert.equal(fixture.calls.closed.length, 1);
 });
 
 test('missing and denied host controls remain unavailable while an observed zero remains explicit', () => {

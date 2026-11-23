@@ -4,7 +4,7 @@
 
 Root reproduced a lexical path-boundary defect in this inactive observer on November23. An outside symlink alias resolving into the repository passes argumentsFor. The reproduction called only the argument parser, created no report/journal and executed no native code. [Recorded evidence](evidence/windows-sqlite-output-alias-2026-11-23.json).
 
-Before workflow integration, canonicalize report/journal containment, retain exclusive output handles, check parent/leaf identity and document the trusted-parent limit. The existing12 passing harness checks do not cover or repair this finding. The observer remains inactive, with zero Windows executions and zero product-goal credit.
+The separate [output-boundary correction](WINDOWS_SQLITE_OUTPUT_BOUNDARY_2026_11_23.md) now resolves the existing parent and repository canonically before preparing two exclusive, retained output handles. It removes the unused in-repository `artifacts/` exception. Twenty-five Linux harness cases passed, including 13 new output cases. The original 12-case evidence and alias reproduction remain unchanged. Windows output-handle behavior is not yet verified. The observer remains inactive, with zero Windows scenario executions and zero product-goal credit.
 
 ## Status and scope
 
@@ -12,7 +12,7 @@ This is an inactive diagnostic. It does not enable either PanelReply product on 
 
 The eight native Windows scenarios have not run in this worktree. Twelve Linux evidence/protocol harness checks passed with no failures, skips or cancellations. Their product-test credit is zero. An explicit failed-build invocation preserved all eight scenarios and all 72 planned phases as NOT_RUN.
 
-The source base is `9264d2a3575889c6b39140554fc767caf6e6a7ad`. The leaf evidence records the six changed code hashes and the source manifest. No workflow, product, storage policy or release-counter file changed.
+The original observation implementation used source base `9264d2a3575889c6b39140554fc767caf6e6a7ad`. Its leaf evidence records the six changed code hashes and source manifest. The output correction uses base `1562c8ea0326b31f34386925ac55f44f9f9328b1` and has separate evidence. Neither patch changes a workflow, product, storage policy or release counter.
 
 ## Observation matrix
 
@@ -74,4 +74,4 @@ node --test tests/windows-sqlite-observation.harness.cjs
 node scripts/observe-windows-sqlite.cjs --build-directory ABSOLUTE_BUILD_DIRECTORY --output ABSOLUTE_OUTPUT_DIRECTORY/windows-sqlite-observation.json
 ```
 
-Use `--build-failed` to record every planned scenario as NOT_RUN when the build did not complete. The harness's real SQLite protocol controls run on Linux. Other hosts report those controls as skipped, without Windows acceptance credit. No workflow is added by this patch.
+Use `--build-failed` to record every planned scenario as NOT_RUN when the build did not complete. The absolute output parent must already exist outside the repository, and both output leaf names must be unused. Use a trusted CI artifact parent. The harness's real SQLite protocol controls run on Linux. Other hosts report those controls as skipped, without Windows acceptance credit. No workflow is added by this patch.

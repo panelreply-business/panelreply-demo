@@ -14,7 +14,9 @@ const FILES = Object.freeze({
   apparmorRestrictUserns: Object.freeze({ path: '/proc/sys/kernel/apparmor_restrict_unprivileged_userns', limit: 32 }),
   apparmorRestrictUnconfined: Object.freeze({ path: '/proc/sys/kernel/apparmor_restrict_unprivileged_unconfined', limit: 32 }),
   maxUserNamespaces: Object.freeze({ path: '/proc/sys/user/max_user_namespaces', limit: 32 }),
-  apparmorEnabled: Object.freeze({ path: '/sys/module/apparmor/parameters/enabled', limit: 16 }),
+  // sysfs may report a page-sized st_size for a short generated attribute.
+  // Its byte limit applies to the held descriptor's actual reads below.
+  apparmorEnabled: Object.freeze({ path: '/sys/module/apparmor/parameters/enabled', limit: 16, sizeHintOnly: true }),
   apparmorProfiles: Object.freeze({ path: '/sys/kernel/security/apparmor/profiles', limit: 65536 }),
   bubblewrap: Object.freeze({ path: '/usr/bin/bwrap', limit: 8 * 1024 * 1024 }),
 });
@@ -35,7 +37,7 @@ function readHostFile(key, fsImpl = fs) {
     fd = fsImpl.openSync(specification.path, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
     const before = fsImpl.fstatSync(fd, { bigint: true });
     if (!before.isFile()) result = unavailable('NOT_REGULAR_FILE');
-    else if (before.size > BigInt(specification.limit)) result = unavailable('SIZE_LIMIT');
+    else if (!specification.sizeHintOnly && before.size > BigInt(specification.limit)) result = unavailable('SIZE_LIMIT');
     else {
       const buffer = Buffer.alloc(specification.limit + 1);
       let used = 0;

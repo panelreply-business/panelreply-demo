@@ -1,5 +1,15 @@
 # Test milestones and counting policy
 
+## November 23 final run91 and native candidate accounting
+
+Run91 records 24,852 product PASS, four FAIL and two ERROR across 9,375 distinct cases. The bucket counts are callback 10,644 PASS/three FAIL, spreadsheet 11,999 PASS/one FAIL/two ERROR and shared 2,209 PASS counted once. Exclude 402 harness passes and 7,110 duplicate observations. Required coverage is 44 automated PASS, two FAIL, ten NOT_TESTED and seven manual NOT_TESTED. Root reproduces CI's aggregate after verifying every report/source entry. [Verification](evidence/run91-independent-verification-2026-11-23.json).
+
+The next candidate's full local run on manifest `f7b7f63a…` passes 9,290 checks: 9,109 product and 181 harness. Four new tests check denied ioctl decisions, preserved policy decisions, architecture rejection and a labelled CPython fallback model. The 65,536 request values inside one test do not become 65,536 cases. Three new sysfs cases are excluded harness checks.
+
+Only the workflow selection changes after that full run. Final manifest `13df01f3f697ec9f586a62de9e8ca3203d4692c9f877a9c924f629f4c2195603` passes the corrected 19-case portable harness command. Keep the full run on its earlier source. Separate Safari/Windows harnesses and overlaps add no goal credit. Native Windows/OCR/Safari and the complete changed-source CI remain pending. [Integration](evidence/native-compatibility-root-integration-2026-11-23.json).
+
+The numeric thresholds are exceeded but the complete 10,000 platform goal remains unachieved. Active target stays 10,000 and firstGoalAchievedAt remains unset. The policy and release requirements remain unchanged.
+
 ## November 23 callback receipt counting
 
 Manifest `63d709515f0a3c44fa9b4369cbc18e772119bd9f8465ee225ef844b4e5d1f05e` verifies 9,283 distinct local cases across two recorded executions. The full run has 9,274 PASS and nine SKIP because socket testing was not enabled. The exact nine skipped IDs then pass with `WORKSPACE_HTTP_TESTS=1` on unchanged source. The union has 9,105 product passes and 178 excluded harness passes, retaining all 9,094 prior product IDs and adding 11. Original reports stay separate. Author/reviewer overlaps receive no extra credit. [Evidence](evidence/callback-receipts-root-integration-2026-11-23.json).

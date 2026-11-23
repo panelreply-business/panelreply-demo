@@ -1,0 +1,1247 @@
+{
+  "format": "panelreply-root-ci-independent-verification-v1",
+  "recordedAt": "2026-11-23T19:56:51.178530+00:00",
+  "runId": 45248305894,
+  "runNumber": 91,
+  "runAttempt": 1,
+  "head": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "testedMerge": "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe",
+  "gitTree": "a2e235cf32df07f5329591c68f4e4ff84606f7c5",
+  "sourceManifestSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+  "sourceFileCount": 200,
+  "policySha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216",
+  "freshRun": {
+    "id": 45248305894,
+    "html_url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45248305894",
+    "head_sha": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_attempt": 1,
+    "run_number": 91
+  },
+  "merge": {
+    "sha": "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe",
+    "tree": "a2e235cf32df07f5329591c68f4e4ff84606f7c5",
+    "parents": [
+      "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+      "1562c8ea0326b31f34386925ac55f44f9f9328b1"
+    ]
+  },
+  "jobs": {
+    "count": 41,
+    "allTerminal": true,
+    "conclusions": {
+      "success": 37,
+      "failure": 3,
+      "cancelled": 1
+    },
+    "notSuccessful": [
+      {
+        "id": 137950843118,
+        "name": "Windows private storage component",
+        "status": "completed",
+        "conclusion": "failure",
+        "runnerName": "GitHub Actions 1000000673",
+        "steps": 10
+      },
+      {
+        "id": 137950843422,
+        "name": "Installed Safari fixed product workflows",
+        "status": "completed",
+        "conclusion": "failure",
+        "runnerName": "GitHub Actions 1000000693",
+        "steps": 13
+      },
+      {
+        "id": 137950843506,
+        "name": "Apple Silicon contracts and selected products",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "runnerName": "",
+        "steps": 0
+      },
+      {
+        "id": 137959966957,
+        "name": "Account for distinct product and platform tests",
+        "status": "completed",
+        "conclusion": "failure",
+        "runnerName": "GitHub Actions 1000000746",
+        "steps": 10
+      }
+    ]
+  },
+  "verification": {
+    "freshGitHubMetadata": {
+      "artifacts": {
+        "path": "/tmp/panelreply-run91-root-fresh-artifacts.json",
+        "bytes": 45388,
+        "sha256": "46e2a825ccc6a3ad7b9113f989565972b09ff923a808693a5175bf856383cfc3"
+      },
+      "run": {
+        "path": "/tmp/panelreply-run91-root-fresh-run.json",
+        "bytes": 16327,
+        "sha256": "65d66da07948b19f45acddd3a0f75daaf7aafe11c78bf1dccd969c26ef449965"
+      },
+      "jobs": {
+        "path": "/tmp/panelreply-run91-root-fresh-jobs.json",
+        "bytes": 172919,
+        "sha256": "c41769720432ffaee680f63473dcf0039340ec68625fafbeaa1903279b663423"
+      },
+      "merge": {
+        "path": "/tmp/panelreply-run91-root-fresh-merge.json",
+        "bytes": 2967,
+        "sha256": "8f80d57ef84c707453fcedc4de53c51ebca7a5cb6b3c3c006a86f78c71626f34"
+      }
+    },
+    "allArchiveSizesAndDigestsMatched": true,
+    "safeArchivePaths": true,
+    "allReportBytesMatchedAggregationInputs": true,
+    "everyReportManifestMatchedAllImmutableSourceFiles": true,
+    "allReportsCleanAndSourceUnchanged": true,
+    "allReportsInfrastructureErrorsEmpty": true,
+    "immutableCollectorAndPolicy": [
+      {
+        "path": "/tmp/panelreply-run91-immutable-tools/scripts/aggregate-test-evidence.cjs",
+        "bytes": 41758,
+        "sha256": "68434c118d7381304fe91a26d39f29acba257bbe64d0dae8409a0e62dba93992"
+      },
+      {
+        "path": "/tmp/panelreply-run91-immutable-tools/scripts/test-evidence.cjs",
+        "bytes": 7563,
+        "sha256": "760e48c53578bb028a3b0909b6b50931ac3b0a05590d3bf3dd044437ec3ff387"
+      },
+      {
+        "path": "/tmp/panelreply-run91-immutable-tools/docs/test-milestones.json",
+        "bytes": 19875,
+        "sha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216"
+      }
+    ],
+    "command": [
+      "node",
+      "/tmp/panelreply-run91-immutable-tools/scripts/aggregate-test-evidence.cjs",
+      "--input",
+      "/tmp/panelreply-run91-evidence/reports-by-artifact-name",
+      "--output",
+      "/tmp/panelreply-run91-root-reproduced-aggregate.json",
+      "--source",
+      "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe"
+    ],
+    "commandExitCode": 0,
+    "reproducedAggregate": {
+      "path": "/tmp/panelreply-run91-root-reproduced-aggregate.json",
+      "bytes": 29662289,
+      "sha256": "c1294d959112a21712fe7d79b0443d647e65336e4bf00bee79330d298d5cb2c1"
+    },
+    "frozenAgentEvidence": {
+      "path": "/tmp/panelreply-run91-final-evidence.json",
+      "bytes": 259591,
+      "sha256": "194c70875e9fd2e0e160e1c070b00e1b776912970359ab760c06c9562c75d1b5"
+    },
+    "ciAggregateZip": {
+      "path": "/tmp/panelreply-run91-evidence/zips/14857240859.zip",
+      "bytes": 1037760,
+      "sha256": "d2a4aeef1fcf69f5f1c439e2e49f941c1d8ba6150450d5338dfebc3e266a9bb1"
+    },
+    "ciAggregate": {
+      "path": "/tmp/panelreply-run91-evidence/ci-aggregate/14857240859/panelreply-release-aggregate.json",
+      "bytes": 29662289,
+      "sha256": "b5d67b9b519ba01d3083acf22c7b2350511c2dc91f353a83fb14ddd31273b88a"
+    },
+    "allParsedFieldsEqualExceptGeneratedAt": true
+  },
+  "artifacts": [
+    {
+      "id": 14857105984,
+      "name": "release-platform-ubuntu-24.04-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14857105984.zip",
+      "bytes": 13835,
+      "sha256": "63d35a55d70abffdb16ea1c376236ff36a44f40bc951734269800d0e9c2f4d5d"
+    },
+    {
+      "id": 14856925247,
+      "name": "release-private-linux-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14856925247.zip",
+      "bytes": 15452,
+      "sha256": "85620dac724b23b9c490f32c324f24995c0cb9b44c184c20235ec19ea63630b6"
+    },
+    {
+      "id": 14856855066,
+      "name": "release-platform-macos-15-intel-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14856855066.zip",
+      "bytes": 14859,
+      "sha256": "f795d62212f9b4eaf10d988f563d2f13e7925dcfa1c92b5996da01e15faf91c9"
+    },
+    {
+      "id": 14856581142,
+      "name": "release-baseline-linux-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14856581142.zip",
+      "bytes": 426366,
+      "sha256": "c236ab543e84ed44be9395a1bca570aeb78720636190b8c9d884f3bf181a3659"
+    },
+    {
+      "id": 14856215126,
+      "name": "release-node-macos-15-intel-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14856215126.zip",
+      "bytes": 350748,
+      "sha256": "5bce6f384b2a3dca4a09f88abd575aacfad58e1430c829c8fa146df7cd4e9bcc"
+    },
+    {
+      "id": 14856180053,
+      "name": "release-platform-windows-2022-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14856180053.zip",
+      "bytes": 14570,
+      "sha256": "db09a3bf0528111081ccf1142cd79572829cba23d8e4db85121962cc83241a62"
+    },
+    {
+      "id": 14856020176,
+      "name": "release-platform-windows-2022-msedge-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14856020176.zip",
+      "bytes": 14568,
+      "sha256": "82468ab5d6ebf17c57760016a5834d9c02ea509466d82601197389e36b89cce1"
+    },
+    {
+      "id": 14855970633,
+      "name": "release-selected-macos-15-intel-callback-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855970633.zip",
+      "bytes": 11285,
+      "sha256": "84ca9f11dece15e6567683160ead69dc7271ee8a87caf4a08e906db7e804a418"
+    },
+    {
+      "id": 14855530484,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855530484.zip",
+      "bytes": 11209,
+      "sha256": "6956d2203d2b03c97fd5b17a27ed765d440bfb27ad0c772523bae5cd57813f6f"
+    },
+    {
+      "id": 14855400615,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855400615.zip",
+      "bytes": 11072,
+      "sha256": "ee95b5718289b073569bdff9ee692c5d990d296a58e1074499fb656239d6f590"
+    },
+    {
+      "id": 14855391378,
+      "name": "release-selected-ubuntu-24.04-callback-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855391378.zip",
+      "bytes": 11295,
+      "sha256": "e5868cf5f5b472e5d92813f7cf00a7f5c6b76c20187420475568070defa40793"
+    },
+    {
+      "id": 14855290601,
+      "name": "release-platform-ubuntu-24.04-chrome-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855290601.zip",
+      "bytes": 14817,
+      "sha256": "d5ef2c5d65f0e8586229ce50421bf7376ccc5cae6ba504f824ac75ace2efd6b5"
+    },
+    {
+      "id": 14855231760,
+      "name": "release-platform-macos-15-intel-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855231760.zip",
+      "bytes": 14819,
+      "sha256": "a51ab57c29cd6f9dd085b675d1349e841ca678b144b89bc16f593b9b0643a6ac"
+    },
+    {
+      "id": 14855230942,
+      "name": "release-callback-mobile-linux-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855230942.zip",
+      "bytes": 13010,
+      "sha256": "7c54bdbf32576aeb812c2288d6d118709c6a61426011618cd206e4485b1c2a64"
+    },
+    {
+      "id": 14855180963,
+      "name": "release-mobile-linux-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855180963.zip",
+      "bytes": 12433,
+      "sha256": "73c68aa0a78b16d4ef358768ebdf1ba24ad2c08d20a0818c768c8ca94fc0e405"
+    },
+    {
+      "id": 14855111166,
+      "name": "release-selected-ubuntu-24.04-callback-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855111166.zip",
+      "bytes": 11298,
+      "sha256": "1c9449ceee367fcf660520c47aecac9b98d2911af73f3c936a19519722d90a21"
+    },
+    {
+      "id": 14855086355,
+      "name": "release-mobile-linux-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14855086355.zip",
+      "bytes": 12552,
+      "sha256": "7a480caf63ce5eb2eb05da1a9e8e8cacbe5d1fda7337f56361f014b9d0c9bd6d"
+    },
+    {
+      "id": 14854971725,
+      "name": "release-selected-ubuntu-24.04-callback-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854971725.zip",
+      "bytes": 11293,
+      "sha256": "9aba2dd92435de13ab9d71359a40668cba9f0f0d164079796d645f905eba5161"
+    },
+    {
+      "id": 14854778055,
+      "name": "release-native-safari-macos-15-intel-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854778055.zip",
+      "bytes": 32276,
+      "sha256": "d72ad2b355c061494e52804e47d30b208667354b5ee4d0724053cc2eb5d5e739"
+    },
+    {
+      "id": 14854752999,
+      "name": "release-platform-macos-15-intel-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854752999.zip",
+      "bytes": 14822,
+      "sha256": "de5f06e39c7c9c3353f51dd16f33573c8a679d459eded29dd47a00831c248140"
+    },
+    {
+      "id": 14854748144,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854748144.zip",
+      "bytes": 11074,
+      "sha256": "5cfa220780f6aca47b66438d645297327a9bc87a20f270ba5016bad366ffb250"
+    },
+    {
+      "id": 14854733675,
+      "name": "release-private-linux-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854733675.zip",
+      "bytes": 15474,
+      "sha256": "9aff60ff1e47ff9c2b3fb1df7914893f5509da7a84a9b5a54f0517c38aaa188a"
+    },
+    {
+      "id": 14854449011,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854449011.zip",
+      "bytes": 11201,
+      "sha256": "196e04e6337399f2cfdbff3fb8b036c7fc7ca87fe1769413576d957bf23ce995"
+    },
+    {
+      "id": 14854444848,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854444848.zip",
+      "bytes": 11197,
+      "sha256": "d253ad784f00d1d21fe459ffdee3228c445a6183552510b72603cda9041ba017"
+    },
+    {
+      "id": 14854384241,
+      "name": "release-selected-macos-15-intel-callback-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854384241.zip",
+      "bytes": 11289,
+      "sha256": "de4d3d39251b16ceba7b8db80ab87c0ec267e60391d4ad957596d4f8f0657dea"
+    },
+    {
+      "id": 14854204655,
+      "name": "release-node-ubuntu-24.04-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14854204655.zip",
+      "bytes": 348563,
+      "sha256": "204067e3322ca90e16e5583aae0a86ef5c11fcca7ece86edf9248686f656510f"
+    },
+    {
+      "id": 14853984471,
+      "name": "release-platform-windows-2022-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853984471.zip",
+      "bytes": 14544,
+      "sha256": "bf57810f18e93c295f2836c80bc65ad074e1df0dc13bc276d492abf67158588c"
+    },
+    {
+      "id": 14853904414,
+      "name": "release-selected-macos-15-intel-callback-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853904414.zip",
+      "bytes": 11296,
+      "sha256": "822f9f5422cf512591a16bc882f8bf523a45fcda327911453d2dbc505d581384"
+    },
+    {
+      "id": 14853894738,
+      "name": "release-callback-mobile-linux-webkit-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853894738.zip",
+      "bytes": 13056,
+      "sha256": "6ac20eba7e64a613b54c95c131916b5d5915798a183c782deaf419b774a16a67"
+    },
+    {
+      "id": 14853804820,
+      "name": "release-platform-ubuntu-24.04-msedge-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853804820.zip",
+      "bytes": 14807,
+      "sha256": "fe21d8a00bed794c1e39a557cd4f52faee57d98ea124cb2fcbf106563af098ba"
+    },
+    {
+      "id": 14853514655,
+      "name": "release-platform-windows-2022-chrome-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853514655.zip",
+      "bytes": 14564,
+      "sha256": "044117256d792e86a147b0806aa3a7330af096a869f94f07ab5408fa0731ece4"
+    },
+    {
+      "id": 14853414851,
+      "name": "release-platform-windows-2022-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853414851.zip",
+      "bytes": 14594,
+      "sha256": "d69c2ff98e05752331f551e2419e7fd4a018038aab5e7e5cc6cac2e670c22e3f"
+    },
+    {
+      "id": 14853319878,
+      "name": "release-node-windows-2022-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853319878.zip",
+      "bytes": 339822,
+      "sha256": "87a14bca072146ff735812cb27dec32be7699c8bc500e2b03848261aab166570"
+    },
+    {
+      "id": 14853064992,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-chromium-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14853064992.zip",
+      "bytes": 11081,
+      "sha256": "0e8062faf575ce0568412ad2930dc65c19a4bd7991268f8f39518288848e113b"
+    },
+    {
+      "id": 14852979963,
+      "name": "release-platform-ubuntu-24.04-firefox-attempt-1",
+      "path": "/tmp/panelreply-run91-evidence/zips/14852979963.zip",
+      "bytes": 13871,
+      "sha256": "3498e982705a58805f35be14493d89218bbd4d9000c4415fd750846058cebe9f"
+    }
+  ],
+  "reports": [
+    {
+      "artifactId": 14857105984,
+      "artifactName": "release-platform-ubuntu-24.04-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "968f416b4c5cf3510f24e33a7fbb422262f1837be43aa935f316e907842ac418",
+      "bytes": 58527,
+      "suite": "portable-extra",
+      "tests": 65,
+      "totals": {
+        "passed": 65,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14856925247,
+      "artifactName": "release-private-linux-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "41fa2c98bdea4b1d4432c512db9b07287d9d44735d84d93b6daca387009d6add",
+      "bytes": 79638,
+      "suite": "private",
+      "tests": 132,
+      "totals": {
+        "passed": 132,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14856855066,
+      "artifactName": "release-platform-macos-15-intel-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "7b1aff6140ce3ae7ac69115704ae1c64a44733e5ea180eeb5da7a0a26f15dfaf",
+      "bytes": 68083,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14856581142,
+      "artifactName": "release-baseline-linux-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "d51c7793000c0c80a63b0e8feb686422385c7fd105bc746dffb802cc7ccf2a87",
+      "bytes": 5575740,
+      "suite": "node-all",
+      "tests": 9272,
+      "totals": {
+        "passed": 9272,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 178
+      }
+    },
+    {
+      "artifactId": 14856581142,
+      "artifactName": "release-baseline-linux-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "d2758a4771fb8622368150b1250c0aa83afc4d9a46f8891f94dffe100cf0777f",
+      "bytes": 107903,
+      "suite": "baseline",
+      "tests": 197,
+      "totals": {
+        "passed": 197,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14856215126,
+      "artifactName": "release-node-macos-15-intel-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "6f25c0d91fb138b5dbd040ff2cf7de9763fca99f1c7351e635da4dca16866510",
+      "bytes": 4414814,
+      "suite": "node-portable",
+      "tests": 7110,
+      "totals": {
+        "passed": 7110,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 112
+      }
+    },
+    {
+      "artifactId": 14856180053,
+      "artifactName": "release-platform-windows-2022-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "d1108f10e797b11ffddc3ba671f011f7149c6f84f6c830f0e2a0ba5afa9df712",
+      "bytes": 70003,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14856020176,
+      "artifactName": "release-platform-windows-2022-msedge-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "cd6c593b32f1cb843541122af8e37d2ec5864e0ee26abef4a6f06149bb2ec75a",
+      "bytes": 69785,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855970633,
+      "artifactName": "release-selected-macos-15-intel-callback-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "cadf58b7a80fb1ad982ef56437f0c2bedeb646b61af800627f42be2c3d03d78a",
+      "bytes": 35959,
+      "suite": "callback",
+      "tests": 15,
+      "totals": {
+        "passed": 15,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855530484,
+      "artifactName": "release-selected-macos-15-intel-spreadsheet-manual-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "a136256be3a463af1b924c70a7e2ad244eef6a3bf068398667171a6a5a780728",
+      "bytes": 34548,
+      "suite": "spreadsheet-manual",
+      "tests": 10,
+      "totals": {
+        "passed": 10,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855400615,
+      "artifactName": "release-selected-ubuntu-24.04-spreadsheet-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "61f34b8f175f139a6bcc50460c5b6cf618719f973f25b51dd64884abe8d3d9a0",
+      "bytes": 33808,
+      "suite": "spreadsheet",
+      "tests": 9,
+      "totals": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855391378,
+      "artifactName": "release-selected-ubuntu-24.04-callback-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "509e1760c5e3c458382e326499dbe57981040b8c222ebb77b2970f94ed9339c9",
+      "bytes": 35985,
+      "suite": "callback",
+      "tests": 15,
+      "totals": {
+        "passed": 15,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855290601,
+      "artifactName": "release-platform-ubuntu-24.04-chrome-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "8c49ba700fe0fdb674e1105b0dcc224822d099f219952de61eca5675c6543888",
+      "bytes": 67913,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855231760,
+      "artifactName": "release-platform-macos-15-intel-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "6def1b6a978f0edb2ca123114656a4815626dd3bedd7253c9e7eb3c38844317a",
+      "bytes": 68217,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855230942,
+      "artifactName": "release-callback-mobile-linux-chromium-attempt-1",
+      "file": "panelreply-release-callback-mobile.json",
+      "sha256": "b2d419f0b3e2ae596707963288d99fdb62220c8e0374e4e30823e516edfbbc3a",
+      "bytes": 104340,
+      "suite": "callback-mobile",
+      "tests": 12,
+      "totals": {
+        "passed": 12,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855180963,
+      "artifactName": "release-mobile-linux-chromium-attempt-1",
+      "file": "panelreply-release-mobile.json",
+      "sha256": "2168b6cbb276e54ff3e04aec4cf31c9095d39fb06732775450cc65a19bf8ddbb",
+      "bytes": 85567,
+      "suite": "mobile",
+      "tests": 40,
+      "totals": {
+        "passed": 40,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855111166,
+      "artifactName": "release-selected-ubuntu-24.04-callback-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "fac341c6b69010e78721152f9964028556d42c6575c5d95d89aaa3f58276c95a",
+      "bytes": 35953,
+      "suite": "callback",
+      "tests": 15,
+      "totals": {
+        "passed": 15,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14855086355,
+      "artifactName": "release-mobile-linux-webkit-attempt-1",
+      "file": "panelreply-release-mobile.json",
+      "sha256": "9a336b1d669cfa74cd394343ea87ca0d6fddf81c994164ad8753f2d49169e386",
+      "bytes": 86083,
+      "suite": "mobile",
+      "tests": 40,
+      "totals": {
+        "passed": 40,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854971725,
+      "artifactName": "release-selected-ubuntu-24.04-callback-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "d44df9675100190d81e15871e504dbd6cd3552da735b556a5a3a202d53da9060",
+      "bytes": 35969,
+      "suite": "callback",
+      "tests": 15,
+      "totals": {
+        "passed": 15,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854778055,
+      "artifactName": "release-native-safari-macos-15-intel-attempt-1",
+      "file": "callback-safari.json",
+      "sha256": "585318afa938e3c5d637884eeb7af7285e493f901edc5c19f7e6042f512b57ac",
+      "bytes": 86477,
+      "suite": "callback-safari",
+      "tests": 3,
+      "totals": {
+        "PASS": 0,
+        "FAIL": 3,
+        "ERROR": 0,
+        "NOT_RUN": 0,
+        "SKIP": 0,
+        "RUNNING": 0
+      }
+    },
+    {
+      "artifactId": 14854778055,
+      "artifactName": "release-native-safari-macos-15-intel-attempt-1",
+      "file": "spreadsheet-manual-safari.json",
+      "sha256": "cf0134774515b292ccd27a2c65f7a3651ba73b92f38ef1a752116da6170fedd8",
+      "bytes": 113643,
+      "suite": "spreadsheet-manual-safari",
+      "tests": 3,
+      "totals": {
+        "PASS": 0,
+        "FAIL": 1,
+        "ERROR": 2,
+        "NOT_RUN": 0,
+        "SKIP": 0,
+        "RUNNING": 0
+      }
+    },
+    {
+      "artifactId": 14854752999,
+      "artifactName": "release-platform-macos-15-intel-chromium-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "0cc1adb2adf66a1f662dab00a7397b16af909982a4277930dcc1eb96fd33872c",
+      "bytes": 68133,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854748144,
+      "artifactName": "release-selected-ubuntu-24.04-spreadsheet-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "9924d82cddbebb9f9528b11e793b59d73541b0668979639963c8080232c0504e",
+      "bytes": 33800,
+      "suite": "spreadsheet",
+      "tests": 9,
+      "totals": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854733675,
+      "artifactName": "release-private-linux-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "f8e33a53e014882ea3ce86069eeee7dbae6844498c1953119daa7d35ebe3462a",
+      "bytes": 79507,
+      "suite": "private",
+      "tests": 132,
+      "totals": {
+        "passed": 132,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854449011,
+      "artifactName": "release-selected-macos-15-intel-spreadsheet-manual-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "46bdc5f47ca6ec7b2d4228ec7a7c31608fb625c89c12f4151f22cbc7032c5dc8",
+      "bytes": 34521,
+      "suite": "spreadsheet-manual",
+      "tests": 10,
+      "totals": {
+        "passed": 10,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854444848,
+      "artifactName": "release-selected-macos-15-intel-spreadsheet-manual-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "24824bf7347c6adefb578eda08ec5dd626349383d50b1cb70d0a070f9c74527e",
+      "bytes": 34504,
+      "suite": "spreadsheet-manual",
+      "tests": 10,
+      "totals": {
+        "passed": 10,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854384241,
+      "artifactName": "release-selected-macos-15-intel-callback-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "0a157f429a2b90a91d06d13e3e3ff0a3ac69e77aa6b1e7eb7b8c2214900ec141",
+      "bytes": 35979,
+      "suite": "callback",
+      "tests": 15,
+      "totals": {
+        "passed": 15,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14854204655,
+      "artifactName": "release-node-ubuntu-24.04-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "d4795a35dc13b9d3098e076e54284739c8fdf9ac7c2ae32734ebc11f6cab4dc2",
+      "bytes": 4407565,
+      "suite": "node-portable",
+      "tests": 7110,
+      "totals": {
+        "passed": 7110,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 112
+      }
+    },
+    {
+      "artifactId": 14853984471,
+      "artifactName": "release-platform-windows-2022-chromium-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "1167e8bab26aaf195b92d99563913b9c459eb9a8ee2f135c3d2a5d6c61cb4eeb",
+      "bytes": 69875,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14853904414,
+      "artifactName": "release-selected-macos-15-intel-callback-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "572fe4e1a0066fa95851b8fa77788c086900f8b846e4d46e5c1e183ef3140e58",
+      "bytes": 36003,
+      "suite": "callback",
+      "tests": 15,
+      "totals": {
+        "passed": 15,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14853894738,
+      "artifactName": "release-callback-mobile-linux-webkit-attempt-1",
+      "file": "panelreply-release-callback-mobile.json",
+      "sha256": "a6686265d1f71fef2e8cfefab9c59ef283cfd47200efcbe091038d415cec9627",
+      "bytes": 104484,
+      "suite": "callback-mobile",
+      "tests": 12,
+      "totals": {
+        "passed": 12,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14853804820,
+      "artifactName": "release-platform-ubuntu-24.04-msedge-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "bcc284fd1ee5b06147dd12cf7cddcf115bfe53013c6ac4e1de45cbf9477afae8",
+      "bytes": 67914,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14853514655,
+      "artifactName": "release-platform-windows-2022-chrome-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "142e89413e7fcaf2e8e83c10cf342311090a2fd9ee92baccc44eb904e83a0e9e",
+      "bytes": 69780,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14853414851,
+      "artifactName": "release-platform-windows-2022-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "d96db65355db6be0f812856fb57947546254f239778996d8453fc540c2a3ebe5",
+      "bytes": 69818,
+      "suite": "portable",
+      "tests": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14853319878,
+      "artifactName": "release-node-windows-2022-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "0cacdec7154332a486b832dca24450d21ab7a759923296641985a9db2fd10600",
+      "bytes": 4407552,
+      "suite": "node-portable",
+      "tests": 7110,
+      "totals": {
+        "passed": 7110,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 112
+      }
+    },
+    {
+      "artifactId": 14853064992,
+      "artifactName": "release-selected-ubuntu-24.04-spreadsheet-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "1cb82da9c32ea68c08207dd51b3911b7b97a844132bd7bc75e2441673fa148a4",
+      "bytes": 33826,
+      "suite": "spreadsheet",
+      "tests": 9,
+      "totals": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    },
+    {
+      "artifactId": 14852979963,
+      "artifactName": "release-platform-ubuntu-24.04-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "bb12a34ced5173ad2920450808183d9dfda268ffedddea4ec317ae1d86ac990b",
+      "bytes": 58328,
+      "suite": "portable-extra",
+      "tests": 65,
+      "totals": {
+        "passed": 65,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      }
+    }
+  ],
+  "aggregation": {
+    "product": {
+      "total": 24858,
+      "PASS": 24852,
+      "SKIP": 0,
+      "TODO": 0,
+      "EXPECTED_FAILURE": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0,
+      "RUNNING": 0,
+      "CANCELLED": 0,
+      "UNEXPECTED_SUCCESS": 0,
+      "FAIL": 4,
+      "ERROR": 2
+    },
+    "productScopes": {
+      "callback": {
+        "executions": {
+          "total": 10647,
+          "PASS": 10644,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 3,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 3482,
+          "generated": 2389,
+          "passingOnEveryObservedPlatform": 3479,
+          "withUnresolvedOutcome": 3
+        }
+      },
+      "spreadsheet": {
+        "executions": {
+          "total": 12002,
+          "PASS": 11999,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 1,
+          "ERROR": 2
+        },
+        "distinctCases": {
+          "total": 4194,
+          "generated": 3782,
+          "passingOnEveryObservedPlatform": 4191,
+          "withUnresolvedOutcome": 3
+        }
+      },
+      "shared": {
+        "executions": {
+          "total": 2209,
+          "PASS": 2209,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 0,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 1699,
+          "generated": 1296,
+          "passingOnEveryObservedPlatform": 1699,
+          "withUnresolvedOutcome": 0
+        },
+        "availableTo": [
+          "callback",
+          "spreadsheet"
+        ],
+        "counting": "Counted once in portfolio totals, not added to either app-specific bucket."
+      }
+    },
+    "harness": {
+      "total": 402,
+      "PASS": 402,
+      "SKIP": 0,
+      "TODO": 0,
+      "EXPECTED_FAILURE": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0,
+      "RUNNING": 0,
+      "CANCELLED": 0,
+      "UNEXPECTED_SUCCESS": 0,
+      "FAIL": 0,
+      "ERROR": 0
+    },
+    "distinctCases": {
+      "total": 9375,
+      "generated": 7467,
+      "notMarkedGenerated": 1908,
+      "passingOnEveryObservedPlatform": 9369,
+      "withAnyPass": 9369,
+      "withUnresolvedOutcome": 6
+    },
+    "duplicateObservationsExcluded": 7110,
+    "milestones": {
+      "scope": "portfolio",
+      "initialTarget": 10000,
+      "earlyTarget": 20000,
+      "activeTarget": 10000,
+      "deadline": "2026-12-31T00:00:00-05:00",
+      "releaseDate": "2026-12-31",
+      "timezone": "America/Detroit",
+      "recordedFirstGoalAchievedAt": null,
+      "numericTargetReached": true,
+      "initialNumericTargetReached": true,
+      "earlyNumericTargetReached": true,
+      "platformCoverageComplete": false,
+      "cleanCommittedEvidence": true,
+      "allObservedChecksPassed": false,
+      "initialGoalAchieved": false,
+      "fullGoalAchieved": false,
+      "earlyTargetEligible": false,
+      "suggestedTarget": 10000,
+      "policyChanged": false
+    },
+    "numericTargetReached": true,
+    "platformCoverageComplete": false,
+    "fullGoalAchieved": false,
+    "releaseDecision": "NOT_DETERMINED_BY_TEST_COUNT",
+    "productReleaseDecisions": {
+      "callback": "NOT_DETERMINED_BY_TEST_COUNT",
+      "spreadsheet": "NOT_DETERMINED_BY_TEST_COUNT"
+    }
+  },
+  "requiredPlatformStatusCounts": {
+    "PASS": 44,
+    "NOT_TESTED": 17,
+    "FAIL": 2
+  },
+  "nativeAuxiliaryEvidence": "Windows and OCR reports are retained separately and contribute no product target credit. Native Safari failures remain in the aggregate.",
+  "releaseAcceptance": {
+    "callback": "NO_GO",
+    "spreadsheet": "NO_GO"
+  },
+  "newTestExecutions": 0,
+  "retryRequested": false,
+  "cancellationRequested": false,
+  "productionMutation": false
+}

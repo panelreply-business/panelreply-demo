@@ -1,5 +1,15 @@
 # PanelReply development progress
 
+## Native compatibility review and final run91 — November 23, 2026
+
+Root independently reconciles all 35 release ZIPs and 37 reports from run91 against its 200 committed source entries. The immutable aggregate equals CI except generatedAt. It records 24,852 product PASS, four FAIL and two ERROR across 9,375 distinct cases. Exclude 402 harness passes and 7,110 duplicate observations. Required automated coverage is 44 PASS, two FAIL and ten NOT_TESTED, plus seven manual NOT_TESTED. Both installed-Safari product suites fail. Windows Firefox now passes, without proving its earlier failure cause. ARM has no runner/steps. [Final record](evidence/release-run91.json) and [independent verification](evidence/run91-independent-verification-2026-11-23.json).
+
+Callback task-receipt repair is committed as `7fec73b7ca7fe323accaf22eb99e11d905f698b3`; run92 is being reconciled separately. The next reviewed milestone adds exact Windows native metadata opens, held SQLite observer output, a bounded sysfs size correction, denied-FIOCLEX errno compatibility and Safari Actions/failure observations. No app imports the storage component or observers. [Milestone](NATIVE_COMPATIBILITY_2026_11_23.md).
+
+Full local verification passes 9,290 checks on manifest `f7b7f63a…`: 9,109 product and 181 excluded harness with zero unresolved outcomes. All 9,105 prior product IDs remain; four policy/model cases are new. The exact Windows workflow selection check then reveals an incorrect filter. The corrected command selects 19 passing harness cases, excluding six Linux process tests. Only workflow bytes change after the full run, yielding final 202-file manifest `13df01f3f697ec9f586a62de9e8ca3203d4692c9f877a9c924f629f4c2195603`. Do not relabel the earlier full run. [Source-bound integration](evidence/native-compatibility-root-integration-2026-11-23.json).
+
+Native execution on the new source remains required. Run91's Windows 13 PASS/twoFAIL/cleanup error and both BLOCKED OCR hosts remain preserved. Request-save receipt recovery and component report-output containment continue in isolated worktrees. Both independent product decisions remain NO-GO.
+
 ## Callback receipt repair and native run91 findings — November 23, 2026
 
 The callback scheduler now validates the complete consumed parent/task receipt before clearing the draft or pending command. It binds update identity, exact fresh revisions and submitted action fields, while accepting later-state idempotency replays. Malformed parent history remains retryable. Independent review corrected extended-year chronology and readable legacy parent revisions without relaxing persisted task limits. The backend and product boundaries are unchanged. [Repair](CALLBACK_RECEIPTS_2026_11_23.md).

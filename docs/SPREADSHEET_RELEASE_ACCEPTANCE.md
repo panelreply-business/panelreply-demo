@@ -1,5 +1,13 @@
 # Spreadsheet release acceptance
 
+## November 23 final run91 and OCR compatibility candidate
+
+The independently verified run91 spreadsheet bucket records 11,999 PASS, one FAIL and two ERROR across 4,194 distinct cases. All six fixed spreadsheet suites pass their recorded methods. Installed Safari still fails all three journeys. Required OCR isolation remains BLOCKED on both observed hosts. [Verified ledger](evidence/release-run91.json).
+
+The next candidate denies every ioctl and changes only the exact FIOCLEX error from EPERM to EACCES to permit CPython's existing fallback. Four policy/model regressions pass. Tagged source supports this hypothesis; it does not prove the actual failing syscall or native enforcement. Both hosts must rerun readiness and all six denial checks. The sysfs observation correction preserves its read/type/identity bounds. [OCR scope](OCR_FIOCLEX_COMPATIBILITY_2026_11_23.md) and [integration](evidence/native-compatibility-root-integration-2026-11-23.json).
+
+Windows fixture and Safari input candidates also need native execution. The SQLite observer output boundary is repaired and locally verified, but native observation remains inactive pending component prerequisites. Accuracy remains 289/310 exact. Devices, Excel, native Mac extraction, ARM and host/operating requirements remain open. Spreadsheet remains an independent NO-GO decision.
+
 Spreadsheet records one FAIL and two ERROR outcomes in installed Safari run91. These native failures remain open. [Source-bound verification](evidence/native-safari-run91-independent-2026-11-23.json).
 
 ## November 23 actual OCR host comparison

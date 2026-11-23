@@ -1,0 +1,145 @@
+{
+  "format": "panelreply-windows-sqlite-output-cli-v1",
+  "recordedAt": "2026-11-23T19:28:40.037347+00:00",
+  "sourceCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "sourceManifestSha256": "756671dd7ee5c75ddd87339a066955b06259422fed021df4aca2f93508e88e23",
+  "sourceFiles": 201,
+  "negativePreflights": [
+    {
+      "case": "repository_alias",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "INCOMPLETE",
+        "code": "OUTPUT_OVERLAP",
+        "message": "OUTPUT_OVERLAP",
+        "releaseCredit": false,
+        "productPassing": 0
+      },
+      "repositoryOutputCreated": false,
+      "nativeScenariosExecuted": 0
+    },
+    {
+      "case": "raw_alias_parent_traversal",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "INCOMPLETE",
+        "code": "OUTPUT_OVERLAP",
+        "message": "OUTPUT_OVERLAP",
+        "releaseCredit": false,
+        "productPassing": 0
+      },
+      "repositoryOutputCreated": false,
+      "nativeScenariosExecuted": 0
+    },
+    {
+      "case": "missing_parent",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "INCOMPLETE",
+        "code": "OUTPUT_PARENT_UNAVAILABLE",
+        "message": "OUTPUT_PARENT_UNAVAILABLE",
+        "releaseCredit": false,
+        "productPassing": 0
+      },
+      "repositoryOutputCreated": false,
+      "nativeScenariosExecuted": 0
+    },
+    {
+      "case": "unresolvable_parent",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "INCOMPLETE",
+        "code": "OUTPUT_PARENT_UNAVAILABLE",
+        "message": "OUTPUT_PARENT_UNAVAILABLE",
+        "releaseCredit": false,
+        "productPassing": 0
+      },
+      "repositoryOutputCreated": false,
+      "nativeScenariosExecuted": 0
+    },
+    {
+      "case": "dangling_journal",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "INCOMPLETE",
+        "code": "OUTPUT_ALREADY_EXISTS",
+        "message": "OUTPUT_ALREADY_EXISTS",
+        "outputState": {
+          "report": {
+            "state": "NOT_CREATED",
+            "bytesVerified": 0,
+            "writeStarted": false,
+            "writeVerified": false,
+            "failed": false,
+            "descriptorClosed": false
+          },
+          "journal": {
+            "state": "NOT_CREATED",
+            "bytesVerified": 0,
+            "writeStarted": false,
+            "writeVerified": false,
+            "failed": false,
+            "descriptorClosed": false
+          }
+        },
+        "releaseCredit": false,
+        "productPassing": 0
+      },
+      "repositoryOutputCreated": false,
+      "nativeScenariosExecuted": 0
+    }
+  ],
+  "ordinaryOutsideBuildFailure": {
+    "trigger": "Explicit --build-failed reporting path, no native build attempted.",
+    "exitCode": 1,
+    "status": "INCOMPLETE",
+    "nativeScenariosExecuted": 0,
+    "notRunScenarios": 8,
+    "notRunPhases": 72,
+    "journalBytes": 0,
+    "journalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "journalDigestMatchedReport": true,
+    "bothDescriptorsClosed": true,
+    "stdoutSummary": {
+      "output": "/tmp/panelreply-sqlite-output-cli-o667knza/outside-observation.json",
+      "status": "INCOMPLETE",
+      "totals": {
+        "observed": 0,
+        "errors": 0,
+        "notRun": 8
+      },
+      "infrastructureErrors": 1,
+      "acceptance": "NOT_ESTABLISHED",
+      "releaseCredit": false,
+      "productPassing": 0,
+      "outputState": {
+        "report": {
+          "state": "CREATED_RETAINED",
+          "bytesVerified": 47824,
+          "writeStarted": true,
+          "writeVerified": true,
+          "failed": false,
+          "descriptorClosed": true
+        },
+        "journal": {
+          "state": "CREATED_RETAINED",
+          "bytesVerified": 0,
+          "writeStarted": false,
+          "writeVerified": false,
+          "failed": false,
+          "descriptorClosed": true
+        }
+      }
+    },
+    "reportSha256": "7fb8510ae10b59ceb1070303670cf03b266066f6e658ab34a8a2f161b0c64c01",
+    "evidenceFile": "docs/evidence/windows-sqlite-output-build-failure-2026-11-23.json"
+  },
+  "productPassing": 0,
+  "releaseCredit": false,
+  "scope": "Linux CLI and temporary filesystem checks only. No Windows native component loaded and no Windows SQLite scenario ran."
+}

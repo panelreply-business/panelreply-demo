@@ -1,0 +1,15 @@
+✔ restricted policy rejects other architectures, x32 ABI and forbidden kernel operations (4.594633ms)
+✔ required isolation permits only unprivileged Linux x64 hosts (1.12625ms)
+✔ worker policy exposes only read-only runtime and a fixed normalizer script (1.304479ms)
+✔ FIOCLEX stays denied and only its exact zero-extended ioctl request receives EACCES (57.608286ms)
+✔ the compatibility branch preserves every other sampled decision from the frozen policy (15.253897ms)
+✔ FIOCLEX cannot bypass architecture or x32 rejection (0.292491ms)
+✔ the tagged CPython descriptor-flag model reaches already-permitted fcntl after denied FIOCLEX (0.472373ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 196.106458

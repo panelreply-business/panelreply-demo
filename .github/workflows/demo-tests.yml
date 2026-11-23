@@ -297,6 +297,7 @@ jobs:
         env:
           PANELREPLY_COMPONENT_BUILD_OUTCOME: ${{ steps.component_build.outcome }}
         run: |
+          New-Item -ItemType Directory -Path (Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence') -Force | Out-Null
           $ComponentArguments = @('scripts/run-windows-storage.cjs',
             '--build-directory', (Join-Path $env:RUNNER_TEMP 'panelreply-windows-storage-build'),
             '--output', (Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence/windows-storage-component.json'))
@@ -311,6 +312,15 @@ jobs:
           $EvidenceDirectory = Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence'
           New-Item -ItemType Directory -Path $EvidenceDirectory -Force | Out-Null
           & node --test tests/windows-storage-evidence.harness.cjs 2>&1 | Tee-Object -FilePath (Join-Path $EvidenceDirectory 'component-evidence-harness.log')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify portable SQLite observer evidence controls without native or product credit
+        if: always()
+        run: |
+          $EvidenceDirectory = Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence'
+          New-Item -ItemType Directory -Path $EvidenceDirectory -Force | Out-Null
+          # Six Linux-only process controls run locally. These 19 cases include
+          # all 13 output-boundary controls and never load a native component.
+          & node --test --test-skip-pattern='portable protocol |protocol failure |identity rejection ' tests/windows-sqlite-observation.harness.cjs 2>&1 | Tee-Object -FilePath (Join-Path $EvidenceDirectory 'sqlite-observer-output-harness.log')
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Preserve component results and build provenance outside product totals
         if: always()

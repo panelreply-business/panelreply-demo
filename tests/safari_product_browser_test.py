@@ -39,6 +39,93 @@ LEAD = {
 }
 
 
+UPLOAD_READ_DIAGNOSTIC = """
+    // A later read-only probe after the original upload has already failed.
+    // It never retries the upload, changes the input, or exposes file content.
+    const maximumBytes = arguments[0], complete = arguments[arguments.length - 1];
+    const context = {isSecureContext: globalThis.isSecureContext,
+        cryptoType: typeof globalThis.crypto,
+        randomUUIDType: typeof globalThis.crypto?.randomUUID,
+        fileReaderType: typeof globalThis.FileReader,
+        btoaType: typeof globalThis.btoa};
+    const files = document.querySelector('#panel-image')?.files;
+    const file = files?.[0];
+    const result = {format: 'panelreply-after-failure-file-read-v1',
+        originalExceptionCaptured: false, originalActionsRepeated: false,
+        context, reads: {}, file: file ? {name: file.name, type: file.type,
+            size: file.size, lastModified: file.lastModified,
+            arrayBufferType: typeof file.arrayBuffer} : null};
+    if (!files || files.length !== 1 || !file || !Number.isSafeInteger(file.size)
+            || file.size < 1 || file.size > maximumBytes) {
+        result.status = 'NOT_READ';
+        complete(result);
+        return;
+    }
+    let finished = false, remaining = 2, reader = null;
+    const failure = error => ({name: String(error?.name || '').slice(0, 100),
+        code: Number.isFinite(error?.code) ? error.code : null,
+        message: String(error?.message || error || '').slice(0, 1000)});
+    const finish = () => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        result.status = 'OBSERVED';
+        complete(result);
+    };
+    const record = (method, observation) => {
+        if (finished || Object.hasOwn(result.reads, method)) return;
+        result.reads[method] = observation;
+        if (--remaining === 0) finish();
+    };
+    const progress = [];
+    let progressOverflow = false;
+    const timer = setTimeout(() => {
+        if (finished) return;
+        for (const method of ['arrayBufferAndBase64', 'fileReader']) {
+            if (!Object.hasOwn(result.reads, method))
+                result.reads[method] = {status: 'TIMEOUT', deadlineMs: 4000};
+        }
+        finish();
+        // This reader belongs only to the diagnostic probe.
+        if (reader?.readyState === 1) reader.abort();
+    }, 4000);
+    (async () => {
+        let stage = 'arrayBuffer';
+        try {
+            const buffer = new Uint8Array(await file.arrayBuffer());
+            stage = 'byteString';
+            let text = '';
+            for (let offset = 0; offset < buffer.length; offset += 8192)
+                text += String.fromCharCode(...buffer.subarray(offset, offset + 8192));
+            stage = 'base64';
+            const encodedLength = btoa(text).length;
+            record('arrayBufferAndBase64', {status: 'READ', bytes: buffer.byteLength,
+                matchesFileSize: buffer.byteLength === file.size, encodedLength});
+        } catch (error) {
+            record('arrayBufferAndBase64', {status: 'ERROR', stage, error: failure(error)});
+        }
+    })();
+    try {
+        reader = new FileReader();
+        reader.onprogress = event => {
+            if (finished) return;
+            if (progress.length >= 8) { progressOverflow = true; return; }
+            progress.push({loaded: event.loaded, total: event.total,
+                lengthComputable: event.lengthComputable});
+        };
+        reader.onload = () => record('fileReader', {status: 'READ',
+            bytes: reader.result.byteLength, matchesFileSize: reader.result.byteLength === file.size,
+            progress, progressOverflow});
+        reader.onerror = () => record('fileReader', {status: 'ERROR',
+            error: failure(reader.error), progress, progressOverflow});
+        reader.onabort = () => record('fileReader', {status: 'ABORT', progress, progressOverflow});
+        reader.readAsArrayBuffer(file);
+    } catch (error) {
+        record('fileReader', {status: 'ERROR', error: failure(error), progress, progressOverflow});
+    }
+"""
+
+
 def command(args, env, stdin=None):
     result = subprocess.run(["node", *args], cwd=ROOT, env=env,
                             input=None if stdin is None else stdin + "\n",
@@ -52,8 +139,8 @@ def select_keyboard_plan(control, value):
     """Plan native first-character cycling from the observed single select.
 
     WebKit's TypeAhead cycles matching initial characters after the currently
-    selected option. No popup, option click, value setter or event dispatch is
-    needed. This fixed-product scope uses ASCII initial characters only.
+    selected option. The caller first obtains native focus and closes the popup.
+    This fixed-product scope uses ASCII initial characters only.
     """
     if control.get("tag") != "SELECT" or control.get("multiple") is not False \
             or control.get("disabled") is not False or control.get("size") not in (0, 1):
@@ -220,7 +307,7 @@ class SafariProductHarness(unittest.TestCase):
         self.wait.until(lambda _driver: element.is_enabled())
         observation = {"selector": selector, "requestedValue": value,
                        "expectedValue": value if expected is None else expected,
-                       "status": "ATTEMPTED", "transport": "native WebDriver character cycling and Tab"}
+                       "status": "ATTEMPTED", "transport": "native WebDriver Actions character cycling and Tab"}
         self.input_evidence.append(observation)
         control = self.driver.execute_script("""
             const element = arguments[0];
@@ -250,7 +337,29 @@ class SafariProductHarness(unittest.TestCase):
             window.__panelreplyNativeSelectProbe = probe;
         """, element)
         try:
-            element.send_keys(plan["character"] * plan["cycles"], self.native.keys.TAB)
+            # Element Send Keys may use the non-typeable-control value path.
+            # Use native click/Escape for focus, then actual key actions. No
+            # JavaScript focus, value assignment or event dispatch is used.
+            element.click()
+            self.native.actions_type(self.driver).send_keys(self.native.keys.ESCAPE).perform()
+            observation["focusPreparation"] = self.driver.execute_script("""
+                const element = arguments[0], probe = window.__panelreplyNativeSelectProbe;
+                const preparationEvents = probe.events.splice(0);
+                const preparationOverflow = probe.overflow;
+                probe.overflow = false;
+                return {active: document.activeElement === element,
+                    disabled: element.disabled, value: element.value,
+                    selectedIndex: element.selectedIndex,
+                    events: preparationEvents, overflow: preparationOverflow};
+            """, element)
+            focus = observation["focusPreparation"]
+            self.assertTrue(focus["active"], observation)
+            self.assertFalse(focus["disabled"], observation)
+            self.assertFalse(focus["overflow"], observation)
+            self.assertEqual(focus["value"], control["value"], observation)
+            self.assertEqual(focus["selectedIndex"], control["selectedIndex"], observation)
+            self.native.actions_type(self.driver).send_keys(
+                plan["character"] * plan["cycles"], self.native.keys.TAB).perform()
         finally:
             # Observers do not focus, set values, dispatch or cancel events.
             # Diagnostic failure must not replace an original input failure.
@@ -335,6 +444,13 @@ class SafariProductHarness(unittest.TestCase):
                         name: file.name, type: file.type, size: file.size, lastModified: file.lastModified})) : null};
             });
             return {url: location.href, readyState: document.readyState, title: document.title,
+                context: {isSecureContext: globalThis.isSecureContext,
+                    cryptoType: typeof globalThis.crypto,
+                    randomUUIDType: typeof globalThis.crypto?.randomUUID,
+                    fileReaderType: typeof globalThis.FileReader,
+                    fileArrayBufferType: typeof globalThis.File?.prototype?.arrayBuffer,
+                    blobArrayBufferType: typeof globalThis.Blob?.prototype?.arrayBuffer,
+                    btoaType: typeof globalThis.btoa},
                 activeElementId: document.activeElement?.id || null,
                 viewport: {width: innerWidth, height: innerHeight, scrollX, scrollY}, nodes,
                 sourceCount: document.querySelectorAll('#source-list > li').length,
@@ -610,6 +726,14 @@ class SafariProductHarness(unittest.TestCase):
                 observation["finalState"] = self.page_state()
             except Exception as error:
                 observation["observationError"] = str(error)[:1000]
+            if observation["status"] != "OBSERVED":
+                # A diagnostic read cannot establish the original exception or
+                # substitute for the selected file's successful UI upload.
+                try:
+                    observation["afterFailureRead"] = self.driver.execute_async_script(
+                        UPLOAD_READ_DIAGNOSTIC, 2 * 1024 * 1024)
+                except Exception as error:
+                    observation["readDiagnosticError"] = str(error)[:1000]
 
     def download(self, project_id, extension):
         filename = f"panelreply-project-{project_id}.{extension}"

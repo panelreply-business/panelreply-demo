@@ -1,5 +1,17 @@
 # Pre-launch defect register
 
+## November 23 compatibility and evidence-output follow-up
+
+| ID | Observed defect | Current scope | Evidence |
+| --- | --- | --- | --- |
+| QA-26-17 | SQLite observer output accepted a lexical outside-parent alias resolving into the repository. | Canonical overlap checks and held exclusive report/journal descriptors pass 25 harness cases. Native observation remains inactive. Trusted-parent assumptions remain explicit. | [Repair](WINDOWS_SQLITE_OUTPUT_BOUNDARY_2026_11_23.md). |
+| QA-26-18 | The fixed AppArmor sysfs observer could reject a short field based on its reported metadata size. | Three regressions verify bounded actual reads, oversized data and identity changes. The native run91 SIZE_LIMIT cause remains unconfirmed. | [Evidence](evidence/ocr-host-sysfs-size-2026-11-23.json). |
+| QA-26-10 follow-up | OVERLAPPED alone did not repair either Windows empty-DACL metadata open. | Exact NtOpenFile access candidate preserves all fifteen native case bodies and identity/security assertions. Actual native compilation and execution are pending. | [Candidate](WINDOWS_EMPTY_DACL_NATIVE_2026_11_23.md). |
+| OCR host follow-up | Ubuntu26 normalizer startup returns EPERM. | Exact FIOCLEX remains denied with EACCES to permit a tagged CPython fallback. Source/model checks pass. The actual syscall cause and six native denial results remain unverified. | [Candidate](OCR_FIOCLEX_COMPATIBILITY_2026_11_23.md). |
+| Safari follow-up | Four select attempts record no events; both source uploads fail before persistence. | Native Actions input and bounded later read diagnostics preserve original journey assertions. Native results remain pending. | [Candidate](NATIVE_SAFARI_ACTIONS_2026_11_23.md). |
+
+The first workflow selector included all 25 SQLite observer harness tests instead of the intended 19 portable checks. The corrected skip filter selects 19 PASS and excludes six Linux-only process cases. The failed selection criterion and exact correction remain in [root integration](evidence/native-compatibility-root-integration-2026-11-23.json). The component runner's separate output alias defect and the request-save receipt defect remain active isolated milestones.
+
 ## November 23 callback receipt and native follow-up
 
 | ID | Observed defect | Current scope | Evidence |

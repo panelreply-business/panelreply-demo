@@ -14,6 +14,8 @@ The CI verifier observes the same readiness attempt and retains at most 4 KiB of
 
 The existing private local application continues to use resource limits by default. A process limit is not OS isolation. No public service or integration was enabled.
 
+Run 91 reached the fixed Python normalizer on Ubuntu 26.04 after passing both Tesseract readiness stages. Python then exited 2 with `EPERM` while opening its script, so no native denial case ran. A [separate compatibility correction](OCR_FIOCLEX_COMPATIBILITY_2026_11_23.md) keeps every ioctl denied and changes only the error returned for the exact native x86_64 `FIOCLEX` request. Tagged CPython source explains why `EACCES` permits its existing `fcntl` fallback. Portable decision tests pass. Native startup and all six isolation cases remain pending exact-source CI. The Ubuntu 24.04 namespace result remains separate.
+
 ## Explicit mode
 
 The internal factory accepts:
@@ -42,6 +44,7 @@ The existing `resource-limits` mode remains explicit in the factory implementati
 - A read-only `/usr` runtime, fixed library symlinks, namespace-local `/proc`, minimal `/dev` and an empty read-only root. The protected repository, private data and home directory paths must not overlap the runtime mount. The fixed normalizer script is the one intended repository-file exception. Host temporary files receive no separate mount.
 - The normalizer gets only its fixed script mounted at `/app/ocr-preprocess.py`. Python runs with `-I -B` and fixed arguments. Input and output use pipes.
 - A fixed x86_64 seccomp filter blocks socket operations, process creation, identity changes, cross-process access, namespace/mount changes, kernel modules, keyrings, io_uring and other listed privileged interfaces. Other architectures and the x32 ABI are killed rather than interpreted using the wrong syscall numbers.
+- Every ioctl remains denied. Only syscall 16 with the full 64-bit request equal to Linux `FIOCLEX` (`0x5451`) returns `EACCES`. Other requests, including `FIONCLEX` and requests with a nonzero high word, retain `EPERM`. The denial lets CPython try the already-permitted `fcntl` descriptor-flag operations. It does not execute an ioctl or grant a new syscall permission.
 - All existing address-space, CPU, file, descriptor, image, output, wall-time, concurrency, cancellation and shutdown limits remain.
 
 The filter is a targeted deny policy combined with namespaces and read-only mounts. It is not a syscall allowlist, a dependency vulnerability scan or proof against every native-library exploit. Keep Tesseract, Leptonica, Python, Pillow, bubblewrap and the host kernel maintained. Do not assume the policy works on a host where it has not been tested.

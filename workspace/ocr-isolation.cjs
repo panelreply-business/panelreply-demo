@@ -13,6 +13,7 @@ const SANDBOX_SCRIPT = '/app/ocr-preprocess.py';
 const ARCH_X86_64 = 0xC000003E;
 const RET_KILL_PROCESS = 0x80000000;
 const RET_ERRNO_EPERM = 0x00050001;
+const RET_ERRNO_EACCES = 0x0005000D;
 const RET_ALLOW = 0x7FFF0000;
 // Linux x86_64 syscall numbers, not portable to a different architecture.
 const DENIED_SYSCALLS = Object.freeze([
@@ -72,6 +73,17 @@ function seccompProgram(arch = process.arch) {
     [0x20, 0, 0, 0], // load syscall number
     [0x45, 0, 1, 0x40000000], // x32 ABI uses different syscall semantics
     [0x06, 0, 0, RET_KILL_PROCESS],
+    // CPython's file-open path tries ioctl(FIOCLEX) before its existing fcntl
+    // fallback. EACCES makes that fallback available without executing ioctl.
+    // Only native x86_64 ioctl with the exact zero-extended request gets this
+    // denial errno. All other requests still receive EPERM, including FIONCLEX.
+    [0x15, 0, 6, 16], // ioctl. Other syscalls retain their loaded number below.
+    [0x20, 0, 0, 28], // seccomp_data.args[1], high 32 bits of request
+    [0x15, 0, 3, 0],
+    [0x20, 0, 0, 24], // seccomp_data.args[1], low 32 bits of request
+    [0x15, 0, 1, 0x5451], // Linux FIOCLEX, not FIONCLEX or a device operation
+    [0x06, 0, 0, RET_ERRNO_EACCES],
+    [0x06, 0, 0, RET_ERRNO_EPERM],
   ];
   for (const syscall of DENIED_SYSCALLS) instructions.push([0x15, 0, 1, syscall], [0x06, 0, 0, RET_ERRNO_EPERM]);
   instructions.push([0x06, 0, 0, RET_ALLOW]);

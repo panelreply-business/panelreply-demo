@@ -18,7 +18,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import release_safari_runner as runner
-from safari_product_browser_test import select_keyboard_plan
+from safari_product_browser_test import select_keyboard_plan, UPLOAD_READ_DIAGNOSTIC
 
 
 SOURCE = {"sourceCommit": "a" * 40, "gitTreeHash": "b" * 40, "dirty": True,
@@ -60,24 +60,33 @@ SELECT_CONTROL = {"tag": "SELECT", "multiple": False, "disabled": False, "size":
 
 
 def select_harness(*, observed="reviewed", untrusted=False, missing_change=False,
-                   send_error=None, observation_error=None, control=None):
+                   send_error=None, observation_error=None, control=None, focus=None):
     """No browser is launched. Doubles validate fail-closed evidence handling."""
     case = runner.SafariSpreadsheetBrowserTests("test_manual_corrections_persist_and_native_downloads_match")
     case.input_evidence = []
-    case.native = types.SimpleNamespace(keys=types.SimpleNamespace(TAB="TAB"), select_type=Mock())
+    actions = [Mock(), Mock()]
+    for action in actions:
+        action.send_keys.return_value = action
+    actions[1].perform.side_effect = send_error
+    case.native = types.SimpleNamespace(keys=types.SimpleNamespace(TAB="TAB", ESCAPE="ESCAPE"),
+                                        select_type=Mock(), actions_type=Mock(side_effect=actions))
+    case.action_doubles = actions
     case.wait = types.SimpleNamespace(until=lambda predicate: predicate(None))
     element = Mock()
     element.is_enabled.return_value = True
     element.get_property.return_value = "unreviewed"
-    element.send_keys.side_effect = send_error
     case.element = Mock(return_value=element)
     events = [{"type": kind, "key": "r", "trusted": True, "value": "unreviewed"}
               for kind in ("keydown", "keyup")]
     events.extend({"type": kind, "key": None, "trusted": not untrusted, "value": "reviewed"}
                   for kind in (("input",) if missing_change else ("input", "change")))
     trace = {"events": events, "overflow": False, "observedValue": observed, "activeElementId": None}
+    prepared = {"active": True, "disabled": False, "value": "unreviewed", "selectedIndex": 0,
+                "events": [{"type": "keydown", "key": "Escape", "trusted": True, "value": "unreviewed"}],
+                "overflow": False}
     case.driver = types.SimpleNamespace(execute_script=Mock(
-        side_effect=[copy.deepcopy(control or SELECT_CONTROL), None, observation_error or trace]))
+        side_effect=[copy.deepcopy(control or SELECT_CONTROL), None, prepared if focus is None else focus,
+                     observation_error or trace]))
     return case, element
 
 
@@ -110,13 +119,18 @@ class SafariRunnerHarnessTests(unittest.TestCase):
                 case.select("#review", "reviewed")
             element.send_keys.assert_not_called()
             case.native.select_type.assert_not_called()
+            case.native.actions_type.assert_not_called()
             self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
 
     def test_native_select_requires_trusted_change_and_preserves_application_rejection(self):
         for observed, expected in [("reviewed", None), ("unreviewed", "unreviewed")]:
             case, element = select_harness(observed=observed)
             case.select("#review", "reviewed", expected=expected)
-            element.send_keys.assert_called_once_with("r", "TAB")
+            element.send_keys.assert_not_called()
+            element.click.assert_called_once()
+            case.action_doubles[0].send_keys.assert_called_once_with("ESCAPE")
+            case.action_doubles[1].send_keys.assert_called_once_with("r", "TAB")
+            self.assertEqual(case.native.actions_type.call_count, 2)
             case.native.select_type.assert_not_called()
             self.assertEqual(case.input_evidence[0]["status"], "OBSERVED")
             self.assertEqual(case.input_evidence[0]["observedValue"], observed)
@@ -124,7 +138,8 @@ class SafariRunnerHarnessTests(unittest.TestCase):
             case, element = select_harness(**options)
             with self.assertRaises(AssertionError):
                 case.select("#review", "reviewed")
-            element.send_keys.assert_called_once_with("r", "TAB")
+            element.send_keys.assert_not_called()
+            case.action_doubles[1].send_keys.assert_called_once_with("r", "TAB")
             self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
 
     def test_select_transport_failure_keeps_trace_without_diagnostic_error_replacing_it(self):
@@ -133,12 +148,28 @@ class SafariRunnerHarnessTests(unittest.TestCase):
             case, element = select_harness(send_error=original, observation_error=observation_error)
             with self.assertRaisesRegex(RuntimeError, "Synthetic native input transport failure"):
                 case.select("#review", "reviewed")
-            element.send_keys.assert_called_once()
+            element.send_keys.assert_not_called()
+            case.action_doubles[1].perform.assert_called_once()
             self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
             if observation_error is not None:
                 self.assertIn("Synthetic observer failure", case.input_evidence[0]["observationError"])
             else:
                 self.assertTrue(case.input_evidence[0]["events"])
+
+    def test_select_focus_preparation_must_preserve_enabled_target_before_selection_keys(self):
+        prepared = {"active": True, "disabled": False, "value": "unreviewed", "selectedIndex": 0,
+                    "events": [], "overflow": False}
+        for field, value in [("active", False), ("disabled", True), ("value", "reviewed"),
+                             ("selectedIndex", 1), ("overflow", True)]:
+            case, element = select_harness(focus={**prepared, field: value})
+            with self.assertRaises(AssertionError):
+                case.select("#review", "reviewed")
+            element.click.assert_called_once()
+            element.send_keys.assert_not_called()
+            case.action_doubles[0].send_keys.assert_called_once_with("ESCAPE")
+            case.action_doubles[1].send_keys.assert_not_called()
+            self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
+            self.assertEqual(case.input_evidence[0]["focusPreparation"][field], value)
 
     def test_upload_diagnostics_retain_failure_and_original_native_actions(self):
         case = runner.SafariSpreadsheetBrowserTests("test_file_upload_source_links_and_unavailable_ocr")
@@ -151,7 +182,9 @@ class SafariRunnerHarnessTests(unittest.TestCase):
         case.api = Mock()
         case.page_state = Mock(side_effect=[{"phase": "selected"}, {"phase": "failed"}])
         case.driver = types.SimpleNamespace(execute_script=Mock(side_effect=[None, {
-            "events": [{"type": "click", "targetId": "upload-source", "trusted": True}], "overflow": False}]))
+            "events": [{"type": "click", "targetId": "upload-source", "trusted": True}], "overflow": False}]),
+            execute_async_script=Mock(return_value={"format": "panelreply-after-failure-file-read-v1",
+                                                   "originalExceptionCaptured": False}))
         with self.assertRaisesRegex(RuntimeError, "Synthetic upload did not save"):
             case.upload_source({"id": "synthetic-project"})
         element.send_keys.assert_called_once()
@@ -162,6 +195,110 @@ class SafariRunnerHarnessTests(unittest.TestCase):
         observation = case.input_evidence[0]
         self.assertEqual((observation["status"], observation["finalState"]), ("ATTEMPTED", {"phase": "failed"}))
         self.assertEqual(observation["events"][0]["trusted"], True)
+        case.driver.execute_async_script.assert_called_once_with(UPLOAD_READ_DIAGNOSTIC, 2 * 1024 * 1024)
+        self.assertFalse(observation["afterFailureRead"]["originalExceptionCaptured"])
+
+    def test_later_upload_read_error_preserves_original_failure_and_success_never_reads_again(self):
+        for succeeds in (False, True):
+            case = runner.SafariSpreadsheetBrowserTests("test_file_upload_source_links_and_unavailable_ocr")
+            case.input_evidence = []
+            element = Mock()
+            element.is_enabled.return_value = True
+            case.element = Mock(return_value=element)
+            case.click = Mock()
+            case.text_contains = Mock(side_effect=[None, None if succeeds else RuntimeError("Original upload failure")])
+            case.api = Mock(return_value={"project": {"sources": [{"id": "synthetic-source"}]}})
+            case.page_state = Mock(return_value={"phase": "observed"})
+            case.driver = types.SimpleNamespace(execute_script=Mock(side_effect=[None, {"events": [], "overflow": False}]),
+                execute_async_script=Mock(side_effect=RuntimeError("Later read failed")))
+            if succeeds:
+                self.assertEqual(case.upload_source({"id": "synthetic-project"}), {"id": "synthetic-source"})
+                case.driver.execute_async_script.assert_not_called()
+                self.assertEqual(case.input_evidence[0]["status"], "OBSERVED")
+            else:
+                with self.assertRaisesRegex(RuntimeError, "Original upload failure"):
+                    case.upload_source({"id": "synthetic-project"})
+                self.assertEqual(case.input_evidence[0]["readDiagnosticError"], "Later read failed")
+                self.assertEqual(case.input_evidence[0]["status"], "ATTEMPTED")
+                case.api.assert_not_called()
+            element.send_keys.assert_called_once()
+            case.click.assert_called_once_with("#upload-source")
+
+    def file_read_probe(self, mode):
+        # Execute the exact diagnostic script with synthetic File APIs only.
+        # No browser, native file, application request or upload is involved.
+        script = r"""
+            const vm = require('node:vm');
+            const input = JSON.parse(require('node:fs').readFileSync(0, 'utf8'));
+            const bytes = Uint8Array.from([1, 2, 3, 4]);
+            const error = Object.assign(new Error('Synthetic unreadable file'), {name: 'NotReadableError', code: 0});
+            let fileReads = 0, readerReads = 0, uuidCalls = 0, aborts = 0, timerMs;
+            const file = {name: 'synthetic.png', type: 'image/png', size: input.mode === 'oversize' ? 2097153 : 4,
+                lastModified: 1, arrayBuffer: async () => {
+                    ++fileReads;
+                    if (input.mode === 'error') throw error;
+                    if (input.mode === 'timeout') return new Promise(() => {});
+                    return bytes.buffer;
+                }};
+            class Reader {
+                readAsArrayBuffer(selected) {
+                    if (selected !== file) throw new Error('Unexpected diagnostic file');
+                    ++readerReads; this.readyState = 1;
+                    if (input.mode === 'timeout') return;
+                    this.onprogress({loaded: 4, total: 4, lengthComputable: true});
+                    if (input.mode === 'error') { this.error = error; this.onerror(); }
+                    else { this.result = bytes.buffer; this.onload(); }
+                    this.readyState = 2;
+                }
+                abort() { ++aborts; this.readyState = 2; this.onabort(); }
+            }
+            const context = {document: {querySelector: selector => {
+                if (selector !== '#panel-image') throw new Error('Unexpected DOM query');
+                return {files: [file]};
+            }}, isSecureContext: true, crypto: {randomUUID: () => { ++uuidCalls; throw new Error('Must not call UUID'); }},
+                FileReader: Reader, btoa: value => Buffer.from(value, 'binary').toString('base64'),
+                setTimeout: (fn, ms) => { timerMs = ms; return setTimeout(fn, input.mode === 'timeout' ? 0 : ms); },
+                clearTimeout, arguments: [2097152, result => {
+                    setImmediate(() => process.stdout.write(JSON.stringify({result, fileReads, readerReads, uuidCalls, aborts, timerMs})));
+                }]};
+            vm.runInNewContext('(function(){' + input.script + '\n}).apply(null, arguments)', context, {timeout: 1000});
+        """
+        result = subprocess.run(["node", "-e", script], input=json.dumps({"script": UPLOAD_READ_DIAGNOSTIC, "mode": mode}),
+                                text=True, capture_output=True, timeout=10, check=True)
+        return json.loads(result.stdout)
+
+    def test_after_failure_read_probe_records_only_counts_and_exact_native_error_fields(self):
+        for mode in ("read", "error"):
+            result = self.file_read_probe(mode)
+            report = result["result"]
+            self.assertEqual((result["fileReads"], result["readerReads"], result["uuidCalls"]), (1, 1, 0))
+            self.assertFalse(report["originalExceptionCaptured"])
+            self.assertFalse(report["originalActionsRepeated"])
+            self.assertEqual(report["file"]["size"], 4)
+            for method in ("arrayBufferAndBase64", "fileReader"):
+                observed = report["reads"][method]
+                self.assertEqual(observed["status"], "READ" if mode == "read" else "ERROR")
+                if mode == "error":
+                    self.assertEqual(observed["error"], {"name": "NotReadableError", "code": 0,
+                                                       "message": "Synthetic unreadable file"})
+                else:
+                    self.assertEqual(observed["bytes"], 4)
+                    self.assertTrue(observed["matchesFileSize"])
+                self.assertNotIn("data", observed)
+                self.assertNotIn("content", observed)
+            if mode == "read":
+                self.assertEqual(report["reads"]["arrayBufferAndBase64"]["encodedLength"], 8)
+            else:
+                self.assertEqual(report["reads"]["arrayBufferAndBase64"]["stage"], "arrayBuffer")
+
+    def test_after_failure_read_probe_bounds_size_and_time_without_upload_retries(self):
+        too_large = self.file_read_probe("oversize")
+        self.assertEqual(too_large["result"]["status"], "NOT_READ")
+        self.assertEqual((too_large["fileReads"], too_large["readerReads"], too_large["uuidCalls"]), (0, 0, 0))
+        timeout = self.file_read_probe("timeout")
+        self.assertEqual((timeout["fileReads"], timeout["readerReads"], timeout["uuidCalls"], timeout["aborts"]), (1, 1, 0, 1))
+        self.assertEqual(timeout["timerMs"], 4000)
+        self.assertEqual({item["status"] for item in timeout["result"]["reads"].values()}, {"TIMEOUT"})
 
     def test_failure_snapshot_runs_before_teardown_and_never_changes_original_outcome(self):
         for diagnostic_error in [False, True]:

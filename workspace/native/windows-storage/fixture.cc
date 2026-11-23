@@ -20,7 +20,13 @@ namespace {
 constexpr char kContents[] = "Synthetic private storage fixture. No customer data.\n";
 struct Error : std::runtime_error {
   DWORD value;
+  bool nativeOpen = false;
+  ULONG nativeStatus = 0;
+  ACCESS_MASK requestedAccess = 0;
   explicit Error(const char* message, DWORD code = GetLastError()) : std::runtime_error(message), value(code) {}
+  Error(const char* message, DWORD code, NTSTATUS status, ACCESS_MASK access)
+      : std::runtime_error(message), value(code), nativeOpen(true),
+        nativeStatus(static_cast<ULONG>(status)), requestedAccess(access) {}
 };
 struct Handle {
   HANDLE value = INVALID_HANDLE_VALUE;
@@ -153,19 +159,61 @@ void mutationPath(const std::wstring& path) {
   require(value.size() > prefix.size() && CompareStringOrdinal(value.data(), static_cast<int>(prefix.size()),
       prefix.data(), static_cast<int>(prefix.size()), TRUE) == CSTR_EQUAL, "Fixture mutation is outside its disposable root");
 }
-Handle openMetadata(const std::wstring& path) {
-  // Owner READ_CONTROL does not imply SYNCHRONIZE. These handles perform
-  // metadata queries only, so do not request synchronous file I/O.
-  const DWORD flags = FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_OVERLAPPED;
-  HANDLE raw = CreateFileW(path.c_str(), READ_CONTROL | FILE_READ_ATTRIBUTES,
-      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
-      flags, nullptr);
-  if (raw == INVALID_HANDLE_VALUE && GetLastError() == ERROR_ACCESS_DENIED) {
-    raw = CreateFileW(path.c_str(), READ_CONTROL, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-        nullptr, OPEN_EXISTING, flags, nullptr);
+using NtCreateFunction = NTSTATUS (NTAPI *)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES,
+    PIO_STATUS_BLOCK, PLARGE_INTEGER, ULONG, ULONG, ULONG, ULONG, PVOID, ULONG);
+using NtOpenFunction = NTSTATUS (NTAPI *)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES,
+    PIO_STATUS_BLOCK, ULONG, ULONG);
+using ConvertStatusFunction = ULONG (WINAPI *)(NTSTATUS);
+template <typename T> T nativeFunction(const char* name) {
+  FARPROC raw = GetProcAddress(GetModuleHandleW(L"ntdll.dll"), name);
+  require(raw != nullptr, "Required documented native function is unavailable");
+  static_assert(sizeof(T) == sizeof(raw));
+  T result; std::memcpy(&result, &raw, sizeof(result)); return result;
+}
+Handle openExactFixture(const std::wstring& path, ACCESS_MASK access) {
+  const std::wstring full = canonical(path);
+  if (full.size() < 3 || !((full[0] >= L'A' && full[0] <= L'Z') || (full[0] >= L'a' && full[0] <= L'z')) ||
+      full[1] != L':' || full[2] != L'\\')
+    throw Error("Native fixture metadata requires a local absolute path", ERROR_INVALID_PARAMETER);
+  const std::wstring name = L"\\??\\" + full;
+  UNICODE_STRING text{};
+  text.Buffer = const_cast<PWSTR>(name.data());
+  text.Length = static_cast<USHORT>(name.size() * sizeof(wchar_t)); text.MaximumLength = text.Length;
+  OBJECT_ATTRIBUTES object{};
+  object.Length = sizeof(object); object.ObjectName = &text; object.Attributes = 0x40; // OBJ_CASE_INSENSITIVE
+  IO_STATUS_BLOCK io{};
+  HANDLE raw = INVALID_HANDLE_VALUE;
+  // Exact native access: no generic rights, SYNCHRONIZE, synchronous I/O
+  // options, backup intent or security-descriptor changes. Existing objects
+  // only. FILE_OPEN_REPARSE_POINT keeps the final path component observable.
+  const NTSTATUS status = nativeFunction<NtOpenFunction>("NtOpenFile")(&raw, access, &object, &io,
+      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0x00200000);
+  if (status == static_cast<NTSTATUS>(0x00000103)) { // STATUS_PENDING
+    // This query-only handle has no SYNCHRONIZE right. Do not wait on it or
+    // return while native I/O could still reference this stack. The disposable
+    // helper fails and exits, closing its handles with the process.
+    std::cout << "{\"error\":\"Native fixture open remained pending\",\"win32Code\":" << ERROR_IO_PENDING
+              << ",\"nativeOpen\":true,\"ntstatus\":" << static_cast<ULONG>(status)
+              << ",\"requestedAccess\":" << access << "}\n";
+    std::cout.flush();
+    ExitProcess(2);
   }
-  require(raw != INVALID_HANDLE_VALUE, "Could not inspect fixture path");
-  return Handle(raw);
+  Handle handle(raw);
+  if (status != 0)
+    throw Error("Could not open fixture path with exact native access",
+        nativeFunction<ConvertStatusFunction>("RtlNtStatusToDosError")(status), status, access);
+  require(handle.value != INVALID_HANDLE_VALUE && handle.value != nullptr, "Native fixture open returned no handle");
+  return handle;
+}
+Handle openMetadata(const std::wstring& path) {
+  try { return openExactFixture(path, READ_CONTROL | FILE_READ_ATTRIBUTES); }
+  catch (const Error& error) {
+    if (!error.nativeOpen || error.value != ERROR_ACCESS_DENIED) throw;
+  }
+  // Owner READ_CONTROL can expose the actual DACL even when attributes cannot
+  // be queried. Missing identity/type fields remain missing and still fail the
+  // native tests' existing assertions. Never infer them from the pathname.
+  return openExactFixture(path, READ_CONTROL);
 }
 std::wstring observedPath(HANDLE handle, DWORD flags) {
   const DWORD required = GetFinalPathNameByHandleW(handle, nullptr, 0, flags);
@@ -285,15 +333,6 @@ void createFixture(const std::wstring& path, const std::wstring& policy, bool di
   }
 }
 
-using NtCreateFunction = NTSTATUS (NTAPI *)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES,
-    PIO_STATUS_BLOCK, PLARGE_INTEGER, ULONG, ULONG, ULONG, ULONG, PVOID, ULONG);
-using ConvertStatusFunction = ULONG (WINAPI *)(NTSTATUS);
-template <typename T> T nativeFunction(const char* name) {
-  FARPROC raw = GetProcAddress(GetModuleHandleW(L"ntdll.dll"), name);
-  require(raw != nullptr, "Required documented native function is unavailable");
-  static_assert(sizeof(T) == sizeof(raw));
-  T result; std::memcpy(&result, &raw, sizeof(result)); return result;
-}
 Handle relativeOpen(HANDLE parent, const std::wstring& name, ACCESS_MASK access, DWORD& error) {
   UNICODE_STRING text{};
   require(name.size() < 8192, "Relative fixture name is too long");
@@ -542,10 +581,7 @@ void removeEmptyFixture(const std::wstring& path, const std::wstring& volume,
   // opens a fresh handle afterward, with only query rights plus DELETE. The
   // parent may authorize deletion through FILE_DELETE_CHILD. Never repair an
   // ACL, clear attributes or enable a privilege to make cleanup succeed.
-  Handle handle(CreateFileW(path.c_str(), READ_CONTROL | FILE_READ_ATTRIBUTES | DELETE,
-      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_OVERLAPPED, nullptr));
-  require(handle.value != INVALID_HANDLE_VALUE, "Could not open disposable empty-DACL fixture for cleanup");
+  Handle handle = openExactFixture(path, READ_CONTROL | FILE_READ_ATTRIBUTES | DELETE);
   FILE_ID_INFO identity{};
   require(GetFileInformationByHandleEx(handle.value, FileIdInfo, &identity, sizeof(identity)),
       "Could not verify disposable fixture identity");
@@ -619,7 +655,10 @@ int wmain(int argc, wchar_t** argv) {
   } catch (const Error& error) {
     const std::string text(error.what());
     const std::wstring wide(text.begin(), text.end());
-    std::cout << "{\"error\":" << quote(wide) << ",\"win32Code\":" << error.value << "}\n";
+    std::cout << "{\"error\":" << quote(wide) << ",\"win32Code\":" << error.value;
+    if (error.nativeOpen) std::cout << ",\"nativeOpen\":true,\"ntstatus\":" << error.nativeStatus
+                                  << ",\"requestedAccess\":" << error.requestedAccess;
+    std::cout << "}\n";
     return 2;
   } catch (const std::exception&) {
     std::cout << "{\"error\":\"Unexpected fixture failure\"}\n";

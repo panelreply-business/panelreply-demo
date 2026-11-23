@@ -1,0 +1,33 @@
+✔ observation accounting preserves completed phases, errors and every missing phase without acceptance credit (2.209293ms)
+✔ token observations distinguish user/default-owner and reject PID reuse, token changes and another image (0.9084ms)
+✔ native file observations keep inherited DACL evidence separate from strict-policy acceptance (1.576478ms)
+✔ diagnostic output cannot use source paths, duplicate arguments or release-report names (1.048432ms)
+✔ forced termination observations cannot reinterpret a normal or missing exit as a crash (1.220186ms)
+✔ unavailable build emits eight NOT_RUN scenarios with every missing phase and explicit cleanup scope (199.632964ms)
+✔ portable protocol DELETE close preserves committed rows and releases its owned children (589.260302ms)
+✔ portable protocol DELETE crash preserves committed rows and releases its owned children (520.287708ms)
+✔ portable protocol WAL close preserves committed rows and releases its owned children (674.718576ms)
+✔ portable protocol WAL crash preserves committed rows and releases its owned children (388.791165ms)
+✔ protocol failure still terminates and records only the already owned child (185.986611ms)
+✔ identity rejection still cleans the live ChildProcess without a process lookup or another launch (183.123132ms)
+✔ SQLite output repository aliases fail before artifact preparation or native collection (1.084826ms)
+✔ SQLite outputs resolve raw alias parent traversal and reject in-repository artifacts directories (0.810612ms)
+✔ SQLite output missing or unresolved parents create neither report nor journal (1.726535ms)
+✔ SQLite report and journal existing or dangling leaves are rejected before either creation (1.954568ms)
+✔ a journal creation collision closes and retains the report without touching the collision file (0.810623ms)
+✔ SQLite report and journal use two exclusive held descriptors with UTF8 byte and hash evidence (1.801016ms)
+✔ SQLite journal limit rejects overflow before writing and preserves the verified prefix (52.128189ms)
+✔ parent replacement during output creation closes the report before journal or native work (0.926869ms)
+✔ replaced journal leaves remain untouched while a separate retained report preserves the error (1.104957ms)
+✔ replaced report leaves cannot receive held writes or be deleted during cleanup (1.208553ms)
+✔ journal changes after the last append fail final evidence verification (0.801349ms)
+✔ partial journal write failures retain bytes and permit a separate incomplete report (0.963153ms)
+✔ SQLite collection errors remain primary while both output descriptors close after a close error (1.117957ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2935.535494

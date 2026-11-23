@@ -128,6 +128,7 @@ class NativeSafari:
         if importlib.metadata.version("selenium") != SELENIUM_VERSION:
             raise RuntimeError("The native runner requires its pinned Selenium client")
         from selenium import webdriver
+        from selenium.webdriver.common.action_chains import ActionChains
         from selenium.webdriver.common.keys import Keys
         from selenium.webdriver.remote.client_config import ClientConfig
         from selenium.webdriver.remote.file_detector import UselessFileDetector
@@ -135,7 +136,7 @@ class NativeSafari:
         from selenium.webdriver.safari.service import Service
         from selenium.webdriver.support.ui import WebDriverWait
 
-        self.keys, self.wait_type = Keys, WebDriverWait
+        self.keys, self.wait_type, self.actions_type = Keys, WebDriverWait, ActionChains
         options = webdriver.SafariOptions()
         # Preserve the pinned Selenium native default browserName='safari'.
         options.set_capability("browserVersion", self.evidence["before"]["browser"]["version"])

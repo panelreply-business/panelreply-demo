@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+## November 23 final run91 and callback follow-up
+
+The independently verified run91 callback bucket records 10,644 PASS and three FAIL across 3,482 distinct cases. All six then-fifteen-method fixed callback suites pass. The three installed-Safari journeys fail. Shared checks remain counted once outside product buckets. [Verified ledger](evidence/release-run91.json).
+
+The task-receipt repair is committed as `7fec73b`. Its run92 adds the sixteenth fixed-browser method and is being reconciled separately. The next native candidate uses W3C Actions with unchanged trusted-input/value and journey assertions. It has 19 local harness passes, with actual Safari verification still required. [Scope](NATIVE_SAFARI_ACTIONS_2026_11_23.md).
+
+Request-edit receipts in `app.js` remain under repair. Optimistic PATCH retries are not task idempotency replays. Native/platform/provider/host/operating requirements remain open. Callback remains an independent NO-GO decision.
+
 Callback records three FAIL outcomes in installed Safari run91. These native failures remain open. [Source-bound verification](evidence/native-safari-run91-independent-2026-11-23.json).
 
 ## November 23 callback receipt repair
