@@ -1,5 +1,10 @@
 # Callback release acceptance
 
+## November 23 daily check
+
+Callback entrypoint, dedicated cookie/store marker, other-product route denial and product-bound encrypted recovery remain implemented with no code changes since tested `ca5f0cb`. Last full [PR8 run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): 3,321 distinct callback cases and 10,351 passing case/platform executions, plus shared cases counted once; selected Linux Chromium, Firefox and WebKit journeys passed 21/21. No fresh PR run today (**BLOCKED**). [Main run79](https://github.com/panelreply-business/panelreply-demo/actions/runs/45194906999) does not test this application. Actual-model evaluation remains BLOCKED (zero real calls), seven platform scopes NOT TESTED, and selected-host/offsite recovery and operational decisions remain open. **GO for isolated synthetic review; NO-GO for customer trial or release.** [Daily evidence](evidence/daily-audit-2026-11-23.json).
+
+
 ## November 22 daily check
 
 Current callback program source remains tested `ca5f0cb` (docs-only branch head `bc86e8e1`). The last exact-source evidence is [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): **3,321 distinct callback cases, 10,351 passing case/platform executions**, and 21/21 selected callback browser journeys on Linux Chromium, Firefox and WebKit. Another 1,675 distinct shared cases (2,185 passes) are counted once in portfolio totals. Separate fixed entrypoint, data/session/product-route boundary and bound backup/restore were inspected in unchanged code. No fresh callback execution today: **BLOCKED** by runtime/checkout/full-dispatch limits. Today's [main run78](https://github.com/panelreply-business/panelreply-demo/actions/runs/45030730688) does not test this PR. Real-model quality, actual/physical platforms, chosen host/offsite recovery and operating approvals remain **BLOCKED or NOT TESTED**. **NO-GO for human trial/release**. [November 22 daily evidence](evidence/daily-audit-2026-11-22.json).

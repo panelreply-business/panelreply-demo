@@ -1,5 +1,10 @@
 # Spreadsheet release acceptance
 
+## November 23 daily check
+
+Spreadsheet entrypoint, dedicated cookie/store marker, blocked callback/provider routes and product-bound encrypted recovery remain implemented with no code changes since tested `ca5f0cb`. Last full [PR8 run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): 4,118 distinct spreadsheet cases and 11,836 passing case/platform executions, plus shared cases counted once; selected Linux Chromium, Firefox and WebKit journeys passed 21/21. No fresh PR run today (**BLOCKED**). [Main run79](https://github.com/panelreply-business/panelreply-demo/actions/runs/45194906999) does not verify spreadsheet. OCR accuracy remains **FAIL 277/310**, with 33 nonexact; native isolation BLOCKED with zero denial cases. Representative photos, actual Excel/physical mobile, selected-host/offsite recovery and operating approvals remain open. **GO for isolated synthetic review; NO-GO for customer trial or release.** [Daily evidence](evidence/daily-audit-2026-11-23.json).
+
+
 ## November 22 daily check
 
 Current spreadsheet program source remains tested `ca5f0cb` (docs-only branch head `bc86e8e1`). The last exact-source evidence is [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): **4,118 distinct spreadsheet cases, 11,836 passing case/platform executions**, and 21/21 selected spreadsheet browser journeys on Linux Chromium, Firefox and WebKit. Another 1,675 distinct shared cases (2,185 passes) are counted once. Separate fixed entrypoint, source routes, data/session boundary, encrypted product backup and restore were inspected in unchanged code. No fresh spreadsheet execution today: **BLOCKED** by runtime/checkout/full-dispatch limits. OCR accuracy remains **FAIL 277/310, 33 nonexact**; required worker isolation **BLOCKED**, zero native denial cases; real photos, Excel, actual/physical platforms, selected host and offsite recovery remain open. **NO-GO for human trial/release**. [November 22 daily evidence](evidence/daily-audit-2026-11-22.json).
