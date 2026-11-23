@@ -263,6 +263,29 @@
     const bytes = encoded.length / 4 * 3 - (encoded.endsWith('==') ? 2 : encoded.endsWith('=') ? 1 : 0);
     if (!member || SOURCE_FIELDS.some(field => member[field] !== source[field]) || source.name !== operation.body.name.trim() || source.mime !== operation.body.mime || source.bytes !== bytes) invalidProjectResponse();
   }
+  function validateExtractionResponse(result, operation) {
+    const invalid = () => { throw new ApiError('The extraction response was incomplete or invalid. Try extracting this image again.', 502, 'invalid_response'); };
+    // Validate everything the extraction view and Add action consume before
+    // installing any result. These limits match the local OCR adapter, which
+    // emits zero or one unreviewed candidate and keeps unknown values blank.
+    const warningList = value => Array.isArray(value) && value.length <= 20003 && value.every(message => responseText(message, 20000));
+    if (!result || typeof result !== 'object' || Array.isArray(result)
+      || result.projectId !== operation.projectId || result.sourceImageId !== operation.sourceImageId || result.version !== operation.version
+      || !project || project.id !== operation.projectId || project.version !== operation.version || !project.sources.some(source => source.id === operation.sourceImageId)
+      || !responseText(result.rawText, 20000) || !warningList(result.warnings) || !Array.isArray(result.candidates) || result.candidates.length > 1) invalid();
+    for (const candidate of result.candidates) {
+      if (!responseObject(candidate, [...CORE, 'confidence', 'reviewStatus', 'sourceImageId', 'warnings'])
+        || !responseText(candidate.partNumber, 120) || !responseText(candidate.manufacturer, 120) || !responseText(candidate.description, 500)
+        || candidate.sourceImageId !== operation.sourceImageId || candidate.reviewStatus !== 'unreviewed' || !warningList(candidate.warnings)
+        || !responseObject(candidate.confidence, CORE)) invalid();
+      for (const field of CORE) {
+        const confidence = candidate.confidence[field];
+        if ((confidence !== null && (!Number.isFinite(confidence) || confidence < 0 || confidence > 100))
+          || (!candidate[field] && confidence !== null)) invalid();
+      }
+    }
+    return [...new Set([...result.warnings, ...result.candidates.flatMap(candidate => candidate.warnings)])];
+  }
   function setProject(value, message = '', options = {}) {
     validateProjectResponse(value, options);
     project = value;
@@ -472,18 +495,19 @@
   }
   async function extractSource(source) {
     if (busy || unresolved() || dirty() || conflict || !ocrStatus.available) return;
+    const operation = { projectId: project.id, sourceImageId: source.id, version: project.version };
     busy = true; updateControls(); error('source-error', ''); $('source-status').textContent = 'Extracting text locally…';
     $('ocr-result').hidden = true; ocrResult = null;
     try {
-      const result = await api(`/api/panel-projects/${project.id}/sources/${source.id}/ocr`, { method: 'POST', body: { version: project.version } });
+      const result = await api(`/api/panel-projects/${operation.projectId}/sources/${operation.sourceImageId}/ocr`, { method: 'POST', body: { version: operation.version } });
       if (expired) return;
-      if (!Array.isArray(result.candidates) || typeof result.rawText !== 'string') throw new ApiError('The extraction response was incomplete. Try again.', 502);
-      ocrResult = { ...result, sourceImageId: source.id };
+      const warnings = validateExtractionResponse(result, operation);
+      const warningNodes = warnings.map(message => node('li', message));
+      ocrResult = result;
       $('ocr-result').hidden = false;
       $('ocr-raw-text').textContent = result.rawText || 'No text was found.';
       $('ocr-summary').textContent = result.candidates.length ? `${result.candidates.length} candidate found. Values are unreviewed. OCR confidence describes the engine output, not the probability that a part is correct.` : 'No labelled part candidate was found. Read any extracted text and enter the fields manually.';
-      const warnings = [...new Set([...(result.warnings || []), ...result.candidates.flatMap(candidate => candidate.warnings || [])])];
-      $('ocr-warnings').replaceChildren(...warnings.map(message => node('li', message)));
+      $('ocr-warnings').replaceChildren(...warningNodes);
       $('ocr-warnings').hidden = !warnings.length;
       $('source-status').textContent = 'Text extraction completed. The saved parts have not changed.';
     } catch (cause) { if (!expired) { $('source-status').textContent = ''; error('source-error', cause.message); if (cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true; } }

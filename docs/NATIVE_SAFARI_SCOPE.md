@@ -1,5 +1,11 @@
 # Native desktop Safari scope
 
+## Run88 native progress and remaining failures
+
+On committed `1322d063`, all three spreadsheet methods pass the corrected plural-label setup. The date helper observes three requested values with trusted native key/input/change events and no overflow. Both callback scheduling methods reach later controls. These observations verify those bounded repairs but do not make the full methods pass. [Source and identity-verified report](evidence/native-safari-run88.json).
+
+Complete outcomes remain callback one PASS/two ERROR and spreadsheet zero PASS/three ERROR. Callback errors arise in Selenium option.click for permission or outcome. Two spreadsheet methods wait unsuccessfully for upload confirmation. The manual-export method selects reviewed before saving but fails to observe reviewed after reload. No download evidence exists. Native control/state investigation continues without JavaScript value/event injection or API seeding.
+
 ## Pending native input and label verification
 
 The next candidate corrects the spreadsheet's plural label and uses actual native segmented keyboard entry for datetime-local controls. It verifies compatible observed locale/control settings, trusted key/input/change records and exact field values. All six method IDs and local/UTC/timezone, persistence, restrictions and real download assertions remain. Nine Python harness checks pass but supply no product credit. Actual Safari execution on manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e` is pending. [Repair evidence](NATIVE_SAFARI_INPUT_REPAIR_2026_11_23.md).

@@ -1,5 +1,13 @@
 # Spreadsheet release acceptance
 
+## November 23 extraction receipt and draft integrity
+
+Eight new cases reproduce and repair acceptance of a wrong-project OCR result and an error that left malformed candidates addable. Project/source/revision, candidate fields, warnings, confidence and unreviewed state now validate before result installation. Invalid re-extraction leaves no stale Add action and preserves saved corrections. Valid blank/Unicode/ambiguous output remains available for manual work. [Evidence](OCR_RESPONSE_INTEGRITY_2026_11_23.md).
+
+The combined suite passes 9,241 checks, with 9,094 product cases and 147 excluded harness checks. These span both products. The changed manifest is `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4`; actual browser verification remains pending. [Local evidence](evidence/ocr-response-local-2026-11-23.json).
+
+All three Safari spreadsheet methods now pass plural-label setup but error later: two wait for upload confirmation, one does not retain reviewed status after save/reload. Native downloads and recovery remain unverified. These observed failures precede the current response-validation change. OCR remains 289/310 exact images; no engine, parser, preprocessing, model or expected answer changed. [Native evidence](evidence/native-safari-run88.json).
+
 ## November 23 required-OCR path boundary and native repair
 
 The next manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e` adds 15 product regressions for required-OCR trusted-path checks. Private storage, repository and both home paths must resolve outside the runtime mount. The fixed normalizer and cached/per-stage checks reject redirection before native work. This repairs a configuration gap, with no observed native leak and no claim of sandbox denial or mount-topology pinning. Resource-limits behavior remains. [Scope and evidence](OCR_PATH_BOUNDARY_2026_11_23.md).

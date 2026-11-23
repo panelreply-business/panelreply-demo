@@ -1,5 +1,11 @@
 # Release acceptance
 
+## November 23 extraction-response validation checkpoint
+
+The next manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4` passes all 9,241 local checks: 9,094 product and 147 excluded harness cases, zero failures/skips and unchanged source. Eight new cases verify OCR identity/revision and data validation before publishing candidates, including rejected re-extraction and valid manual correction. Engine/dataset and release policy remain unchanged. Browser verification on changed source is pending. [Repair](OCR_RESPONSE_INTEGRITY_2026_11_23.md) and [local evidence](evidence/ocr-response-local-2026-11-23.json).
+
+Run88 native Safari confirms label setup and three trusted datetime entries but records one PASS/five ERROR complete workflows. Run89 Windows component records 13 PASS/two FAIL and cleanup EPERM, outside product-goal credit. Actual native select/upload/review-state behavior and empty-DACL fixture lifecycle remain under investigation. No product release gate is closed by these partial advances. [Safari record](evidence/native-safari-run88.json) and [Windows record](evidence/windows-native-component-run89.json).
+
 ## Windows native failures and diagnostic follow-up — November 23, 2026
 
 Run88 on `1322d063` compiles the pinned Windows component and executes all 15 native methods: 12 PASS and three FAIL. Root verified the downloaded binaries/projects/build identity and all 193 committed manifest entries. Two failures occur in empty-DACL fixture metadata operations, with their exact native reasons missing from the old wrapper. The third rejects observed source-lookup error 1921 after independent held-directory enumerations prove no child. Fixture cleanup records EPERM. All outcomes remain outside product totals. [Verified evidence](evidence/windows-native-component-run88.json).

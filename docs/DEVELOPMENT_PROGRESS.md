@@ -1,5 +1,15 @@
 # PanelReply development progress
 
+## Spreadsheet extraction-response integrity — November 23, 2026
+
+The client now rejects wrong-project/source/revision OCR receipts and malformed candidate/warning/confidence data before installing a result. A rejected re-extraction cannot leave prior or malformed candidates addable. Saved corrections remain intact, and valid blank/Unicode/ambiguous output still supports explicit Add and Save. The same eight cases move from two PASS/six FAIL to eight PASS. Engine, preprocessing, parser and dataset bytes remain unchanged. [Repair](OCR_RESPONSE_INTEGRITY_2026_11_23.md).
+
+Full local verification passes 9,241 checks across 58 files with no failures, skips, TODOs, cancellations or infrastructure errors and stable manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4`. Product cases are 9,094 after excluding 147 harness checks. All 9,086 prior product IDs remain; eight are new. Agent/focused runs are not added again. Actual changed-source browsers remain pending. [Local evidence](evidence/ocr-response-local-2026-11-23.json).
+
+Native Safari run88 verifies the plural label and three exact trusted datetime entries but retains one full workflow PASS/five ERROR. Later failures concern select interaction, source-upload confirmation and saved review status. Windows run89 compiles and executes 13 PASS/two FAIL component methods; exact empty-DACL metadata-open error5 and cleanup EPERM remain. Windows component checks do not count toward product totals. [Safari](evidence/native-safari-run88.json), [Windows](evidence/windows-native-component-run89.json).
+
+The source-bound run88 18:38 partial ledger records 24,433 product PASS/five ERROR from 29 release ZIPs and 31 reports, excluding 371 harness and 7,102 duplicate observations. Five jobs are still running and ARM is unassigned in that snapshot. Static Mac WebKit passes 92 methods, which does not establish the earlier sample-action failure's cause. [Preserved partial](evidence/callback-scheduling-run88-partial-1838.json). The complete run86 ledger remains the latest reconciled final result until run88 closes.
+
 ## Windows native failures and diagnostic follow-up — November 23, 2026
 
 Run88 on `1322d063` compiles the pinned Windows component and executes all 15 native methods: 12 PASS and three FAIL. Root verified the downloaded binaries/projects/build identity and all 193 committed manifest entries. Two failures occur in empty-DACL fixture metadata operations, with their exact native reasons missing from the old wrapper. The third rejects observed source-lookup error 1921 after independent held-directory enumerations prove no child. Fixture cleanup records EPERM. All outcomes remain outside product totals. [Verified evidence](evidence/windows-native-component-run88.json).

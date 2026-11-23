@@ -381,6 +381,194 @@ const OTHER_PROJECT_ID = '99999999-9999-4999-8999-999999999999';
 const responseRow = () => ({ partNumber: '', manufacturer: '', description: 'Unknown label Ω', quantity: 1, reviewStatus: 'unreviewed', sourceImageId: null, notes: '' });
 const responseSource = () => ({ id: RESPONSE_SOURCE_ID, name: 'label.png', mime: 'image/png', bytes: 123, width: 20, height: 20, createdAt: TIME });
 
+function extractionResponse() {
+  return { engine: 'tesseract', engineVersion: '5.5.0', projectId: PROJECT_ID, version: 1, sourceImageId: RESPONSE_SOURCE_ID,
+    rawText: 'Part number: Synthetic-Ω\nDescription: Keep this source label', warnings: ['Check every source character.'], durationMs: 1,
+    candidates: [{ partNumber: 'Synthetic-Ω', manufacturer: '', description: 'Keep this source label',
+      confidence: { partNumber: 91, manufacturer: null, description: 84 }, reviewStatus: 'unreviewed',
+      sourceImageId: RESPONSE_SOURCE_ID, warnings: ['Manufacturer remains unknown.'] }] };
+}
+async function extractionPage(replies) {
+  const initial = { ...structuredClone(savedProject), notes: 'Saved correction Ω  ', rows: [responseRow()], sources: [responseSource()] };
+  const page = client('panels.js', { productId: 'spreadsheet', project: true });
+  let attempt = 0;
+  page.state.respond = (url, request) => {
+    if (url === '/api/panel-ocr') return panelReply(200, { available: true, engine: 'tesseract', version: '5.5.0', language: 'eng' });
+    if (url === '/api/panel-projects/' + PROJECT_ID && (!request.method || request.method === 'GET')) return panelReply(200, { project: initial });
+    if (url === '/api/panel-projects/' + PROJECT_ID + '/sources/' + RESPONSE_SOURCE_ID + '/ocr') return panelReply(200, replies[attempt++]);
+  };
+  await settle();
+  const button = page.element('source-list').querySelector('[data-ocr]');
+  assert.equal(button.disabled, false);
+  return { page, initial, extract: () => button.emit('click') };
+}
+function assertExtractionRejected(page, initial) {
+  assert.equal(page.element('add-ocr-rows').disabled, true, 'An invalid extraction must not leave an enabled add action.');
+  assert.equal(page.element('ocr-result').hidden, true);
+  assert.match(page.element('source-error').textContent, /extraction response.*incomplete|extraction response.*invalid/i);
+  assert.equal(page.element('project-notes').value, initial.notes);
+  assert.equal(page.element('project-version').textContent, 'Version 1');
+  assert.equal(page.element('panel-parts-body').children.length, initial.rows.length);
+  assert.equal(page.element('panel-parts-body').querySelector('[data-field="description"]').value, initial.rows[0].description);
+  assert.equal(page.element('project-dirty').hidden, true);
+  assert.equal(page.element('save-project').disabled, false);
+}
+
+test('panel extraction rejects a response for another project before exposing its candidates', async () => {
+  const invalid = extractionResponse(); invalid.projectId = OTHER_PROJECT_ID;
+  const { page, initial, extract } = await extractionPage([invalid, extractionResponse()]);
+  await extract();
+  assertExtractionRejected(page, initial);
+  await extract();
+  assert.equal(page.element('ocr-result').hidden, false);
+  assert.equal(page.element('add-ocr-rows').disabled, false);
+  await page.element('add-ocr-rows').emit('click');
+  assert.equal(page.element('panel-parts-body').children.length, 2);
+  const added = page.element('panel-parts-body').children[1];
+  assert.equal(added.querySelector('[data-field="partNumber"]').value, 'Synthetic-Ω');
+  assert.equal(added.querySelector('[data-field="manufacturer"]').value, '');
+  assert.equal(added.querySelector('[data-field="reviewStatus"]').value, 'unreviewed');
+  assert.equal(added.querySelector('[data-field="sourceImageId"]').value, RESPONSE_SOURCE_ID);
+  assert.equal(page.calls.filter(call => call.method !== 'GET').length, 2);
+});
+
+test('panel malformed extraction warnings cannot leave addable candidates after rendering fails', async () => {
+  const invalid = extractionResponse(); invalid.warnings = { message: 'Malformed warning' };
+  const { page, initial, extract } = await extractionPage([extractionResponse()]);
+  await extract();
+  assert.equal(page.element('add-ocr-rows').disabled, false);
+  let reply;
+  page.state.respond = url => {
+    if (url.endsWith('/ocr')) return new Promise(resolve => { reply = resolve; });
+  };
+  const pending = extract();
+  assert.equal(page.element('add-ocr-rows').disabled, true);
+  assert.equal(page.element('ocr-result').hidden, true);
+  await page.element('new-project').emit('click');
+  assert.equal(page.element('project-name').value, initial.name);
+  assert.equal(page.element('project-version').textContent, 'Version 1');
+  assert.match(page.element('panel-app-error-text').textContent, /Wait for the current operation/);
+  reply(panelReply(200, invalid));
+  await pending;
+  assertExtractionRejected(page, initial);
+  await page.element('add-ocr-rows').emit('click');
+  assert.equal(page.element('panel-parts-body').children.length, initial.rows.length);
+  assert.equal(page.calls.filter(call => call.method !== 'GET').length, 2);
+});
+
+async function rejectedExtraction(change) {
+  const invalid = extractionResponse(); change(invalid);
+  const { page, initial, extract } = await extractionPage([invalid]);
+  await extract();
+  assertExtractionRejected(page, initial);
+  assert.equal(page.calls.filter(call => call.method !== 'GET').length, 1);
+}
+
+test('panel extraction binds both receipt and candidate source identities to the requested image', async () => {
+  for (const change of [
+    result => { result.sourceImageId = OTHER_PROJECT_ID; },
+    result => { delete result.sourceImageId; },
+    result => { result.candidates[0].sourceImageId = OTHER_PROJECT_ID; },
+    result => { delete result.candidates[0].sourceImageId; },
+  ]) await rejectedExtraction(change);
+});
+
+test('panel extraction requires the exact submitted revision without creating a false save conflict', async () => {
+  for (const change of [
+    result => { result.version = 0; },
+    result => { result.version = 2; },
+    result => { result.version = '1'; },
+    result => { delete result.version; },
+  ]) await rejectedExtraction(change);
+});
+
+test('panel extraction rejects incomplete, oversized or reviewed candidate data before draft mutation', async () => {
+  const changes = [
+    result => { result.candidates = [null]; },
+    result => { result.candidates.push(structuredClone(result.candidates[0])); },
+    result => { delete result.candidates[0].manufacturer; },
+    result => { result.candidates[0].manufacturer = null; },
+    result => { result.candidates[0].partNumber = 'N'.repeat(121); },
+    result => { result.candidates[0].manufacturer = 'N'.repeat(121); },
+    result => { result.candidates[0].description = 'N'.repeat(501); },
+    result => { result.candidates[0].partNumber = '\ud800'; },
+    result => { result.candidates[0].description = 'N\u0000'; },
+    result => { result.candidates[0].reviewStatus = 'reviewed'; },
+    result => { result.candidates[0].reviewStatus = 'approved'; },
+    result => { result.candidates[0].suggestedCompatibility = 'Unsupported inference'; },
+  ];
+  for (const change of changes) await rejectedExtraction(change);
+});
+
+test('panel extraction validates raw text, warning lists and confidence before publishing its result', async () => {
+  for (const change of [
+    result => { result.rawText = 'N'.repeat(20001); },
+    result => { result.rawText = '\udfff'; },
+    result => { result.warnings = ['Check this', { unexpected: 'object' }]; },
+    result => { delete result.warnings; },
+    result => { result.candidates[0].warnings = 'This must be a list'; },
+    result => { result.candidates[0].warnings = [null]; },
+    result => { delete result.candidates[0].confidence; },
+    result => { result.candidates[0].confidence.partNumber = 100.01; },
+    result => { result.candidates[0].confidence.partNumber = -1; },
+    result => { result.candidates[0].confidence.partNumber = '91'; },
+    result => { result.candidates[0].confidence.manufacturer = 99; },
+  ]) await rejectedExtraction(change);
+});
+
+test('panel extraction preserves valid Unicode and blank fields through explicit add and save', async () => {
+  const result = extractionResponse();
+  result.rawText = 'Ω'.repeat(19998) + '\r\n';
+  result.candidates[0].partNumber = '𝛀'.repeat(60);
+  result.candidates[0].manufacturer = '';
+  result.candidates[0].description = '  ' + 'Ω'.repeat(496) + '\r\n';
+  result.candidates[0].confidence = { partNumber: 100, manufacturer: null, description: null };
+  const { page, initial, extract } = await extractionPage([result]);
+  await extract();
+  assert.equal(page.element('ocr-result').hidden, false);
+  assert.equal(page.element('ocr-raw-text').textContent, result.rawText);
+  assert.equal(page.element('panel-parts-body').children.length, initial.rows.length);
+  assert.equal(page.element('project-dirty').hidden, true);
+  await page.element('add-ocr-rows').emit('click');
+  const added = page.element('panel-parts-body').children[1];
+  for (const field of ['partNumber', 'manufacturer', 'description', 'sourceImageId', 'reviewStatus']) {
+    assert.equal(added.querySelector('[data-field="' + field + '"]').value, result.candidates[0][field]);
+  }
+  assert.equal(page.element('project-dirty').hidden, false);
+  let savedBody;
+  page.state.respond = (url, request) => {
+    if (url !== '/api/panel-projects/' + PROJECT_ID || request.method !== 'PATCH') return;
+    savedBody = JSON.parse(request.body);
+    return panelReply(200, { project: { ...initial, ...savedBody, version: 2 } });
+  };
+  await page.element('project-form').emit('submit');
+  assert.equal(savedBody.rows.length, 2);
+  assert.equal(savedBody.rows[1].partNumber, result.candidates[0].partNumber);
+  assert.equal(savedBody.rows[1].manufacturer, '');
+  assert.equal(savedBody.rows[1].description, result.candidates[0].description);
+  assert.equal(savedBody.rows[1].reviewStatus, 'unreviewed');
+  assert.equal(savedBody.rows[1].sourceImageId, RESPONSE_SOURCE_ID);
+  assert.match(page.element('project-save-status').textContent, /Project saved/);
+});
+
+test('panel empty and ambiguous OCR results remain available for manual review without inferred values', async () => {
+  for (const ambiguous of [false, true]) {
+    const result = extractionResponse();
+    result.rawText = ambiguous ? 'Part number: FIRST\nPart number: SECOND' : '';
+    if (ambiguous) {
+      Object.assign(result.candidates[0], { partNumber: '', manufacturer: '', description: '',
+        confidence: { partNumber: null, manufacturer: null, description: null }, warnings: ['Ambiguous fields require manual entry.'] });
+    } else result.candidates = [];
+    const { page, initial, extract } = await extractionPage([result]);
+    await extract();
+    assert.equal(page.element('ocr-result').hidden, false);
+    assert.equal(page.element('source-error').hidden, true);
+    assert.equal(page.element('panel-parts-body').children.length, initial.rows.length);
+    assert.equal(page.element('project-dirty').hidden, true);
+    assert.equal(page.element('add-ocr-rows').disabled, !ambiguous);
+  }
+});
+
 test('panel project response enforces public metadata limits before adopting any fields', async () => {
   const changes = [
     value => { value.id = 'not-a-project-id'; },

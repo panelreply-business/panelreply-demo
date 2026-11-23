@@ -27,3 +27,7 @@ The source manifest is `991af22d5c66708b55d1d7e01ce739a9dbab28e27c9e1f89c7f04cf5
 All nine component-evidence harness checks pass, including the new failure-preservation contract. Malformed and invalid native reports remain failures. JavaScript syntax and diff checks pass. No native execution occurs locally. [Source-bound local record](evidence/windows-fixture-diagnostics-2026-11-23.json).
 
 Next Windows CI must reproduce the exact empty-DACL reason, preserve the original three failures and cleanup error, and verify the diagnostic correction. A repeat pass alone cannot repair the unresolved fixture lifecycle. A retained creation/cleanup handle may be needed, but no ACL repair or privilege change is part of this candidate.
+
+## Run89 outcome
+
+Committed `5cead334` compiles with verified native identities and executes 13 PASS/two FAIL methods. The instrumented race test now passes with all independent absence requirements. Both empty-DACL fixture failures report Could not inspect fixture path (Windows 5). Cleanup EPERM remains. A synchronous metadata-open access hypothesis requires further native investigation. No storage or ACL policy changes. [Verified artifact](evidence/windows-native-component-run89.json).

@@ -10,7 +10,21 @@ Purchases, customer contact, production customer data, public deployment, produc
 
 The products have separate release decisions and independent entrypoints, data binding, sessions and recovery. December 31, 2026 remains the first-release target. The existing daily check runs at 10 AM America/Detroit through December 20 inclusive. Do not duplicate it. Product order and the second release date remain undecided. Real-world testing needs its applicable technical gates and owner approval.
 
-## Current Windows diagnostic milestone
+## Current extraction-response milestone
+
+This candidate follows `5cead3344fc2615d699e68d606f38da399d21348` and has manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4` across 193 files. The full local run passes 9,241 checks: 9,094 product and 147 excluded harness cases, with zero failed/skipped/cancelled/TODO/infrastructure outcomes and stable source. All 9,086 prior product IDs remain; eight new cases move from 2 PASS/6 FAIL on the unchanged client to 8 PASS after repair. [Local evidence](evidence/ocr-response-local-2026-11-23.json).
+
+The spreadsheet client binds OCR receipts to requested/current project, source and revision, validates consumed candidate/warning/confidence fields, and prepares warning nodes before installing the result. Invalid re-extraction clears old/malformed addable candidates while preserving saved corrections. Blank/Unicode/ambiguous output and explicit Add/Save remain. Engine, parser, preprocessing, model and dataset stay unchanged. [Repair](OCR_RESPONSE_INTEGRITY_2026_11_23.md).
+
+Run88 actual Safari passes plural-label setup and all three exact trusted datetime input observations, but complete outcomes stay one PASS/five ERROR. Later failures concern native option clicking, source-upload confirmation and review-status persistence after reload. Date input success is not whole-workflow acceptance. [Native record](evidence/native-safari-run88.json). A separate Safari worktree is investigating these failures without injected values/events or API seeding.
+
+Run89 Windows native build/identity passes and 13 component methods pass. Two empty-DACL metadata opens fail with recorded Windows 5; cleanup EPERM remains. The corrected instrumented race method passes with every independent absence assertion. [Verified record](evidence/windows-native-component-run89.json). A separate fixture investigation examines synchronous metadata access and cleanup without changing storage.cc, ACLs, privileges or accepting error 32 as DACL evidence.
+
+Run88 has a preserved 18:38 partial ledger with 24,433 product PASS/five ERROR from 29 ZIPs/31 reports. It excludes 371 harness checks and 7,102 duplicates. Five jobs were still running and ARM unassigned. Do not treat this as a complete aggregate. [Partial record](evidence/callback-scheduling-run88-partial-1838.json).
+
+The standalone SQLite observation patch is frozen at /tmp/panelreply-windows-sqlite-observation-20261123.patch, SHA256 22bdcb6fe48a65c0968d5ea080750082856bbe1cc84e80eb2cbe5c1024aa85ae, inventory /tmp/panelreply-windows-sqlite-observation-handoff-20261123.json. It has 12 passing harness checks, zero Windows executions and zero product credit. It is not yet integrated. Its read-only process-token hunk is independent of fixture metadata/cleanup code. Review/integrate after the current runtime milestone and keep actual eight Windows observations pending component prerequisites.
+
+## Preceding Windows diagnostic milestone
 
 The current candidate follows committed `1322d0630d377d9fe769dc15543321cb5f5fe373`, tree `6834fd89e5383cf8e4de5a50138c2244d0aab9a7`. Its manifest is `991af22d5c66708b55d1d7e01ce739a9dbab28e27c9e1f89c7f04cf5ecad6b8c` across 193 files. It changes only four component-test/helper sources, with application/storage policy and the 15 native method IDs unchanged. Nine component-evidence harness checks pass, one new, all excluded from product credit. Native execution is pending. [Diagnostic record](WINDOWS_FIXTURE_DIAGNOSTICS_2026_11_23.md).
 
@@ -42,7 +56,7 @@ The ledger records 24,813 product passes and six failures across 9,352 distinct 
 - All six fixed-spreadsheet suites pass: nine methods per Linux engine and ten per Intel Mac engine. Committed-response corruption/retry journeys pass. Private Linux WebKit passes 132/132.
 - Installed Safari26.6 starts with matching native browser/driver/host evidence. Callback intake/status/persistence/sign-out passes. Two callback methods fail on empty datetime input and three spreadsheet methods fail setup on the label expectation. Preserve all five failures. [Native evidence](evidence/native-safari-run86.json).
 - Static Intel Mac WebKit passes 91 methods and fails one keyboard/sample journey. The trace does not identify why its final click leaves the title unchanged. The next observer is diagnostic only.
-- OCR dependency identity passes. Exact extraction remains FAIL at 289/310 fields, with 263 expected blanks preserved, no native errors and no review violations.
+- OCR dependency identity passes. Exact extraction remains FAIL at 289/310 exact images, with 263 expected blanks preserved, no native errors and no review violations.
 - Required native isolation remains BLOCKED at bubblewrap loopback setup before all six denial cases. The recorded error is RTM_NEWADDR operation not permitted. Its underlying host cause is unconfirmed. No privilege exception or fallback.
 - ARM is cancelled with runner ID zero, no steps and zero cases. No agent requested cancellation. Standard labels and repository visibility match current GitHub documentation. Cause remains unknown. [Review](APPLE_SILICON_ASSIGNMENT_2026_11_23.md).
 - HTTP workload, public suspension and auxiliary native OCR/resource/orchestration/storage measurements stay separate from product-goal credit.
@@ -63,7 +77,7 @@ SQLite sidecars, ordinary-account isolation, persistent incomplete-restore state
 
 ## Exact next steps
 
-1. Verify the commit containing this checkpoint is on the development branch with manifest `991af22d5c66708b55d1d7e01ce739a9dbab28e27c9e1f89c7f04cf5ecad6b8c`. Publish only reviewed staged scope with an expected-head lease if not already published. Keep PR8 draft and main unchanged.
+1. Verify the commit containing this checkpoint is on the development branch with manifest `e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4`. Publish only reviewed staged scope with an expected-head lease if not already published. Keep PR8 draft and main unchanged.
 2. Inspect that commit's Windows build promptly. Require actual compiler/SDK/Node identities, normal/probe/fixture hashes, all 15 native outcomes and cleanup/positive-control evidence. Repair failures without importing the component or weakening storage policy.
 3. Inspect all six native Safari methods. Retain trusted keyboard/control input, exact local/UTC/timezone behavior, native identity and actual CSV/XLSX bytes. Preserve failed input evidence. Harness success is not a browser pass.
 4. Inspect static Mac WebKit sample-action observations. A pass alone cannot close the intermittent defect. Distinguish timing hypotheses from observations.

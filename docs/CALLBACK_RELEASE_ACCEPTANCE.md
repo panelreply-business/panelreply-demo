@@ -1,5 +1,11 @@
 # Callback release acceptance
 
+## November 23 native datetime-entry verification
+
+Run88 on `1322d063` records three exact datetime-local values with trusted key/input/change events. Both scheduling methods progress past native date entry and then error in Selenium option clicking for contact permission or task outcome. Intake/status/persistence/sign-out remains the one complete native PASS. The two scheduling workflows remain ERROR, with no complete native callback acceptance. [Observed inputs and traces](evidence/native-safari-run88.json).
+
+The spreadsheet response-integrity change leaves callback runtime bytes unchanged. Its shared local run has 9,241 checks and cannot be treated as callback-only credit. Both independent release decisions remain open.
+
 ## November 23 reflow and mobile verification
 
 Final run86 on `13b8741` passes all six selected callback suites, 15/15 each, including Linux/Intel Mac WebKit at 320px with doubled text, request-control bounds, unsaved-task discard and native keyboard focus. Both emulated mobile engines pass the shared 40-method and fixed-callback 12-method suites. This verifies the scoped reflow/focus and completed-save/reopen repairs without browser-error suppression. It does not establish physical-device acceptance. [Final evidence](evidence/callback-scheduling-run86.json).
