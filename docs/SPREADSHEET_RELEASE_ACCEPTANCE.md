@@ -1,5 +1,11 @@
 # Spreadsheet release acceptance
 
+## November 23 small-text OCR candidate
+
+Conditional image enlargement improved the unchanged local 310-image benchmark from 277 to 285 exact images. Eight failures became exact, no earlier exact image regressed, all 263 expected blank fields stayed blank, and native errors/review violations remained zero. Twenty-five images remain nonexact, so OCR quality remains FAIL. [Source hashes, before/after outcomes and limits](OCR_SMALL_TEXT_2026_11_23.md).
+
+The changed pipeline still requires committed CI verification on its recorded Tesseract/runtime build and dataset. Intel Mac and Apple Silicon manual project/correction/export/recovery coverage is being added with an explicit native-OCR-unavailable case. That scope does not establish native macOS extraction. Actual photographs, Excel, Safari/physical devices, OS worker isolation, selected-host/offsite recovery and operating requirements remain open. The program remains NO-GO for customer testing or release. [Persistent continuation](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 daily check
 
 Spreadsheet entrypoint, dedicated cookie/store marker, blocked callback/provider routes and product-bound encrypted recovery remain implemented with no code changes since tested `ca5f0cb`. Last full [PR8 run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): 4,118 distinct spreadsheet cases and 11,836 passing case/platform executions, plus shared cases counted once; selected Linux Chromium, Firefox and WebKit journeys passed 21/21. No fresh PR run today (**BLOCKED**). [Main run79](https://github.com/panelreply-business/panelreply-demo/actions/runs/45194906999) does not verify spreadsheet. OCR accuracy remains **FAIL 277/310**, with 33 nonexact; native isolation BLOCKED with zero denial cases. Representative photos, actual Excel/physical mobile, selected-host/offsite recovery and operating approvals remain open. **GO for isolated synthetic review; NO-GO for customer trial or release.** [Daily evidence](evidence/daily-audit-2026-11-23.json).

@@ -9,7 +9,7 @@ const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { aggregateReports, validateReport, validateMilestones, readReportDirectory } = require('../scripts/aggregate-test-evidence.cjs');
-const { collectNodeResults } = require('../scripts/test-evidence.cjs');
+const { collectNodeResults, productScope } = require('../scripts/test-evidence.cjs');
 
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const FILE = 'tests/synthetic-product.test.cjs';
@@ -164,6 +164,51 @@ test('an explicitly empty browser channel cannot default to a bundled browser', 
 test('selected-product browser reports require the matching deployment mode', () => {
   const raw = browser(['PASS'], { suite: 'callback', deploymentMode: 'combined' });
   expectCode(() => validateReport(raw), 'INVALID_DEPLOYMENT_MODE');
+});
+
+test('manual spreadsheet evidence retains the fixed product and actual macOS boundary', () => {
+  const raw = browser(['PASS'], { suite: 'spreadsheet-manual', deploymentMode: 'spreadsheet',
+    platform: { os: 'Darwin', architecture: 'arm64' } });
+  assert.equal(validateReport(raw).tests.length, 1);
+  const wrongProduct = structuredClone(raw); wrongProduct.deploymentMode = 'combined';
+  expectCode(() => validateReport(wrongProduct), 'INVALID_DEPLOYMENT_MODE');
+  const wrongPlatform = browser(['PASS'], { suite: 'spreadsheet-manual', deploymentMode: 'spreadsheet' });
+  expectCode(() => validateReport(wrongPlatform), 'INVALID_PLATFORM');
+});
+
+test('macOS manual spreadsheet passes cannot satisfy the extraction suite or full platform acceptance', () => {
+  const raw = browser(['PASS'], { suite: 'spreadsheet-manual', deploymentMode: 'spreadsheet',
+    platform: { os: 'Darwin', architecture: 'x86_64' } });
+  const requirements = [
+    { id: 'mac-manual', kind: 'browser', match: { os: 'darwin', suite: 'spreadsheet-manual' }, minimumCases: 1 },
+    { id: 'mac-full', kind: 'browser', match: { os: 'darwin', suite: 'spreadsheet' }, minimumCases: 1 },
+    { id: 'physical-and-native', kind: 'manual', match: {}, status: 'NOT_TESTED' }
+  ];
+  const report = aggregate([raw], { milestones: policy({ requiredPlatforms: requirements }) });
+  assert.equal(report.requiredPlatforms[0].status, 'PASS');
+  assert.equal(report.requiredPlatforms[1].status, 'NOT_TESTED');
+  assert.equal(report.requiredPlatforms[2].status, 'NOT_TESTED');
+  assert.equal(report.platformCoverageComplete, false);
+});
+
+test('reused spreadsheet method IDs count once per actual OS and architecture', () => {
+  const linux = browser(['PASS'], { suite: 'spreadsheet', deploymentMode: 'spreadsheet' });
+  const intel = browser(['PASS'], { suite: 'spreadsheet-manual', deploymentMode: 'spreadsheet',
+    platform: { os: 'Darwin', architecture: 'x86_64' } });
+  const arm = browser(['PASS'], { suite: 'spreadsheet-manual', deploymentMode: 'spreadsheet',
+    platform: { os: 'Darwin', architecture: 'arm64' } });
+  const report = aggregate([linux, intel, arm, structuredClone(arm)]);
+  assert.equal(report.product.PASS, 3);
+  assert.equal(report.distinctCases.total, 1);
+  assert.equal(report.duplicateObservationsExcluded, 1);
+});
+
+test('callback scheduling and task cases stay in the callback product ledger', () => {
+  for (const file of ['callback-schedule.test.cjs', 'callback-schedule-client.test.cjs',
+    'callback-task-api.test.cjs', 'callback-tasks.test.cjs']) {
+    assert.equal(productScope('tests/' + file, 'synthetic scheduled work'), 'callback', file);
+  }
+  assert.equal(productScope('tests/unrelated.test.cjs', 'callback'), 'shared');
 });
 
 test('shared browser cases keep deployment provenance without double counting the portfolio', () => {

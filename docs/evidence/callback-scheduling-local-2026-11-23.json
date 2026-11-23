@@ -1,0 +1,2201 @@
+{
+  "format": "panelreply-local-candidate-verification-v1",
+  "date": "2026-11-23",
+  "timezone": "America/Detroit",
+  "command": "WORKSPACE_HTTP_TESTS=1 node scripts/run-release-node.cjs --output /tmp/panelreply-nov23-candidate-node.json",
+  "baselineCommit": "9175d905c74ff060a3f8e8fcbe01e15accb7342b",
+  "sourceTreeSha256": "fa274e9210cf963ff2f92b1df0b3d748997f81e852f936646b2ccc160ea5839b",
+  "dirtyCandidate": true,
+  "sourceChanged": false,
+  "startedAt": "2026-11-23T15:46:47.847Z",
+  "completedAt": "2026-11-23T15:47:25.061Z",
+  "platform": {
+    "os": "linux",
+    "osRelease": "6.18.57",
+    "architecture": "x86_64",
+    "node": "v24.22.3",
+    "platformKey": "linux/x86_64/node24"
+  },
+  "totals": {
+    "passed": 9072,
+    "failed": 0,
+    "skipped": 0,
+    "todo": 0,
+    "cancelled": 0,
+    "harnessPassed": 83
+  },
+  "productPassing": 8989,
+  "summarySuccess": true,
+  "infrastructureErrors": [],
+  "rawReportSha256": "4f2da36b26efcdb76c80a6ce900ad33715873806aa752f7f626824b813ed1a2d",
+  "rawLogSha256": "1f856c0cdd4353ab118a96d17edda61a946f8e0376edf7f87913e24347162018",
+  "perFile": {
+    "tests/assistant-adversarial.test.cjs": {
+      "PASS": 11
+    },
+    "tests/assistant-api.test.cjs": {
+      "PASS": 15
+    },
+    "tests/assistant-evaluation.test.cjs": {
+      "PASS": 334
+    },
+    "tests/assistant-provider.test.cjs": {
+      "PASS": 31
+    },
+    "tests/assistant-usage.test.cjs": {
+      "PASS": 17
+    },
+    "tests/callback-schedule-client.test.cjs": {
+      "PASS": 31
+    },
+    "tests/callback-tasks-api.test.cjs": {
+      "PASS": 13
+    },
+    "tests/callback-tasks.test.cjs": {
+      "PASS": 70
+    },
+    "tests/data-lifecycle.test.cjs": {
+      "PASS": 41
+    },
+    "tests/deletion-client-review.test.cjs": {
+      "PASS": 11
+    },
+    "tests/demo.test.cjs": {
+      "PASS": 56
+    },
+    "tests/design-preview.test.cjs": {
+      "PASS": 25
+    },
+    "tests/intake.test.cjs": {
+      "PASS": 65
+    },
+    "tests/lifecycle-api.test.cjs": {
+      "PASS": 24
+    },
+    "tests/ocr-benchmark.test.cjs": {
+      "PASS": 5
+    },
+    "tests/ocr-isolation-diagnostics.test.cjs": {
+      "PASS": 8
+    },
+    "tests/ocr-isolation.test.cjs": {
+      "PASS": 3
+    },
+    "tests/ocr.test.cjs": {
+      "PASS": 76
+    },
+    "tests/panel-api.test.cjs": {
+      "PASS": 24
+    },
+    "tests/panel-store.test.cjs": {
+      "PASS": 24
+    },
+    "tests/panel-xlsx.test.cjs": {
+      "PASS": 13
+    },
+    "tests/platform-client-state.test.cjs": {
+      "PASS": 8
+    },
+    "tests/prelaunch-concurrency.test.cjs": {
+      "PASS": 6
+    },
+    "tests/product-backup.test.cjs": {
+      "PASS": 39
+    },
+    "tests/product-boundaries.test.cjs": {
+      "PASS": 92
+    },
+    "tests/product-config.test.cjs": {
+      "PASS": 62
+    },
+    "tests/product-ui.test.cjs": {
+      "PASS": 34
+    },
+    "tests/questions.test.cjs": {
+      "PASS": 18
+    },
+    "tests/release-api-matrix.test.cjs": {
+      "PASS": 1296
+    },
+    "tests/release-assistant-matrix.test.cjs": {
+      "PASS": 983
+    },
+    "tests/release-deletion-model.test.cjs": {
+      "PASS": 2920
+    },
+    "tests/release-evidence.test.cjs": {
+      "PASS": 83
+    },
+    "tests/release-export-matrix.test.cjs": {
+      "PASS": 2268
+    },
+    "tests/release-name-grounding.test.cjs": {
+      "PASS": 24
+    },
+    "tests/remediation-adversarial.test.cjs": {
+      "PASS": 20
+    },
+    "tests/remediation-review.test.cjs": {
+      "PASS": 12
+    },
+    "tests/retention-review.test.cjs": {
+      "PASS": 8
+    },
+    "tests/server-http.test.cjs": {
+      "PASS": 1
+    },
+    "tests/server.test.cjs": {
+      "PASS": 32
+    },
+    "tests/workspace-api.test.cjs": {
+      "PASS": 17
+    },
+    "tests/workspace-assistant.test.cjs": {
+      "PASS": 116
+    },
+    "tests/workspace-backup.test.cjs": {
+      "PASS": 28
+    },
+    "tests/workspace-conversation.test.cjs": {
+      "PASS": 34
+    },
+    "tests/workspace-export.test.cjs": {
+      "PASS": 10
+    },
+    "tests/workspace-file-safety.test.cjs": {
+      "PASS": 6
+    },
+    "tests/workspace-http.test.cjs": {
+      "PASS": 7
+    },
+    "tests/workspace-recovery-auth.test.cjs": {
+      "PASS": 25
+    },
+    "tests/workspace-revocation.test.cjs": {
+      "PASS": 8
+    },
+    "tests/workspace-store.test.cjs": {
+      "PASS": 18
+    }
+  },
+  "sourceManifest": [
+    {
+      "path": ".env.example",
+      "sha256": "9a0c513f779546e2b38736986743a2551de11532a0b9c4edc1b5da41f4029db8"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "c8b8ee9e85458eacee1610cfceb0b6270b26655dd9b1f2050a94733eaf95ea3d"
+    },
+    {
+      "path": ".github/workflows/demo-tests.yml",
+      "sha256": "d42e361023b91b059853826399f5952378a981d512f28db6aa1167af60aeeb7f"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "8a44f4036516ee90069b07d52d7d14b7289bd648a923b772006260b30faadd6e"
+    },
+    {
+      "path": "callback-server.cjs",
+      "sha256": "7007993d24140e2cb110a9c6ad84d9ce0e65ac0815fc90d7ab49c0d784f0ef22"
+    },
+    {
+      "path": "design-preview/app.js",
+      "sha256": "708cd186fdd0373b8d9b9833235d7069a5500b0c9ff665ce8fe566c2121249a5"
+    },
+    {
+      "path": "design-preview/demo-core.js",
+      "sha256": "ea52186803e712820a1b78ec72e95f708d4c2529bbadd564d4d98c979ec7dafe"
+    },
+    {
+      "path": "design-preview/index.html",
+      "sha256": "035e9e8c839a66923c7fdb82ffb869d12b863f764070cc73e251faefd590cf87"
+    },
+    {
+      "path": "design-preview/mark-on-dark.svg",
+      "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+    },
+    {
+      "path": "design-preview/mark-on-light.svg",
+      "sha256": "790faba6500e601710b0904141fdfdbba522d383cc3624e0eb72bafef9632b20"
+    },
+    {
+      "path": "design-preview/mark.svg",
+      "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+    },
+    {
+      "path": "design-preview/sample-label.svg",
+      "sha256": "f19e565c0d7c19421053102c1e368b361a9da6719bf251823cc569fd7c1e21e4"
+    },
+    {
+      "path": "design-preview/styles.css",
+      "sha256": "0155dbbe1f4f8f614a0173bb9712fdac1c70c77d04728f49b7cd2da61890e2d6"
+    },
+    {
+      "path": "index.html",
+      "sha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82"
+    },
+    {
+      "path": "robots.txt",
+      "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+    },
+    {
+      "path": "scripts/aggregate-test-evidence.cjs",
+      "sha256": "1d3d71b27827e96468bf08e8c17dae1d0637bfa0466a8a056ea6ada7f8997d33"
+    },
+    {
+      "path": "scripts/benchmark-ocr.cjs",
+      "sha256": "43663bb797781049ece3ea674723912f248c937c8140464d9a19d57178bc0460"
+    },
+    {
+      "path": "scripts/build-demo.cjs",
+      "sha256": "dd197c8874e4bf5093f1083043b528acf72f1df5b485ab674704674e7f1c52f8"
+    },
+    {
+      "path": "scripts/evaluate-assistant.cjs",
+      "sha256": "f018e8c5d789b2de370775b39c0b48d2d94278e6147a0514850c3418d1c84117"
+    },
+    {
+      "path": "scripts/http-workload.cjs",
+      "sha256": "3bd437d7e03be2f520886b4c97b25fe5b3f7ce70167df38bff793c174772e5d5"
+    },
+    {
+      "path": "scripts/ocr-isolation-diagnostics.cjs",
+      "sha256": "dbfc5aaf5d97e65ca0804078e0cf78f16d5428341e8ed822b8d7405e1f8b8f20"
+    },
+    {
+      "path": "scripts/ocr-process-metrics.cjs",
+      "sha256": "fd9637a0b89be8f556288a71453c65d8f4dfe46b1a09e0236ed9e9f986fd8789"
+    },
+    {
+      "path": "scripts/prelaunch-stress.cjs",
+      "sha256": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c"
+    },
+    {
+      "path": "scripts/run-release-node.cjs",
+      "sha256": "96db3c3d1cd21e2b4a7a0dc7710d3a891f57ca710c8f299fdbcf8590db776575"
+    },
+    {
+      "path": "scripts/test-evidence.cjs",
+      "sha256": "80bc356e313a4ba693a21e2c8308a8b38b1ebeef1d62e3bec81f60963a738b70"
+    },
+    {
+      "path": "scripts/test-ocr-fixtures.cjs",
+      "sha256": "f606a742a326bafb4407725facf60a59913af06a6b78c06ed9bffb7c077f19b7"
+    },
+    {
+      "path": "scripts/test-ocr-isolation.cjs",
+      "sha256": "b3d1f65514aae5f13ef722b58f7ac36f0766b4a58df5d13cbb2868b53c0a67bd"
+    },
+    {
+      "path": "scripts/test-ocr-resource-limits.cjs",
+      "sha256": "1aa10d0c0283f301baba224186fa040ccbc25131da7683bc8b645606b74d4be0"
+    },
+    {
+      "path": "scripts/test-xlsx-reader.py",
+      "sha256": "8ef1e79dfb505203781518a992d707e4827c4be532723051a978861f3c486f3b"
+    },
+    {
+      "path": "scripts/workspace-admin.cjs",
+      "sha256": "cbbf45967c6b9302bab4ab82d4c8572b27816befcd6fc0f8150b08e304370f0a"
+    },
+    {
+      "path": "scripts/workspace-backup.cjs",
+      "sha256": "99e4beec53cd2ea3514cb8cb0bcdb469bcbb424d0f189d664ea595d7f3d80e40"
+    },
+    {
+      "path": "scripts/workspace-reset-password.cjs",
+      "sha256": "95c773fbfe4253e8e979c38a77c250704e5a6a5af7fa1c2b3562e15ceca23372"
+    },
+    {
+      "path": "server.cjs",
+      "sha256": "5b88a11280ab7086468995c6a70cf6169f643d8a035b52e9829c1294f9c08b71"
+    },
+    {
+      "path": "spreadsheet-server.cjs",
+      "sha256": "f552f097b884ce1ba77ee6afd6a0eaa34aea108dc2bf6745346bbe26abcd5a94"
+    },
+    {
+      "path": "src/business-info.js",
+      "sha256": "f1d9187d31d2e5a953614fa3824a9b54ad1683a7f0944d96943d4f643e9753a1"
+    },
+    {
+      "path": "src/demo.js",
+      "sha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974"
+    },
+    {
+      "path": "src/intake.js",
+      "sha256": "bf33576b3472b29d9375cc0ed422e279e6bf5cb9787e35fd42a66f7565358895"
+    },
+    {
+      "path": "src/questions.js",
+      "sha256": "96defee8d12af867f4d29672bb7c8a31c1cbb84a6cca5d707ba2e1ed31ec637a"
+    },
+    {
+      "path": "tests/assistant-adversarial.test.cjs",
+      "sha256": "706bcc87e313133af6a4ba2900496a85bae719f44687e46bb16e879bdb5ada85"
+    },
+    {
+      "path": "tests/assistant-api.test.cjs",
+      "sha256": "5b64d383fc1ad6e454790b9c8df9351e92eba6a9aed24ecf554e9e208e827593"
+    },
+    {
+      "path": "tests/assistant-evaluation.test.cjs",
+      "sha256": "e4216a886fa585bbea7ed3adb1d055578bac2bee7f62504a50812f3a1988149f"
+    },
+    {
+      "path": "tests/assistant-provider.test.cjs",
+      "sha256": "d319fda86badbf14f5ea5b259e383a157db391fe79ba7610051698229c44c398"
+    },
+    {
+      "path": "tests/assistant-usage.test.cjs",
+      "sha256": "4558bc4c0ae8256e0bb4c107fa028a0c4fac3a179a5c26addc83dbbc5cbacc28"
+    },
+    {
+      "path": "tests/assistant_browser_test.py",
+      "sha256": "c8d1c289c6b06d38838000e8159d4f80cf0cee3d40a8a98b29010f8524f254fd"
+    },
+    {
+      "path": "tests/browser-requirements.txt",
+      "sha256": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82"
+    },
+    {
+      "path": "tests/browser_engine.py",
+      "sha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5"
+    },
+    {
+      "path": "tests/browser_test.py",
+      "sha256": "93380a727c1a215128095457d11714064325f05036ce2abcb345eeb96bf2cbcf"
+    },
+    {
+      "path": "tests/callback-schedule-client.test.cjs",
+      "sha256": "5932afe05cf908d1bcff0f6263adf87fd01769be0145631e87b738ee6b20be80"
+    },
+    {
+      "path": "tests/callback-tasks-api.test.cjs",
+      "sha256": "eaf876d1fb65ee4dff6161dafd5685d31372ab9a6b709a2a4bf0b2a797e1d2cd"
+    },
+    {
+      "path": "tests/callback-tasks.test.cjs",
+      "sha256": "1c6628fa3e9312f3e5ee91904ef192feedddc883fdf35051dd07c533e004d91d"
+    },
+    {
+      "path": "tests/data-lifecycle.test.cjs",
+      "sha256": "60cd78b78b597955b3b9dfbc9d77c044be7e2a51a587ddc3d3a057ffca18220c"
+    },
+    {
+      "path": "tests/deletion-client-review.test.cjs",
+      "sha256": "54d241e05fbc071bf3d6cd363dbbf97bd87137d05a858cd06b7a44af7cb8d33b"
+    },
+    {
+      "path": "tests/demo.test.cjs",
+      "sha256": "a18839cc242acc94865de602b5a627e9c3b010206ecc8f6fd8bafd9a62dd2b11"
+    },
+    {
+      "path": "tests/design-preview.test.cjs",
+      "sha256": "6e27175539d9ec2ae7ccc86e82bff771413417b7bfa4f2ef4605c6f96eea3f8a"
+    },
+    {
+      "path": "tests/design_browser_test.py",
+      "sha256": "174f1279dcd853bb3abee0842ed73b4da5b4dc2ae10f57e78f0eef759cb1376f"
+    },
+    {
+      "path": "tests/fixtures/assistant/corpus.json",
+      "sha256": "7cf62e652dbf9d059ab13a3c8b94a50655a11913412dbbb65ea43c895c4b5e22"
+    },
+    {
+      "path": "tests/fixtures/assistant/remediation-corpus.json",
+      "sha256": "a397bc55d927b231eb5a4f4122d64d87c9cff77085b96e36f20c584e044dec47"
+    },
+    {
+      "path": "tests/fixtures/fake-assistant-server.cjs",
+      "sha256": "bf9d3ffe96b4cd3dacfda24cbb95f74376215cc40bb91b49a36dc31af47555d0"
+    },
+    {
+      "path": "tests/fixtures/panels-benchmark/generate.py",
+      "sha256": "8a514a230e1864c5fbfd89e92bf5734a47e782226546130210e14a1a5cce0446"
+    },
+    {
+      "path": "tests/fixtures/panels/blank.png",
+      "sha256": "f0f703c91e3ebd1b2b6e36e248ef975bfdcadf79874e2dc01f5d18e6ff808d65"
+    },
+    {
+      "path": "tests/fixtures/panels/complete.jpg",
+      "sha256": "dc5a70009e1ffb39a72b52aa57ba53b0e2f9800896e4771906f6d97042b2de93"
+    },
+    {
+      "path": "tests/fixtures/panels/complete.png",
+      "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18"
+    },
+    {
+      "path": "tests/fixtures/panels/conflicting-parts.png",
+      "sha256": "f7a2abb5abaaee64f97c55bcf087c9d235afeb78efbef1e20665bb29ad5f3375"
+    },
+    {
+      "path": "tests/fixtures/panels/generate.py",
+      "sha256": "63f5b9ac99fb03ae33a510fdc980f0d743f331dd727e9996a9d954a25b7445c9"
+    },
+    {
+      "path": "tests/fixtures/panels/manifest.json",
+      "sha256": "df089f76f59a22abccd9904c6f4988abeaecb6d016c52a9930ab635ce3db5608"
+    },
+    {
+      "path": "tests/fixtures/panels/missing-manufacturer.png",
+      "sha256": "d9bba9861d3deebdff4f538fdbfd065ec2050ce37e73c5e9b4910fa1ef515964"
+    },
+    {
+      "path": "tests/fixtures/panels/unlabelled.png",
+      "sha256": "420326aad796fd00d5a1bf6ee679616eab8b1f1678e5040f112d880579f8ebd2"
+    },
+    {
+      "path": "tests/fixtures/release-api-matrix.cjs",
+      "sha256": "8c729270d45cf05074bb71228349227358b95080c9047dd45fe136ca860032b4"
+    },
+    {
+      "path": "tests/fixtures/xlsx-projects.cjs",
+      "sha256": "02671d7d22a639a9526dc69b1f697cf4a6a632c609f5897fa0eac90dad195c63"
+    },
+    {
+      "path": "tests/helpers/concurrent-store.cjs",
+      "sha256": "fcb8e2d14a36cffc50280ffff309b9e1814ea80b146c0a32019a4a625536ab8c"
+    },
+    {
+      "path": "tests/helpers/fake-assistant.cjs",
+      "sha256": "4fd9688487fb4a550a7f5ee91241cab30cb4fbca15d95760987c95628dbe9fe1"
+    },
+    {
+      "path": "tests/helpers/http-workload-worker.cjs",
+      "sha256": "e23ab077993e70f55ef83400b8132b51b56f98a24604908afebab244e7c95fd6"
+    },
+    {
+      "path": "tests/helpers/lifecycle-worker.cjs",
+      "sha256": "65691db014882661747842c78c12ba89b299c27cec76b4da7042a01f61c38852"
+    },
+    {
+      "path": "tests/helpers/release-xlsx-reader.py",
+      "sha256": "b6f828b71309f9de45a56a459fa96fa56b28749303cdb5b84eeb45b495d579c8"
+    },
+    {
+      "path": "tests/helpers/usage-worker.cjs",
+      "sha256": "57855a14e0afc84d98582d6ba19ad447c5e377f98688e3425b25601d5a5d8b78"
+    },
+    {
+      "path": "tests/intake.test.cjs",
+      "sha256": "9a72732fda70299db244b234ded86038ebc1652351d042c5dd72c27381290d59"
+    },
+    {
+      "path": "tests/intake_browser_test.py",
+      "sha256": "75bce2172ec53c70b3a5022cdb2034aec18533d7a589ac620b05845b5ad4db9e"
+    },
+    {
+      "path": "tests/lifecycle-api.test.cjs",
+      "sha256": "f10ab6b25f465e0ce8b68f23ed421c83ed839eea8c0f0a3f2267b831a8f717f7"
+    },
+    {
+      "path": "tests/lifecycle_browser_test.py",
+      "sha256": "cb0da6df66fe8fb7b07fd518209b94639f46a273ef6e807571b8fab69c614489"
+    },
+    {
+      "path": "tests/live-smoke.test.cjs",
+      "sha256": "b6f11d3e4f3dbfca8c284f67c613830e3aebc5ccf6ca4a712997b4d9772afd3f"
+    },
+    {
+      "path": "tests/macos_product_browser_test.py",
+      "sha256": "05dd5e9e30e7141886d96849b3bdfdca060df498277f2f2d8b7f59e9658af50f"
+    },
+    {
+      "path": "tests/ocr-benchmark.test.cjs",
+      "sha256": "0a32b2fb16a85b107a75a460dbe74fd5015ca98f4677a55426f4b4008d900146"
+    },
+    {
+      "path": "tests/ocr-isolation-diagnostics.test.cjs",
+      "sha256": "0985944b34f0063e212609a14f4f9f4299eb21a5e0afb784a3a9a58cbc1cc2b5"
+    },
+    {
+      "path": "tests/ocr-isolation.test.cjs",
+      "sha256": "e7f6abc192ce85a2d09998b91503a656650fd587bfefc0786ca930bc3acd125d"
+    },
+    {
+      "path": "tests/ocr.test.cjs",
+      "sha256": "4cdc879df6b710dce1590da9ff297828404067ee42d4c93b00d048e923e01d59"
+    },
+    {
+      "path": "tests/panel-api.test.cjs",
+      "sha256": "8e8055cfadd4d4cbc1dbc4ce5d5c2f21f18423cb61876384ed2dc05e47ece310"
+    },
+    {
+      "path": "tests/panel-store.test.cjs",
+      "sha256": "ebb80df565a9ff3846e760fe814403f75487d975b3c7e650a110886b3ef7b139"
+    },
+    {
+      "path": "tests/panel-xlsx.test.cjs",
+      "sha256": "90c7f1096c25d1c41690cf084192fd0018a2f3ba64a622c5b8ef01efbace0143"
+    },
+    {
+      "path": "tests/panel_browser_test.py",
+      "sha256": "3b2c0393be8a4dff46877ce2f67ef0cdcba51d989a8b4bc77cd10847ca89d4bf"
+    },
+    {
+      "path": "tests/platform-client-state.test.cjs",
+      "sha256": "6c58b873e1a3aa4959674c2b567917b22e37cdd5fba5dca71539987fdf32c140"
+    },
+    {
+      "path": "tests/platform_visual_browser_test.py",
+      "sha256": "22f3ab35929bdc072223bb664dada30311566ff763b5b65f653cca5d8c319639"
+    },
+    {
+      "path": "tests/prelaunch-concurrency.test.cjs",
+      "sha256": "e7b95be6ca08bdb02e02f0397e24fe11f662d1caf3debeb714fba8d4ffc7ec83"
+    },
+    {
+      "path": "tests/prelaunch-requirements.txt",
+      "sha256": "1b10a90ffd4411fa0fa250fc18fe206264df027453cb3f27b20414992bf3bd57"
+    },
+    {
+      "path": "tests/product-backup.test.cjs",
+      "sha256": "fb100876cad6e5aee275bd16a0afc6d8cd84e694613a14be73bedcbf8cf88114"
+    },
+    {
+      "path": "tests/product-boundaries.test.cjs",
+      "sha256": "653b26afd4db28951daa00a8d418a0bb8afb61cf95b9f2a8ed7c752f54c1774f"
+    },
+    {
+      "path": "tests/product-config.test.cjs",
+      "sha256": "f80d374597b0467593ce8f47f53686ec2ec010fb8245f7567b2f30b0618ad571"
+    },
+    {
+      "path": "tests/product-ui.test.cjs",
+      "sha256": "6d0db0ea3fe41bd873bd5db68963c214bd45cd26e3794f3af8cee9916dd7e9b0"
+    },
+    {
+      "path": "tests/product_browser_test.py",
+      "sha256": "10f0e35d1b84ebede11fddc9f08c60db133d5edb98aa5d1ac5c1b50ebb5f363f"
+    },
+    {
+      "path": "tests/questions.test.cjs",
+      "sha256": "949f917c506ec4b027113697802ffe143988ab03e23ee254bb6a241df1e6897c"
+    },
+    {
+      "path": "tests/release-api-matrix.test.cjs",
+      "sha256": "726ae18c83b7623d87091601bd340848614490e917844e6db77eb536e236594b"
+    },
+    {
+      "path": "tests/release-assistant-matrix.test.cjs",
+      "sha256": "2a39ec5242c2a1339b385cb7e28c0abbcf0a16c8dab052b92b76c9a500177808"
+    },
+    {
+      "path": "tests/release-deletion-model.test.cjs",
+      "sha256": "faf08d80e804a87a2a32c1b48bef325315802f93a104003c56d3a14b590bb15f"
+    },
+    {
+      "path": "tests/release-evidence.test.cjs",
+      "sha256": "3eca796ef5626e6df2cd5de45d7a86309fbe6d68c70b60d0522b96ecf3169dce"
+    },
+    {
+      "path": "tests/release-export-matrix.test.cjs",
+      "sha256": "6b1cec655128f5d71467be5f8c15059248097313666567b065622a5db9ae03c5"
+    },
+    {
+      "path": "tests/release-name-grounding.test.cjs",
+      "sha256": "3b236166ef2ae58102b5aeec63ead501f4621e861ad069146fc15a6dc098691b"
+    },
+    {
+      "path": "tests/release_mobile_browser_test.py",
+      "sha256": "8e4cc24298d9c221bdf9ecd5aad8771224790a65b42bacadd0e25f0457293b32"
+    },
+    {
+      "path": "tests/release_platform_runner.py",
+      "sha256": "c1198d7d4c3cc00d1f9a503b20c31c37e9a97052578fbbcfe47460b679f795aa"
+    },
+    {
+      "path": "tests/remediation-adversarial.test.cjs",
+      "sha256": "4f90f9efe510e5b2f5ece015a3ccdef048f8a3ea69cc24836d04792756270f91"
+    },
+    {
+      "path": "tests/remediation-review.test.cjs",
+      "sha256": "5bf239eb25a792e6eaba5bfd199f2d2cc89bf225111e08df502eb627fcb6b1b2"
+    },
+    {
+      "path": "tests/retention-review.test.cjs",
+      "sha256": "8bf0d5fc95f2a592065ca69b31def36cfbd8ad0ab9f042cb42923dd33ad3c01d"
+    },
+    {
+      "path": "tests/server-http.test.cjs",
+      "sha256": "270bc063c9b7203089264155bb0bf2295609ea9e780d6ce5b8a65d1960efa2e9"
+    },
+    {
+      "path": "tests/server.test.cjs",
+      "sha256": "9ed981af6c05c6743f8aaa4fe86f5469d057bdb94db27914b56ddf8491fdd4f4"
+    },
+    {
+      "path": "tests/ui_browser_test.py",
+      "sha256": "2babe308ea87a4c42fc0b84e574439242799cd4df3e614456aa931be9518821c"
+    },
+    {
+      "path": "tests/workspace-api.test.cjs",
+      "sha256": "08527d865d6af58b02dab1e93c87397549509dbaaa7b6c83f654a2ba485d260b"
+    },
+    {
+      "path": "tests/workspace-assistant.test.cjs",
+      "sha256": "4c1c50646faba3a4a9ced0ce841788c4156d8ce9add2372911ccdd10f1b6c6f1"
+    },
+    {
+      "path": "tests/workspace-backup.test.cjs",
+      "sha256": "5372337544d7eb3dd5e33954be5df1fca35f178f59be0d4224bc2b5a82ad7f6d"
+    },
+    {
+      "path": "tests/workspace-conversation.test.cjs",
+      "sha256": "403314e9600f5001a14ec347fe2a982ba36b2bf2786019130cc9557ed7bebdf8"
+    },
+    {
+      "path": "tests/workspace-export.test.cjs",
+      "sha256": "a4b43f56bde86e3221c8aedd990372f6a71084a19726ea3211267d58d9598abd"
+    },
+    {
+      "path": "tests/workspace-file-safety.test.cjs",
+      "sha256": "b8fcdc2bbe6d58bb65dc0eed4d281c7814ad873fd16b8efb23a116c69ba03cbe"
+    },
+    {
+      "path": "tests/workspace-http.test.cjs",
+      "sha256": "40bbb53eba37b13a83c88ed4e43075b90e28fd0dba6648447b0656092eaab1a1"
+    },
+    {
+      "path": "tests/workspace-recovery-auth.test.cjs",
+      "sha256": "4f1b17f263e67fc733f9fe5327687c2d665905771531a72f3f51a5d887ffc811"
+    },
+    {
+      "path": "tests/workspace-revocation.test.cjs",
+      "sha256": "749c3c194fd715624ff8688351fd3363467fdc852eca46c6d95827de13569515"
+    },
+    {
+      "path": "tests/workspace-store.test.cjs",
+      "sha256": "86e93de8156440b2ccdb43b414e4d9427de24f9eeeb65b4683188dd74e615792"
+    },
+    {
+      "path": "tests/workspace_browser_test.py",
+      "sha256": "d8026a20fe5bddd6f9fa9dbee4d31b186d07f0861c43a9605a9f9a007248efc3"
+    },
+    {
+      "path": "tests/workspace_recovery_browser_test.py",
+      "sha256": "d9665c37f08c818d2acc19109e4f6d49d3691aabbc00414ebe2671814e0947cb"
+    },
+    {
+      "path": "tests/xlsx_browser_test.py",
+      "sha256": "4afba86c2653bf7b3c2ec0b4d9cd0695e87f1954558a46848ce0cbd9f086d984"
+    },
+    {
+      "path": "workspace-server.cjs",
+      "sha256": "a9bc61d6bfe55408943efb15b923632b22b552da6fda735135aba8614524e34c"
+    },
+    {
+      "path": "workspace/api.cjs",
+      "sha256": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e"
+    },
+    {
+      "path": "workspace/app.js",
+      "sha256": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989"
+    },
+    {
+      "path": "workspace/assistant-config.cjs",
+      "sha256": "fd982824e867685ca34a4f6e0aca65dd1afeed292dfd2a53f25c3d255cf49b69"
+    },
+    {
+      "path": "workspace/assistant-provider.cjs",
+      "sha256": "f6304a1496d6fdf3f961ce5de451d32ab5a0cbad64d59209ca7ad3554dfd0fc0"
+    },
+    {
+      "path": "workspace/assistant.cjs",
+      "sha256": "b7d5cdcd8372a79a3ddd622fdb623d85d30cb97988623955cdea117ef5b1e0f5"
+    },
+    {
+      "path": "workspace/auth.cjs",
+      "sha256": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5"
+    },
+    {
+      "path": "workspace/backup.cjs",
+      "sha256": "c1a3690060753cf6539d8f784b3c6c660a7765ff6fb557724dc26ac0c3bc5675"
+    },
+    {
+      "path": "workspace/callback-tasks.cjs",
+      "sha256": "e3e3425019a01bffe2ddf04bf9a200a6e82814109d12fa3f6c1da6b67feffc71"
+    },
+    {
+      "path": "workspace/conversation.cjs",
+      "sha256": "edbf75aec1764aa77b905c93aa8d6912baaf420c2cfdf2d0bc565ca6c306b390"
+    },
+    {
+      "path": "workspace/dashboard.html",
+      "sha256": "d4b2d33efa7c8ac6143b005ac3f82c6784e5c4a9eaeca3d4bacc642598c582f2"
+    },
+    {
+      "path": "workspace/dashboard.js",
+      "sha256": "6dc659c482c5279f40b109bd415ea59cbd1ecadb0fcd5bfb067d53921ba139b4"
+    },
+    {
+      "path": "workspace/deletion.js",
+      "sha256": "0b15e7b7d9387c8e9ed62005b13933e1c6a5703a3c06e773bed40ac14acf0fc3"
+    },
+    {
+      "path": "workspace/file-safety.cjs",
+      "sha256": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad"
+    },
+    {
+      "path": "workspace/index.html",
+      "sha256": "62d2292361c936decbf07a01b5baef02ae46f0c6e0d27dda181abfdf93e063c4"
+    },
+    {
+      "path": "workspace/lifecycle.cjs",
+      "sha256": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec"
+    },
+    {
+      "path": "workspace/login.html",
+      "sha256": "0cbe93901a23a571b7d1ac021462273aa951b4c6b420691ec2e8257143e91029"
+    },
+    {
+      "path": "workspace/login.js",
+      "sha256": "7756811688ab7c5d19f3abc0652fea6c895d7f81938005ff75b906a777aa0dec"
+    },
+    {
+      "path": "workspace/ocr-isolation.cjs",
+      "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
+    },
+    {
+      "path": "workspace/ocr-preprocess.py",
+      "sha256": "b3bd73862d839b04dcdf3a1606bc7f4408e85e749c5e510e8c58937c7a818b90"
+    },
+    {
+      "path": "workspace/ocr.cjs",
+      "sha256": "a71207b782b981193b469589c3d9c82e8cc260645af635f08c328f54f142db08"
+    },
+    {
+      "path": "workspace/panels.cjs",
+      "sha256": "a8d342850cb2b43f206c41d6a8522894da5bb52d3e2a177a4e08bca85cecd637"
+    },
+    {
+      "path": "workspace/panels.html",
+      "sha256": "5899e9bba17bfaf45e5409931e0857a9aa9ab8ed001b81890e880ae9bb1fdef6"
+    },
+    {
+      "path": "workspace/panels.js",
+      "sha256": "3cc498bf100701342511beaf5c86680bedec9eb880d7e26794eec15091ed4c1c"
+    },
+    {
+      "path": "workspace/platform.css",
+      "sha256": "95718ebb1ffb7febafd5a4ba04815c8d529773588d27bc4b2506c1d46ccfa93a"
+    },
+    {
+      "path": "workspace/preview.html",
+      "sha256": "0bd1a6617845ab02ade2a9ce1cd786755ab93401884ad0a3c5e69d2b082a90cd"
+    },
+    {
+      "path": "workspace/preview.js",
+      "sha256": "17dd4784b569170a96dc46b5f696bac19c0d73f39484da16837855112f5b3149"
+    },
+    {
+      "path": "workspace/product-ui.cjs",
+      "sha256": "a63ae23a7240d5f5c443959521ef818f5e50d9298c82bfc955a2f713f2387c0d"
+    },
+    {
+      "path": "workspace/products.cjs",
+      "sha256": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf"
+    },
+    {
+      "path": "workspace/retention.cjs",
+      "sha256": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4"
+    },
+    {
+      "path": "workspace/schedule.js",
+      "sha256": "746ae2da4ac81005faa69626ddd122d22f41424dbe2ed75954fd0e09568cd336"
+    },
+    {
+      "path": "workspace/store.cjs",
+      "sha256": "ba3e20365220264362a128b0fea0bdba80f84d12f66dd95b287613259aa57959"
+    },
+    {
+      "path": "workspace/styles.css",
+      "sha256": "f285c96afb73440a933010e0b668f9e315c6622de6d30568182d87cf54730b99"
+    },
+    {
+      "path": "workspace/usage.cjs",
+      "sha256": "6a0e1e60fd6e3318e590e0786f5bbedf2975ed0e3e6f21a3a2cadb1dd2b4bee2"
+    },
+    {
+      "path": "workspace/xlsx.cjs",
+      "sha256": "51027a82df044bf444fe31965bbd39118fdaa6ed306022c7d3fadef083b4c217"
+    }
+  ],
+  "newCallbackTests": [
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time resolves winter and summer offsets independently of the device zone",
+      "name": "callback local time resolves winter and summer offsets independently of the device zone",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 19.048481,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time exposes both instants in the repeated fall hour",
+      "name": "callback local time exposes both instants in the repeated fall hour",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.776921,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time rejects the skipped spring hour without normalizing it forward",
+      "name": "callback local time rejects the skipped spring hour without normalizing it forward",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.755429,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time supports a half-hour clock transition",
+      "name": "callback local time supports a half-hour clock transition",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.348304,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time preserves quarter-hour offsets and date-boundary conversions",
+      "name": "callback local time preserves quarter-hour offsets and date-boundary conversions",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.001711,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time rejects impossible dates and unsupported zone identifiers",
+      "name": "callback local time rejects impossible dates and unsupported zone identifiers",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.590931,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback leap-day conversion retains the saved wall-clock minute",
+      "name": "callback leap-day conversion retains the saved wall-clock minute",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.950502,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback schedule submits the reviewed UTC instant, zone and current parent revision",
+      "name": "callback schedule submits the reviewed UTC instant, zone and current parent revision",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 20.516806,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback ambiguous time cannot save until the operator chooses an occurrence",
+      "name": "callback ambiguous time cannot save until the operator chooses an occurrence",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.150786,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback changing the time zone clears an earlier ambiguous occurrence selection",
+      "name": "callback changing the time zone clears an earlier ambiguous occurrence selection",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.051643,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback nonexistent wall-clock time never reaches the mutation API",
+      "name": "callback nonexistent wall-clock time never reaches the mutation API",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.017963,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback lost save response retains the same idempotency key and payload for retry",
+      "name": "callback lost save response retains the same idempotency key and payload for retry",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.338806,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback malformed success is treated as an uncertain save instead of clearing the draft",
+      "name": "callback malformed success is treated as an uncertain save instead of clearing the draft",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.148508,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback a rejected retry cannot erase an earlier unknown save result",
+      "name": "callback a rejected retry cannot erase an earlier unknown save result",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.192614,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback version rejection retains edits and requires a reload before another mutation",
+      "name": "callback version rejection retains edits and requires a reload before another mutation",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.58772,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback form correction remains possible after a definitive input rejection",
+      "name": "callback form correction remains possible after a definitive input rejection",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.60208,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback opt-out blocks scheduling without hiding the saved request",
+      "name": "callback opt-out blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.46165,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback safety hold blocks scheduling without hiding the saved request",
+      "name": "callback safety hold blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.93234,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback closed request blocks scheduling without hiding the saved request",
+      "name": "callback closed request blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.384061,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback review request blocks scheduling without hiding the saved request",
+      "name": "callback review request blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.907224,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback missing permission blocks scheduling without hiding the saved request",
+      "name": "callback missing permission blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.601062,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback blocked task retains cancellation while contact actions remain disabled",
+      "name": "callback blocked task retains cancellation while contact actions remain disabled",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.565128,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback rescheduling restores the saved occurrence in a repeated clock hour",
+      "name": "callback rescheduling restores the saved occurrence in a repeated clock hour",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.698201,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback completion requires a reported outcome and removes date requirements",
+      "name": "callback completion requires a reported outcome and removes date requirements",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.45957,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback completed and cancelled task cards expose no further mutation controls",
+      "name": "callback completed and cancelled task cards expose no further mutation controls",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.070741,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback task list rejects a record from another request",
+      "name": "callback task list rejects a record from another request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.138974,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback stale task read cannot repopulate the previous request",
+      "name": "callback stale task read cannot repopulate the previous request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.517205,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback session expiration clears private task content and ignores in-flight queue results",
+      "name": "callback session expiration clears private task content and ignores in-flight queue results",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.271458,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback saved markup remains literal text in task notes and customer names",
+      "name": "callback saved markup remains literal text in task notes and customer names",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.401963,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback queue paginates server totals and preserves the selected state filter",
+      "name": "callback queue paginates server totals and preserves the selected state filter",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.63852,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback queue failure clears old cards instead of displaying them as refreshed",
+      "name": "callback queue failure clears old cards instead of displaying them as refreshed",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.548204,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API supports create, queue, reschedule, completion and follow-up without claiming outbound delivery",
+      "name": "callback API supports create, queue, reschedule, completion and follow-up without claiming outbound delivery",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 582.272579,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API creation and completion retries return current saved state without another mutation",
+      "name": "callback API creation and completion retries return current saved state without another mutation",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 254.77546,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks",
+      "name": "callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 311.765151,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback writes require exact origin, CSRF and host before reading the mutation body",
+      "name": "callback writes require exact origin, CSRF and host before reading the mutation body",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 236.400714,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API cross-business identifiers cannot read, create or cancel another business task",
+      "name": "callback API cross-business identifiers cannot read, create or cancel another business task",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 403.586669,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::spreadsheet product denies every scheduling route before session lookup or body consumption",
+      "name": "spreadsheet product denies every scheduling route before session lookup or body consumption",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.604995,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback queue rejects duplicate, unsupported and malformed query filters",
+      "name": "callback queue rejects duplicate, unsupported and malformed query filters",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 256.084164,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback scheduling rejects malformed, oversized and non-JSON bodies without writing partial data",
+      "name": "callback scheduling rejects malformed, oversized and non-JSON bodies without writing partial data",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 217.768705,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::largest valid escaped Unicode task notes fit the explicit request boundary",
+      "name": "largest valid escaped Unicode task notes fit the explicit request boundary",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 212.9222,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::sign-out during delayed callback create body prevents the pending write",
+      "name": "sign-out during delayed callback create body prevents the pending write",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 217.093982,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::sign-out during delayed callback complete body prevents the pending write",
+      "name": "sign-out during delayed callback complete body prevents the pending write",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 239.482514,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::STOP received while a callback body is arriving blocks contact with fresh parent revision",
+      "name": "STOP received while a callback body is arriving blocks contact with fresh parent revision",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 281.714298,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::version2 record export includes saved scheduling and safe audit identifiers without internal operation data",
+      "name": "version2 record export includes saved scheduling and safe audit identifiers without internal operation data",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 434.89024,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback scheduling persists UTC instant, zone, notes and a parent revision without changing intake preferences",
+      "name": "callback scheduling persists UTC instant, zone, notes and a parent revision without changing intake preferences",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 302.67913,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback schedule audit identifies actor, action and task without copying notes or contact data",
+      "name": "callback schedule audit identifies actor, action and task without copying notes or contact data",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.878509,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::lost create response replays once and reports current restrictions after a later STOP",
+      "name": "lost create response replays once and reports current restrictions after a later STOP",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.171689,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::reschedule is versioned, idempotent and preserves callback kind",
+      "name": "reschedule is versioned, idempotent and preserves callback kind",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.147993,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::reported callback outcome reached closes only its task and supports a separate follow-up",
+      "name": "reported callback outcome reached closes only its task and supports a separate follow-up",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.24528,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::reported callback outcome no_answer closes only its task and supports a separate follow-up",
+      "name": "reported callback outcome no_answer closes only its task and supports a separate follow-up",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.209718,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::reported callback outcome voicemail closes only its task and supports a separate follow-up",
+      "name": "reported callback outcome voicemail closes only its task and supports a separate follow-up",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.522007,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::reported callback outcome other closes only its task and supports a separate follow-up",
+      "name": "reported callback outcome other closes only its task and supports a separate follow-up",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.911828,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::cancel can resolve a blocked pending task and cannot be reopened through reschedule",
+      "name": "cancel can resolve a blocked pending task and cannot be reopened through reschedule",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.81305,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::create and task mutation retry identifiers share one business-scoped operation namespace",
+      "name": "create and task mutation retry identifiers share one business-scoped operation namespace",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.705395,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::parent and task revision conflicts preserve task, operation and audit records",
+      "name": "parent and task revision conflicts preserve task, operation and audit records",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.476207,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::separate store connections serialize callback plans against the reviewed parent version",
+      "name": "separate store connections serialize callback plans against the reviewed parent version",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.613878,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::operation persistence failure rolls back task, parent revision and audit in one transaction",
+      "name": "operation persistence failure rolls back task, parent revision and audit in one transaction",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.79481,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback mutations reject an exhausted parent revision while preserving a valid recovery snapshot",
+      "name": "callback mutations reject an exhausted parent revision while preserving a valid recovery snapshot",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 10.631336,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::last supported parent increment stays recoverable and a further task mutation fails without writes",
+      "name": "last supported parent increment stays recoverable and a further task mutation fails without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.919379,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::task revision exhaustion rejects changes before arithmetic can overflow or alter parent state",
+      "name": "task revision exhaustion rejects changes before arithmetic can overflow or alter parent state",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.943696,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::tenant and forged-actor boundaries protect queue, creation and mutations",
+      "name": "tenant and forged-actor boundaries protect queue, creation and mutations",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.472966,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::SQLite rejects task-to-request tenant and operation-to-task relationship corruption with foreign keys enabled",
+      "name": "SQLite rejects task-to-request tenant and operation-to-task relationship corruption with foreign keys enabled",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.821863,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::STOP suppression blocks scheduling, reschedule and completion while keeping cancellation available",
+      "name": "STOP suppression blocks scheduling, reschedule and completion while keeping cancellation available",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.171237,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::safety hold blocks scheduling, reschedule and completion while keeping cancellation available",
+      "name": "safety hold blocks scheduling, reschedule and completion while keeping cancellation available",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.223665,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::missing permission blocks scheduling, reschedule and completion while keeping cancellation available",
+      "name": "missing permission blocks scheduling, reschedule and completion while keeping cancellation available",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.430639,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::closed request blocks scheduling, reschedule and completion while keeping cancellation available",
+      "name": "closed request blocks scheduling, reschedule and completion while keeping cancellation available",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.031938,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::request under review blocks scheduling, reschedule and completion while keeping cancellation available",
+      "name": "request under review blocks scheduling, reschedule and completion while keeping cancellation available",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.296027,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::due queue uses UTC instants across a DST fold and excludes future or terminal tasks",
+      "name": "due queue uses UTC instants across a DST fold and excludes future or terminal tasks",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.365924,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::queue paging is ordered, scoped and complete without mutating tasks",
+      "name": "queue paging is ordered, scoped and complete without mutating tasks",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.89472,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects local time without offset without writes",
+      "name": "callback creation rejects local time without offset without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.459176,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects offset string instead of UTC without writes",
+      "name": "callback creation rejects offset string instead of UTC without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.205635,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects missing milliseconds without writes",
+      "name": "callback creation rejects missing milliseconds without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.315451,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects nonexistent calendar date without writes",
+      "name": "callback creation rejects nonexistent calendar date without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.54035,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects leap second without writes",
+      "name": "callback creation rejects leap second without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.700731,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects out of range year without writes",
+      "name": "callback creation rejects out of range year without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.858688,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects unknown zone without writes",
+      "name": "callback creation rejects unknown zone without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.017971,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects numeric offset zone without writes",
+      "name": "callback creation rejects numeric offset zone without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.595072,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects zone control character without writes",
+      "name": "callback creation rejects zone control character without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.386067,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects unknown kind without writes",
+      "name": "callback creation rejects unknown kind without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.047725,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects notes too long without writes",
+      "name": "callback creation rejects notes too long without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.207458,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects notes control without writes",
+      "name": "callback creation rejects notes control without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.16952,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects numeric notes without writes",
+      "name": "callback creation rejects numeric notes without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.140156,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects unpaired high surrogate without writes",
+      "name": "callback creation rejects unpaired high surrogate without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.582914,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects unpaired low surrogate without writes",
+      "name": "callback creation rejects unpaired low surrogate without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.258436,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects missing lead version without writes",
+      "name": "callback creation rejects missing lead version without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.040316,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects fractional lead version without writes",
+      "name": "callback creation rejects fractional lead version without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.323573,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects overflow lead version without writes",
+      "name": "callback creation rejects overflow lead version without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.951372,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback creation rejects unknown field without writes",
+      "name": "callback creation rejects unknown field without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.094787,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback mutations reject extra fields, invalid outcomes and absent retry identifiers without writes",
+      "name": "callback mutations reject extra fields, invalid outcomes and absent retry identifiers without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.248407,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::paired astral Unicode task notes survive SQLite, reopen and backup validation exactly",
+      "name": "paired astral Unicode task notes survive SQLite, reopen and backup validation exactly",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.964867,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback queue rejects invalid query fields, page bounds and invalid clocks without writes",
+      "name": "callback queue rejects invalid query fields, page bounds and invalid clocks without writes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.753318,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backwards clock rejects callback edits atomically and leaves the connection usable",
+      "name": "backwards clock rejects callback edits atomically and leaves the connection usable",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.242898,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::closing a request with a pending task keeps it out of retention until cancellation",
+      "name": "closing a request with a pending task keeps it out of retention until cancellation",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.379043,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::deleting a request removes tasks and operation contents and blocks stale create retries",
+      "name": "deleting a request removes tasks and operation contents and blocks stale create retries",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.614658,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::transcript deletion retains task plans and forces a fresh parent version for task changes",
+      "name": "transcript deletion retains task plans and forces a fresh parent version for task changes",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.990297,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::callback task and operation quotas reject further writes without losing existing work",
+      "name": "callback task and operation quotas reject further writes without losing existing work",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 425.387733,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::schema3 migration adds scheduling while preserving all original records and schema3 read-only recovery",
+      "name": "schema3 migration adds scheduling while preserving all original records and schema3 read-only recovery",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.782638,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::schema4 encrypted recovery preserves callback state and replay metadata while disabling restored authentication",
+      "name": "schema4 encrypted recovery preserves callback state and replay metadata while disabling restored authentication",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 501.856719,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects task tenant mismatch",
+      "name": "backup validation rejects task tenant mismatch",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.704955,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects unknown task kind",
+      "name": "backup validation rejects unknown task kind",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.983856,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects unknown task status",
+      "name": "backup validation rejects unknown task status",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.90064,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects invalid zone",
+      "name": "backup validation rejects invalid zone",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.418613,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects negative due time",
+      "name": "backup validation rejects negative due time",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.869652,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects completion without outcome",
+      "name": "backup validation rejects completion without outcome",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.263768,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects scheduled task with outcome",
+      "name": "backup validation rejects scheduled task with outcome",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.647619,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects incorrect terminal timestamp",
+      "name": "backup validation rejects incorrect terminal timestamp",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.233904,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects version without operation history",
+      "name": "backup validation rejects version without operation history",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.808569,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects missing operation history",
+      "name": "backup validation rejects missing operation history",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.073781,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects operation after task update",
+      "name": "backup validation rejects operation after task update",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.357491,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects missing task audit",
+      "name": "backup validation rejects missing task audit",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.793158,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects task audit for another record",
+      "name": "backup validation rejects task audit for another record",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.84737,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects task audit after update",
+      "name": "backup validation rejects task audit after update",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.988873,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects malformed retry digest",
+      "name": "backup validation rejects malformed retry digest",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.885968,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks.test.cjs::backup validation rejects operation wrong parent",
+      "name": "backup validation rejects operation wrong parent",
+      "file": "tests/callback-tasks.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.220605,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    }
+  ],
+  "scope": "Stable local Node/SQLite/API/HTTP regression of the uncommitted candidate. Not clean committed-source platform acceptance. Selected browser, Mac/ARM, native OCR quality and operating gates require their separate evidence.",
+  "realProviderCalls": 0,
+  "publicDeployment": false,
+  "releaseApproved": false
+}

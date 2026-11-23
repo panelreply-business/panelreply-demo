@@ -93,6 +93,7 @@ function client(script, options = {}) {
     else if (requestPath === '/api/panel-projects') data = { projects: state.actor === 'A' ? [{ ...savedProject, rowCount: 0, unreviewedCount: 0 }] : [] };
     else if (requestPath === `/api/panel-projects/${PROJECT_ID}` && state.actor === 'A') data = { project: savedProject };
     else if (requestPath === '/api/leads') data = { leads: state.actor === 'A' ? [savedLead] : [] };
+    else if (requestPath.startsWith('/api/callback-tasks?')) data = { tasks: [], total: 0, limit: 100, offset: 0, generatedAt: TIME };
     else if (requestPath === `/api/leads/${LEAD_ID}` && state.actor === 'A') data = { lead: savedLead };
     else { status = 404; data = { error: { code: 'not_found', message: 'The record is not in this workspace.' } }; }
     return { status, ok: status >= 200 && status < 300, json: async () => structuredClone(data), headers: new Map() };
@@ -102,6 +103,7 @@ function client(script, options = {}) {
   if (options.failSession) state.failSession = true;
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(path.join(__dirname, '../workspace/deletion.js'), 'utf8'), context, { filename: 'deletion.js' });
+  if (script === 'app.js') vm.runInContext(fs.readFileSync(path.join(__dirname, '../workspace/schedule.js'), 'utf8'), context, { filename: 'schedule.js' });
   vm.runInContext(source, context, { filename: script });
   return { element, state, calls, redirects, window, document };
 }

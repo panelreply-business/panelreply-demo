@@ -36,8 +36,10 @@ SUITES = {
     "mobile": ["release_mobile_browser_test"],
     "callback": ["product_browser_test"],
     "spreadsheet": ["product_browser_test"],
+    "spreadsheet-manual": ["product_browser_test", "macos_product_browser_test"],
 }
-SELECTED_PRODUCT_CLASSES = {"callback": "CallbackProductBrowserTests", "spreadsheet": "SpreadsheetProductBrowserTests"}
+SELECTED_PRODUCT_CLASSES = {"callback": "CallbackProductBrowserTests", "spreadsheet": "SpreadsheetProductBrowserTests",
+                            "spreadsheet-manual": "SpreadsheetProductBrowserTests"}
 CLASSES = {
     "browser_test": "DemoBrowserTests", "intake_browser_test": "IntakeBrowserTests",
     "ui_browser_test": "WorkspaceBrowserTests", "design_browser_test": "DesignBrowserTests",
@@ -46,6 +48,7 @@ CLASSES = {
     "panel_browser_test": "PanelWorkspaceBrowserTests", "platform_visual_browser_test": "PlatformVisualTests",
     "assistant_browser_test": "AssistantBrowserTests", "lifecycle_browser_test": "LifecycleBrowserTests",
     "xlsx_browser_test": "XlsxBrowserTests", "release_mobile_browser_test": "MobileWorkspaceTests",
+    "macos_product_browser_test": "MacSpreadsheetProductBrowserTests",
 }
 
 
@@ -208,6 +211,11 @@ def main():
         # Match each existing script's selected methods. Imported base classes
         # and inherited test methods must not inflate suite coverage.
         methods = sorted(method for method in cls.__dict__ if method.startswith("test_"))
+        if args.suite == "spreadsheet-manual" and name == "product_browser_test":
+            # Native OCR uses Linux-specific process limits. Preserve each
+            # existing non-OCR case ID on macOS and record the real unavailable
+            # path separately, without pretending it is an extraction pass.
+            methods.remove("test_spreadsheet_actual_ocr_still_requires_manual_review")
         suite.addTests(cls(method) for method in methods)
     expected = list(flatten(suite))
     identifiers = [test.id() for test in expected]
@@ -247,7 +255,8 @@ def main():
         item.get("classification") == "BROWSER_RUNTIME_UNAVAILABLE" for item in result.infrastructure_errors)
     report = {
         "format": "panelreply-platform-evidence-v1", "suite": args.suite, **source,
-        "deploymentMode": args.suite if args.suite in SELECTED_PRODUCT_CLASSES else
+        "deploymentMode": "spreadsheet" if args.suite == "spreadsheet-manual" else
+                          args.suite if args.suite in SELECTED_PRODUCT_CLASSES else
                           "combined" if args.suite in {"baseline", "private", "mobile"} else "static-demo",
         "status": "PASS" if passed else "BLOCKED" if blocked else "FAIL", "expectedMethods": len(expected),
         "expectedProfiles": profiles,
@@ -267,6 +276,8 @@ def main():
         "blocked": ["Browser runtime unavailable; no browser cases executed."] if blocked else [],
         "scope": "Private Linux server with emulated device contexts; no physical device evidence."
                  if args.suite == "mobile" else
+                 "Fixed spreadsheet product on macOS: manual entry/correction, private source storage, CSV/XLSX, restart and bound recovery. Native OCR is unavailable and asserted fail-closed; no extraction support claim."
+                 if args.suite == "spreadsheet-manual" else
                  f"Selected {args.suite} program on its fixed entrypoint and product-bound synthetic data; desktop engine only."
                  if args.suite in SELECTED_PRODUCT_CLASSES else
                  "Private Linux workflow integration; desktop engine only, no physical device evidence."

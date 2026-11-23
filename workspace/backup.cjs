@@ -10,6 +10,7 @@ const { validateLeadInput, validateProfileInput, normalizePhone, username, STATU
 const panels = require('./panels.cjs');
 const { INPUT_BYTES, OUTPUT_TOKENS, LEASE_MS, MAX_ROWS } = require('./usage.cjs');
 const { validateLifecycleDatabase } = require('./lifecycle.cjs');
+const { validateCallbackDatabase } = require('./callback-tasks.cjs');
 const { MARKER, separatedProduct, productBinding, readProductBinding } = require('./products.cjs');
 
 const scrypt = promisify(crypto.scrypt);
@@ -142,6 +143,7 @@ function validateDatabase(db) {
       const details = readJson(row.details_json);
       if (!details || typeof details !== 'object' || Array.isArray(details)) fail('invalid_database', 'The workspace contains an invalid audit record.');
     }
+    if (schemaVersion >= 4) validateCallbackDatabase(db, fail);
     if (schemaVersion >= 3) {
       validateLifecycleDatabase(db, fail);
       if (db.prepare('SELECT 1 FROM assistant_usage a JOIN users u ON u.id=a.actor_id WHERE a.business_id<>u.business_id LIMIT 1').get()) fail('invalid_database', 'The database business-isolation check failed.');
@@ -180,7 +182,7 @@ function validateDatabase(db) {
     fail('invalid_database', 'The workspace contains a record that failed validation.');
   }
   const count = table => Number(db.prepare('SELECT count(*) AS n FROM ' + table).get().n);
-  return { businesses: count('businesses'), users: count('users'), leads: count('leads'), messages: count('messages'), audit: count('audit'), optOuts: count('suppression'), ...(schemaVersion >= 2 ? { panelProjects: count('panel_projects'), panelSources: count('panel_sources') } : {}), ...(schemaVersion >= 3 ? { deletedRecords: count('record_deletions'), deletionOperations: count('deletion_operations'), safetyHolds: count('safety_holds'), assistantUsage: count('assistant_usage') } : {}) };
+  return { businesses: count('businesses'), users: count('users'), leads: count('leads'), messages: count('messages'), audit: count('audit'), optOuts: count('suppression'), ...(schemaVersion >= 2 ? { panelProjects: count('panel_projects'), panelSources: count('panel_sources') } : {}), ...(schemaVersion >= 3 ? { deletedRecords: count('record_deletions'), deletionOperations: count('deletion_operations'), safetyHolds: count('safety_holds'), assistantUsage: count('assistant_usage') } : {}), ...(schemaVersion >= 4 ? { callbackTasks: count('callback_tasks'), callbackOperations: count('callback_operations') } : {}) };
 }
 
 function makeHeader(payloadBytes, schemaVersion, product) {
@@ -204,7 +206,7 @@ function parseHeader(archive) {
   const header = archive.subarray(0, HEADER_BYTES);
   const version = header.readUInt16BE(8), productCode = header.readUInt16BE(14);
   const product = version === 2 ? Object.keys(PRODUCT_CODES).find(key => PRODUCT_CODES[key] === productCode) : null;
-  if (![1, 2].includes(version) || ![1, 2, 3].includes(header.readUInt16BE(10)) || header[12] !== 1 || header[13] !== 1
+  if (![1, 2].includes(version) || ![1, 2, 3, 4].includes(header.readUInt16BE(10)) || header[12] !== 1 || header[13] !== 1
     || (version === 1 ? productCode !== 0 : !product) || header.readUInt32BE(60) !== 0) fail('unsupported_format', 'This archive version or encryption format is not supported.');
   const size = header.readBigUInt64BE(24);
   const timestamp = header.readBigUInt64BE(16);

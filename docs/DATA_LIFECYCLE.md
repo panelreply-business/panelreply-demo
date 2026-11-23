@@ -6,8 +6,8 @@ This change adds explicit deletion to the existing authenticated SQLite workspac
 
 | Operation | Removed from active storage | Preserved |
 | --- | --- | --- |
-| Delete a customer request | Request fields, internal notes, transcript rows and that request's earlier audit rows | Business/account records, other requests, independent opt-outs, safety restrictions and a content-free deletion receipt/audit event |
-| Delete a conversation | That request's saved transcript | Request fields, notes, status, opt-out and safety state. The request version increments |
+| Delete a customer request | Request fields, internal notes, transcript rows, callback tasks and task operation metadata, and that request's earlier audit rows | Business/account records, other requests, independent opt-outs, safety restrictions and a content-free deletion receipt/audit event |
+| Delete a conversation | That request's saved transcript | Request fields, notes, callback tasks, status, opt-out and safety state. The request version increments |
 | Delete a panel project | Project name/notes, corrected parts rows and all source-image BLOBs attached to that project | Other projects and businesses, a retry tombstone and a content-free receipt/audit event |
 | Delete one source image | The selected private image BLOB | Corrected parts values and other images. Rows using the removed source have their source link cleared and become `unreviewed`. The project version increments |
 

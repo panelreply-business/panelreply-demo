@@ -367,16 +367,40 @@ jobs:
           retention-days: 30
 
   separated-product-browsers:
-    name: Selected ${{ matrix.product }} program (${{ matrix.browser }})
-    runs-on: ubuntu-24.04
+    name: Selected ${{ matrix.product }} program (${{ matrix.os }}, ${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-24.04]
         product: [callback, spreadsheet]
         browser: [chromium, firefox, webkit]
+        include:
+          - os: macos-15-intel
+            product: callback
+            browser: chromium
+          - os: macos-15-intel
+            product: callback
+            browser: firefox
+          - os: macos-15-intel
+            product: callback
+            browser: webkit
+          - os: macos-15-intel
+            product: spreadsheet-manual
+            browser: chromium
+          - os: macos-15-intel
+            product: spreadsheet-manual
+            browser: firefox
+          - os: macos-15-intel
+            product: spreadsheet-manual
+            browser: webkit
     env:
       PANELREPLY_BROWSER: ${{ matrix.browser }}
+      # /var is a symlink on macOS. Use the runner-owned physical workspace
+      # temporary directory; keep the app's no-symlink storage rule intact.
+      TMPDIR: ${{ runner.temp }}
+      PANELREPLY_CAPTURE_DIR: ${{ runner.temp }}/panelreply-selected-product-previews
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -388,24 +412,90 @@ jobs:
       - name: Install selected-product test dependencies
         run: |
           python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Linux native OCR prerequisites
+        if: runner.os == 'Linux'
+        run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil
-          python -m playwright install --with-deps ${{ matrix.browser }}
       - name: Verify this fixed product entrypoint and its own browser workflows
         run: python tests/release_platform_runner.py --suite "${{ matrix.product }}" --output "${{ runner.temp }}/panelreply-selected-product.json"
       - name: Preserve selected-product browser evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-selected-${{ matrix.product }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          name: release-selected-${{ matrix.os }}-${{ matrix.product }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-selected-product.json
           if-no-files-found: error
+          retention-days: 30
+
+      - name: Preserve selected-product screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-selected-${{ matrix.os }}-${{ matrix.product }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-selected-product-previews/*.jpg
+          if-no-files-found: ignore
+          retention-days: 30
+
+  apple-silicon-release:
+    name: Apple Silicon contracts and selected products
+    # Standard public-repository arm64 runner, never a paid -large/-xlarge label.
+    runs-on: macos-26
+    timeout-minutes: 35
+    env:
+      TMPDIR: ${{ runner.temp }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Require actual Apple Silicon provenance
+        run: |
+          node -e "if (process.platform !== 'darwin' || process.arch !== 'arm64') throw new Error('Expected actual macOS arm64'); console.log(process.platform, process.arch, process.version)"
+          sw_vers
+      - name: Exercise portable Node contracts on arm64
+        run: node scripts/run-release-node.cjs --portable --output "${{ runner.temp }}/panelreply-arm-evidence/node.json"
+      - name: Install the three browser engines
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps chromium firefox webkit
+      - name: Exercise actual arm64 clients and fixed product entrypoints
+        # Continue independent suites to preserve failures and coverage. No retry
+        # or fallback engine may turn an unavailable platform into a pass.
+        shell: bash
+        run: |
+          result=0
+          for browser in chromium firefox webkit; do
+            for suite in portable callback spreadsheet-manual; do
+              PANELREPLY_BROWSER="$browser" PANELREPLY_CAPTURE_DIR="${{ runner.temp }}/panelreply-arm-previews/$browser/$suite" python tests/release_platform_runner.py --suite "$suite" --output "${{ runner.temp }}/panelreply-arm-evidence/$browser-$suite.json" || result=1
+            done
+          done
+          exit "$result"
+      - name: Preserve Apple Silicon source and platform evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apple-silicon-macos-26-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-arm-evidence/*.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve Apple Silicon screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-apple-silicon-macos-26-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-arm-previews/**/*.jpg
+          if-no-files-found: ignore
           retention-days: 30
 
   release-evidence:
     name: Account for distinct product and platform tests
     if: always()
-    needs: [demo-tests, browser-compatibility, portable-release-node, portable-release-browsers, branded-release-browsers, emulated-release-mobile, separated-product-browsers]
+    needs: [demo-tests, browser-compatibility, portable-release-node, portable-release-browsers, branded-release-browsers, emulated-release-mobile, separated-product-browsers, apple-silicon-release]
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:

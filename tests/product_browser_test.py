@@ -7,8 +7,10 @@ remain blocked. No live calls, messages, provider, deployment or customer data.
 """
 
 import json
+import re
 import subprocess
 import unittest
+import uuid
 from pathlib import Path
 
 from playwright.sync_api import expect
@@ -162,6 +164,229 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         self.api("GET", "/api/session", status=401)
         self.assertEqual(self.page.evaluate("localStorage.length + sessionStorage.length"), 0)
 
+    def open_callback_request(self, saved):
+        self.page.goto(self.origin + "/?lead=" + saved["id"])
+        expect(self.page.locator("#lead-name")).to_have_value(saved["customerName"])
+        expect(self.page.locator("#lead-task-status")).to_have_text(re.compile(r"^\d+ of \d+ saved tasks?\.$"))
+
+    def fill_callback_time(self, local="2026-12-01T09:30", zone="America/Detroit"):
+        self.page.get_by_label("Time zone", exact=True).fill(zone)
+        self.page.get_by_label("Callback date and time", exact=True).fill(local)
+
+    def submit_callback_task(self, expected_status=201):
+        if expected_status >= 400:
+            self.allow_http_error(expected_status)
+        with self.page.expect_response(lambda response: response.request.method in ("POST", "PATCH")
+                                       and ("/tasks" in response.url or "/api/callback-tasks/" in response.url)) as pending:
+            self.page.locator("#save-callback-task").click()
+        self.assertEqual(pending.value.status, expected_status, pending.value.text())
+        result = pending.value.json()
+        if expected_status < 400:
+            expect(self.page.locator("#task-save-status")).not_to_be_empty()
+            expect(self.page.locator("#lead-task-status")).to_have_text(re.compile(r"^\d+ of \d+ saved tasks?\.$"))
+        return result
+
+    def seed_callback_task(self, saved, due="2020-01-01T15:00:00.000Z", kind="callback"):
+        return self.api("POST", "/api/leads/" + saved["id"] + "/tasks", {
+            "leadVersion": saved["version"], "kind": kind, "dueAt": due,
+            "timeZone": "America/Detroit", "notes": "Synthetic scheduled task"
+        }, status=201, headers={"Idempotency-Key": uuid.uuid4().hex})
+
+    def test_callback_schedule_reschedule_outcome_and_follow_up_persist(self):
+        self.login()
+        saved = self.create_request(customerName="Synthetic Scheduled Callback")
+        self.open_callback_request(saved)
+        self.fill_callback_time()
+        self.page.get_by_label("Task notes", exact=True).fill("First callback plan")
+        first = self.submit_callback_task()
+        self.assertEqual(first["task"]["dueAt"], "2026-12-01T14:30:00.000Z")
+        self.assertEqual(first["task"]["timeZone"], "America/Detroit")
+        self.assertEqual(first["lead"]["version"], saved["version"] + 1)
+        self.page.reload()
+        card = self.page.locator("#lead-task-list > li").first
+        expect(card).to_contain_text("First callback plan")
+        card.get_by_role("button", name="Reschedule", exact=True).click()
+        self.fill_callback_time("2026-12-02T10:15")
+        updated = self.submit_callback_task(200)
+        self.assertEqual(updated["task"]["dueAt"], "2026-12-02T15:15:00.000Z")
+        self.assertEqual(updated["task"]["version"], 2)
+        card.get_by_role("button", name="Record outcome", exact=True).click()
+        self.page.get_by_label("Call outcome", exact=True).select_option("no_answer")
+        self.page.get_by_label("Task notes", exact=True).fill("No answer during the operator's test call")
+        complete = self.submit_callback_task(200)
+        self.assertEqual(complete["task"]["status"], "completed")
+        self.assertEqual(complete["task"]["outcome"], "no_answer")
+        self.page.get_by_label("Task type", exact=True).select_option("follow_up")
+        self.fill_callback_time("2026-12-03T11:00")
+        follow = self.submit_callback_task()
+        self.assertEqual(follow["task"]["kind"], "follow_up")
+        self.assertNotEqual(follow["task"]["id"], first["task"]["id"])
+        type(self).stop_server()
+        type(self).start_server()
+        self.page.reload()
+        expect(self.page.locator("#lead-task-list > li")).to_have_count(2)
+        tasks = self.api("GET", "/api/callback-tasks?state=all&leadId=" + saved["id"])["tasks"]
+        self.assertEqual({task["status"] for task in tasks}, {"scheduled", "completed"})
+        self.assert_product_navigation()
+        self.capture("callback-scheduled-tasks.jpg")
+
+    def test_callback_queue_filters_overdue_completed_and_open_requests(self):
+        self.login()
+        saved = self.create_request(customerName="Synthetic Queue Customer")
+        first = self.seed_callback_task(saved)
+        second = self.seed_callback_task(first["lead"], "2099-01-01T15:00:00.000Z", "follow_up")
+        self.page.locator("#nav-schedule").click()
+        expect(self.page).to_have_title("Callback queue · PanelReply Callback")
+        expect(self.page.locator("#callback-queue-list > li")).to_have_count(2)
+        self.page.get_by_label("Show tasks", exact=True).select_option("due")
+        expect(self.page.locator("#callback-queue-list > li")).to_have_count(1)
+        expect(self.page.locator("#callback-queue-list")).to_contain_text("Overdue")
+        self.page.locator("#callback-queue-list").get_by_role("button", name="Open request", exact=False).click()
+        expect(self.page.locator("#lead-name")).to_have_value(saved["customerName"])
+        self.assertEqual(self.api("GET", "/api/leads/" + saved["id"])["lead"]["version"], second["lead"]["version"])
+        self.page.locator("#nav-schedule").click()
+        self.page.get_by_label("Show tasks", exact=True).select_option("completed")
+        expect(self.page.locator("#callback-queue-list")).to_contain_text("No tasks match")
+        self.assert_product_navigation()
+        self.capture("callback-queue.jpg")
+
+    def test_callback_task_clock_changes_require_an_exact_occurrence(self):
+        self.login()
+        saved = self.create_request()
+        self.open_callback_request(saved)
+        self.fill_callback_time("2026-03-08T02:30")
+        expect(self.page.locator("#task-time-preview")).to_contain_text("does not exist")
+        self.page.locator("#save-callback-task").click()
+        self.assertEqual(self.api("GET", "/api/callback-tasks?state=all")["tasks"], [])
+        self.fill_callback_time("2026-11-01T01:30")
+        expect(self.page.get_by_label("Which occurrence?", exact=True)).to_be_visible()
+        self.page.locator("#save-callback-task").click()
+        self.assertEqual(self.api("GET", "/api/callback-tasks?state=all")["tasks"], [])
+        self.page.get_by_label("Which occurrence?", exact=True).select_option("2026-11-01T06:30:00.000Z")
+        expect(self.page.locator("#task-time-preview")).to_contain_text("2026-11-01T06:30:00.000Z")
+        result = self.submit_callback_task()
+        self.assertEqual(result["task"]["dueAt"], "2026-11-01T06:30:00.000Z")
+
+    def test_callback_task_uncertain_save_retries_once_without_duplicate_task(self):
+        self.login()
+        saved = self.create_request()
+        self.open_callback_request(saved)
+        self.fill_callback_time()
+        requests = []
+        self.allow_http_error(503)
+        def lose_first_reply(route):
+            if route.request.method != "POST":
+                route.continue_()
+                return
+            requests.append((route.request.headers.get("idempotency-key"), route.request.post_data_json))
+            if len(requests) == 1:
+                self.assertEqual(route.fetch().status, 201)
+                route.fulfill(status=503, content_type="application/json", body=json.dumps({"error": {
+                    "code": "synthetic_response_loss", "message": "Synthetic reply interrupted after the save."
+                }}))
+            else:
+                route.continue_()
+        self.page.route(self.origin + "/api/leads/" + saved["id"] + "/tasks", lose_first_reply)
+        self.submit_callback_task(503)
+        expect(self.page.locator("#task-uncertain")).to_be_visible()
+        expect(self.page.get_by_label("Task notes", exact=True)).to_be_disabled()
+        self.page.locator("#nav-profile").click()
+        expect(self.page.locator("#inbox-view")).to_be_visible()
+        expect(self.page.locator("#app-error")).to_contain_text("pending task save")
+        self.page.locator("#retry-task-save").click()
+        expect(self.page.locator("#task-uncertain")).not_to_be_visible()
+        expect(self.page.locator("#task-save-status")).to_contain_text("Task scheduled")
+        self.assertEqual(len(requests), 2)
+        self.assertEqual(requests[0], requests[1])
+        self.assertEqual(len(self.api("GET", "/api/callback-tasks?state=all")["tasks"]), 1)
+
+    def test_callback_task_concurrent_edit_keeps_draft_and_requires_reload(self):
+        self.login()
+        saved = self.create_request()
+        self.open_callback_request(saved)
+        self.fill_callback_time()
+        self.page.get_by_label("Task notes", exact=True).fill("Retain this draft after the conflict")
+        self.seed_callback_task(saved)
+        self.submit_callback_task(409)
+        expect(self.page.locator("#task-conflict")).to_be_visible()
+        expect(self.page.get_by_label("Task notes", exact=True)).to_have_value("Retain this draft after the conflict")
+        expect(self.page.locator("#save-callback-task")).to_be_disabled()
+        self.page.locator("#reload-task-request").click()
+        expect(self.page.locator("#navigation-guard")).to_be_visible()
+        self.page.locator("#discard-changes").click()
+        expect(self.page.locator("#task-conflict")).not_to_be_visible()
+        expect(self.page.locator("#lead-task-list > li")).to_have_count(1)
+        expect(self.page.locator("#lead-version")).to_have_text("Revision 2")
+
+    def test_callback_closed_and_opted_out_tasks_can_be_cancelled_but_not_contacted(self):
+        self.login()
+        saved = self.create_request()
+        self.seed_callback_task(saved)
+        self.open_callback_request(saved)
+        self.page.get_by_label("Contact permission", exact=True).select_option("opted_out")
+        self.page.get_by_label("Request status", exact=True).select_option("closed")
+        self.save_lead()
+        card = self.page.locator("#lead-task-list > li").first
+        expect(card).to_contain_text("Blocked")
+        expect(card.get_by_role("button", name="Record outcome", exact=True)).to_be_disabled()
+        expect(card.get_by_role("button", name="Reschedule", exact=True)).to_be_disabled()
+        card.get_by_role("button", name="Cancel task", exact=True).click()
+        self.page.get_by_label("Task notes", exact=True).fill("Cancelled after opt-out")
+        cancelled = self.submit_callback_task(200)
+        self.assertEqual(cancelled["task"]["status"], "cancelled")
+        self.assertTrue(cancelled["lead"]["optedOut"])
+        expect(self.page.locator("#save-callback-task")).to_be_disabled()
+        self.page.locator("#nav-schedule").click()
+        self.page.get_by_label("Show tasks", exact=True).select_option("cancelled")
+        expect(self.page.locator("#callback-queue-list")).to_contain_text("Cancelled after opt-out")
+
+    def test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels(self):
+        self.login()
+        saved = self.create_request()
+        self.open_callback_request(saved)
+        self.fill_callback_time()
+        zone = self.page.get_by_label("Time zone", exact=True)
+        zone.focus()
+        self.page.keyboard.press("Tab")
+        expect(self.page.get_by_label("Task notes", exact=True)).to_be_focused()
+        self.page.keyboard.type("Keyboard schedule draft")
+        self.page.locator("#nav-schedule").click()
+        expect(self.page.locator("#navigation-guard")).to_be_visible()
+        self.page.locator("#keep-editing").click()
+        expect(self.page.get_by_label("Task notes", exact=True)).to_have_value("Keyboard schedule draft")
+        for width in [320, 768, 1440]:
+            with self.subTest(width=width):
+                self.page.set_viewport_size({"width": width, "height": 1000})
+                self.assert_no_overflow()
+        self.page.set_viewport_size({"width": 320, "height": 1000})
+        self.page.add_style_tag(content="html { font-size: 200% !important; }")
+        self.assert_no_overflow()
+        self.page.locator("#nav-schedule").click()
+        self.page.locator("#discard-changes").click()
+        expect(self.page.locator("#schedule-view")).to_be_visible()
+        self.assertEqual(self.api("GET", "/api/callback-tasks?state=all")["tasks"], [])
+
+    def test_callback_export_and_request_deletion_include_task_records(self):
+        self.login()
+        saved = self.create_request()
+        task = self.seed_callback_task(saved)
+        self.open_callback_request(saved)
+        with self.page.expect_download() as pending:
+            self.page.locator("#export-records").click()
+        download = pending.value
+        self.assertIsNone(download.failure())
+        content = json.loads(Path(download.path()).read_text())
+        self.assertEqual(content["version"], 2)
+        self.assertEqual(content["callbackTasks"][0]["id"], task["task"]["id"])
+        self.page.locator("#delete-lead").click()
+        dialog = self.page.get_by_role("dialog")
+        expect(dialog).to_contain_text("callback tasks")
+        dialog.get_by_label("Type DELETE to confirm").fill("DELETE")
+        dialog.get_by_role("button", name="Delete", exact=True).click()
+        expect(dialog).not_to_be_visible()
+        expect(self.page.locator("#lead-detail")).not_to_be_visible()
+        self.assertEqual(self.api("GET", "/api/callback-tasks?state=all")["tasks"], [])
+
 
 class SpreadsheetProductBrowserTests(SelectedProductHarness, PanelWorkspaceBrowserTests):
     product_id = "spreadsheet"
@@ -178,7 +403,7 @@ class SpreadsheetProductBrowserTests(SelectedProductHarness, PanelWorkspaceBrows
         self.assertTrue(product["capabilities"]["panelProjects"])
         self.assertFalse(product["capabilities"]["intake"])
         self.assert_routes_denied(["/preview", "/dashboard", "/assets/app.js", "/assets/preview.js",
-                                  "/assets/dashboard.js", "/api/leads", "/api/profile", "/api/assistant"])
+                                  "/assets/dashboard.js", "/assets/schedule.js", "/api/leads", "/api/profile", "/api/assistant", "/api/callback-tasks"])
 
     def test_spreadsheet_save_reopen_correct_and_download_both_formats(self):
         PanelWorkspaceBrowserTests.test_manual_parts_save_reopen_edit_and_export_preserve_corrections(self)
@@ -189,6 +414,7 @@ class SpreadsheetProductBrowserTests(SelectedProductHarness, PanelWorkspaceBrows
         self.assertTrue(download.suggested_filename.endswith(".xlsx"))
         self.assertTrue(Path(download.path()).read_bytes().startswith(b"PK\x03\x04"))
         self.assert_product_navigation()
+        self.capture("spreadsheet-selected-project.jpg")
 
     def test_spreadsheet_source_upload_and_reopen_preserve_private_image(self):
         PanelWorkspaceBrowserTests.test_source_upload_preview_and_reopen_keep_private_image_bytes_intact(self)

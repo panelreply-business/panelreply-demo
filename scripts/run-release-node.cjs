@@ -11,7 +11,7 @@ const PORTABLE = [
   'workspace-conversation.test.cjs', 'workspace-assistant.test.cjs', 'assistant-adversarial.test.cjs',
   'assistant-provider.test.cjs', 'assistant-evaluation.test.cjs', 'deletion-client-review.test.cjs',
   'platform-client-state.test.cjs', 'release-assistant-matrix.test.cjs',
-  'product-ui.test.cjs',
+  'product-ui.test.cjs', 'callback-schedule-client.test.cjs',
   'release-deletion-model.test.cjs', 'release-export-matrix.test.cjs',
   'release-name-grounding.test.cjs', 'release-evidence.test.cjs'
 ];

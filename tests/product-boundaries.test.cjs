@@ -80,10 +80,11 @@ const blockedRoutes = {
     ['DELETE', '/api/panel-projects/{project}/sources/{source}'], ['POST', '/api/panel-projects/{project}/sources/{source}/ocr']
   ],
   spreadsheet: [
-    ['GET', '/preview'], ['HEAD', '/preview'], ['GET', '/dashboard'], ['GET', '/assets/app.js'], ['GET', '/assets/preview.js'], ['GET', '/assets/dashboard.js'],
+    ['GET', '/preview'], ['HEAD', '/preview'], ['GET', '/dashboard'], ['GET', '/assets/app.js'], ['GET', '/assets/preview.js'], ['GET', '/assets/dashboard.js'], ['GET', '/assets/schedule.js'],
     ['GET', '/api/assistant'], ['GET', '/api/assistant/usage'], ['GET', '/api/profile'], ['PATCH', '/api/profile'],
     ['GET', '/api/leads'], ['POST', '/api/leads'], ['GET', '/api/leads/{lead}'], ['PATCH', '/api/leads/{lead}'],
-    ['DELETE', '/api/leads/{lead}'], ['DELETE', '/api/leads/{lead}/conversation'], ['GET', '/api/export'], ['POST', '/api/preview']
+    ['DELETE', '/api/leads/{lead}'], ['DELETE', '/api/leads/{lead}/conversation'], ['GET', '/api/export'], ['POST', '/api/preview'],
+    ['GET', '/api/callback-tasks'], ['POST', '/api/leads/{lead}/tasks'], ['PATCH', '/api/callback-tasks/11111111-1111-4111-8111-111111111111']
   ]
 };
 for (const product of ['callback', 'spreadsheet']) for (const [method, route] of blockedRoutes[product]) for (const signedIn of [false, true]) {

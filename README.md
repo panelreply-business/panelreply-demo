@@ -8,7 +8,13 @@ PanelReply is preparing two local programs for electrical contractors: callback 
 
 Run daily checks through December 20, 2026, then review each program for real-world testing. December 31 is the first release target. The owner has not chosen which program releases first or the second release date. Test totals do not replace each program's quality and operating gates.
 
-## Independent program checkpoint
+## November 23 development candidate
+
+The current candidate adds callback scheduling and follow-up, schema-4 recovery, JSON record export v2, small-text OCR normalization and expanded Mac/Apple Silicon verification. [Scheduling workflow](docs/CALLBACK_SCHEDULING.md) · [Persistent continuation record](docs/AUTONOMOUS_CONTINUATION.md) · [Platform expansion](docs/PLATFORM_EXPANSION.md).
+
+The unchanged local OCR corpus improved from 277/310 to 285/310 exact images, with eight gains, no regressions, zero native errors and zero automatic-review violations. Twenty-five images remain nonexact. [Measured local evidence](docs/OCR_SMALL_TEXT_2026_11_23.md). The changed source requires its own committed CI evidence. Local results do not close physical devices, actual Safari/Excel, native isolation, real-model or operating requirements.
+
+## Prior independent program checkpoint
 
 The separate callback and spreadsheet programs passed [run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151) on source `ca5f0cb`. All 30 automated platform requirements pass. The ledger records 24,372 product case/platform passes across 9,114 distinct cases, with no product failures or unresolved outcomes. It excludes harness checks and duplicate observations. [Final verification](docs/evidence/independent-products-verification.json) preserves source hashes, platform versions, per-product counts and artifact digests.
 
@@ -45,7 +51,8 @@ The branch adds:
 - Product, feature, pricing-preparation, login-information, pilot-preparation and legal-review views without external submission or invented claims.
 - Separate callback and spreadsheet navigation, with the historical shared dashboard retained only in the internal integration harness.
 - Authenticated panel projects with editable parts, quantities, source images, review status and saved CSV and XLSX exports.
-- Private source-image storage in the existing SQLite database, with transactional schema-1/2-to-3 startup migration and older-archive recovery compatibility.
+- Private source-image storage in the existing SQLite database, with transactional schema-1/2/3-to-4 startup migration and older-archive recovery compatibility.
+- A callback queue with task scheduling, rescheduling, recorded outcomes, cancellation and follow-up. Contact restrictions and request/task versions are checked before changes.
 - Optional local Tesseract 5 text extraction with bounded native resources. All candidates require review. Missing values stay blank. The expanded synthetic benchmark still has nonexact cases.
 - Provider-independent conversational assistance with strict field grounding, cancellation, error handling and synthetic integration tests. The concrete external transport remains disabled.
 - Independent spreadsheet readback, concurrent database workers and a bounded backup/restore workload. See the current pre-launch evidence for limits.
@@ -66,7 +73,7 @@ The standalone workspace adds:
 - Name, US callback number, electrical work, five-digit job ZIP, callback window and requested work date.
 - Persistent phone opt-outs and safety holds that reset, START and status changes cannot remove.
 - Duplicate prevention for save retries and version checks for conflicting edits.
-- A JSON download of the signed-in business's saved profile, requests, conversations and change records.
+- A version-2 JSON download of the signed-in business's saved profile, requests, callback tasks, conversations and change records.
 - Encrypted local backups and restore into a new directory, with no active sessions or usable passwords restored.
 - Operator password reset for an existing owner, with session revocation and protection against in-flight sign-in races.
 

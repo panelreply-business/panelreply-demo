@@ -1,7 +1,7 @@
 'use strict';
 
 // Review only. No timer, deletion, policy default or customer content export.
-function createRetentionReview({ db, now, getActor, StoreError }) {
+function createRetentionReview({ db, now, getActor, StoreError, callbackTasksEnabled = true }) {
   const fail = (status, code, message) => { throw new StoreError(status, code, message); };
   return function reviewRetention(actor, input) {
     getActor(actor);
@@ -13,7 +13,7 @@ function createRetentionReview({ db, now, getActor, StoreError }) {
     // the write transaction helper for a review or materialize personal fields.
     db.exec('BEGIN');
     try {
-      const leadWhere = "business_id=? AND status='closed' AND updated_at<? AND coalesce(json_extract(data_json,'$.safetyHold'),1)=0";
+      const leadWhere = "business_id=? AND status='closed' AND updated_at<? AND coalesce(json_extract(data_json,'$.safetyHold'),1)=0" + (callbackTasksEnabled ? " AND NOT EXISTS (SELECT 1 FROM callback_tasks t WHERE t.lead_id=leads.id AND t.business_id=leads.business_id AND t.status='scheduled')" : '');
       const projectWhere = 'business_id=? AND updated_at<?';
       const requests = db.prepare('SELECT id,version,updated_at AS updatedAt,(SELECT count(*) FROM messages m WHERE m.lead_id=leads.id AND m.business_id=leads.business_id) AS messageCount FROM leads WHERE ' + leadWhere + ' ORDER BY updated_at,id LIMIT ?').all(actor.businessId, input.before, input.limit).map(row => ({ ...row }));
       const projects = db.prepare('SELECT id,version,updated_at AS updatedAt,(SELECT count(*) FROM panel_sources s WHERE s.project_id=panel_projects.id AND s.business_id=panel_projects.business_id) AS sourceCount FROM panel_projects WHERE ' + projectWhere + ' ORDER BY updated_at,id LIMIT ?').all(actor.businessId, input.before, input.limit).map(row => ({ ...row }));

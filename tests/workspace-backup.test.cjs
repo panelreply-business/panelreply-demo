@@ -20,7 +20,7 @@ const PASSWORD = 'Synthetic-owner-password-2026!';
 const NEW_PASSWORD = 'Replacement-synthetic-password-2026!';
 const PASSPHRASE = 'Synthetic-backup-passphrase-2026!';
 const PASSWORD_HASH = hashPassword(PASSWORD);
-const TABLES = ['businesses', 'users', 'sessions', 'login_attempts', 'leads', 'messages', 'audit', 'suppression', 'panel_projects', 'panel_sources', 'record_deletions', 'deletion_operations', 'safety_holds', 'assistant_usage'];
+const TABLES = ['businesses', 'users', 'sessions', 'login_attempts', 'leads', 'messages', 'audit', 'suppression', 'panel_projects', 'panel_sources', 'record_deletions', 'deletion_operations', 'safety_holds', 'assistant_usage', 'callback_tasks', 'callback_operations'];
 
 function request(overrides = {}) {
   return { customerName: 'Jamie Backup Fixture', phone: '+15865550101', job: 'Install a garage EV charger', zip: '48315', callbackWindow: 'Monday after 4 pm', requestedWorkDate: 'Friday', contactPermission: 'requested_callback', conversation: [{ role: 'customer', text: 'Please call me Monday about an EV charger.' }], ...overrides };
@@ -167,7 +167,7 @@ test('encrypted backup roundtrip preserves tenant records, opt-outs, holds and i
   const created = await create(f);
   assert.equal(created.format, 'panelreply-encrypted-backup');
   assert.equal(created.sessionsIncluded, false);
-  assert.deepEqual(created.counts, { businesses: 2, users: 2, leads: 3, messages: 3, audit: 7, optOuts: 1, panelProjects: 0, panelSources: 0, deletedRecords: 0, deletionOperations: 0, safetyHolds: 1, assistantUsage: 0 });
+  assert.deepEqual(created.counts, { businesses: 2, users: 2, leads: 3, messages: 3, audit: 7, optOuts: 1, panelProjects: 0, panelSources: 0, deletedRecords: 0, deletionOperations: 0, safetyHolds: 1, assistantUsage: 0, callbackTasks: 0, callbackOperations: 0 });
   const result = await restore(f);
   assert.deepEqual(result.counts, created.counts);
   assert.equal(result.passwordResetRequired, true);

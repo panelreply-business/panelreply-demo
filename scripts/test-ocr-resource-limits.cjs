@@ -12,6 +12,46 @@ const IMAGE = fs.readFileSync(path.join(__dirname, '../tests/fixtures/panels/com
 const HEADER = 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext';
 const TSV = HEADER + '\n5\t1\t1\t1\t1\t1\t0\t0\t1\t1\t95\tPART NUMBER: LIMITS-OK\n';
 
+function syntheticBands(width, height, bandHeights, inverted = false) {
+  const code = [
+    'import sys', 'from PIL import Image,ImageDraw',
+    `im=Image.new('RGB',(${width},${height}),${inverted ? "'black'" : "'white'"})`,
+    'draw=ImageDraw.Draw(im)', 'y=8',
+    `for h in ${JSON.stringify(bandHeights)}:`,
+    ` draw.rectangle((8,y,${Math.min(width - 9, 100)},y+h-1),fill=${inverted ? "'white'" : "'black'"})`,
+    ' y+=h+12', 'im.save(sys.stdout.buffer,format="PNG")',
+  ].join('\n');
+  const result = spawnSync('/usr/bin/prlimit', [
+    `--as=${LIMITS.nativeAddressSpaceBytes}:${LIMITS.nativeAddressSpaceBytes}`, '--cpu=10:10', '--fsize=0:0', '--core=0:0', '--nofile=64:64', '--',
+    '/usr/bin/python3', '-I', '-B', '-c', code,
+  ], { maxBuffer: LIMITS.imageBytes, timeout: LIMITS.recognitionTimeoutMs, env: { PATH: '/usr/bin:/bin', LANG: 'C.UTF-8' } });
+  assert.equal(result.status, 0, result.stderr?.toString());
+  return result.stdout;
+}
+
+async function verifyPixelNormalization({ width, height, bands, inverted = false, scale, median }) {
+  const input = syntheticBands(width, height, bands, inverted), original = Buffer.from(input);
+  const injection = injector({ code: [
+    'import io,sys', 'from PIL import Image',
+    'im=Image.open(io.BytesIO(sys.stdin.buffer.read()))',
+    `assert im.size==(${width * scale},${height * scale})`,
+    `sys.stdout.write(${JSON.stringify(TSV)})`,
+  ].join('\n') });
+  const service = createOcrService(injection);
+  try {
+    const result = await service.recognizeImage(input);
+    assert.equal(result.processing.normalization.rescaleFactor, scale);
+    assert.equal(result.processing.normalization.medianInkBandHeight, median);
+    assert.equal(result.processing.normalization.inkBandCount, bands.filter(value => value >= 3).length);
+    assert.equal(result.processing.normalization.applied, false);
+    assert.deepEqual(input, original);
+    assert.equal(result.candidates[0].reviewStatus, 'unreviewed');
+    assert.equal(injection.calls.length, 1);
+    assert.equal(isAlive(injection.calls[0]), false);
+    return { width, height, scale, medianInkBandHeight: median };
+  } finally { await service.shutdown(); }
+}
+
 function isAlive(child) {
   if (!child?.pid) return false;
   try { process.kill(child.pid, 0); return true; } catch (error) { if (error.code === 'ESRCH') return false; throw error; }
@@ -140,7 +180,7 @@ async function main() {
       `assert resource.getrlimit(resource.RLIMIT_CPU) == (${LIMITS.nativeCpuSeconds}, ${LIMITS.nativeCpuSeconds})`,
       `assert resource.getrlimit(resource.RLIMIT_NOFILE) == (${LIMITS.nativeOpenFiles}, ${LIMITS.nativeOpenFiles})`,
       'assert resource.getrlimit(resource.RLIMIT_CORE) == (0, 0)', 'assert resource.getrlimit(resource.RLIMIT_FSIZE) == (0, 0)',
-      'print(json.dumps({"method":"median3-isolated-noise","pillowVersion":__version__,"applied":False,"isolatedNoisePixels":0,"imagePixels":704000,"thresholdPixels":704}))',
+      'print(json.dumps({"method":"median3-small-text-v2","pillowVersion":__version__,"applied":False,"isolatedNoisePixels":0,"imagePixels":704000,"thresholdPixels":704,"inkBandCount":0,"medianInkBandHeight":0,"rescaleFactor":1}))',
     ].join('\n');
     const injection = injector({ code, stage: 'normalizer' });
     const service = createOcrService(injection);
@@ -180,6 +220,26 @@ async function main() {
       assert.equal(isAlive(injection.calls[0]), false);
       return { orientationPassStarted: true, processAliveAfterReturn: false };
     } finally { await service.shutdown(); }
+  });
+  await check('pixel-only small-band detection enlarges both dark and inverted synthetic images', async () => {
+    const observations = [];
+    for (const inverted of [false, true]) observations.push(await verifyPixelNormalization({ width: 220, height: 120, bands: [10, 12, 11], inverted, scale: 2, median: 11 }));
+    return { observations, scope: 'Actual normalizer and decoded pixel dimensions. The engine is a test adapter, not an OCR accuracy assertion.' };
+  });
+  await check('blank, isolated punctuation and larger ink bands do not trigger enlargement', async () => {
+    const observations = [];
+    for (const [bands, median] of [[[], 0], [[1, 2], 0], [[16, 18, 20], 18]]) observations.push(await verifyPixelNormalization({ width: 220, height: 160, bands, scale: 1, median }));
+    return { observations };
+  });
+  await check('normalizer preserves the maximum image dimension when selecting enlargement', async () => {
+    const observations = [];
+    for (const [width, scale] of [[3000, 2], [3001, 1]]) observations.push(await verifyPixelNormalization({ width, height: 100, bands: [11, 11], scale, median: 11 }));
+    return { observations, dimensionCeiling: LIMITS.imageDimension };
+  });
+  await check('normalizer preserves the maximum pixel count when selecting enlargement', async () => {
+    const observations = [];
+    for (const [width, scale] of [[2000, 2], [2001, 1]]) observations.push(await verifyPixelNormalization({ width, height: 2000, bands: [11, 11], scale, median: 11 }));
+    return { observations, pixelCeiling: LIMITS.imagePixels };
   });
   const failures = results.filter(result => result.status === 'FAIL').length;
   const blocked = results.filter(result => result.status === 'BLOCKED').length;

@@ -10,6 +10,7 @@ const panels = require('./panels.cjs');
 const { createRetentionReview } = require('./retention.cjs');
 const { USAGE_TABLE_SQL, USAGE_INDEX_SQL, USAGE_AUTO_INDEXES, USAGE_SCHEMA_COLUMNS, createUsageLedger } = require('./usage.cjs');
 const { LIFECYCLE_TABLE_SQL, LIFECYCLE_INDEX_SQL, LIFECYCLE_AUTO_INDEXES, LIFECYCLE_COLUMNS, createLifecycle, phoneHash } = require('./lifecycle.cjs');
+const { TASK_TABLE_SQL, TASK_INDEX_SQL, TASK_AUTO_INDEXES, TASK_COLUMNS, createCallbackTasks } = require('./callback-tasks.cjs');
 
 const FACT_KEYS = Object.freeze(['services', 'pricing', 'estimates', 'hours', 'serviceArea', 'contact', 'qualifications', 'emergencyAvailability', 'permits', 'warranty', 'financing']);
 const STATUSES = Object.freeze(['new', 'needs_review', 'contacted', 'closed']);
@@ -119,6 +120,7 @@ function ensurePrivateDirectory(dataDir) {
 }
 
 const SCHEMA_COLUMNS = Object.freeze({
+  ...TASK_COLUMNS,
   ...LIFECYCLE_COLUMNS,
   assistant_usage: USAGE_SCHEMA_COLUMNS,
   businesses: ['id', 'name', 'version', 'facts_json', 'created_at'],
@@ -156,16 +158,17 @@ const PANEL_INDEX_SQL = Object.freeze({
   panel_sources_project: 'CREATE INDEX panel_sources_project ON panel_sources(project_id, business_id, created_at)'
 });
 const PANEL_AUTO_INDEXES = ['sqlite_autoindex_panel_projects_1', 'sqlite_autoindex_panel_projects_2', 'sqlite_autoindex_panel_projects_3', 'sqlite_autoindex_panel_sources_1', 'sqlite_autoindex_panel_sources_2'];
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 const SCHEMAS = Object.freeze({
   1: Object.freeze({ tables: TABLE_SQL, indexes: INDEX_SQL, autoIndexes: AUTO_INDEXES }),
   2: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES]) }),
-  3: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL, ...LIFECYCLE_TABLE_SQL, ...USAGE_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL, ...LIFECYCLE_INDEX_SQL, ...USAGE_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES, ...LIFECYCLE_AUTO_INDEXES, ...USAGE_AUTO_INDEXES]) })
+  3: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL, ...LIFECYCLE_TABLE_SQL, ...USAGE_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL, ...LIFECYCLE_INDEX_SQL, ...USAGE_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES, ...LIFECYCLE_AUTO_INDEXES, ...USAGE_AUTO_INDEXES]) }),
+  4: Object.freeze({ tables: Object.freeze({ ...TABLE_SQL, ...PANEL_TABLE_SQL, ...LIFECYCLE_TABLE_SQL, ...USAGE_TABLE_SQL, ...TASK_TABLE_SQL }), indexes: Object.freeze({ ...INDEX_SQL, ...PANEL_INDEX_SQL, ...LIFECYCLE_INDEX_SQL, ...USAGE_INDEX_SQL, ...TASK_INDEX_SQL }), autoIndexes: new Set([...AUTO_INDEXES, ...PANEL_AUTO_INDEXES, ...LIFECYCLE_AUTO_INDEXES, ...USAGE_AUTO_INDEXES, ...TASK_AUTO_INDEXES]) })
 });
 function normalizeSchemaSql(sql) { return sql.trim().replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').toLowerCase(); }
 function assertWorkspaceSchema(db) {
   const fail = (code = 'unsupported_schema') => {
-    const message = code === 'invalid_database' ? 'The workspace database integrity check failed.' : 'Use an existing workspace database with supported schema version 1, 2 or 3.';
+    const message = code === 'invalid_database' ? 'The workspace database integrity check failed.' : 'Use an existing workspace database with supported schema version 1, 2, 3 or 4.';
     throw Object.assign(new Error(message), { code });
   };
   const version = db.prepare('PRAGMA user_version').get().user_version;
@@ -260,7 +263,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     if (!found) throw new StoreError(401, 'unauthorized', 'Sign in to continue.');
     return actor;
   };
-  const addAudit = (actor, leadId, action, version, details = {}) => db.prepare('INSERT INTO audit VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(crypto.randomUUID(), actor.businessId, leadId, actor.id, action, version, now(), JSON.stringify(details));
+  const addAudit = (actor, leadId, action, version, details = {}, at = now()) => db.prepare('INSERT INTO audit VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(crypto.randomUUID(), actor.businessId, leadId, actor.id, action, version, at, JSON.stringify(details));
   function publicUser(row) { return row ? { id: row.id, username: row.username, businessId: row.business_id } : null; }
   function suppressed(businessId, phone) { return !!db.prepare('SELECT 1 FROM suppression WHERE business_id = ? AND phone = ?').get(businessId, phone); }
   function addSuppression(actor, phone, source, currentLeadId = '') {
@@ -427,7 +430,7 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
       // audit records one consistent snapshot while another connection writes.
       db.exec('BEGIN');
       try {
-        const result = { profile: store.getProfile(actor), leads: store.listLeads(actor) };
+        const result = { profile: store.getProfile(actor), leads: store.listLeads(actor), callbackTasks: schemaVersion >= 4 ? callbackTasks.export(actor) : [] };
         db.exec('COMMIT');
         return result;
       } catch (error) {
@@ -585,13 +588,17 @@ function openStore({ dataDir, now = Date.now, create = true } = {}) {
     reviewRetention(...args) { requireUsageSchema(); return retentionReview(...args); },
     reserveAssistantUsage(...args) { requireUsageSchema(); return usage.reserve(...args); },
     finishAssistantUsage(...args) { requireUsageSchema(); return usage.finish(...args); },
-    getAssistantUsage(...args) { requireUsageSchema(); return usage.summary(...args); }
+    getAssistantUsage(...args) { requireUsageSchema(); return usage.summary(...args); },
+    createCallbackTask(...args) { return callbackTasks.create(...args); },
+    updateCallbackTask(...args) { return callbackTasks.update(...args); },
+    listCallbackTasks(...args) { return callbackTasks.list(...args); }
   };
   const schemaVersion = db.prepare('PRAGMA user_version').get().user_version;
   function requireUsageSchema() { if (schemaVersion < 3) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before using assistance.'); }
   const usage = createUsageLedger({ db, tx, now, getActor, StoreError });
-  const retentionReview = createRetentionReview({ db, now, getActor, StoreError });
-  const lifecycle = createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 3 });
+  const retentionReview = createRetentionReview({ db, now, getActor, StoreError, callbackTasksEnabled: schemaVersion >= 4 });
+  const lifecycle = createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 3, callbackTasksEnabled: schemaVersion >= 4 });
+  const callbackTasks = createCallbackTasks({ db, tx, now, getActor, store, StoreError, addAudit, enabled: schemaVersion >= 4 });
   return store;
 }
 

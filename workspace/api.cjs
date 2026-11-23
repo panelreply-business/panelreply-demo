@@ -17,6 +17,7 @@ const ROOT = path.resolve(__dirname, '..');
 const ASSETS = Object.freeze({
   '/assets/styles.css': ['workspace/styles.css', 'text/css; charset=utf-8'],
   '/assets/app.js': ['workspace/app.js', 'application/javascript; charset=utf-8'],
+  '/assets/schedule.js': ['workspace/schedule.js', 'application/javascript; charset=utf-8'],
   '/assets/deletion.js': ['workspace/deletion.js', 'application/javascript; charset=utf-8'],
   '/assets/preview.js': ['workspace/preview.js', 'application/javascript; charset=utf-8'],
   '/assets/login.js': ['workspace/login.js', 'application/javascript; charset=utf-8'],
@@ -36,15 +37,16 @@ const BASE_HEADERS = Object.freeze({
   'Content-Security-Policy': "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'"
 });
 const EXPORTED_LEAD_FIELDS = Object.freeze(['id', 'version', 'createdAt', 'updatedAt', 'customerName', 'phone', 'job', 'zip', 'callbackWindow', 'requestedWorkDate', 'contactPermission', 'notes', 'status', 'safetyHold', 'optedOut', 'contactAllowed']);
-const EXPORTED_CHANGE_FIELDS = Object.freeze(['customerName', 'phone', 'job', 'zip', 'callbackWindow', 'requestedWorkDate', 'contactPermission', 'notes', 'status', 'conversation']);
+const EXPORTED_CHANGE_FIELDS = Object.freeze(['customerName', 'phone', 'job', 'zip', 'callbackWindow', 'requestedWorkDate', 'contactPermission', 'notes', 'status', 'conversation', 'kind', 'dueAt', 'timeZone', 'outcome']);
+const EXPORTED_TASK_FIELDS = Object.freeze(['id', 'leadId', 'leadVersion', 'kind', 'dueAt', 'timeZone', 'status', 'notes', 'outcome', 'version', 'createdAt', 'updatedAt', 'completedAt', 'cancelledAt']);
 
 function businessExport(store, actor) {
-  const { profile, leads } = store.exportBusiness(actor);
+  const { profile, leads, callbackTasks = [] } = store.exportBusiness(actor);
   // Keep the download contract independent of internal store additions. In
   // particular, accounts, password hashes, session tokens and counters have no
   // route into this export. It is a readable record copy, not a restore backup.
   return {
-    format: 'panelreply-business-export', version: 1, exportedAt: new Date().toISOString(),
+    format: 'panelreply-business-export', version: 2, exportedAt: new Date().toISOString(),
     profile: {
       business: { id: profile.business.id, name: profile.business.name }, version: profile.version,
       facts: Object.fromEntries(FACT_KEYS.map(key => [key, { verified: profile.facts[key].verified, answer: profile.facts[key].answer }]))
@@ -57,10 +59,12 @@ function businessExport(store, actor) {
         details: {
           ...(Array.isArray(entry.details?.fields) ? { fields: entry.details.fields.filter(field => EXPORTED_CHANGE_FIELDS.includes(field)) } : {}),
           ...(Number.isSafeInteger(entry.details?.messageCount) ? { messageCount: entry.details.messageCount } : {}),
+          ...(panels.UUID.test(entry.details?.taskId) ? { taskId: entry.details.taskId } : {}),
           ...(['preview', 'lead'].includes(entry.details?.source) ? { source: entry.details.source } : {})
         }
       }))
-    }))
+    })),
+    callbackTasks: callbackTasks.map(task => Object.fromEntries(EXPORTED_TASK_FIELDS.map(key => [key, task[key]])))
   };
 }
 
@@ -206,6 +210,16 @@ function createWorkspaceApp({ store, origin, product = 'combined', previewMessag
       if (req.method === 'GET' && route === '/api/assistant/usage') return send(res, 200, store.getAssistantUsage(session.user));
       if (req.method === 'GET' && route === '/api/profile') return send(res, 200, store.getProfile(session.user));
       if (req.method === 'GET' && route === '/api/leads') return send(res, 200, { leads: store.listLeads(session.user) });
+      if (req.method === 'GET' && route === '/api/callback-tasks') {
+        const query = new URL(req.url, origin).searchParams;
+        const filters = {};
+        for (const [key, value] of query) {
+          if (!['state', 'leadId', 'limit', 'offset'].includes(key) || Object.hasOwn(filters, key)) throw new StoreError(400, 'invalid_input', 'Use each supported callback queue filter once.');
+          if (['limit', 'offset'].includes(key) && !/^(?:0|[1-9]\d*)$/.test(value)) throw new StoreError(400, 'invalid_input', 'Use whole numbers for callback queue pages.');
+          filters[key] = ['limit', 'offset'].includes(key) ? Number(value) : value;
+        }
+        return send(res, 200, store.listCallbackTasks(session.user, filters));
+      }
       if (req.method === 'GET' && route === '/api/panel-projects') return send(res, 200, { projects: store.listPanelProjects(session.user) });
       if (req.method === 'GET' && route === '/api/panel-ocr') {
         const status = await (getOcrStatus || require('./ocr.cjs').getOcrStatus)();
@@ -270,6 +284,16 @@ function createWorkspaceApp({ store, origin, product = 'combined', previewMessag
       if (req.method === 'POST' && route === '/api/leads') {
         const result = await withMutationBody(req, session, (input, current) => store.createLead(current.user, input, req.headers['idempotency-key']));
         return send(res, result.created ? 201 : 200, result);
+      }
+      const createTaskMatch = /^\/api\/leads\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/tasks$/.exec(route);
+      if (req.method === 'POST' && createTaskMatch) {
+        const result = await withMutationBody(req, session, (input, current) => store.createCallbackTask(current.user, createTaskMatch[1], input, req.headers['idempotency-key']), 16384);
+        return send(res, result.created ? 201 : 200, result);
+      }
+      const updateTaskMatch = /^\/api\/callback-tasks\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/.exec(route);
+      if (req.method === 'PATCH' && updateTaskMatch) {
+        const result = await withMutationBody(req, session, (input, current) => store.updateCallbackTask(current.user, updateTaskMatch[1], input, req.headers['idempotency-key']), 16384);
+        return send(res, 200, result);
       }
       if (req.method === 'POST' && route === '/api/panel-projects') {
         const result = await withMutationBody(req, session, (input, current) => store.createPanelProject(current.user, input, req.headers['idempotency-key']), MAX_PANEL_BODY_BYTES);

@@ -1,5 +1,13 @@
 # Callback release acceptance
 
+## November 23 scheduling candidate
+
+The active development candidate adds operator-controlled scheduling, a due/overdue queue, recorded outcomes, cancellation and follow-ups. It includes schema-4 persistence/recovery and JSON export v2. [Workflow, boundaries and verification contract](CALLBACK_SCHEDULING.md). The existing requested callback/work dates remain preferences. No call, message or work appointment is initiated.
+
+New requirement CB-12: the complete schedule → reschedule → outcome → follow-up → restart workflow must pass on the claimed product platforms. Contact restrictions, UTC/clock-change handling, version conflicts, unknown-response retries, accessibility, export, deletion and encrypted recovery are part of that gate. Local backend/API and client-state cases pass their named scopes. Committed browser/expanded-platform verification is pending. Historical run76 passes below do not verify this changed source.
+
+The real-model, physical/actual-platform, chosen-host, recovery and operating requirements remain open. The program remains NO-GO for a customer trial or release. [Persistent continuation and exact next steps](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 daily check
 
 Callback entrypoint, dedicated cookie/store marker, other-product route denial and product-bound encrypted recovery remain implemented with no code changes since tested `ca5f0cb`. Last full [PR8 run76](https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151): 3,321 distinct callback cases and 10,351 passing case/platform executions, plus shared cases counted once; selected Linux Chromium, Firefox and WebKit journeys passed 21/21. No fresh PR run today (**BLOCKED**). [Main run79](https://github.com/panelreply-business/panelreply-demo/actions/runs/45194906999) does not test this application. Actual-model evaluation remains BLOCKED (zero real calls), seven platform scopes NOT TESTED, and selected-host/offsite recovery and operational decisions remain open. **GO for isolated synthetic review; NO-GO for customer trial or release.** [Daily evidence](evidence/daily-audit-2026-11-23.json).

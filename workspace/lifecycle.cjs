@@ -23,7 +23,7 @@ const OPERATION_KINDS = new Set([...KINDS, 'lead_conversation']);
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const phoneHash = (businessId, phone) => hash(businessId + '\0' + phone);
 
-function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled }) {
+function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled, callbackTasksEnabled = false }) {
   function requireCurrentSchema() {
     if (!enabled) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before using deletion.');
   }
@@ -77,6 +77,10 @@ function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, e
         if (lead.safetyHold) lifecycle.preserveSafetyHold(actor, lead.phone, time);
         // STOP suppression is intentionally independent and is never removed.
         const messagesDeleted = Number(db.prepare('DELETE FROM messages WHERE lead_id=? AND business_id=?').run(id, actor.businessId).changes);
+        if (callbackTasksEnabled) {
+          db.prepare('DELETE FROM callback_operations WHERE lead_id=? AND business_id=?').run(id, actor.businessId);
+          db.prepare('DELETE FROM callback_tasks WHERE lead_id=? AND business_id=?').run(id, actor.businessId);
+        }
         db.prepare('DELETE FROM audit WHERE lead_id=? AND business_id=?').run(id, actor.businessId);
         tombstone(actor, 'lead', row, '', input.version, time);
         db.prepare('DELETE FROM leads WHERE id=? AND business_id=? AND version=?').run(id, actor.businessId, input.version);

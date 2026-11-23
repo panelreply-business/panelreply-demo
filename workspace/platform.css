@@ -218,3 +218,33 @@ input:focus, textarea:focus, select:focus { border-color: #2466dd; box-shadow: 0
 .deletion-dialog .notice, .deletion-dialog .form-status { margin-top: 12px; }
 .deletion-dialog .button-row { justify-content: flex-end; flex-wrap: wrap; margin-top: 12px; }
 .deletion-dialog input { width: 100%; }
+
+.callback-schedule { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+.callback-schedule > p { margin: 8px 0 16px; }
+.callback-schedule legend { padding: 0 0 14px; font-weight: 650; }
+.callback-schedule .notice { margin: 14px 0; }
+.callback-schedule .form-footer { align-items: flex-start; flex-wrap: wrap; }
+.callback-schedule .form-footer .button-row { margin-left: auto; }
+.callback-schedule input[type="datetime-local"] { min-width: 0; max-width: 100%; }
+.callback-schedule #task-time-preview { overflow-wrap: anywhere; }
+.task-history-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px; }
+.callback-task-list { list-style: none; padding: 0; margin: 12px 0; }
+.callback-task-card { border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 12px; overflow-wrap: anywhere; }
+.callback-task-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.callback-task-heading h3, .callback-task-heading h4 { margin: 0; font-size: .95rem; min-width: 0; }
+.callback-task-card time { display: block; }
+.callback-task-card p { margin: 8px 0; }
+.callback-task-card .button-row { margin-top: 12px; }
+.callback-task-notes { white-space: pre-wrap; font-size: .85rem; }
+.callback-queue-panel { padding-bottom: 20px; }
+.callback-queue-panel > .callback-task-list, .callback-queue-panel > .notice { margin: 16px 24px; }
+.queue-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; padding: 0 24px; }
+.queue-toolbar .form-field { flex: 0 1 240px; }
+.queue-toolbar > p { flex: 1 1 200px; margin: 0 0 8px; }
+.queue-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 0 24px; }
+@media (max-width: 440px) {
+  .callback-schedule .form-footer .button-row { margin-left: 0; }
+  .callback-task-card { padding: 12px; }
+  .callback-queue-panel > .callback-task-list, .callback-queue-panel > .notice { margin-left: 16px; margin-right: 16px; }
+  .queue-toolbar, .queue-pagination { padding-left: 16px; padding-right: 16px; }
+}

@@ -10,7 +10,45 @@ from PIL import Image, ImageChops, ImageFilter, __version__ as pillow_version
 MAX_INPUT = 2 * 1024 * 1024
 MAX_OUTPUT = 8 * 1024 * 1024
 MAX_PIXELS = 16_000_000
-METHOD = "median3-isolated-noise"
+METHOD = "median3-small-text-v2"
+
+
+def ink_bands(gray):
+    """Measure horizontal ink bands, without recognizing or changing text."""
+    histogram = gray.histogram()
+    count = gray.width * gray.height
+    total = sum(value * frequency for value, frequency in enumerate(histogram))
+    weight = subtotal = 0
+    best_variance = -1
+    threshold = None
+    for value, frequency in enumerate(histogram):
+        weight += frequency
+        subtotal += value * frequency
+        if not weight or weight == count:
+            continue
+        variance = weight * (count - weight) * (subtotal / weight - (total - subtotal) / (count - weight)) ** 2
+        if variance > best_variance:
+            best_variance = variance
+            threshold = value
+    if threshold is None:
+        return 0, 0
+    # Use the minority side of an Otsu split for both dark-on-light and
+    # light-on-dark labels. The threshold is used only for measurement.
+    dark_ink = sum(histogram[:threshold + 1]) <= count / 2
+    mask = gray.point(lambda value: 255 if (value <= threshold if dark_ink else value > threshold) else 0)
+    bands = []
+    height = 0
+    for row in range(gray.height):
+        if mask.crop((0, row, gray.width, row + 1)).histogram()[255] >= 3:
+            height += 1
+        else:
+            if height >= 3:
+                bands.append(height)
+            height = 0
+    if height >= 3:
+        bands.append(height)
+    bands.sort()
+    return len(bands), bands[(len(bands) - 1) // 2] if bands else 0
 
 
 def main():
@@ -47,14 +85,24 @@ def main():
     isolated = dark.histogram()[255] + light.histogram()[255]
     threshold = max(32, math.ceil(width * height / 1000))
     applied = isolated >= threshold
-    header = {"method": METHOD, "pillowVersion": pillow_version, "applied": applied,
-              "isolatedNoisePixels": isolated, "thresholdPixels": threshold, "imagePixels": width * height}
-    output = b""
     if applied:
+        pixels = pixels.filter(ImageFilter.MedianFilter(3))
+    band_count, band_height = ink_bands(pixels.convert("L"))
+    # Small glyphs lose punctuation during native thresholding. Enlarge the
+    # pixels once, without dictionary repair or character substitution. Keep
+    # the decoder's original dimension/pixel ceilings for this temporary copy.
+    rescale = 2 if 3 <= band_height < 16 and width <= 3000 and height <= 3000 and width * height <= MAX_PIXELS // 4 else 1
+    header = {"method": METHOD, "pillowVersion": pillow_version, "applied": applied,
+              "isolatedNoisePixels": isolated, "thresholdPixels": threshold, "imagePixels": width * height,
+              "inkBandCount": band_count, "medianInkBandHeight": band_height, "rescaleFactor": rescale}
+    output = b""
+    if applied or rescale != 1:
         # Native process address-space, CPU, output and wall-time bounds still
         # apply. Normalized pixels never replace the saved source bytes.
+        if rescale != 1:
+            pixels = pixels.resize((width * rescale, height * rescale), Image.Resampling.LANCZOS)
         encoded = io.BytesIO()
-        pixels.filter(ImageFilter.MedianFilter(3)).save(encoded, format="PNG")
+        pixels.save(encoded, format="PNG")
         output = encoded.getvalue()
         if len(output) > MAX_OUTPUT:
             raise ValueError("normalized output exceeds limit")

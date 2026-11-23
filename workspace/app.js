@@ -39,6 +39,15 @@
   let exportBusy = false;
   const exportUrls = new Set();
   const deletion = window.PanelReplyDeletion.create({ api, onChange: updateDirty, onDeleted: deletedLead });
+  const schedule = window.PanelReplySchedule.create({ api, onChange: updateDirty, guard: guarded,
+    onLead(lead) {
+      const index = leads.findIndex(item => item.id === lead.id);
+      if (index >= 0) leads[index] = lead; else leads.unshift(lead);
+      renderLead(lead);
+    },
+    onOpenLead(id) { setView('inbox'); return selectLead(id); },
+    onReloadLead() { if (selected) return selectLead(selected.id); }
+  });
 
   class RequestError extends Error {
     constructor(status, code, message, fields) { super(message); this.status = status; this.code = code; this.fields = fields; }
@@ -54,6 +63,7 @@
   function clearSession() {
     expired = true;
     deletion.expire();
+    schedule.clear();
     csrfToken = '';
     user = null;
     leads = [];
@@ -73,6 +83,7 @@
     $('lead-audit').replaceChildren();
     $('lead-detail').hidden = true;
     $('profile-view').hidden = true;
+    $('schedule-view').hidden = true;
     window.location.replace('/login');
   }
 
@@ -115,22 +126,24 @@
   }
   function leadDirty() { return Boolean(selected && leadBaseline && JSON.stringify(leadDraft()) !== leadBaseline); }
   function profileDirty() { return Boolean(profile && profileBaseline && JSON.stringify(profileDraft()) !== profileBaseline); }
-  function hasDirty() { return leadDirty() || profileDirty(); }
+  function hasDirty() { return leadDirty() || profileDirty() || schedule.isDirty(); }
   function updateDirty() {
     const deleting = deletion.isOpen();
-    const deleteLocked = deleting || !selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict;
+    const taskLocked = schedule.isBusy() || schedule.isPending();
+    const deleteLocked = deleting || !selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict || taskLocked;
     $('delete-lead').disabled = deleteLocked;
     $('delete-conversation').disabled = deleteLocked || !selected?.conversation?.length;
-    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests;
+    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests || taskLocked || schedule.isDirty();
     $('lead-dirty').hidden = !leadDirty();
     $('profile-dirty').hidden = !profileDirty();
-    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting;
+    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting || taskLocked || schedule.isDirty();
     $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting;
-    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting;
+    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting || taskLocked;
+    schedule.setLocked(deleting || expired || !user || leadSaving || leadLoading || refreshingRequests || profileSaving || exportBusy || leadDirty() || profileDirty() || leadConflict);
   }
 
   async function exportRecords() {
-    if (!user || expired || loading || leadSaving || profileSaving || exportBusy) return;
+    if (!user || expired || loading || leadSaving || profileSaving || exportBusy || schedule.isBusy() || schedule.isPending()) return;
     exportBusy = true;
     showError('export-error', '');
     $('export-status').textContent = 'Preparing a copy of the saved records…';
@@ -139,8 +152,8 @@
     try {
       const data = await api('/api/export');
       if (expired || !user) return;
-      if (data?.format !== 'panelreply-business-export' || data.version !== 1 || data.profile?.business?.id !== user.businessId
-        || !Array.isArray(data.leads) || typeof data.exportedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(data.exportedAt)) {
+      if (data?.format !== 'panelreply-business-export' || data.version !== 2 || data.profile?.business?.id !== user.businessId
+        || !Array.isArray(data.leads) || !Array.isArray(data.callbackTasks) || typeof data.exportedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(data.exportedAt)) {
         throw new Error('The export response was incomplete. No download was prepared. Try again.');
       }
       const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' });
@@ -171,7 +184,11 @@
 
   function guarded(action) {
     if (expired) return;
-    if (leadSaving || profileSaving || deletion.isOpen()) {
+    if (schedule.isPending()) {
+      showAppError('Confirm the pending task save with Retry task save before leaving this request.');
+      return;
+    }
+    if (leadSaving || profileSaving || deletion.isOpen() || schedule.isBusy()) {
       showAppError('A save is still in progress. Wait for its result before leaving this view.');
       return;
     }
@@ -189,17 +206,19 @@
     currentView = view;
     const inbox = view === 'inbox';
     $('inbox-view').hidden = !inbox;
-    $('profile-view').hidden = inbox;
-    $('nav-inbox').classList.toggle('active', inbox);
-    $('nav-profile').classList.toggle('active', !inbox);
-    $('nav-inbox').toggleAttribute('aria-current', inbox);
-    $('nav-profile').toggleAttribute('aria-current', !inbox);
-    if (inbox) $('nav-inbox').setAttribute('aria-current', 'page');
-    else $('nav-profile').setAttribute('aria-current', 'page');
-    $('page-title').textContent = inbox ? 'Request inbox' : 'Business profile';
-    $('page-subtitle').textContent = inbox ? 'A clear view of the work coming in.' : 'The information your customers can rely on.';
+    $('profile-view').hidden = view !== 'profile';
+    $('schedule-view').hidden = view !== 'schedule';
+    for (const name of ['inbox', 'profile', 'schedule']) {
+      $(`nav-${name}`).classList.toggle('active', view === name);
+      if (view === name) $(`nav-${name}`).setAttribute('aria-current', 'page');
+      else $(`nav-${name}`).removeAttribute('aria-current');
+    }
+    const titles = { inbox: 'Request inbox', profile: 'Business profile', schedule: 'Callback queue' };
+    $('page-title').textContent = titles[view];
+    $('page-subtitle').textContent = inbox ? 'A clear view of the work coming in.' : view === 'schedule' ? 'Plan callbacks and track each follow-up.' : 'The information your customers can rely on.';
     const programLabel = document.body?.dataset?.productId === 'callback' ? 'PanelReply Callback' : 'PanelReply';
-    document.title = `${inbox ? 'Request inbox' : 'Business profile'} · ${programLabel}`;
+    document.title = `${titles[view]} · ${programLabel}`;
+    if (view === 'schedule') void schedule.openQueue();
   }
 
   function updateBusiness() {
@@ -263,7 +282,8 @@
     const activities = document.createDocumentFragment();
     for (const entry of audit.slice().reverse()) {
       const item = el('li', 'history-item');
-      const action = { 'lead.created': 'Request saved', 'lead.updated': 'Request updated', 'contact.opted_out': 'Contact opted out', 'contact.suppressed': 'Contact opted out' }[entry.action] || 'Request activity recorded';
+      const action = { 'lead.created': 'Request saved', 'lead.updated': 'Request updated', 'contact.opted_out': 'Contact opted out', 'contact.suppressed': 'Contact opted out',
+        'callback.scheduled': 'Callback task scheduled', 'callback.rescheduled': 'Callback task rescheduled', 'callback.completed': 'Callback outcome recorded', 'callback.cancelled': 'Callback task cancelled' }[entry.action] || 'Request activity recorded';
       item.append(el('p', 'history-heading', action), el('p', 'history-text', `${dateText(entry.createdAt)} · Revision ${entry.version}`));
       const fields = entry.details?.fields;
       if (entry.action === 'lead.updated' && Array.isArray(fields)) {
@@ -325,6 +345,7 @@
     $('lead-status').textContent = savedMessage;
     renderHistory(lead);
     leadBaseline = JSON.stringify(leadDraft());
+    schedule.selectLead(lead);
     renderList();
     updateDirty();
   }
@@ -437,7 +458,7 @@
   }
 
   function beginLeadDeletion(kind) {
-    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict) return;
+    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict || schedule.isBusy() || schedule.isPending()) return;
     const conversationOnly = kind === 'lead_conversation';
     deletion.request({
       kind, id: selected.id, version: selected.version,
@@ -445,7 +466,7 @@
       title: conversationOnly ? 'Delete conversation?' : 'Delete customer request?',
       description: conversationOnly
         ? 'Remove the saved conversation from this request. Request fields and contact restrictions stay in place.'
-        : 'Remove this request, its notes and saved conversation from the active workspace.'
+        : 'Remove this request, its callback tasks, notes and saved conversation from the active workspace.'
     });
   }
   async function deletedLead(operation) {
@@ -453,6 +474,7 @@
     if (operation.kind === 'lead') {
       leads = leads.filter(item => item.id !== operation.id);
       selected = null; leadBaseline = ''; leadConflict = false; selectionSerial += 1;
+      schedule.selectLead(null);
       $('lead-form').reset(); $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
       $('lead-detail').hidden = true; $('request-empty').hidden = false;
       const url = new URL(location.href); url.searchParams.delete('lead'); history.replaceState(null, '', url.pathname + url.search);
@@ -463,6 +485,7 @@
     // Clear deleted text immediately, even if the follow-up read fails.
     if (selected?.id === operation.id) {
       selected = null; leadBaseline = ''; $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      schedule.selectLead(null);
       $('lead-detail').hidden = true; $('request-empty').hidden = false;
     }
     $('list-status').textContent = 'Conversation deletion confirmed. Loading the remaining request…';
@@ -472,7 +495,7 @@
 
   async function saveLead(event) {
     event.preventDefault();
-    if (!selected || leadSaving || leadLoading || refreshingRequests || leadConflict || !$('lead-form').reportValidity()) return;
+    if (!selected || leadSaving || leadLoading || refreshingRequests || leadConflict || schedule.isBusy() || schedule.isPending() || schedule.isDirty() || !$('lead-form').reportValidity()) return;
     leadSaving = true;
     const id = selected.id;
     const payload = { version: selected.version, ...leadDraft() };
@@ -632,6 +655,7 @@
 
   buildProfileFields();
   $('nav-inbox').addEventListener('click', () => { if (currentView !== 'inbox') guarded(() => setView('inbox')); });
+  $('nav-schedule').addEventListener('click', () => { if (currentView !== 'schedule') guarded(() => setView('schedule')); });
   $('nav-profile').addEventListener('click', () => { if (currentView !== 'profile') guarded(() => setView('profile')); });
   for (const id of ['preview-link', 'empty-preview-link', 'home-link', 'dashboard-link', 'panels-link', 'projects-link', 'exports-link']) {
     const link = $(id);
@@ -644,11 +668,13 @@
   }));
   $('keep-editing').addEventListener('click', () => { pendingNavigation = null; $('navigation-guard').hidden = true; });
   $('discard-changes').addEventListener('click', () => {
+    if (schedule.isBusy() || schedule.isPending()) return;
     const action = pendingNavigation;
     pendingNavigation = null;
     $('navigation-guard').hidden = true;
     if (selected) renderLead(selected);
     if (profile) renderProfile(profile);
+    schedule.discard();
     if (action) action();
   });
   $('request-search').addEventListener('input', renderList);
@@ -667,7 +693,7 @@
   $('profile-form').addEventListener('change', () => { $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
   $('reload-lead').addEventListener('click', () => guarded(() => { if (selected) selectLead(selected.id); }));
   $('reload-profile').addEventListener('click', () => guarded(loadProfile));
-  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving || deletion.isPending())) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving || deletion.isPending() || schedule.isPending() || schedule.isBusy())) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
   bootstrap();
 })();

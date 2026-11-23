@@ -68,7 +68,7 @@ test('record export provides a versioned JSON attachment with saved profile and 
   const result = await request(f.app, { headers: { cookie: signed.cookie } });
   assert.equal(result.status, 200);
   assert.equal(result.body.format, 'panelreply-business-export');
-  assert.equal(result.body.version, 1);
+  assert.equal(result.body.version, 2);
   assert.match(result.body.exportedAt, /^\d{4}-\d{2}-\d{2}T/);
   assert.deepEqual(result.body.profile, updated);
   assert.equal(result.body.leads.length, 1);
@@ -117,7 +117,7 @@ test('record export allowlist excludes internal additions, hashes, tokens and ar
   const result = await request(f.app, { headers: { cookie: signed.cookie } });
   assert.equal(result.status, 200);
   for (const secret of [PASSWORD, f.hash, signed.cookie, signed.csrf, 'password_hash', 'passwordHash', 'sessionToken', 'login_attempts']) assert.ok(!result.text.includes(secret), secret + ' was exported');
-  assert.deepEqual(Object.keys(result.body), ['format', 'version', 'exportedAt', 'profile', 'leads']);
+  assert.deepEqual(Object.keys(result.body), ['format', 'version', 'exportedAt', 'profile', 'leads', 'callbackTasks']);
   assert.equal(result.body.leads[0].audit[0].details.messageCount, 2);
 });
 

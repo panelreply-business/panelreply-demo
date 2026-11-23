@@ -51,7 +51,7 @@ function productScope(file, name) {
   }
   if (file.endsWith('/release-deletion-model.test.cjs')) return /panel_(?:project|source)/.test(name) ? 'spreadsheet' : /lead(?:_conversation)?/.test(name) ? 'callback' : 'shared';
   if (/\/(?:panel[-_]|ocr[.-]|release-export-matrix)/.test(file)) return 'spreadsheet';
-  if (/\/(?:assistant-|workspace-(?:assistant|conversation|export)|intake[.]|questions[.]|demo[.]|release-(?:assistant-matrix|name-grounding))/.test(file)) return 'callback';
+  if (/\/(?:callback-(?:schedule|task)[^/]*\.test\.cjs$|assistant-|workspace-(?:assistant|conversation|export)|intake[.]|questions[.]|demo[.]|release-(?:assistant-matrix|name-grounding))/.test(file)) return 'callback';
   return 'shared';
 }
 function collectNodeResults(events, root, platformKey) {

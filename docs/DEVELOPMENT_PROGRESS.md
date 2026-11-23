@@ -1,5 +1,15 @@
 # PanelReply development progress
 
+## Autonomous implementation — November 23, 2026
+
+Development resumed from the existing documentation head `9175d905c74ff060a3f8e8fcbe01e15accb7342b`, on the same branch and draft PR8. This environment has Node 24.22.3, a working checkout and permitted loopback HTTP tests. The earlier daily audit's runtime/checkout blocks do not describe this session.
+
+The candidate adds the missing callback scheduling/follow-up workflow, exact UTC/time-zone controls, a due/overdue queue, task/request concurrency checks, contact holds, retry preservation, schema-4 recovery and JSON export v2. Independent review reproduced and repaired outcome-note loss, unknown-result retry clearing, revision exhaustion and malformed Unicode replacement. [Scheduling contract](CALLBACK_SCHEDULING.md).
+
+The frozen local OCR corpus improved 277/310 → 285/310 with eight gains and no regressions; every image hash remained unchanged. Twenty-five nonexact cases keep OCR quality FAIL. Native fixture/resource checks pass their named scopes. [Measured results](OCR_SMALL_TEXT_2026_11_23.md). Mac/Apple Silicon jobs add actual platform execution for callback and explicitly scoped manual spreadsheet workflows; native macOS OCR and physical devices remain separate. [Platform scope](PLATFORM_EXPANSION.md).
+
+The full stable-source local Node/SQLite/API/HTTP regression passed 9,072 cases with zero failures, skips, cancellations or infrastructure errors. Excluding 83 evidence-harness checks leaves 8,989 product executions. All 49 test files ran under Node 24.22.3 with `WORKSPACE_HTTP_TESTS=1`; the executable/test/workflow hash stayed `fa274e9210cf963ff2f92b1df0b3d748997f81e852f936646b2ccc160ea5839b` throughout. [Local candidate evidence](evidence/callback-scheduling-local-2026-11-23.json). This is uncommitted-candidate verification, not a clean committed-source platform ledger. Committed browser/expanded-platform CI is next. Do not assign historical run76 passes to this changed implementation. No purchase, production data, customer contact, public activation, merge or release occurred. [Persistent next steps and remaining requirements](AUTONOMOUS_CONTINUATION.md).
+
 ## Daily quality check — November 23, 2026 (America/Detroit)
 
 Fresh GitHub inspection confirms draft/open/unmerged [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8) at documentation head `96ade607`, main `c6152b38`. The comparison from last tested application source `ca5f0cb` contains three documentation/evidence-only commits, no executable/test/workflow changes. The source manifest remains `823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81`. No open code issues or PR review comments were found. Fixed entrypoints, route deny lists and product-specific encrypted backups remain implemented in the same tested source.

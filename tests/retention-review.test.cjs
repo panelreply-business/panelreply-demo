@@ -8,6 +8,7 @@ const { SCHEMAS, SCHEMA_VERSION, StoreError } = require('../workspace/store.cjs'
 function fixture(t) {
   const db = new DatabaseSync(':memory:');
   for (const sql of Object.values(SCHEMAS[SCHEMA_VERSION].tables)) db.exec(sql);
+  for (const sql of Object.values(SCHEMAS[SCHEMA_VERSION].indexes)) db.exec(sql);
   for (const id of ['a', 'b']) db.prepare('INSERT INTO businesses VALUES (?,?,1,?,0)').run(id, 'Synthetic business', '{}');
   t.after(() => db.close());
   let at = 10000;

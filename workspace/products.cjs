@@ -10,6 +10,8 @@ const MARKER = 'product-binding.json';
 const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 const LEAD = new RegExp('^/api/leads/' + UUID + '$');
 const CONVERSATION = new RegExp('^/api/leads/' + UUID + '/conversation$');
+const LEAD_TASKS = new RegExp('^/api/leads/' + UUID + '/tasks$');
+const CALLBACK_TASK = new RegExp('^/api/callback-tasks/' + UUID + '$');
 const PANEL = new RegExp('^/api/panel-projects/' + UUID + '$');
 const EXPORT = new RegExp('^/api/panel-projects/' + UUID + '/export\\.(?:csv|xlsx)$');
 const SOURCES = new RegExp('^/api/panel-projects/' + UUID + '/sources$');
@@ -21,15 +23,15 @@ const liveCapabilities = { liveCalls: false, liveMessages: false, booking: false
 const PRODUCTS = Object.freeze({
   combined: Object.freeze({ id: 'combined', label: 'PanelReply internal integration harness', homePath: '/',
     envPrefix: null, defaultPort: 10001, cookieStem: 'PanelReply',
-    capabilities: Object.freeze({ intake: true, businessFacts: true, assistantUsage: true,
+    capabilities: Object.freeze({ intake: true, businessFacts: true, assistantUsage: true, callbackScheduling: true,
       panelProjects: true, ocr: true, csvExport: true, xlsxExport: true, ...liveCapabilities }) }),
   callback: Object.freeze({ id: 'callback', label: 'PanelReply Callback', homePath: '/',
     envPrefix: 'CALLBACK', defaultPort: 10001, cookieStem: 'PanelReplyCallback',
-    capabilities: Object.freeze({ intake: true, businessFacts: true, assistantUsage: true,
+    capabilities: Object.freeze({ intake: true, businessFacts: true, assistantUsage: true, callbackScheduling: true,
       panelProjects: false, ocr: false, csvExport: false, xlsxExport: false, ...liveCapabilities }) }),
   spreadsheet: Object.freeze({ id: 'spreadsheet', label: 'PanelReply Spreadsheets', homePath: '/panels',
     envPrefix: 'SPREADSHEET', defaultPort: 10002, cookieStem: 'PanelReplySpreadsheet',
-    capabilities: Object.freeze({ intake: false, businessFacts: false, assistantUsage: false,
+    capabilities: Object.freeze({ intake: false, businessFacts: false, assistantUsage: false, callbackScheduling: false,
       panelProjects: true, ocr: true, csvExport: true, xlsxExport: true, ...liveCapabilities }) })
 });
 
@@ -62,11 +64,14 @@ function allowsProductRoute(id, route, method) {
   if ((route === '/api/login' || route === '/api/logout') && method === 'POST') return true;
   if (route === '/api/session' && method === 'GET') return true;
   if (product.id === 'callback') {
-    if (read && ['/', '/preview', '/assets/app.js', '/assets/preview.js'].includes(route)) return true;
+    if (read && ['/', '/preview', '/assets/app.js', '/assets/preview.js', '/assets/schedule.js'].includes(route)) return true;
     if (method === 'GET' && ['/api/assistant', '/api/assistant/usage', '/api/profile', '/api/leads', '/api/export'].includes(route)) return true;
     if (route === '/api/profile' && method === 'PATCH') return true;
     if (['/api/leads', '/api/preview'].includes(route) && method === 'POST') return true;
     if (LEAD.test(route) && ['GET', 'PATCH', 'DELETE'].includes(method)) return true;
+    if (route === '/api/callback-tasks' && method === 'GET') return true;
+    if (LEAD_TASKS.test(route) && method === 'POST') return true;
+    if (CALLBACK_TASK.test(route) && method === 'PATCH') return true;
     return CONVERSATION.test(route) && method === 'DELETE';
   }
   if (read && ['/', '/panels', '/assets/panels.js'].includes(route)) return true;

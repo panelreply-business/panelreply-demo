@@ -317,7 +317,7 @@
         "profile": "desktop",
         "suite": "callback"
       },
-      "minimumCases": 7
+      "minimumCases": 15
     },
     {
       "id": "callback-program-linux-firefox",
@@ -329,7 +329,7 @@
         "profile": "desktop",
         "suite": "callback"
       },
-      "minimumCases": 7
+      "minimumCases": 15
     },
     {
       "id": "callback-program-linux-webkit",
@@ -341,7 +341,7 @@
         "profile": "desktop",
         "suite": "callback"
       },
-      "minimumCases": 7
+      "minimumCases": 15
     },
     {
       "id": "spreadsheet-program-linux-chromium",
@@ -387,6 +387,211 @@
         "os": "darwin",
         "architecture": "arm64"
       }
+    },
+    {
+      "id": "callback-program-darwin-intel-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-intel-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 8
+    },
+    {
+      "id": "callback-program-darwin-intel-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-intel-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 8
+    },
+    {
+      "id": "callback-program-darwin-intel-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-intel-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 8
+    },
+    {
+      "id": "callback-program-darwin-arm64-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-arm64-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 8
+    },
+    {
+      "id": "callback-program-darwin-arm64-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-arm64-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 8
+    },
+    {
+      "id": "callback-program-darwin-arm64-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-arm64-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 8
+    },
+    {
+      "id": "node-darwin-arm64",
+      "kind": "node",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "suite": "node-portable"
+      },
+      "minimumCases": 6938
+    },
+    {
+      "id": "client-darwin-arm64-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "portable"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-arm64-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "portable"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-arm64-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "portable"
+      },
+      "minimumCases": 92
     }
   ],
   "releaseDecision": "Independent for callback and spreadsheet. Numeric targets never override product release gates.",

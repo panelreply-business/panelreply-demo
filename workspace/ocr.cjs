@@ -266,7 +266,7 @@ const BINARY = '/usr/bin/tesseract';
 const ISOLATION_BINARY = '/usr/bin/bwrap';
 const NORMALIZER_BINARY = '/usr/bin/python3';
 const NORMALIZER_SCRIPT = path.join(__dirname, 'ocr-preprocess.py');
-const NORMALIZER_METHOD = 'median3-isolated-noise';
+const NORMALIZER_METHOD = 'median3-small-text-v2';
 const PROCESS_BINARY = '/usr/bin/prlimit';
 const PROCESS_PREFIX = Object.freeze([
   `--as=${LIMITS.nativeAddressSpaceBytes}:${LIMITS.nativeAddressSpaceBytes}`,
@@ -444,14 +444,20 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
       if (normalization.method !== NORMALIZER_METHOD || normalization.pillowVersion !== status.normalizer.pillowVersion || typeof normalization.applied !== 'boolean'
         || !Number.isSafeInteger(normalization.isolatedNoisePixels) || normalization.isolatedNoisePixels < 0 || normalization.isolatedNoisePixels > image.width * image.height
         || normalization.imagePixels !== image.width * image.height || normalization.thresholdPixels !== Math.max(32, Math.ceil(image.width * image.height / 1000))
-        || normalization.applied !== (normalization.isolatedNoisePixels >= normalization.thresholdPixels)) fail('OCR_OUTPUT_INVALID');
+        || normalization.applied !== (normalization.isolatedNoisePixels >= normalization.thresholdPixels)
+        || !Number.isSafeInteger(normalization.inkBandCount) || normalization.inkBandCount < 0 || normalization.inkBandCount > image.height
+        || !Number.isSafeInteger(normalization.medianInkBandHeight) || normalization.medianInkBandHeight < 0 || normalization.medianInkBandHeight > image.height
+        || (normalization.inkBandCount === 0 ? normalization.medianInkBandHeight !== 0 : normalization.medianInkBandHeight < 3)) fail('OCR_OUTPUT_INVALID');
+      const expectedScale = normalization.medianInkBandHeight >= 3 && normalization.medianInkBandHeight < 16
+        && image.width <= LIMITS.imageDimension / 2 && image.height <= LIMITS.imageDimension / 2 && image.width * image.height <= LIMITS.imagePixels / 4 ? 2 : 1;
+      if (normalization.rescaleFactor !== expectedScale) fail('OCR_OUTPUT_INVALID');
       const normalizedBytes = normalized.subarray(separator + 1);
-      if (normalization.applied) {
+      if (normalization.applied || expectedScale !== 1) {
         if (!normalizedBytes.length || normalizedBytes.length > LIMITS.normalizedImageBytes
           || !normalizedBytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) fail('OCR_OUTPUT_INVALID');
         let dimensions;
         try { dimensions = inspectPng(normalizedBytes); } catch { fail('OCR_OUTPUT_INVALID'); }
-        if (dimensions.width !== image.width || dimensions.height !== image.height) fail('OCR_OUTPUT_INVALID');
+        if (dimensions.width !== image.width * expectedScale || dimensions.height !== image.height * expectedScale) fail('OCR_OUTPUT_INVALID');
         input = pngRecognitionBytes(normalizedBytes);
       } else if (normalizedBytes.length) fail('OCR_OUTPUT_INVALID');
       const recognizePass = async args => {
@@ -470,6 +476,7 @@ function createOcrService({ spawnProcess = spawn, recognitionTimeoutMs = LIMITS.
           result.warnings.push('Automatic orientation fallback was used. Compare every character with the original source image.');
         }
       }
+      if (expectedScale !== 1) result.warnings.push('Small text was enlarged for OCR. Review every character against the original source image.');
       return { engine: 'tesseract', engineVersion: status.version, ...result,
         processing: { passes, orientationFallbackUsed, normalization }, durationMs: Math.max(0, Math.round(now() - start)) };
     } finally { activeRecognition = false; processingImage = false; }

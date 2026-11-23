@@ -30,6 +30,8 @@ for (const name of ['index', 'preview', 'login']) {
     if (name === 'index') {
       assert.match(html, /id="nav-inbox"/);
       assert.match(html, /id="nav-profile"/);
+      assert.match(html, /id="nav-schedule"/);
+      assert.match(html, /src="\/assets\/schedule\.js"/);
       assert.match(html, /id="preview-link" href="\/preview"/);
       for (const id of ['dashboard-link', 'panels-link', 'projects-link', 'exports-link']) assert.ok(!html.includes(`id="${id}"`));
     }
@@ -43,7 +45,7 @@ for (const name of ['panels', 'login']) {
     assert.match(html, /data-product-home="\/panels"/);
     assert.match(html, /<title>[^<]*PanelReply Spreadsheets<\/title>/);
     assert.match(html, /SPREADSHEET WORKSPACE/);
-    assert.doesNotMatch(html, /href="(?:\/(?:dashboard|preview)|\/#settings|\/")|src="\/assets\/(?:app|preview|dashboard)\.js"/);
+    assert.doesNotMatch(html, /href="(?:\/(?:dashboard|preview)|\/#settings|\/")|src="\/assets\/(?:app|preview|dashboard|schedule)\.js"/);
     assert.doesNotMatch(html, /Customer requests|Business profile|review requests|business answers/);
     assert.doesNotMatch(html, /<!-- \/?product:/);
     if (name === 'panels') {

@@ -37,6 +37,8 @@ When a prerequisite is unavailable, complete every other authorized row. Record 
 - Collect bundled and multi-turn customer details. Preserve names, phone formatting, job scope, ZIP, callback preferences and requested dates.
 - Verify corrections, ambiguous answers, wrong-role numbers/names, negation and conflicts. Prior values remain until the customer supplies the required clarification.
 - Review, save, reopen, search, update status/notes and export the saved request.
+- Schedule, reschedule, record outcomes, cancel and create follow-ups. Verify exact UTC/time-zone display, skipped/repeated clock-change times, due/overdue queue filters, task/request revisions, lost-response retries, export v2 and task recovery.
+- Preserve task notes when recording an outcome. A rejected retry cannot clear an earlier unknown result. STOP, safety holds, missing permission and closed/review requests block contact actions while permitting cancellation.
 - Verify persistent STOP/opt-outs, contact permission and safety holds across resets, retries, deletion, restore and new sessions.
 - Verify cancellation, timeout, malformed output, stale facts, duplicate attempts and durable usage controls with synthetic providers.
 - Confirm saving sends no message and does not book an appointment.
@@ -53,6 +55,7 @@ When a prerequisite is unavailable, complete every other authorized row. Record 
 - Measure the frozen synthetic OCR corpus. Record every nonexact result separately from engine execution success.
 - Verify required native isolation on an appropriate host without an unconfined fallback. Keep representative-photo quality separate.
 - Confirm callback intake, business-answer, assistant/provider, lead and callback export routes are unavailable in spreadsheet mode.
+- Confirm callback task APIs and scheduling scripts are unavailable in spreadsheet mode.
 - Keep actual Excel, camera/file-picker behavior and physical mobile workflows explicit until tested.
 
 ## Shared requirements

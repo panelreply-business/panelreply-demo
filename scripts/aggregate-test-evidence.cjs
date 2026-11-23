@@ -10,7 +10,7 @@ const FORMATS = new Set(['panelreply-node-evidence-v1', 'panelreply-platform-evi
 const STATUSES = Object.freeze(['PASS', 'SKIP', 'TODO', 'EXPECTED_FAILURE', 'BLOCKED', 'NOT_RUN', 'RUNNING', 'CANCELLED', 'UNEXPECTED_SUCCESS', 'FAIL', 'ERROR']);
 const SEVERITY = new Map(STATUSES.map((status, index) => [status, index]));
 const NODE_SUITES = new Set(['node-all', 'node-portable']);
-const BROWSER_SUITES = new Set(['portable', 'portable-extra', 'portable-complement', 'baseline', 'private', 'mobile', 'callback', 'spreadsheet']);
+const BROWSER_SUITES = new Set(['portable', 'portable-extra', 'portable-complement', 'baseline', 'private', 'mobile', 'callback', 'spreadsheet', 'spreadsheet-manual']);
 const SHA1 = /^[a-f0-9]{40}$/;
 const SHA256 = /^[a-f0-9]{64}$/;
 const MAX_REPORT_BYTES = 128 * 1024 * 1024;
@@ -81,6 +81,10 @@ function validateReport(report, label = 'report') {
   const node = report.format === 'panelreply-node-evidence-v1';
   requireValue((node ? NODE_SUITES : BROWSER_SUITES).has(report.suite), 'INVALID_SUITE', 'Unknown evidence suite: ' + label);
   if (['callback', 'spreadsheet'].includes(report.suite)) requireValue(report.deploymentMode === report.suite, 'INVALID_DEPLOYMENT_MODE', 'Selected-product browser evidence must identify its actual deployment mode.');
+  if (report.suite === 'spreadsheet-manual') {
+    requireValue(report.deploymentMode === 'spreadsheet', 'INVALID_DEPLOYMENT_MODE', 'Manual spreadsheet evidence must use the fixed spreadsheet entrypoint.');
+    requireValue(normalizeOs(report.platform?.os) === 'darwin', 'INVALID_PLATFORM', 'The macOS manual spreadsheet suite cannot establish another platform.');
+  }
   requireValue(Array.isArray(report.tests) && report.tests.length <= MAX_TESTS, 'INVALID_TESTS', 'A bounded list of case outcomes is required: ' + label);
   requireValue(Array.isArray(report.infrastructureErrors), 'MISSING_INFRASTRUCTURE_STATUS', 'Infrastructure outcomes must be explicit: ' + label);
   if (node) requireValue(typeof report.summarySuccess === 'boolean', 'MISSING_RUN_STATUS', 'The Node runner summary is required: ' + label);

@@ -373,7 +373,7 @@ test('legacy schema 2 archive remains readable and migrates transactionally with
     assert.equal(migrated.audit.at(-1).details.source, 'migration');
   }
   finally { legacy.close(); }
-  db = new DatabaseSync(path.join(restoredDir, 'workspace.sqlite')); assert.equal(assertWorkspaceSchema(db), 3); db.close();
+  db = new DatabaseSync(path.join(restoredDir, 'workspace.sqlite')); assert.equal(assertWorkspaceSchema(db), SCHEMA_VERSION); db.close();
 });
 
 test('backup validation rejects cross-tenant or malformed deletion metadata before publishing an archive', async t => {
