@@ -1,0 +1,22 @@
+{
+  "format": "panelreply-windows-storage-toolchain-v1",
+  "node": "24.22.3",
+  "architecture": "x64",
+  "generator": "Visual Studio 17 2022",
+  "toolset": "v143",
+  "windowsSdk": "10.0.26100.0",
+  "minimumCMake": "3.27.0",
+  "releaseSource": "https://nodejs.org/en/blog/release/v24.22.3",
+  "distribution": "https://nodejs.org/dist/v24.22.3/",
+  "nodeExecutableSha256": "86fc4785327db5f5c7558dc6156c543b433c313e813a222e088086222ab4afa6",
+  "dependencies": [
+    {
+      "name": "node-v24.22.3-headers.tar.gz",
+      "sha256": "bc93bde109befc916a62348caae708a48f9550150d786398fea2d773607c18da"
+    },
+    {
+      "name": "win-x64/node.lib",
+      "sha256": "a0a84aa03917b578d286010b7521837e9ff1136ffb2e4a406c14316c33fd06f7"
+    }
+  ]
+}

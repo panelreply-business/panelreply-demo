@@ -1,5 +1,11 @@
 # Release acceptance
 
+## November 23 Windows component and first native Safari execution
+
+The standalone Windows component adds no product capability or release credit yet. Its eight local harness checks pass, while native compilation and 15 component methods await standard Windows CI. Existing product code, release policy and prior workflow jobs remain unchanged. Windows private-product acceptance stays open. [Scope and local evidence](WINDOWS_NATIVE_COMPONENT_2026_11_23.md).
+
+On committed runtime source `13b8741`, native Safari now records one callback PASS and five FAIL outcomes. Native session/installation identity and all source bytes verify. Two failures concern native datetime entry and three concern the spreadsheet test's singular product label. The complete run86 ledger is still pending. [Native result](evidence/native-safari-run86.json). These failures and the manual Safari requirement remain open.
+
 ## November 23 read-snapshot and browser-correction checkpoint
 
 The next candidate passes 9,217 local Node/API/HTTP checks with stable manifest `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658`: 9,071 product cases and 146 excluded harness checks. Fifteen new cases verify consistent project/source/export and request/conversation reads during real concurrent commits. Zero failures or skipped outcomes. [Local evidence](evidence/snapshot-layout-local-2026-11-23.json).

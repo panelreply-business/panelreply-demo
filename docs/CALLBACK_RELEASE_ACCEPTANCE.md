@@ -1,5 +1,11 @@
 # Callback release acceptance
 
+## November 23 first native Safari callback execution
+
+Run86 on `13b8741` starts the installed Safari session with verified browser/driver/host identity. Intake, status persistence and sign-out pass. Both scheduling-related methods fail because the test's native ISO typing leaves the datetime-local field empty. Native keyboard/control behavior requires investigation while exact local/UTC/timezone and persistence requirements remain. [Source-bound native evidence](evidence/native-safari-run86.json).
+
+The Windows component remains outside the callback product. Eight local component-evidence checks do not establish native storage, SQLite sidecars, callback journeys or private Windows support. [Component scope](WINDOWS_NATIVE_COMPONENT_2026_11_23.md). CB-12 and the independent release decision remain open.
+
 ## November 23 request snapshot and browser correction
 
 Eight new regressions verify one read snapshot for request state and conversation history under real concurrent update, delete, STOP and safety-hold commits. List reads stay coherent across requests. Existing caller transactions remain open. Fresh task writes still reject stale versions and current contact restrictions. [Callback evidence](CALLBACK_READ_SNAPSHOT_2026_11_23.md). The shared final local regression passes 9,217 checks, including 9,071 product cases and 146 excluded harness checks. This is not callback-only credit. [Local record](evidence/snapshot-layout-local-2026-11-23.json).

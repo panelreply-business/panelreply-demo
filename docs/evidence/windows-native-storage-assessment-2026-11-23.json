@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "assessmentDate": "2026-11-23",
+  "scope": "read-only Windows native-storage adapter feasibility and prerequisites",
+  "root": "/workspace/scratch/8f544d546bb7/panelreply-demo",
+  "sourceCommit": "1b35490335203348572e938bcc30dfc0f05d93e1",
+  "sourceState": "dirty integration checkout observed read-only; hashes identify inspected files, not an executed candidate",
+  "observedFileHashes": {
+    "docs/WINDOWS_STORAGE_GAP.md": "01d92f40f33b47602264fee119d640957295af74572a5a3c9b75112617b8a3aa",
+    "workspace/file-safety.cjs": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad",
+    "workspace/products.cjs": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf",
+    "workspace/store.cjs": "e5b27a9ff3253cabb7f455195706eaf762ba3f72e56c682ad83dd00cf0340893",
+    "workspace/backup.cjs": "4a691dc0467c8e7919e4e8bd53b2984b1f492454c822209fee370eb6cdd6b6b1",
+    "workspace/ocr.cjs": "75638551bd43b0fd5a37d059e1486f399b9941614650537961ea79f968771da1",
+    "tests/product_browser_test.py": "ffb696aba2bacb564d174a894df94b6c9c648e93fb6e78b26fcd3b82b4d309e8",
+    "tests/macos_product_browser_test.py": "05dd5e9e30e7141886d96849b3bdfdca060df498277f2f2d8b7f59e9658af50f",
+    "tests/workspace_browser_test.py": "4ddf7eb6c28ce6410664b6cbd30f127d887ece8f68a9f7f263e301a9a53c8cac",
+    "tests/release_platform_runner.py": "16ead6b00d4f722bfd74a443e5e2ccf99fe4aff3d4bbc86647e3e64d38c95c7f",
+    "tests/browser-requirements.txt": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82",
+    "scripts/test-evidence.cjs": "760e48c53578bb028a3b0909b6b50931ac3b0a05590d3bf3dd044437ec3ff387",
+    "scripts/aggregate-test-evidence.cjs": "6d87d6c5c28f0d1d160dd86e86e90932b89087fccc5f7f9d7f8e2d635265870e",
+    ".github/workflows/demo-tests.yml": "cfb88dea1ba035bbec7510c217dc78c38c9a889e735ba6b843cfb91cf6a414a6",
+    "docs/test-milestones.json": "bde713a2eb921df4a730331938297b1d26740306c2ab9d36e65acd5b474f8886"
+  },
+  "report": "/tmp/panelreply-windows-adapter-assessment-20261123.md",
+  "reportSha256": "e6821a2346c4ad34448bd2ef0f0ea137b7439809a7b44628adbb3806a711f1d7",
+  "nativeWindowsExecutions": 0,
+  "addedPassingCases": 0,
+  "sourceEdits": [],
+  "acceptance": "NOT_VERIFIED",
+  "nextStep": "Implement a Windows-only Node-API private-create/handle/SID-DACL boundary plus adversarial component tests on the existing standard Windows runner; do not enable product startup until SQLite/recovery integration passes.",
+  "newTimeSensitiveConstraint": {
+    "source": "https://github.com/actions/runner-images/issues/15315",
+    "begins": "2026-11-30",
+    "finding": "Windows runner D: volumes change to ReFS; select and observe an NTFS private-fixture root instead of assuming checkout/RUNNER_TEMP filesystem."
+  }
+}

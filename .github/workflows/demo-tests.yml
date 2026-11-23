@@ -255,6 +255,64 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  windows-storage-component:
+    name: Windows private storage component
+    # Component evidence only. Neither product loads this adapter yet.
+    # Fixture selection must observe NTFS and must not assume D: is NTFS.
+    runs-on: windows-2022
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+      - name: Build the pinned Windows component and separate probe artifacts
+        id: component_build
+        run: ./scripts/build-windows-storage.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'panelreply-windows-storage-build')
+      - name: Record every component case, including unexecuted cases after build failure
+        if: always()
+        env:
+          PANELREPLY_COMPONENT_BUILD_OUTCOME: ${{ steps.component_build.outcome }}
+        run: |
+          $ComponentArguments = @('scripts/run-windows-storage.cjs',
+            '--build-directory', (Join-Path $env:RUNNER_TEMP 'panelreply-windows-storage-build'),
+            '--output', (Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence/windows-storage-component.json'))
+          if ($env:PANELREPLY_COMPONENT_BUILD_OUTCOME -ne 'success') {
+            $ComponentArguments += '--build-failed'
+          }
+          & node @ComponentArguments
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify component evidence accounting without product credit
+        if: always()
+        run: |
+          $EvidenceDirectory = Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence'
+          New-Item -ItemType Directory -Path $EvidenceDirectory -Force | Out-Null
+          & node --test tests/windows-storage-evidence.harness.cjs 2>&1 | Tee-Object -FilePath (Join-Path $EvidenceDirectory 'component-evidence-harness.log')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Preserve component results and build provenance outside product totals
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-storage-component-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/panelreply-windows-component-evidence/*
+            ${{ runner.temp }}/panelreply-windows-storage-build/*.json
+            ${{ runner.temp }}/panelreply-windows-storage-build/configure.log
+            ${{ runner.temp }}/panelreply-windows-storage-build/build.log
+            ${{ runner.temp }}/panelreply-windows-storage-build/dependencies/SHASUMS256.txt
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/configured-toolchain.json
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/CMakeCache.txt
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/CMakeFiles/**/CMakeCXXCompiler.cmake
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/CMakeFiles/**/CMakeSystem.cmake
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/*.vcxproj
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/Release/*.node
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/Release/panelreply_windows_storage_fixture.exe
+          if-no-files-found: error
+          retention-days: 30
+
   portable-release-browsers:
     name: Static client (${{ matrix.os }}, ${{ matrix.browser }})
     runs-on: ${{ matrix.os }}

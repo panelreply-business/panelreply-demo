@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: component accounting retains every known method and marks only missing methods NOT_RUN
+ok 1 - component accounting retains every known method and marks only missing methods NOT_RUN
+  ---
+  duration_ms: 1.78234
+  type: 'test'
+  ...
+# Subtest: an unexpected method cannot erase an observed failure or pass
+ok 2 - an unexpected method cannot erase an observed failure or pass
+  ---
+  duration_ms: 0.254944
+  type: 'test'
+  ...
+# Subtest: duplicate methods retain their observations and cannot erase another executed failure
+ok 3 - duplicate methods retain their observations and cannot erase another executed failure
+  ---
+  duration_ms: 0.826907
+  type: 'test'
+  ...
+# Subtest: strict parser failure fallback preserves explicit native failure and unavailable capability statuses
+ok 4 - strict parser failure fallback preserves explicit native failure and unavailable capability statuses
+  ---
+  duration_ms: 0.366893
+  type: 'test'
+  ...
+# Subtest: native manifest requires observed SDK, compiler, dependencies and separate probe attribution
+ok 5 - native manifest requires observed SDK, compiler, dependencies and separate probe attribution
+  ---
+  duration_ms: 2.216855
+  type: 'test'
+  ...
+# Subtest: component output paths cannot enter source manifests or masquerade as release evidence
+ok 6 - component output paths cannot enter source manifests or masquerade as release evidence
+  ---
+  duration_ms: 0.474516
+  type: 'test'
+  ...
+# Subtest: failed native build still writes all known NOT_RUN outcomes
+ok 7 - failed native build still writes all known NOT_RUN outcomes
+  ---
+  duration_ms: 186.915135
+  type: 'test'
+  ...
+# Subtest: unavailable native build cannot silently omit component outcomes
+ok 8 - unavailable native build cannot silently omit component outcomes
+  ---
+  duration_ms: 129.427219
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 456.137703

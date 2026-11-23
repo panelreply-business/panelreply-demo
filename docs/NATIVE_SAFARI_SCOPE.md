@@ -1,5 +1,11 @@
 # Native desktop Safari scope
 
+## Run86 native execution
+
+The exact desktop request on committed `13b8741` starts installed Safari26.6 with stable matching browser/driver/host evidence. All six methods are attempted: callback one PASS/two FAIL and spreadsheet zero PASS/three FAIL. The failed callback methods type an ISO datetime string but observe an empty native control value. The spreadsheet methods fail setup on a singular/plural product-label expectation. The corresponding complete workflows remain unverified. [Source-bound job record](evidence/native-safari-run86.json).
+
+The next repair must use actual native keyboard/control entry, retain exact local/UTC/timezone and persistence checks, and preserve real CSV/XLSX downloads. No injected value/events or API seeding can replace those observations. The manual Safari gate remains separate.
+
 Prepared on 2026-11-23. No native Safari product journey has run locally.
 
 ## First committed attempt and correction

@@ -1,5 +1,13 @@
 # PanelReply development progress
 
+## Standalone Windows storage verification candidate — November 23, 2026
+
+The reviewed Windows component and its separate standard-runner job are ready for native CI. Neither product imports it. Existing application/tests and all 14 prior jobs stay byte/structure unchanged. The source manifest is `1d80393f3534eda1e76be9fa28c41f9a0a01e873ba1dec4253915472bbc6afe1` across 192 entries. Eight report/provenance harness checks and seven JavaScript syntax checks pass. All 15 native methods remain unexecuted locally and contribute zero product credit. [Integration evidence](evidence/windows-component-integration-2026-11-23.json) and [component scope](WINDOWS_NATIVE_COMPONENT_2026_11_23.md).
+
+Independent review corrected denied-open expectations, a tautological directory-list check and an exclusive-lease test ordering error. The candidate preserves same-handle cleanup, observed NTFS and owner-SID/DACL checks, explicit reparse-mutation controls, separate instrumented race observations and an anonymous IO positive control. These source reviews do not establish Windows behavior. SQLite sidecars and persistent restore publication remain separate integration gates. [Review](reviews/windows-native-component-2026-11-23.md).
+
+The preceding runtime milestone is committed as `13b8741`, with its 9,217 local checks and tested source unchanged. Run86 is in progress. Native Safari starts and records one callback pass and five failures: two native date-entry failures and three spreadsheet title-contract failures. Those outcomes are verified against all 179 committed source files and remain visible while the next repair is developed. [Native evidence](evidence/native-safari-run86.json). No count closes either product's release decision.
+
 ## Coherent reads and browser corrections — November 23, 2026
 
 The next runtime milestone passes 9,217 Node/API/HTTP checks across 57 files with zero failures, skips, cancellations, TODOs or infrastructure errors. It contains 9,071 product cases and 146 excluded harness checks. Fifteen new regressions cover actual second-connection commits, and all 9,056 prior product cases remain. The source stays `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658` across 179 manifest entries. [Final local record](evidence/snapshot-layout-local-2026-11-23.json).

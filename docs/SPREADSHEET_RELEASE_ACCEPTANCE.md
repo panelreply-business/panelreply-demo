@@ -1,5 +1,11 @@
 # Spreadsheet release acceptance
 
+## November 23 first native Safari spreadsheet execution
+
+Run86 on `13b8741` verifies the installed Safari session but all three spreadsheet methods fail setup: the test expects singular PanelReply Spreadsheet while the actual product label is PanelReply Spreadsheets. This test-contract correction is pending. No native download, storage or recovery acceptance follows from these failures. [Source-bound native evidence](evidence/native-safari-run86.json).
+
+The reviewed Windows storage component remains unimported. Its local evidence checks do not establish native private storage, SQLite sidecars, spreadsheet workflows or Windows extraction. All corresponding product gates remain open. [Component scope](WINDOWS_NATIVE_COMPONENT_2026_11_23.md).
+
 ## November 23 project read-snapshot correction
 
 Seven new regressions reproduce and repair mixed project/source revisions during actual second-connection deletion and upload. CSV and XLSX now receive one saved snapshot, caller transactions remain open and failed reads clean up their own snapshot. Five baseline failures become seven passing cases, including two baseline contract passes. [Spreadsheet evidence](SPREADSHEET_READ_SNAPSHOT_2026_11_23.md).

@@ -1,0 +1,12 @@
+{
+  "scripts/build-windows-storage.ps1": "fec7d4c2a4a4334db4dbc3e980e8f961762b997d5a23ff60c74a238f3faf9a2e",
+  "scripts/run-windows-storage.cjs": "3abce96ab4f487549e55a1555f0de0f6ad19f421410c2cf5cf05f9ea7d14c736",
+  "workspace/native/windows-storage/CMakeLists.txt": "d7c1fe48c54e79bbc26ffb446da6131116af1910263875ddb94d26d846be564e",
+  "workspace/native/windows-storage/load.cjs": "33a2f9d1ddede758c8a3a5d9e1f482c30c2b2a4d8d78ed4b799c8c47b8dd7ca3",
+  "workspace/native/windows-storage/toolchain.json": "1cef6da62d5d9146025af815991e3cb1bb8084a3fa1215df4492790030e0dcce",
+  "tests/windows-storage-cases.cjs": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4",
+  "tests/windows-storage-support.cjs": "2c6c331978fa761141fb7d29e57f09c3ae0cc72f642d5a6fc5c0eb35ba48a3b9",
+  "tests/windows-storage-child.cjs": "03073e93bfa36113a6af2c566668e1a906fc6a229309ab53e81fb677baecb16e",
+  "tests/windows-storage.windows.cjs": "dd3bb0090215e807d4df9ae7ad2d29f57254d9feb23bd3db563f560a69e3836c",
+  "tests/windows-storage-evidence.harness.cjs": "8e767bc5cb192681f2dec211a6229548c482ab91946c417391fc2f2ce33aee3a"
+}

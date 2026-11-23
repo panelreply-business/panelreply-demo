@@ -8,6 +8,12 @@ Both private product entrypoints use `openProductStore()` in `workspace/products
 
 The exact directory-mode check therefore prevents native Windows startup. Bypassing that check would remove permission protection and leave no Windows ownership validation. This finding comes from source inspection and primary documentation, not a private-server execution on Windows.
 
+## Current standalone candidate
+
+The inactive [native component](WINDOWS_NATIVE_COMPONENT_2026_11_23.md) now has 15 adversarial methods, source/provenance review and a separate standard Windows CI job. Eight local evidence-harness checks pass. Native compilation and actual methods remain pending. Neither product loads it, so the startup gap described above remains.
+
+The creation lease's DELETE handle is only a live-process barrier. A crash closes it, so it cannot replace persistent incomplete-restore refusal. Ordinary SQLite Win32 creation also needs direct ownership/DACL and WAL/SHM/journal observations under the pinned runtime. Do not relax the existing product checks or infer those boundaries from a protected parent alone. [Integration evidence](evidence/windows-component-integration-2026-11-23.json).
+
 ## Required adapter
 
 Start with local NTFS storage and fully qualified local paths. Reject remote paths, device namespaces, alternate data streams, unsupported volumes and reparse points. Preserve refusal to change the permissions or owner of an existing unsafe path.

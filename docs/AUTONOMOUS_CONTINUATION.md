@@ -10,7 +10,17 @@ Purchases, customer contact, production customer data, public deployment, produc
 
 The two products have separate release decisions and independent entrypoints, data binding, sessions and recovery. December 31, 2026 remains the first-release target. The existing daily check runs at 10 AM America/Detroit through December 20 inclusive. Do not duplicate it. Product order and the second release date remain undecided. Real-world testing needs its applicable technical gates and owner approval.
 
-## Current source and next verified milestone
+## Current source and next component milestone
+
+The runtime read-snapshot/layout/Safari-request milestone is committed as `13b8741ca7ce192c9d187b0b7c0033760531c5b5`, tree `14f72250bbc305d9087cb271fb4b5eaf2ad58aaa`, with the unchanged locally tested manifest `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658`. [Run86](https://github.com/panelreply-business/panelreply-demo/actions/runs/45233837607) is in progress. Do not transfer earlier passes onto this source without its reports.
+
+Installed Safari now starts and executes all six methods with verified native identity. One callback intake/status/persistence/sign-out method passes. Two callback methods leave the native datetime-local field empty when the test types an ISO string. Three spreadsheet methods fail setup because the expected product label is singular while the application label is plural. Preserve these five failures; a native-keyboard/label repair is in a separate worktree. No JavaScript value/event injection or API seeding may replace the tested input workflow. [Verified native job](evidence/native-safari-run86.json).
+
+The next Windows component candidate has manifest `1d80393f3534eda1e76be9fa28c41f9a0a01e873ba1dec4253915472bbc6afe1` across 192 entries. It adds 13 source files and one separate standard Windows CI job. All previous application and test bytes are unchanged; only the existing workflow gains the new job, with all 14 earlier jobs and their dependencies preserved. Eight evidence-harness checks and seven syntax checks pass locally. The 15 native methods have zero local executions and earn zero product credit. [Integration record](evidence/windows-component-integration-2026-11-23.json), [scope](WINDOWS_NATIVE_COMPONENT_2026_11_23.md) and [review](reviews/windows-native-component-2026-11-23.md).
+
+Neither application imports this component. Actual native compilation, DACL/sharing/reparse boundaries, SQLite sidecars, persistent incomplete-restore state and no-overwrite publication remain prerequisites. The existing POSIX checks and all release-policy bytes remain unchanged.
+
+## Runtime source and preceding CI
 
 The Safari/reflow milestone is committed as `76db2d67702c2eee57185e06221257e1083e522e`, Git tree `5757371c9502fa7005f5bb1a652a819ac9991d3b`. [Run85](https://github.com/panelreply-business/panelreply-demo/actions/runs/45228816564) tests it through merge `f1947a5abbd16ade36295661e0e6ef60e7928a41`, with the same tree and manifest `208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd`.
 
@@ -23,7 +33,7 @@ The seven failures are distinct from the six unexecuted native cases:
 - Emulated WebKit tablet save/reopen completes its data assertions but records a task-read page error at teardown. A view-read interruption is plausible, not a confirmed initiating cause.
 - Installed Safari26.6 and its matching driver are observed, but session creation rejects the iOS-only `safari:useSimulator:false` capability on macOS. All six methods remain NOT_RUN, with zero product execution. [Native startup evidence](evidence/native-safari-run85.json).
 
-The next integrated read-snapshot/layout milestone passes all 9,217 local Node/API/HTTP checks across 57 files, with zero failures, skips, cancellations, TODOs or infrastructure errors and stable source. Product cases are 9,071 after excluding 146 harness checks. Fifteen cases are new: seven spreadsheet and eight callback, with all 9,056 prior product cases retained. The manifest is `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658` across 179 files. [Final local evidence](evidence/snapshot-layout-local-2026-11-23.json). Find the eventual commit by this manifest. Earlier focused/full runs receive no duplicate credit.
+The committed `13b8741` read-snapshot/layout milestone passes all 9,217 local Node/API/HTTP checks across 57 files, with zero failures, skips, cancellations, TODOs or infrastructure errors and stable source. Product cases are 9,071 after excluding 146 harness checks. Fifteen cases are new: seven spreadsheet and eight callback, with all 9,056 prior product cases retained. The manifest is `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658` across 179 files. [Final local evidence](evidence/snapshot-layout-local-2026-11-23.json). The committed executable bytes match this manifest. Earlier focused/full runs receive no duplicate credit.
 
 Project rows/source metadata and callback requests/conversations now share a deferred SQLite read snapshot. Existing caller transactions remain open. Real second-connection regressions cover deletion, upload, exports, STOP/safety holds, owner boundaries and cleanup. Current-version writes still enforce fresh restrictions. [Spreadsheet repair](SPREADSHEET_READ_SNAPSHOT_2026_11_23.md) and [callback repair](CALLBACK_READ_SNAPSHOT_2026_11_23.md).
 
@@ -71,12 +81,12 @@ The policy still has 54 automated requirements and seven manual gates. Nine fixe
 
 ## Exact next steps
 
-1. Commit the locally verified read-snapshot/layout/Safari correction with its evidence and docs to the existing development branch using a current-head lease. Verify its committed manifest equals `2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658`. Keep PR8 draft and main unchanged.
-2. Inspect that source's actual CI. Prioritize Linux callback WebKit reflow, all five corrected focus sequences, mobile WebKit save/reopen and the six installed-Safari methods. Keep all geometry, accessibility, page-error, source and native-provenance assertions. Preserve failures and investigate before editing.
-3. Preserve the final run84/run85 records and their earlier snapshots. Run84 ends with 24,796 PASS and two FAIL; its ARM job also ends cancelled without a runner or steps. Both final aggregates match their own immutable collector/policy. New source requires a new verified ledger, not a reinterpretation of either failed run.
-4. Integrate the independently reviewed standalone Windows component and separate workflow after this runtime commit. Verify final patch hashes, compilation, ACL/sharing/reparse-race countertests and evidence accounting on the standard Windows runner. Grant zero product credit. Neither application may import it before native, SQLite-sidecar and atomic recovery-publication boundaries pass.
-5. Continue OCR/native-isolation investigation using the existing evidence and authorization limits. Do not repeat rejected segmentation/model trials or guess ambiguous part numbers.
-6. Update this checkpoint, progress, both product acceptance records and PR metadata with exact source and outcomes. Continue the next authorized requirement. Compaction is not a stopping point.
+1. Commit the reviewed standalone Windows component, separate workflow and evidence/docs with a current-head lease on `13b8741`. Verify manifest `1d80393f3534eda1e76be9fa28c41f9a0a01e873ba1dec4253915472bbc6afe1`. Keep both product imports inactive, PR8 draft and main unchanged.
+2. Inspect that source's Windows component build and all 15 native outcomes. Missing build, loader, NTFS or positive controls stay unresolved. Verify actual compiler/SDK/Node dependencies, separate normal/probe binaries, source hashes and cleanup outcomes before considering application integration.
+3. Complete run86 artifact verification with its immutable `13b8741` collector/policy. Prioritize Linux/Mac callback reflow/focus, mobile WebKit save/reopen and all six native Safari cases. Preserve the five observed Safari failures. Do not wait indefinitely for ARM assignment.
+4. Review and integrate the separate Safari label/native-date input repair only after its source/test contract is checked. Require actual native keyboard/control input and retain exact local/UTC/timezone, persistence and downloaded-byte assertions. No injected value/event or API-seeded substitute.
+5. Review the isolated required-OCR-mode trusted-path overlap preflight. The current read-only /usr mount may include private storage/repository/home when configured under it. This is a source-confirmed configuration gap, not an observed native leak. Preserve resource-limits mode and the denied-host result; canonical overlap checks cannot prove absence of every bind alias or replace native denial execution.
+6. Preserve final run84/run85 and prior snapshots. Continue the Windows SQLite-sidecar/publication assessment, then the next authorized requirement. Update progress, product acceptance and PR metadata with exact evidence. Compaction is not a stopping point.
 
 ## Independent Windows implementation
 
