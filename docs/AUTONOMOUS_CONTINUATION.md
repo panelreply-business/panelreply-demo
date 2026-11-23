@@ -10,7 +10,17 @@ Purchases, customer contact, production customer data, public deployment, produc
 
 The products have separate release decisions and independent entrypoints, data binding, sessions and recovery. December 31, 2026 remains the first-release target. The existing daily check runs at 10 AM America/Detroit through December 20 inclusive. Do not duplicate it. Product order and the second release date remain undecided. Real-world testing needs its applicable technical gates and owner approval.
 
-## Current verified milestone
+## Current Windows diagnostic milestone
+
+The current candidate follows committed `1322d0630d377d9fe769dc15543321cb5f5fe373`, tree `6834fd89e5383cf8e4de5a50138c2244d0aab9a7`. Its manifest is `991af22d5c66708b55d1d7e01ce739a9dbab28e27c9e1f89c7f04cf5ecad6b8c` across 193 files. It changes only four component-test/helper sources, with application/storage policy and the 15 native method IDs unchanged. Nine component-evidence harness checks pass, one new, all excluded from product credit. Native execution is pending. [Diagnostic record](WINDOWS_FIXTURE_DIAGNOSTICS_2026_11_23.md).
+
+Run88 on `1322d063` compiles all three native artifacts and executes 12 PASS/three FAIL component methods, plus cleanup EPERM. Root verifies all 193 manifest entries and downloaded binary/project/build/toolchain/header-manifest hashes. Two empty-DACL fixture metadata operations fail without their native error details. The third failure rejects Windows 1921 after both held-directory enumerations prove absence. The candidate preserves bounded native errors, makes JSON emission atomic and allows 1921 only with the same independent absence assertions. It does not repair the unresolved empty-DACL lifecycle. [Verified run88 component](evidence/windows-native-component-run88.json).
+
+Next publish/verify this diagnostic candidate and inspect its Windows report for the exact empty-DACL API/error. Keep cleanup errors and original native failures. A retained DELETE fixture handle may itself force sharing failure against the component's read-only share mode. Do not accept error 32 as DACL evidence or change ACLs/privileges to make tests pass. Review a lifecycle solution only after native diagnostics establish the cause.
+
+Run88's six installed-Safari workflows and static Mac WebKit diagnostic journey are still running in the latest job observation. The current runtime manifest is `6b951e01…` as below. A separate reviewed spreadsheet client repair is in progress for wrong-project OCR responses and malformed warning metadata; use its own before/after evidence and preserve unchanged engine/dataset scope.
+
+## Preceding verified runtime milestone
 
 This milestone follows committed `9264d2a3575889c6b39140554fc767caf6e6a7ad`, tree `8213edf25c09c86042fbcc9b425f3116d5308006`. Its executable/test/workflow/policy manifest is `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e` across 193 files. All 9,233 local Node/API/HTTP checks pass across 58 files with zero failures, skips, TODOs, cancellations or infrastructure errors and unchanged source. Product cases are 9,086 after excluding 147 harness checks. All 9,071 prior product IDs remain. Fifteen product cases and one diagnostic harness case are new. Nine Python Safari harness checks pass separately with zero product credit. Focused runs earn no duplicate credit. [Local manifest and record](evidence/native-boundaries-local-2026-11-23.json).
 
@@ -53,7 +63,7 @@ SQLite sidecars, ordinary-account isolation, persistent incomplete-restore state
 
 ## Exact next steps
 
-1. Verify the commit containing this checkpoint is on the development branch with manifest `6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e`. Publish only reviewed staged scope with an expected-head lease if not already published. Keep PR8 draft and main unchanged.
+1. Verify the commit containing this checkpoint is on the development branch with manifest `991af22d5c66708b55d1d7e01ce739a9dbab28e27c9e1f89c7f04cf5ecad6b8c`. Publish only reviewed staged scope with an expected-head lease if not already published. Keep PR8 draft and main unchanged.
 2. Inspect that commit's Windows build promptly. Require actual compiler/SDK/Node identities, normal/probe/fixture hashes, all 15 native outcomes and cleanup/positive-control evidence. Repair failures without importing the component or weakening storage policy.
 3. Inspect all six native Safari methods. Retain trusted keyboard/control input, exact local/UTC/timezone behavior, native identity and actual CSV/XLSX bytes. Preserve failed input evidence. Harness success is not a browser pass.
 4. Inspect static Mac WebKit sample-action observations. A pass alone cannot close the intermittent defect. Distinguish timing hypotheses from observations.

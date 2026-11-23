@@ -7,10 +7,31 @@ const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { CASES } = require('./windows-storage-cases.cjs');
+const { fixture } = require('./windows-storage-support.cjs');
 const { completeOutcomes, rawLeafOutcomes, argumentsFor } = require('../scripts/run-windows-storage.cjs');
 const { validateManifest, PINS, ARTIFACTS, REJECTED_OVERRIDES } = require('../workspace/native/windows-storage/load.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const source = { sourceCommit: '1'.repeat(40), sourceTreeSha256: '2'.repeat(64) };
+
+test('native fixture failures preserve their Windows reason without converting required success to a pass', () => {
+  const diagnostic = { error: 'Could not inspect fixture security', win32Code: 5 };
+  const args = ['-e', 'process.stdout.write(' + JSON.stringify(JSON.stringify(diagnostic)) + '); process.exit(2)'];
+  assert.throws(() => fixture(process.execPath, args), error => {
+    assert.equal(error.status, 2);
+    assert.equal(error.win32Code, 5);
+    assert.equal(error.fixtureDiagnostic, diagnostic.error);
+    assert.match(error.message, /Could not inspect fixture security \(Windows 5\)/);
+    return true;
+  });
+  assert.deepEqual(fixture(process.execPath, args, { allowFailure: true }), diagnostic);
+  for (const output of ['{partial', JSON.stringify({ error: 'No numeric code' }),
+    JSON.stringify({ error: 'x'.repeat(4097), win32Code: 5 }),
+    JSON.stringify({ error: 'Invalid code', win32Code: -1 })]) {
+    assert.throws(() => fixture(process.execPath,
+      ['-e', 'process.stdout.write(' + JSON.stringify(output) + '); process.exit(2)'], { allowFailure: true }),
+    error => error.status === 2 && error.win32Code === undefined);
+  }
+});
 
 function manifest() {
   return {

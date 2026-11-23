@@ -11,9 +11,20 @@ function fixture(executable, args, options = {}) {
     output = execFileSync(executable, args, { encoding: 'utf8', timeout: 5000, maxBuffer: 1024 * 1024,
       windowsHide: true, env: options.env || process.env });
   } catch (error) {
-    if (options.allowFailure && error.status === 2 && typeof error.stdout === 'string') {
-      const result = JSON.parse(error.stdout);
-      if (typeof result.error === 'string' && Number.isInteger(result.win32Code)) return result;
+    // The native helper writes its diagnostic to stdout before exiting with 2.
+    // Preserve that observation even when this call requires success. The test
+    // runner otherwise retains only execFileSync's command/exit message.
+    let result;
+    if (error.status === 2 && typeof error.stdout === 'string'
+        && Buffer.byteLength(error.stdout) <= 65536) {
+      try { result = JSON.parse(error.stdout); } catch { /* Keep the original process failure. */ }
+    }
+    if (result && typeof result.error === 'string' && result.error.length > 0 && result.error.length <= 4096
+        && Number.isInteger(result.win32Code) && result.win32Code >= 0 && result.win32Code <= 0xffffffff) {
+      if (options.allowFailure) return result;
+      error.message += '\nNative fixture: ' + result.error + ' (Windows ' + result.win32Code + ')';
+      error.win32Code = result.win32Code;
+      error.fixtureDiagnostic = result.error;
     }
     throw error;
   }

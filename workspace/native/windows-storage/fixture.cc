@@ -197,7 +197,8 @@ void createFixture(const std::wstring& path, const std::wstring& policy, bool di
   if (directory) {
     require(CreateDirectoryW(path.c_str(), &security), "Could not create exclusive directory fixture");
     Handle handle = openMetadata(path);
-    std::cout << "{\"created\":true,\"metadata\":" << information(handle.value) << "}\n";
+    const std::string metadata = information(handle.value);
+    std::cout << "{\"created\":true,\"metadata\":" << metadata << "}\n";
   } else {
     Handle handle(CreateFileW(path.c_str(), GENERIC_READ | GENERIC_WRITE | READ_CONTROL,
         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, &security, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr));
@@ -205,7 +206,8 @@ void createFixture(const std::wstring& path, const std::wstring& policy, bool di
     DWORD written = 0;
     require(WriteFile(handle.value, kContents, static_cast<DWORD>(sizeof(kContents) - 1), &written, nullptr) &&
         written == sizeof(kContents) - 1 && FlushFileBuffers(handle.value), "Could not persist fixture bytes");
-    std::cout << "{\"created\":true,\"metadata\":" << information(handle.value) << "}\n";
+    const std::string metadata = information(handle.value);
+    std::cout << "{\"created\":true,\"metadata\":" << metadata << "}\n";
   }
 }
 

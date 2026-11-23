@@ -447,7 +447,10 @@ componentCase('WNS.instrumented_relative_create_race', async (t, base, record) =
   assert.equal(after.sourceChild.exists, false);
   // A rejected RootDirectory lookup is recorded as such. The separate complete
   // directory enumeration, not that access error, proves source-child absence.
-  assert.ok([2, 3, 1920].includes(after.sourceChild.win32Code));
+  // ERROR_CANT_RESOLVE_FILENAME (1921) is the observed refusal after the
+  // retained root becomes a reparse point. It is not evidence of absence by
+  // itself: both complete held-directory enumerations above remain required.
+  assert.ok([2, 3, 1920, 1921].includes(after.sourceChild.win32Code));
   assert.equal(fs.existsSync(path.join(target.directory, name)), false);
   code(() => lease.inspect(), ['REPARSE_POINT']);
 });

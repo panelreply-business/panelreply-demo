@@ -1,5 +1,11 @@
 # Release acceptance
 
+## Windows native failures and diagnostic follow-up — November 23, 2026
+
+Run88 on `1322d063` compiles the pinned Windows component and executes all 15 native methods: 12 PASS and three FAIL. Root verified the downloaded binaries/projects/build identity and all 193 committed manifest entries. Two failures occur in empty-DACL fixture metadata operations, with their exact native reasons missing from the old wrapper. The third rejects observed source-lookup error 1921 after independent held-directory enumerations prove no child. Fixture cleanup records EPERM. All outcomes remain outside product totals. [Verified evidence](evidence/windows-native-component-run88.json).
+
+The next manifest `991af22d5c66708b55d1d7e01ce739a9dbab28e27c9e1f89c7f04cf5ecad6b8c` preserves bounded native error details, emits create-fixture JSON atomically and accepts 1921 only alongside every existing independent absence assertion. Nine harness checks pass with zero product credit. Application/storage policy and all 15 native method IDs stay unchanged. Empty-DACL cause/cleanup still need investigation. [Reviewed diagnostic scope](WINDOWS_FIXTURE_DIAGNOSTICS_2026_11_23.md).
+
 ## November 23 verified browser corrections and next native repairs
 
 Final run86 on `13b8741` records 24,813 product PASS and six FAIL across 9,352 distinct cases after excluding 370 harness checks and 7,102 duplicates. All 35 release ZIPs and 37 reports bind to its exact source/policy. The immutable aggregate matches CI. Automated requirements are 43 PASS, three FAIL and ten NOT_TESTED. All seven manual gates remain NOT_TESTED. [Final record](evidence/callback-scheduling-run86.json).
