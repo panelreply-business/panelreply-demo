@@ -1,58 +1,74 @@
 # Autonomous development checkpoint
 
-Updated November 23, 2026, America/Detroit. Continue the existing `feature/interactive-dual-product-site` branch and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Do not restart the project.
+Updated November 23, 2026, America/Detroit. Continue `feature/interactive-dual-product-site` and draft [PR8](https://github.com/panelreply-business/panelreply-demo/pull/8). Do not restart the project.
 
-## Current authority
+## Authority and schedule
 
-The owner authorizes inspection, implementation, relevant testing, failure repairs, verified development-branch commits and progress updates until all authorized readiness work passes or an execution/usage limit prevents continuation.
+The owner authorizes inspection, implementation, relevant testing, repair, verified development-branch commits and progress updates until authorized readiness work passes or an execution/usage limit prevents continuation.
 
-No purchase, customer contact, production customer data, public deployment, production merge or software release is authorized. Record approval blockers and continue independent work. Keep both existing public services owner-suspended, with auto-deploy and previews disabled.
+Purchases, customer contact, production customer data, public deployment, production merge and release require owner approval. Record those blockers and continue independent work. Keep both existing services owner-suspended, with auto-deploy and previews off.
 
-The two products require separate release decisions and independently functioning workflows. December 31, 2026 remains the first-release target. The existing daily check continues at 10 AM America/Detroit through December 20. Do not create another schedule. Real-world testing still requires applicable technical gates and owner approval. The first product and second release date remain undecided.
+The two products have separate release decisions and independent entrypoints, data binding, sessions and recovery. December 31, 2026 remains the first-release target. The existing daily check runs at 10 AM America/Detroit through December 20 inclusive. Do not duplicate it. Product order and the second release date remain undecided. Real-world testing needs its applicable technical gates and owner approval.
 
-## Current implementation and source
+## Last committed CI checkpoint
 
-The preceding committed implementation is `e711d15d418406969631202642c9d055b47afca5`, with source/test/workflow/policy manifest `0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62`. [Run82](https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178) tests merge `f4bd404ba58730bd7110f6a88dbccf19ef96e580`. Use current remote branch history to locate the next integrated commit instead of reverting to this parent.
+[Run83](https://github.com/panelreply-business/panelreply-demo/actions/runs/45217347462) is complete, with failures retained. It tested branch source `1b35490335203348572e938bcc30dfc0f05d93e1` through merge `017a1b39b00851f2fbacb4bed7f8ffbd3e23c880`. Both have Git tree `510bc73ebc676725e166ae6b29ba0ac276c3589b`. The executable/test/workflow/policy manifest is `a635027376caf189c9d11b0db747196683387e6d0b2783b85dded4124999803a`. [Final source-bound record](evidence/callback-scheduling-run83.json).
 
-- Callback: schema-4 scheduling and follow-up, business-scoped due queues, create/reschedule/complete/cancel, exact UTC/named zones, clock-gap/fold handling, task/request revisions, retained uncertain retries, contact restrictions, JSON export v2 and product-bound recovery. [Contract](CALLBACK_SCHEDULING.md).
-- Resource correction: queue summaries avoid materializing unused request history. Archive validation scans bounded ledgers once. Same-spec near-capacity workload observes backup 74.45s to 3.58s and restore 47.21s to 2.12s. This is synthetic measurement, not a host SLA. [Evidence](CALLBACK_RESOURCE_VERIFICATION.md).
-- Spreadsheet: fixed product entrypoint, private sources, local OCR candidates, explicit review/correction, persistent rows and CSV/XLSX. Small-text and bounded deskew improve the local synthetic corpus 277 to 285 to 289 exact out of 310. The CI comparison also confirms the last four gains with no regression on its own unchanged image bytes. Accuracy remains FAIL. [Deskew](OCR_DESKEW_2026_11_23.md) and [CI comparison](evidence/ocr-deskew-ci-run82.json).
-- Browser corrections: sidebar scrollability restores tablet sign-out. Strict CSP stays intact. Optional WebKit screenshots are unavailable because of tool stylesheet insertion; product, geometry, keyboard and console checks remain active. Run82 verifies all three Mac manual spreadsheet suites and both existing mobile suites. Its callback font-probe calculation failure is repaired in the next candidate.
+All 34 emitted release artifacts and 35 reports were inspected. Independent aggregation with the exact committed collector/policy matches CI. The ledger has 24,672 product passes, two failures and one error across 9,260 distinct cases. It excludes 340 harness checks and 7,071 duplicate observations. Forty automated requirements pass, four fail and ten Apple Silicon requirements have no execution. Seven manual/actual-platform gates remain NOT TESTED. The active 10,000 goal remains incomplete, so the one-time 20,000 target has not activated.
 
-## Next integrated candidate
+- All 24 fixed callback touch executions pass across Chromium/WebKit and four emulated phone/tablet orientations. They verify trusted touch events, scheduling, outcomes/follow-up, persistent restrictions and unsaved edits. These are not physical-device results.
+- Selected callback WebKit fails at 320px with doubled text on Linux and Intel Mac. Observed document widths are 521px and 443px. The exact overflowing element was not recorded in run83.
+- Private WebKit recovery has one `Frame load interrupted` error during competing login navigation after API logout. The initiating in-flight request is unproven. Other authentication and recovery assertions remain required.
+- The Apple Silicon job finishes cancelled with runner ID zero, no steps and zero cases. No agent requested cancellation. Its cause remains unconfirmed.
+- Native OCR dependency identity passes. All 310 field outcomes match run82 on unchanged CI pipeline and dataset bytes. Accuracy stays FAIL at 289/310, with 263 blank fields preserved and zero native errors/review violations. [Dependency evidence](evidence/ocr-dependency-ci-run83.json).
+- Required native isolation remains BLOCKED before denial cases at bubblewrap loopback setup. Do not use a privilege exception or silent fallback. The nine HTTP workload checks and two public suspension guards pass as separate measurements, outside product-goal totals.
 
-The candidate adds callback touch journeys, OCR native-dependency identity, source-bound policy enforcement for the expanded mobile matrix and the exact font-doubling calculation. It passes 9,123 local Node/API/HTTP checks across 51 files with zero failures, skips, cancellations, TODOs or infrastructure errors. The manifest remains `a635027376caf189c9d11b0db747196683387e6d0b2783b85dded4124999803a`. [Local candidate record](evidence/mobile-metadata-local-2026-11-23.json).
+## Next integrated integrity milestone
 
-Product passes are 8,987. All 136 evidence-tooling checks are excluded. Thirteen existing helper cases were previously misclassified as product tests. The prior reported 9,000 therefore compares to 8,987 under the corrected classifier. Preserve historical reports and this correction. Never add overlapping local and CI observations to the same case/platform total.
+This batch follows `1b35490`. Locate its eventual commit in branch history by the executable/test/workflow/policy manifest `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3`. The full local Node/API/HTTP run passes 9,192 cases across 55 files with zero failures, skips, cancellations, TODOs or infrastructure errors and no source change during execution. Product passes are 9,056 after excluding 136 harness checks. Sixty-nine meaningful product cases are new relative to the preceding 9,123-case source. Focused runs and local/CI overlap receive no duplicate credit. [Local manifest, case inventory and file totals](evidence/integrity-local-2026-11-23.json).
 
-Callback collection identifies 12 methods in Chromium and 12 in WebKit. Three journeys per engine/profile cover scheduling/outcomes/follow-up, persistent contact suppression/cancellation and unsaved-edit guards with actual trusted touch events. These are emulated devices. Local collection executed zero browser methods. The policy now has 54 automated requirements and seven manual gates; SHA256 `1e23889598a3cfbf7a517aa308214f33a918dda288b04c15631f48223ba88717`. [Mobile contract](CALLBACK_MOBILE_VERIFICATION.md).
+Implemented and locally verified:
 
-OCR dependency tracking records successful language-directory observations and pre/post hashes for the fixed native executables, English/OSD models and TSV configuration. Missing identity blocks provenance; changed identity fails it. The local 310-image replay has matching identities and unchanged output, 263 preserved blank fields, zero native errors/review violations and 660 closed observed children. It does not change production extraction settings. Rejected alternative models and line segmentation remain outside production. [Identity evidence and classification correction](OCR_DEPENDENCY_EVIDENCE_2026_11_23.md).
+- Reject malformed UTF-16 before storage/archive publication while preserving valid pairs, combining text and literal replacement characters. [Text integrity](CALLBACK_TEXT_INTEGRITY.md).
+- Guard panel clocks and live revision bounds before row/source/audit/tombstone writes. Preserve completed retries and safe terminal deletion. Verify encrypted recovery and both restored entrypoints. [Panel mutation/recovery](SPREADSHEET_MUTATION_RECOVERY_2026_11_23.md).
+- Preflight request and contact-restriction fan-out clocks/revisions within the existing transaction. Keep failed restriction writes atomic, make zero provider calls and reject invalid archive chronology. [Request integrity](CALLBACK_REQUEST_INTEGRITY.md).
+- Preflight every legacy safety-propagation target before migration DDL or writes. Reject unsafe upgrades while preserving logical schema/records and backup/recovery. Keep unaffected terminal legacy records and idempotent reopen. [Legacy migration](LEGACY_MIGRATION_INTEGRITY_2026_11_23.md).
+- Keep session activity monotonic, preserve stored deadlines and return controlled invalid-clock/profile-exhaustion errors before writes. Arbitrary clock jumps still do not establish true elapsed-time expiry. [Account invariants](ACCOUNT_INVARIANTS_2026_11_23.md).
+- Retain unconfirmed spreadsheet commands through later 4xx replies. Validate full project/row/source receipts, target IDs and matching upload metadata before replacing a draft. Require revision advancement for update/upload confirmation. [Unconfirmed saves](PANEL_UNCERTAIN_SAVE_2026_11_23.md) and [response integrity](PANEL_RESPONSE_INTEGRITY_2026_11_23.md).
+
+Browser corrections and additions still need actual committed-source CI:
+
+- Constrain native request controls and narrow grid track minima for WebKit reflow. Keep 320px overflow and actual root/body/control font-doubling assertions. Failure-only geometry will identify any remaining overflow without recording field content.
+- Synchronize completed task reads, actual UI logout response and loaded login page before rejecting another restored owner's old password. Do not suppress navigation errors or weaken recovery assertions. [Navigation change](RECOVERY_BROWSER_NAVIGATION_2026_11_23.md).
+- Two fixed-spreadsheet journeys commit real create/update/upload writes before corrupting only their success responses. They verify preserved drafts, original retry keys/bodies/image bytes and no duplicate records/revisions. Linux spreadsheet collects nine methods, Mac manual spreadsheet ten, combined private stays 132 and callback stays 15. Collection executes zero browser cases. [Collection/review](evidence/panel-receipt-browser-collection-2026-11-23.json).
+
+The existing Apple Silicon job now tries the documented standard `macos-15` ARM64 runner after prior `macos-26` jobs ended with runner ID zero and no steps. All suites, actual `darwin/arm64` assertions, timeouts and policy gates remain. This is an alternate standard-image attempt, not a confirmed queue diagnosis or platform pass. [GitHub runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+
+The policy still has 54 automated requirements and seven manual gates. Nine fixed-spreadsheet requirements increase their minimum case counts to nine on Linux and ten on Mac. Policy SHA256 is `bde713a2eb921df4a730331938297b1d26740306c2ab9d36e65acd5b474f8886`. The collector must bind every new report to these exact bytes.
 
 ## Exact next steps
 
-1. Commit the locally verified integrated candidate to the existing branch using the current remote head as a lease. Keep PR8 draft and main unchanged. Do not include unrelated detached-agent work without review and verification.
-2. Inspect every job of that commit's PR workflow. Confirm actual callback font doubling/reflow, all 24 new emulated touch executions, the OCR identity report and unchanged separate-product boundaries. Repair reproduced failures without weakening assertions or changing scopes.
-3. Keep the preceding [run82 snapshot](evidence/callback-scheduling-run82.json), failed font assertions and queued ARM observation. Complete any remaining reads without treating an unfinished job as a pass. A green measurement job does not override OCR accuracy FAIL or worker-isolation BLOCKED.
-4. Download reports for the new committed source and aggregate them with the exact policy bytes. Every report must contain the matching `docs/test-milestones.json` hash in its source manifest. The aggregator must reject missing/mismatched policy and misclassified harness cases. If ARM remains unassigned, preserve zero executions and the incomplete requirement. An independent partial aggregation may report completed scopes but must not claim the full goal.
-5. Repair two defects reproduced after this candidate froze. A one-second backward clock change can let a spreadsheet update save updatedAt before createdAt, and the project revision ceiling can save a value rejected by archive validation. Guard every affected panel mutation before any write and verify backup/restore. Separately, the shared text validator accepts lone UTF-16 surrogates in business names and request transcripts, which SQLite changes to U+FFFD. Reject malformed Unicode before writes while preserving valid pairs. Independent agents are preparing minimal store/API/recovery patches in separate worktrees. Review and integrate them as the next milestone. Do not repeat passed suites unless a change or remaining risk calls for it.
-6. Update progress, both product acceptance records and PR metadata with exact commits/manifests, executed counts, failures and remaining tasks. Continue the next unfinished authorized milestone.
+1. Finish review of this integrated milestone, commit verified source/docs to the existing development branch with a current-head lease, and keep PR8 draft/main unchanged. Verify the committed executable manifest equals the local tested manifest above. Do not include unrelated worktree changes.
+2. Inspect that commit's actual PR workflow. Prioritize both selected callback WebKit reflow cases, the private WebKit recovery case and both new fixed-spreadsheet receipt journeys on all configured Linux/Mac engines. Preserve failures and investigate before changing assertions. Strict response validation needs the full browser regression, not just the local client-state selection.
+3. Download every emitted report, verify artifact digests and tested merge/tree, and aggregate using the new committed policy. Preserve zero ARM executions if no runner is assigned. Do not transfer run83 passes or measurements to a changed source.
+4. Update this checkpoint, development progress, both product acceptance records and PR metadata with exact source, actual outcomes and next tasks. Continue authorized implementation.
+5. Independently investigate actual Safari verification on the existing standard Intel Mac runner using Apple's WebDriver and exact browser provenance. Research/design is in progress; no Safari execution or new gate satisfaction is claimed. Keep it separate from bundled WebKit and physical devices.
+6. Follow [Windows storage gap](WINDOWS_STORAGE_GAP.md) before proposing private Windows tests. Owner SID/DACL, handle/reparse/link safety and atomic publication need an implemented and tested adapter. Removing POSIX checks or accepting Windows static-browser passes does not close this gate.
 
-## Remaining technical and owner-dependent requirements
+## Remaining requirements
 
-- Twenty-one synthetic OCR mismatches, plus representative authorized photographs. Do not guess ambiguous part numbers or approve OCR candidates automatically.
-- Required OS worker isolation is still blocked before native denial tests. The recorded bubblewrap readiness failure has an unconfirmed cause. Do not use a privilege exception or silently downgrade isolation.
-- Actual Safari, physical iPhone/iPad/Android, full private Windows/macOS scopes and Apple Silicon execution remain incomplete. Mac manual spreadsheet results do not establish native OCR. Standard ARM jobs remain unassigned in the snapshot.
-- Native Windows storage needs an owner-SID/DACL, handle/reparse/link and atomic-publication adapter. Removing POSIX mode checks is not a valid substitute. [Investigated gap and next sequence](WINDOWS_STORAGE_GAP.md).
-- Actual Excel behavior remains separate from independent XLSX readback.
-- Real-provider compatibility, quality, latency and budget remain blocked if the callback launch includes a real model. No provider call is authorized by this checkpoint.
-- Selected host/private access, restart and offsite recovery need approved destinations and operating arrangements. Local recovery does not establish them.
-- Pricing, support, monitoring, incident response, retention/recovery objectives, participants, rollout and each product's release decision require owner input/approval.
+- Twenty-one synthetic OCR mismatches and representative authorized photographs. Do not guess ambiguous part numbers or auto-approve candidates.
+- Required native worker isolation and selected-host operation remain unverified. The recorded startup cause is unconfirmed.
+- Actual Safari, physical iPhone/iPad/Android, private Windows, full native macOS extraction and Apple Silicon remain incomplete. Mac manual spreadsheet does not prove native OCR.
+- Actual Excel needs its own original-file/resave checks. Independent XLSX readers do not establish Excel behavior.
+- Actual-model compatibility/quality/latency/budget remains blocked if callback release includes a real provider. No real-provider call is authorized by this checkpoint.
+- Selected host/private access, restart, offsite recovery and secret custody need approved destinations and operating arrangements.
+- Pricing, support, monitoring, incident response, retention/recovery objectives, participants, rollout and each product's activation need owner decisions.
 
-The 10,000 goal includes required-platform coverage. The one-time 20,000 goal starts only when the complete first goal passes before launch. Neither numeric target closes a failed or unexecuted release requirement.
+Counts and dates do not close failed or unexecuted release requirements. Callback and spreadsheet remain separate NO-GO decisions for customer trial/public release.
 
 ## Resume protocol
 
-Fetch the development branch and inspect its diff before editing. Read this checkpoint, the newest `DEVELOPMENT_PROGRESS.md` entry, matching evidence JSON and both product acceptance documents. Preserve remote advancement and existing work. Recheck current runtime/tool availability rather than repeating a prior environment's blocked audit. Never report a blocked test as passing or reuse main's scheduled workflow as evidence for unmerged PR source.
+Fetch the development branch and inspect current diff/history before editing. Read this checkpoint, the newest progress entry, matching evidence and both product acceptance records. Preserve remote advances and existing work. Recheck current runtime/tool availability instead of repeating a historical environment block. Main's scheduled workflow does not verify unmerged PR source.
 
-Current local environment has Node24 and working loopback HTTP. The pinned Playwright browser is unavailable locally; its official download attempt returned a 403. Actual browser verification runs in the authorized PR workflow. Do not count local collection as execution or retry a blocked download through another route.
+The current local environment has Node24 and working loopback HTTP. The pinned Playwright browser is unavailable locally and its official download returned 403. Actual browser verification uses the authorized PR workflow. Do not count collection as execution or retry the blocked download by another route.

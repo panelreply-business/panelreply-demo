@@ -3,6 +3,9 @@
   const $ = id => document.getElementById(id);
   const CORE = ['partNumber', 'manufacturer', 'description'];
   const FIELDS = [['partNumber', 'Part number', 128], ['manufacturer', 'Manufacturer', 120], ['description', 'Description', 1000], ['quantity', 'Quantity'], ['reviewStatus', 'Review status'], ['sourceImageId', 'Source image'], ['notes', 'Notes', 1000]];
+  const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  const PROJECT_FIELDS = ['id', 'name', 'notes', 'rows', 'version', 'createdAt', 'updatedAt', 'sources'];
+  const SOURCE_FIELDS = ['id', 'name', 'mime', 'bytes', 'width', 'height', 'createdAt'];
   let csrfToken = '';
   let identity = null;
   let ready = false;
@@ -209,8 +212,59 @@
     });
     updateControls();
   }
-  function setProject(value, message = '') {
-    if (!value || !Array.isArray(value.rows) || !Array.isArray(value.sources)) throw new ApiError('The project response was incomplete. Reload the saved project.', 502, 'invalid_response');
+  function responseObject(value, fields) {
+    return Boolean(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === fields.length && fields.every(field => Object.hasOwn(value, field)));
+  }
+  function responseText(value, limit) {
+    // Unicode mode rejects lone surrogates without rejecting valid pairs.
+    return typeof value === 'string' && value.length <= limit && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\ud800-\udfff]/u.test(value);
+  }
+  function responseTime(value) {
+    const time = typeof value === 'string' ? Date.parse(value) : NaN;
+    return Number.isSafeInteger(time) && time >= 0 && time <= 8640000000000000 && new Date(time).toISOString() === value;
+  }
+  function responseSource(value) {
+    return responseObject(value, SOURCE_FIELDS) && typeof value.id === 'string' && UUID.test(value.id)
+      && responseText(value.name, 160) && value.name.trim() === value.name && Boolean(value.name) && !/[\/\\\r\n\t]/.test(value.name) && !['.', '..'].includes(value.name)
+      && ['image/png', 'image/jpeg'].includes(value.mime) && Number.isSafeInteger(value.bytes) && value.bytes >= 1 && value.bytes <= 2 * 1024 * 1024
+      && Number.isSafeInteger(value.width) && value.width >= 1 && value.width <= 6000 && Number.isSafeInteger(value.height) && value.height >= 1 && value.height <= 6000
+      && value.width * value.height <= 16000000 && responseTime(value.createdAt);
+  }
+  function invalidProjectResponse() { throw new ApiError('The project response was incomplete or invalid. Retry to confirm the saved project.', 502, 'invalid_response'); }
+  function validateProjectResponse(value, { expectedId, emptyDraft = false } = {}) {
+    if (emptyDraft) {
+      if (!responseObject(value, ['id', 'name', 'notes', 'rows', 'sources', 'version']) || value.id !== null || value.name !== '' || value.notes !== '' || value.version !== 0 || !Array.isArray(value.rows) || value.rows.length || !Array.isArray(value.sources) || value.sources.length) invalidProjectResponse();
+      return;
+    }
+    if (!responseObject(value, PROJECT_FIELDS) || typeof value.id !== 'string' || !UUID.test(value.id) || (expectedId && value.id !== expectedId)
+      || !responseText(value.name, 120) || !value.name.trim() || value.name !== value.name.trim() || !responseText(value.notes, 2000)
+      || !Number.isSafeInteger(value.version) || value.version < 1 || value.version >= Number.MAX_SAFE_INTEGER
+      || !responseTime(value.createdAt) || !responseTime(value.updatedAt) || Date.parse(value.updatedAt) < Date.parse(value.createdAt)
+      || !Array.isArray(value.rows) || value.rows.length > 200 || !Array.isArray(value.sources) || value.sources.length > 5) invalidProjectResponse();
+    const sourceIds = new Set();
+    for (const source of value.sources) {
+      if (!responseSource(source) || sourceIds.has(source.id)) invalidProjectResponse();
+      sourceIds.add(source.id);
+    }
+    for (const row of value.rows) {
+      if (!responseObject(row, FIELDS.map(([field]) => field)) || !responseText(row.partNumber, 128) || !responseText(row.manufacturer, 120)
+        || !responseText(row.description, 1000) || !responseText(row.notes, 1000) || !Number.isSafeInteger(row.quantity) || row.quantity < 1 || row.quantity > 9999
+        || !['unreviewed', 'reviewed'].includes(row.reviewStatus) || (row.sourceImageId !== null && !sourceIds.has(row.sourceImageId))
+        || CORE.every(field => !row[field].trim()) || (row.reviewStatus === 'reviewed' && CORE.some(field => !row[field].trim()))) invalidProjectResponse();
+    }
+  }
+  function validateUploadResponse(result, operation) {
+    validateProjectResponse(result?.project, { expectedId: operation.projectId });
+    if (result.project.version <= operation.body.version) invalidProjectResponse();
+    const source = result?.source;
+    if (!responseSource(source) || operation.sourceIds.includes(source.id)) invalidProjectResponse();
+    const member = result.project.sources.find(item => item.id === source.id);
+    const encoded = operation.body.dataBase64;
+    const bytes = encoded.length / 4 * 3 - (encoded.endsWith('==') ? 2 : encoded.endsWith('=') ? 1 : 0);
+    if (!member || SOURCE_FIELDS.some(field => member[field] !== source[field]) || source.name !== operation.body.name.trim() || source.mime !== operation.body.mime || source.bytes !== bytes) invalidProjectResponse();
+  }
+  function setProject(value, message = '', options = {}) {
+    validateProjectResponse(value, options);
     project = value;
     rows = value.rows.map(row => ({ ...row }));
     $('project-name').value = value.name;
@@ -228,7 +282,7 @@
     for (const id of ['project-error', 'source-error', 'panel-export-error']) error(id, '');
     renderRows(); renderSources(); renderList();
   }
-  function newProject() { setProject({ id: null, name: '', notes: '', rows: [], sources: [], version: 0 }); $('project-name').focus(); }
+  function newProject() { setProject({ id: null, name: '', notes: '', rows: [], sources: [], version: 0 }, '', { emptyDraft: true }); $('project-name').focus(); }
   async function refreshProjects() {
     const result = await api('/api/panel-projects');
     if (expired) return;
@@ -245,7 +299,7 @@
     if (busy) return;
     busy = true; updateControls(); appError('');
     $('panel-load-status').textContent = 'Opening project…';
-    try { const result = await api(`/api/panel-projects/${encodeURIComponent(id)}`); if (!expired) { setProject(result.project); $('panel-load-status').textContent = 'Project loaded.'; } }
+    try { const result = await api(`/api/panel-projects/${encodeURIComponent(id)}`); if (!expired) { setProject(result?.project, '', { expectedId: id }); $('panel-load-status').textContent = 'Project loaded.'; } }
     catch (cause) { if (!expired) { appError(cause.message); $('panel-load-status').textContent = 'Project could not be loaded.'; } }
     finally { busy = false; if (!expired) updateControls(); }
   }
@@ -260,7 +314,7 @@
       if (!$('project-name').value.trim()) { error('project-error', 'Enter a project name.'); $('project-name').focus(); return; }
       const blank = rows.findIndex(row => CORE.every(field => !String(row[field]).trim()));
       if (blank !== -1) { error('project-error', `Row ${blank + 1} is empty. Enter at least one part detail or remove the row.`); return; }
-      pendingSave = { path: project.id ? `/api/panel-projects/${project.id}` : '/api/panel-projects', method: project.id ? 'PATCH' : 'POST', key: project.id ? null : createKey, body: project.id ? { version: project.version, ...draft() } : draft(), attempted: false };
+      pendingSave = { path: project.id ? `/api/panel-projects/${project.id}` : '/api/panel-projects', projectId: project.id, method: project.id ? 'PATCH' : 'POST', key: project.id ? null : createKey, body: project.id ? { version: project.version, ...draft() } : draft(), attempted: false, uncertain: false };
     }
     const operation = pendingSave;
     busy = true; updateControls(); error('project-error', ''); $('project-save-status').textContent = 'Saving project…';
@@ -268,19 +322,25 @@
       let result;
       if (operation.attempted && operation.method === 'PATCH') {
         const saved = await api(operation.path);
-        if (normalDraft(saved.project) === normalDraft(operation.body)) result = saved;
+        validateProjectResponse(saved?.project, { expectedId: operation.projectId });
+        // Equal values cannot confirm an unchanged save that never committed.
+        if (saved.project.version > operation.body.version && normalDraft(saved.project) === normalDraft(operation.body)) result = saved;
       }
       operation.attempted = true;
       if (!result) result = await api(operation.path, operation);
       if (expired) return;
-      if (!result?.project?.id) throw new ApiError('The save response was incomplete. Retry to confirm the result.', 502, 'invalid_response');
-      setProject(result.project, 'Project saved. Corrections are included in the saved CSV.');
+      if (operation.method === 'PATCH' && (!Number.isSafeInteger(result?.project?.version) || result.project.version <= operation.body.version)) invalidProjectResponse();
+      setProject(result?.project, 'Project saved. Corrections are included in the saved CSV.', { expectedId: operation.projectId });
       refreshSummary(result.project);
     } catch (cause) {
       if (expired) return;
       $('project-save-status').textContent = '';
-      if (cause.status >= 400 && cause.status < 500) pendingSave = null;
-      if (cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true;
+      const rejected = cause.status >= 400 && cause.status < 500;
+      // A later refusal cannot establish whether an earlier request committed.
+      // Keep its frozen command and editing lock until its result is confirmed.
+      if (!rejected) operation.uncertain = true;
+      if (rejected && !operation.uncertain) pendingSave = null;
+      if (!pendingSave && cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true;
       error('project-error', cause.message);
     } finally { busy = false; if (!expired) updateControls(); }
   }
@@ -388,20 +448,23 @@
       if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 2 * 1024 * 1024 || !file.size) { error('source-error', 'Choose a PNG or JPEG image no larger than 2 MB.'); return; }
       if (dirty() || conflict) { error('source-error', 'Save your changes before uploading an image.'); return; }
       busy = true; savingSource = true; updateControls(); $('source-status').textContent = 'Reading selected image…';
-      try { pendingUpload = { body: { version: project.version, name: file.name, mime: file.type, dataBase64: await fileBase64(file) }, key: crypto.randomUUID(), method: 'POST' }; }
+      try { pendingUpload = { projectId: project.id, sourceIds: project.sources.map(source => source.id), body: { version: project.version, name: file.name, mime: file.type, dataBase64: await fileBase64(file) }, key: crypto.randomUUID(), method: 'POST', uncertain: false }; }
       catch (_) { busy = false; savingSource = false; $('source-status').textContent = ''; error('source-error', 'The image could not be read. Choose the file again.'); updateControls(); return; }
     }
+    const operation = pendingUpload;
     busy = true; savingSource = true; updateControls(); $('source-status').textContent = 'Saving source image…';
     try {
-      const result = await api(`/api/panel-projects/${project.id}/sources`, pendingUpload);
+      const result = await api(`/api/panel-projects/${operation.projectId}/sources`, operation);
       if (expired) return;
-      if (!result?.project?.id || !result.source?.id) throw new ApiError('The image save response was incomplete. Retry to confirm it.', 502, 'invalid_response');
-      setProject(result.project); refreshSummary(result.project);
+      validateUploadResponse(result, operation);
+      setProject(result.project, '', { expectedId: operation.projectId }); refreshSummary(result.project);
       $('source-status').textContent = 'Source image saved. Extract text or enter the parts manually.';
     } catch (cause) {
       if (!expired) {
-        if (cause.status >= 400 && cause.status < 500) pendingUpload = null;
-        if (cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true;
+        const rejected = cause.status >= 400 && cause.status < 500;
+        if (!rejected) operation.uncertain = true;
+        if (rejected && !operation.uncertain) pendingUpload = null;
+        if (!pendingUpload && cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true;
         $('source-status').textContent = pendingUpload ? 'Image save is unconfirmed. Retry the same image to check the result.' : '';
         error('source-error', cause.message);
       }
@@ -523,7 +586,7 @@
   $('reload-project').addEventListener('click', () => guarded(() => openProject(project.id)));
   $('retry-panel-load').addEventListener('click', () => guarded(bootstrap));
   $('panel-keep-editing').addEventListener('click', () => { pendingNavigation = null; $('panel-navigation-guard').hidden = true; });
-  $('panel-discard').addEventListener('click', () => { const action = pendingNavigation; pendingNavigation = null; $('panel-navigation-guard').hidden = true; if (project) setProject(project); if (action) action(); });
+  $('panel-discard').addEventListener('click', () => { const action = pendingNavigation; pendingNavigation = null; $('panel-navigation-guard').hidden = true; if (project) setProject(project, '', { emptyDraft: project.id === null }); if (action) action(); });
   for (const link of document.querySelectorAll('a[href]:not(.skip-link)')) link.addEventListener('click', event => {
     const target = new URL(link.href, location.href);
     if (target.pathname === location.pathname && target.search === location.search) return;

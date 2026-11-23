@@ -473,7 +473,7 @@
         "profile": "desktop",
         "suite": "spreadsheet"
       },
-      "minimumCases": 7
+      "minimumCases": 9
     },
     {
       "id": "spreadsheet-program-linux-firefox",
@@ -485,7 +485,7 @@
         "profile": "desktop",
         "suite": "spreadsheet"
       },
-      "minimumCases": 7
+      "minimumCases": 9
     },
     {
       "id": "spreadsheet-program-linux-webkit",
@@ -497,7 +497,7 @@
         "profile": "desktop",
         "suite": "spreadsheet"
       },
-      "minimumCases": 7
+      "minimumCases": 9
     },
     {
       "id": "apple-silicon-macos",
@@ -532,7 +532,7 @@
         "profile": "desktop",
         "suite": "spreadsheet-manual"
       },
-      "minimumCases": 8
+      "minimumCases": 10
     },
     {
       "id": "callback-program-darwin-intel-firefox",
@@ -558,7 +558,7 @@
         "profile": "desktop",
         "suite": "spreadsheet-manual"
       },
-      "minimumCases": 8
+      "minimumCases": 10
     },
     {
       "id": "callback-program-darwin-intel-webkit",
@@ -584,7 +584,7 @@
         "profile": "desktop",
         "suite": "spreadsheet-manual"
       },
-      "minimumCases": 8
+      "minimumCases": 10
     },
     {
       "id": "callback-program-darwin-arm64-chromium",
@@ -610,7 +610,7 @@
         "profile": "desktop",
         "suite": "spreadsheet-manual"
       },
-      "minimumCases": 8
+      "minimumCases": 10
     },
     {
       "id": "callback-program-darwin-arm64-firefox",
@@ -636,7 +636,7 @@
         "profile": "desktop",
         "suite": "spreadsheet-manual"
       },
-      "minimumCases": 8
+      "minimumCases": 10
     },
     {
       "id": "callback-program-darwin-arm64-webkit",
@@ -662,7 +662,7 @@
         "profile": "desktop",
         "suite": "spreadsheet-manual"
       },
-      "minimumCases": 8
+      "minimumCases": 10
     },
     {
       "id": "node-darwin-arm64",

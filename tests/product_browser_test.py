@@ -90,6 +90,37 @@ class SelectedProductHarness:
             response = self.context.request.get(self.origin + path)
             self.assertEqual(response.status, 404, path)
 
+    def assert_no_overflow(self):
+        try:
+            super().assert_no_overflow()
+        except AssertionError as error:
+            # Report geometry only after a failure. Do not log field values or
+            # text, change the page, or filter the original viewport assertions.
+            try:
+                geometry = self.page.evaluate("""() => {
+                  const round = value => Math.round(value * 100) / 100;
+                  return [...document.querySelectorAll('body *')].flatMap(element => {
+                    const rect = element.getBoundingClientRect();
+                    const style = getComputedStyle(element);
+                    if (!element.getClientRects().length || !rect.width || !rect.height ||
+                        style.visibility === 'hidden' || element.matches('.sr-only, .skip-link')) return [];
+                    const outside = Math.max(0, rect.right - innerWidth, -rect.left);
+                    const inside = Math.max(0, element.scrollWidth - element.clientWidth);
+                    if (outside <= 1 && inside <= 1) return [];
+                    return [{tag: element.tagName.toLowerCase(), id: element.id,
+                      classes: element.getAttribute('class') || '', type: element.getAttribute('type'),
+                      left: round(rect.left), right: round(rect.right), width: round(rect.width),
+                      clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
+                      outside: round(outside), inside, fontSize: style.fontSize,
+                      minWidth: style.minWidth, maxWidth: style.maxWidth,
+                      display: style.display, gridColumns: style.gridTemplateColumns,
+                      overflowX: style.overflowX, whiteSpace: style.whiteSpace}];
+                  }).sort((a, b) => b.outside - a.outside || b.inside - a.inside).slice(0, 24);
+                }""")
+            except Exception as diagnostic_error:
+                geometry = {"diagnosticError": type(diagnostic_error).__name__}
+            self.fail(str(error) + "\nOverflow geometry: " + json.dumps(geometry))
+
 
 class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowserTests):
     product_id = "callback"
@@ -365,6 +396,10 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         self.page.set_viewport_size({"width": 320, "height": 1000})
         original_font = self.page.locator("html").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
         original_body_font = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
+        control_selectors = ["#lead-permission", "#task-local-time", "#task-time-zone",
+                             "#task-notes", "#save-callback-task"]
+        control_fonts = {selector: self.page.locator(selector).evaluate(
+            "e => parseFloat(getComputedStyle(e).fontSize)") for selector in control_selectors}
         # Use CSSOM to exercise font scaling without inserting an inline style
         # element that the application's strict stylesheet CSP must reject.
         self.page.evaluate("size => document.documentElement.style.fontSize = size + 'px'", original_font * 2)
@@ -372,6 +407,11 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         scaled_body_font = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
         self.assertAlmostEqual(scaled_font, original_font * 2, places=2)
         self.assertAlmostEqual(scaled_body_font, original_body_font * 2, places=2)
+        for selector, original_control_font in control_fonts.items():
+            with self.subTest(control=selector):
+                scaled_control_font = self.page.locator(selector).evaluate(
+                    "e => parseFloat(getComputedStyle(e).fontSize)")
+                self.assertAlmostEqual(scaled_control_font, original_control_font * 2, places=2)
         self.assert_no_overflow()
         self.page.locator("#nav-schedule").click()
         self.page.locator("#discard-changes").click()
@@ -432,6 +472,14 @@ class SpreadsheetProductBrowserTests(SelectedProductHarness, PanelWorkspaceBrows
         PanelWorkspaceBrowserTests.test_source_upload_preview_and_reopen_keep_private_image_bytes_intact(self)
         self.assert_product_navigation()
         self.assert_routes_denied(["/api/profile"])
+
+    def test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once(self):
+        PanelWorkspaceBrowserTests.behavior_malformed_project_success_preserves_draft_and_reconciles_without_duplicate_writes(self)
+        self.assert_product_navigation()
+
+    def test_spreadsheet_inconsistent_source_receipt_retries_original_image_once(self):
+        PanelWorkspaceBrowserTests.behavior_inconsistent_source_success_retries_original_image_without_duplicate_records(self)
+        self.assert_product_navigation()
 
     def test_spreadsheet_actual_ocr_still_requires_manual_review(self):
         PanelWorkspaceBrowserTests.test_real_local_ocr_candidates_require_manual_add_review_and_save(self)

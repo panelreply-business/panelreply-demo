@@ -1,0 +1,1536 @@
+{
+  "format": "panelreply-callback-request-integrity",
+  "version": 1,
+  "date": "2026-11-23",
+  "baseCommit": "e711d15d418406969631202642c9d055b47afca5",
+  "prerequisite": {
+    "milestone": "Callback text preservation",
+    "patchSha256": "286be884e0a2b2d02e300d794c1e16f8a023fe52ec72f79b105b705bba976201",
+    "state": "Applied to the index before this separate unstaged delta."
+  },
+  "scope": "Synthetic Linux Node/SQLite, authenticated API and encrypted recovery. HTTP-enabled regression uses loopback only. No browser, physical-device, real-provider, production, hosting-capacity or release acceptance claim.",
+  "runtime": {
+    "os": "linux",
+    "osRelease": "6.18.57",
+    "architecture": "x86_64",
+    "node": "v24.22.3",
+    "platformKey": "linux/x86_64/node24"
+  },
+  "runtimeSource": {
+    "before": {
+      "sourceCommit": "e711d15d418406969631202642c9d055b47afca5",
+      "gitTreeHash": "530c65b61d65e5269183b0db22892a1c359e52f4",
+      "sourceTreeSha256": "97f0d7526d1b9a354f71a0e5cbcced3c44b21159e4da6e125e8bb86da03d01c6",
+      "sourceManifest": [
+        {
+          "path": ".env.example",
+          "sha256": "9a0c513f779546e2b38736986743a2551de11532a0b9c4edc1b5da41f4029db8"
+        },
+        {
+          "path": ".gitattributes",
+          "sha256": "c8b8ee9e85458eacee1610cfceb0b6270b26655dd9b1f2050a94733eaf95ea3d"
+        },
+        {
+          "path": ".github/workflows/demo-tests.yml",
+          "sha256": "3fad5ad85bdb86b4093bc5b40667505ef86d2709194e2ff2580cb5bf530e265e"
+        },
+        {
+          "path": ".gitignore",
+          "sha256": "8a44f4036516ee90069b07d52d7d14b7289bd648a923b772006260b30faadd6e"
+        },
+        {
+          "path": "callback-server.cjs",
+          "sha256": "7007993d24140e2cb110a9c6ad84d9ce0e65ac0815fc90d7ab49c0d784f0ef22"
+        },
+        {
+          "path": "design-preview/app.js",
+          "sha256": "708cd186fdd0373b8d9b9833235d7069a5500b0c9ff665ce8fe566c2121249a5"
+        },
+        {
+          "path": "design-preview/demo-core.js",
+          "sha256": "ea52186803e712820a1b78ec72e95f708d4c2529bbadd564d4d98c979ec7dafe"
+        },
+        {
+          "path": "design-preview/index.html",
+          "sha256": "035e9e8c839a66923c7fdb82ffb869d12b863f764070cc73e251faefd590cf87"
+        },
+        {
+          "path": "design-preview/mark-on-dark.svg",
+          "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+        },
+        {
+          "path": "design-preview/mark-on-light.svg",
+          "sha256": "790faba6500e601710b0904141fdfdbba522d383cc3624e0eb72bafef9632b20"
+        },
+        {
+          "path": "design-preview/mark.svg",
+          "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+        },
+        {
+          "path": "design-preview/sample-label.svg",
+          "sha256": "f19e565c0d7c19421053102c1e368b361a9da6719bf251823cc569fd7c1e21e4"
+        },
+        {
+          "path": "design-preview/styles.css",
+          "sha256": "0155dbbe1f4f8f614a0173bb9712fdac1c70c77d04728f49b7cd2da61890e2d6"
+        },
+        {
+          "path": "docs/test-milestones.json",
+          "sha256": "0bae74dae8fa8906003e88ab2fe7c5f2e65640114f72450aab255027d9ff6005"
+        },
+        {
+          "path": "index.html",
+          "sha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82"
+        },
+        {
+          "path": "robots.txt",
+          "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+        },
+        {
+          "path": "scripts/aggregate-test-evidence.cjs",
+          "sha256": "e6fc977a09212c3285abb78885a9a2c0a077a3bc57dbb029c32792c9bfc08237"
+        },
+        {
+          "path": "scripts/benchmark-ocr.cjs",
+          "sha256": "43663bb797781049ece3ea674723912f248c937c8140464d9a19d57178bc0460"
+        },
+        {
+          "path": "scripts/build-demo.cjs",
+          "sha256": "dd197c8874e4bf5093f1083043b528acf72f1df5b485ab674704674e7f1c52f8"
+        },
+        {
+          "path": "scripts/callback-workload.cjs",
+          "sha256": "9df23dd408dbb5eb00724bd864aec42e15b72b2ddf66a17e227cca3e5b22a96b"
+        },
+        {
+          "path": "scripts/evaluate-assistant.cjs",
+          "sha256": "f018e8c5d789b2de370775b39c0b48d2d94278e6147a0514850c3418d1c84117"
+        },
+        {
+          "path": "scripts/http-workload.cjs",
+          "sha256": "3bd437d7e03be2f520886b4c97b25fe5b3f7ce70167df38bff793c174772e5d5"
+        },
+        {
+          "path": "scripts/ocr-isolation-diagnostics.cjs",
+          "sha256": "dbfc5aaf5d97e65ca0804078e0cf78f16d5428341e8ed822b8d7405e1f8b8f20"
+        },
+        {
+          "path": "scripts/ocr-process-metrics.cjs",
+          "sha256": "fd9637a0b89be8f556288a71453c65d8f4dfe46b1a09e0236ed9e9f986fd8789"
+        },
+        {
+          "path": "scripts/prelaunch-stress.cjs",
+          "sha256": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c"
+        },
+        {
+          "path": "scripts/run-release-node.cjs",
+          "sha256": "96db3c3d1cd21e2b4a7a0dc7710d3a891f57ca710c8f299fdbcf8590db776575"
+        },
+        {
+          "path": "scripts/test-evidence.cjs",
+          "sha256": "e6e1570da75b0018983dc91e6430d457c546cce2c10fd8a889396dcce9517584"
+        },
+        {
+          "path": "scripts/test-ocr-fixtures.cjs",
+          "sha256": "f606a742a326bafb4407725facf60a59913af06a6b78c06ed9bffb7c077f19b7"
+        },
+        {
+          "path": "scripts/test-ocr-isolation.cjs",
+          "sha256": "b3d1f65514aae5f13ef722b58f7ac36f0766b4a58df5d13cbb2868b53c0a67bd"
+        },
+        {
+          "path": "scripts/test-ocr-resource-limits.cjs",
+          "sha256": "89e951cff6b4f49f79e0b0c39d23b09ffc7f3a1c72b5417a3ad0ee73b3f995d4"
+        },
+        {
+          "path": "scripts/test-xlsx-reader.py",
+          "sha256": "8ef1e79dfb505203781518a992d707e4827c4be532723051a978861f3c486f3b"
+        },
+        {
+          "path": "scripts/workspace-admin.cjs",
+          "sha256": "cbbf45967c6b9302bab4ab82d4c8572b27816befcd6fc0f8150b08e304370f0a"
+        },
+        {
+          "path": "scripts/workspace-backup.cjs",
+          "sha256": "99e4beec53cd2ea3514cb8cb0bcdb469bcbb424d0f189d664ea595d7f3d80e40"
+        },
+        {
+          "path": "scripts/workspace-reset-password.cjs",
+          "sha256": "95c773fbfe4253e8e979c38a77c250704e5a6a5af7fa1c2b3562e15ceca23372"
+        },
+        {
+          "path": "server.cjs",
+          "sha256": "5b88a11280ab7086468995c6a70cf6169f643d8a035b52e9829c1294f9c08b71"
+        },
+        {
+          "path": "spreadsheet-server.cjs",
+          "sha256": "f552f097b884ce1ba77ee6afd6a0eaa34aea108dc2bf6745346bbe26abcd5a94"
+        },
+        {
+          "path": "src/business-info.js",
+          "sha256": "f1d9187d31d2e5a953614fa3824a9b54ad1683a7f0944d96943d4f643e9753a1"
+        },
+        {
+          "path": "src/demo.js",
+          "sha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974"
+        },
+        {
+          "path": "src/intake.js",
+          "sha256": "bf33576b3472b29d9375cc0ed422e279e6bf5cb9787e35fd42a66f7565358895"
+        },
+        {
+          "path": "src/questions.js",
+          "sha256": "96defee8d12af867f4d29672bb7c8a31c1cbb84a6cca5d707ba2e1ed31ec637a"
+        },
+        {
+          "path": "tests/assistant-adversarial.test.cjs",
+          "sha256": "706bcc87e313133af6a4ba2900496a85bae719f44687e46bb16e879bdb5ada85"
+        },
+        {
+          "path": "tests/assistant-api.test.cjs",
+          "sha256": "5b64d383fc1ad6e454790b9c8df9351e92eba6a9aed24ecf554e9e208e827593"
+        },
+        {
+          "path": "tests/assistant-evaluation.test.cjs",
+          "sha256": "e4216a886fa585bbea7ed3adb1d055578bac2bee7f62504a50812f3a1988149f"
+        },
+        {
+          "path": "tests/assistant-provider.test.cjs",
+          "sha256": "d319fda86badbf14f5ea5b259e383a157db391fe79ba7610051698229c44c398"
+        },
+        {
+          "path": "tests/assistant-usage.test.cjs",
+          "sha256": "4558bc4c0ae8256e0bb4c107fa028a0c4fac3a179a5c26addc83dbbc5cbacc28"
+        },
+        {
+          "path": "tests/assistant_browser_test.py",
+          "sha256": "c8d1c289c6b06d38838000e8159d4f80cf0cee3d40a8a98b29010f8524f254fd"
+        },
+        {
+          "path": "tests/browser-requirements.txt",
+          "sha256": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82"
+        },
+        {
+          "path": "tests/browser_engine.py",
+          "sha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5"
+        },
+        {
+          "path": "tests/browser_test.py",
+          "sha256": "93380a727c1a215128095457d11714064325f05036ce2abcb345eeb96bf2cbcf"
+        },
+        {
+          "path": "tests/callback-schedule-client.test.cjs",
+          "sha256": "1a22def2562bd3442f3096de8de255430d4823a2af853d8d20e04806f220bbb8"
+        },
+        {
+          "path": "tests/callback-task-parent-integrity.test.cjs",
+          "sha256": "f2183fae8996d981694ab3b6d4a12660c8f5dbfe12a06e050aa3ee6e645c0c3b"
+        },
+        {
+          "path": "tests/callback-task-resources.test.cjs",
+          "sha256": "24203d1f9b393df6a5fdd3824647854d26e76fcb264a4437596077acd704cf47"
+        },
+        {
+          "path": "tests/callback-tasks-api.test.cjs",
+          "sha256": "eaf876d1fb65ee4dff6161dafd5685d31372ab9a6b709a2a4bf0b2a797e1d2cd"
+        },
+        {
+          "path": "tests/callback-tasks.test.cjs",
+          "sha256": "1c6628fa3e9312f3e5ee91904ef192feedddc883fdf35051dd07c533e004d91d"
+        },
+        {
+          "path": "tests/data-lifecycle.test.cjs",
+          "sha256": "60cd78b78b597955b3b9dfbc9d77c044be7e2a51a587ddc3d3a057ffca18220c"
+        },
+        {
+          "path": "tests/deletion-client-review.test.cjs",
+          "sha256": "54d241e05fbc071bf3d6cd363dbbf97bd87137d05a858cd06b7a44af7cb8d33b"
+        },
+        {
+          "path": "tests/demo.test.cjs",
+          "sha256": "a18839cc242acc94865de602b5a627e9c3b010206ecc8f6fd8bafd9a62dd2b11"
+        },
+        {
+          "path": "tests/design-preview.test.cjs",
+          "sha256": "6e27175539d9ec2ae7ccc86e82bff771413417b7bfa4f2ef4605c6f96eea3f8a"
+        },
+        {
+          "path": "tests/design_browser_test.py",
+          "sha256": "174f1279dcd853bb3abee0842ed73b4da5b4dc2ae10f57e78f0eef759cb1376f"
+        },
+        {
+          "path": "tests/fixtures/assistant/corpus.json",
+          "sha256": "7cf62e652dbf9d059ab13a3c8b94a50655a11913412dbbb65ea43c895c4b5e22"
+        },
+        {
+          "path": "tests/fixtures/assistant/remediation-corpus.json",
+          "sha256": "a397bc55d927b231eb5a4f4122d64d87c9cff77085b96e36f20c584e044dec47"
+        },
+        {
+          "path": "tests/fixtures/fake-assistant-server.cjs",
+          "sha256": "bf9d3ffe96b4cd3dacfda24cbb95f74376215cc40bb91b49a36dc31af47555d0"
+        },
+        {
+          "path": "tests/fixtures/panels-benchmark/generate.py",
+          "sha256": "8a514a230e1864c5fbfd89e92bf5734a47e782226546130210e14a1a5cce0446"
+        },
+        {
+          "path": "tests/fixtures/panels/blank.png",
+          "sha256": "f0f703c91e3ebd1b2b6e36e248ef975bfdcadf79874e2dc01f5d18e6ff808d65"
+        },
+        {
+          "path": "tests/fixtures/panels/complete.jpg",
+          "sha256": "dc5a70009e1ffb39a72b52aa57ba53b0e2f9800896e4771906f6d97042b2de93"
+        },
+        {
+          "path": "tests/fixtures/panels/complete.png",
+          "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18"
+        },
+        {
+          "path": "tests/fixtures/panels/conflicting-parts.png",
+          "sha256": "f7a2abb5abaaee64f97c55bcf087c9d235afeb78efbef1e20665bb29ad5f3375"
+        },
+        {
+          "path": "tests/fixtures/panels/generate.py",
+          "sha256": "63f5b9ac99fb03ae33a510fdc980f0d743f331dd727e9996a9d954a25b7445c9"
+        },
+        {
+          "path": "tests/fixtures/panels/manifest.json",
+          "sha256": "df089f76f59a22abccd9904c6f4988abeaecb6d016c52a9930ab635ce3db5608"
+        },
+        {
+          "path": "tests/fixtures/panels/missing-manufacturer.png",
+          "sha256": "d9bba9861d3deebdff4f538fdbfd065ec2050ce37e73c5e9b4910fa1ef515964"
+        },
+        {
+          "path": "tests/fixtures/panels/unlabelled.png",
+          "sha256": "420326aad796fd00d5a1bf6ee679616eab8b1f1678e5040f112d880579f8ebd2"
+        },
+        {
+          "path": "tests/fixtures/release-api-matrix.cjs",
+          "sha256": "8c729270d45cf05074bb71228349227358b95080c9047dd45fe136ca860032b4"
+        },
+        {
+          "path": "tests/fixtures/xlsx-projects.cjs",
+          "sha256": "02671d7d22a639a9526dc69b1f697cf4a6a632c609f5897fa0eac90dad195c63"
+        },
+        {
+          "path": "tests/helpers/callback-capacity-fixture.cjs",
+          "sha256": "a5a05af78e533279f2ad37170e4378626761bf84a8fcf8b1f60d9e79bc7f7dac"
+        },
+        {
+          "path": "tests/helpers/callback-workload-server.cjs",
+          "sha256": "f57609f05c61580ead7dc2d297e9a1c7a243bb0767cd907fba61fa98a8f46e8b"
+        },
+        {
+          "path": "tests/helpers/concurrent-store.cjs",
+          "sha256": "fcb8e2d14a36cffc50280ffff309b9e1814ea80b146c0a32019a4a625536ab8c"
+        },
+        {
+          "path": "tests/helpers/fake-assistant.cjs",
+          "sha256": "4fd9688487fb4a550a7f5ee91241cab30cb4fbca15d95760987c95628dbe9fe1"
+        },
+        {
+          "path": "tests/helpers/http-workload-worker.cjs",
+          "sha256": "e23ab077993e70f55ef83400b8132b51b56f98a24604908afebab244e7c95fd6"
+        },
+        {
+          "path": "tests/helpers/lifecycle-worker.cjs",
+          "sha256": "65691db014882661747842c78c12ba89b299c27cec76b4da7042a01f61c38852"
+        },
+        {
+          "path": "tests/helpers/release-xlsx-reader.py",
+          "sha256": "b6f828b71309f9de45a56a459fa96fa56b28749303cdb5b84eeb45b495d579c8"
+        },
+        {
+          "path": "tests/helpers/usage-worker.cjs",
+          "sha256": "57855a14e0afc84d98582d6ba19ad447c5e377f98688e3425b25601d5a5d8b78"
+        },
+        {
+          "path": "tests/intake.test.cjs",
+          "sha256": "9a72732fda70299db244b234ded86038ebc1652351d042c5dd72c27381290d59"
+        },
+        {
+          "path": "tests/intake_browser_test.py",
+          "sha256": "75bce2172ec53c70b3a5022cdb2034aec18533d7a589ac620b05845b5ad4db9e"
+        },
+        {
+          "path": "tests/lifecycle-api.test.cjs",
+          "sha256": "f10ab6b25f465e0ce8b68f23ed421c83ed839eea8c0f0a3f2267b831a8f717f7"
+        },
+        {
+          "path": "tests/lifecycle_browser_test.py",
+          "sha256": "cb0da6df66fe8fb7b07fd518209b94639f46a273ef6e807571b8fab69c614489"
+        },
+        {
+          "path": "tests/live-smoke.test.cjs",
+          "sha256": "b6f11d3e4f3dbfca8c284f67c613830e3aebc5ccf6ca4a712997b4d9772afd3f"
+        },
+        {
+          "path": "tests/macos_product_browser_test.py",
+          "sha256": "05dd5e9e30e7141886d96849b3bdfdca060df498277f2f2d8b7f59e9658af50f"
+        },
+        {
+          "path": "tests/ocr-benchmark.test.cjs",
+          "sha256": "0a32b2fb16a85b107a75a460dbe74fd5015ca98f4677a55426f4b4008d900146"
+        },
+        {
+          "path": "tests/ocr-isolation-diagnostics.test.cjs",
+          "sha256": "0985944b34f0063e212609a14f4f9f4299eb21a5e0afb784a3a9a58cbc1cc2b5"
+        },
+        {
+          "path": "tests/ocr-isolation.test.cjs",
+          "sha256": "e7f6abc192ce85a2d09998b91503a656650fd587bfefc0786ca930bc3acd125d"
+        },
+        {
+          "path": "tests/ocr.test.cjs",
+          "sha256": "a83fc9f30da273019d177c8b4acc775e711df9b260a014adea165347a3988d4c"
+        },
+        {
+          "path": "tests/panel-api.test.cjs",
+          "sha256": "8e8055cfadd4d4cbc1dbc4ce5d5c2f21f18423cb61876384ed2dc05e47ece310"
+        },
+        {
+          "path": "tests/panel-store.test.cjs",
+          "sha256": "ebb80df565a9ff3846e760fe814403f75487d975b3c7e650a110886b3ef7b139"
+        },
+        {
+          "path": "tests/panel-xlsx.test.cjs",
+          "sha256": "90c7f1096c25d1c41690cf084192fd0018a2f3ba64a622c5b8ef01efbace0143"
+        },
+        {
+          "path": "tests/panel_browser_test.py",
+          "sha256": "3b2c0393be8a4dff46877ce2f67ef0cdcba51d989a8b4bc77cd10847ca89d4bf"
+        },
+        {
+          "path": "tests/platform-client-state.test.cjs",
+          "sha256": "6c58b873e1a3aa4959674c2b567917b22e37cdd5fba5dca71539987fdf32c140"
+        },
+        {
+          "path": "tests/platform_visual_browser_test.py",
+          "sha256": "22f3ab35929bdc072223bb664dada30311566ff763b5b65f653cca5d8c319639"
+        },
+        {
+          "path": "tests/prelaunch-concurrency.test.cjs",
+          "sha256": "e7b95be6ca08bdb02e02f0397e24fe11f662d1caf3debeb714fba8d4ffc7ec83"
+        },
+        {
+          "path": "tests/prelaunch-requirements.txt",
+          "sha256": "1b10a90ffd4411fa0fa250fc18fe206264df027453cb3f27b20414992bf3bd57"
+        },
+        {
+          "path": "tests/product-backup.test.cjs",
+          "sha256": "fb100876cad6e5aee275bd16a0afc6d8cd84e694613a14be73bedcbf8cf88114"
+        },
+        {
+          "path": "tests/product-boundaries.test.cjs",
+          "sha256": "653b26afd4db28951daa00a8d418a0bb8afb61cf95b9f2a8ed7c752f54c1774f"
+        },
+        {
+          "path": "tests/product-config.test.cjs",
+          "sha256": "f80d374597b0467593ce8f47f53686ec2ec010fb8245f7567b2f30b0618ad571"
+        },
+        {
+          "path": "tests/product-ui.test.cjs",
+          "sha256": "6d0db0ea3fe41bd873bd5db68963c214bd45cd26e3794f3af8cee9916dd7e9b0"
+        },
+        {
+          "path": "tests/product_browser_test.py",
+          "sha256": "bbd9f6c93574fc7eb3c380ef10b6a6d30388d001f04459cd62aea514f18753ef"
+        },
+        {
+          "path": "tests/questions.test.cjs",
+          "sha256": "949f917c506ec4b027113697802ffe143988ab03e23ee254bb6a241df1e6897c"
+        },
+        {
+          "path": "tests/release-api-matrix.test.cjs",
+          "sha256": "726ae18c83b7623d87091601bd340848614490e917844e6db77eb536e236594b"
+        },
+        {
+          "path": "tests/release-assistant-matrix.test.cjs",
+          "sha256": "2a39ec5242c2a1339b385cb7e28c0abbcf0a16c8dab052b92b76c9a500177808"
+        },
+        {
+          "path": "tests/release-deletion-model.test.cjs",
+          "sha256": "faf08d80e804a87a2a32c1b48bef325315802f93a104003c56d3a14b590bb15f"
+        },
+        {
+          "path": "tests/release-evidence.test.cjs",
+          "sha256": "9ee1bbd00f541e978be5471c687342b2c675398dce92f53fea684eb57ee96216"
+        },
+        {
+          "path": "tests/release-export-matrix.test.cjs",
+          "sha256": "6b1cec655128f5d71467be5f8c15059248097313666567b065622a5db9ae03c5"
+        },
+        {
+          "path": "tests/release-name-grounding.test.cjs",
+          "sha256": "3b236166ef2ae58102b5aeec63ead501f4621e861ad069146fc15a6dc098691b"
+        },
+        {
+          "path": "tests/release_mobile_browser_test.py",
+          "sha256": "8e4cc24298d9c221bdf9ecd5aad8771224790a65b42bacadd0e25f0457293b32"
+        },
+        {
+          "path": "tests/release_platform_runner.py",
+          "sha256": "c1198d7d4c3cc00d1f9a503b20c31c37e9a97052578fbbcfe47460b679f795aa"
+        },
+        {
+          "path": "tests/remediation-adversarial.test.cjs",
+          "sha256": "4f90f9efe510e5b2f5ece015a3ccdef048f8a3ea69cc24836d04792756270f91"
+        },
+        {
+          "path": "tests/remediation-review.test.cjs",
+          "sha256": "5bf239eb25a792e6eaba5bfd199f2d2cc89bf225111e08df502eb627fcb6b1b2"
+        },
+        {
+          "path": "tests/retention-review.test.cjs",
+          "sha256": "8bf0d5fc95f2a592065ca69b31def36cfbd8ad0ab9f042cb42923dd33ad3c01d"
+        },
+        {
+          "path": "tests/server-http.test.cjs",
+          "sha256": "270bc063c9b7203089264155bb0bf2295609ea9e780d6ce5b8a65d1960efa2e9"
+        },
+        {
+          "path": "tests/server.test.cjs",
+          "sha256": "9ed981af6c05c6743f8aaa4fe86f5469d057bdb94db27914b56ddf8491fdd4f4"
+        },
+        {
+          "path": "tests/ui_browser_test.py",
+          "sha256": "2babe308ea87a4c42fc0b84e574439242799cd4df3e614456aa931be9518821c"
+        },
+        {
+          "path": "tests/workspace-api.test.cjs",
+          "sha256": "63014e3a6d333f239753e9c49e5c55573b8279cf11c739eca82028499e3140b9"
+        },
+        {
+          "path": "tests/workspace-assistant.test.cjs",
+          "sha256": "4c1c50646faba3a4a9ced0ce841788c4156d8ce9add2372911ccdd10f1b6c6f1"
+        },
+        {
+          "path": "tests/workspace-backup.test.cjs",
+          "sha256": "5c79e37fc4af34800c33b847472eb48545467c1ecf2fa629541a25ff1da1fdd3"
+        },
+        {
+          "path": "tests/workspace-conversation.test.cjs",
+          "sha256": "403314e9600f5001a14ec347fe2a982ba36b2bf2786019130cc9557ed7bebdf8"
+        },
+        {
+          "path": "tests/workspace-export.test.cjs",
+          "sha256": "a4b43f56bde86e3221c8aedd990372f6a71084a19726ea3211267d58d9598abd"
+        },
+        {
+          "path": "tests/workspace-file-safety.test.cjs",
+          "sha256": "b8fcdc2bbe6d58bb65dc0eed4d281c7814ad873fd16b8efb23a116c69ba03cbe"
+        },
+        {
+          "path": "tests/workspace-http.test.cjs",
+          "sha256": "40bbb53eba37b13a83c88ed4e43075b90e28fd0dba6648447b0656092eaab1a1"
+        },
+        {
+          "path": "tests/workspace-recovery-auth.test.cjs",
+          "sha256": "4f1b17f263e67fc733f9fe5327687c2d665905771531a72f3f51a5d887ffc811"
+        },
+        {
+          "path": "tests/workspace-revocation.test.cjs",
+          "sha256": "749c3c194fd715624ff8688351fd3363467fdc852eca46c6d95827de13569515"
+        },
+        {
+          "path": "tests/workspace-store.test.cjs",
+          "sha256": "755e14fa50796fc7893e0a4704e36cb93b3907a88280129aa7ad4c1eb91d2c2b"
+        },
+        {
+          "path": "tests/workspace_browser_test.py",
+          "sha256": "4ddf7eb6c28ce6410664b6cbd30f127d887ece8f68a9f7f263e301a9a53c8cac"
+        },
+        {
+          "path": "tests/workspace_recovery_browser_test.py",
+          "sha256": "d9665c37f08c818d2acc19109e4f6d49d3691aabbc00414ebe2671814e0947cb"
+        },
+        {
+          "path": "tests/xlsx_browser_test.py",
+          "sha256": "4afba86c2653bf7b3c2ec0b4d9cd0695e87f1954558a46848ce0cbd9f086d984"
+        },
+        {
+          "path": "workspace-server.cjs",
+          "sha256": "a9bc61d6bfe55408943efb15b923632b22b552da6fda735135aba8614524e34c"
+        },
+        {
+          "path": "workspace/api.cjs",
+          "sha256": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e"
+        },
+        {
+          "path": "workspace/app.js",
+          "sha256": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989"
+        },
+        {
+          "path": "workspace/assistant-config.cjs",
+          "sha256": "fd982824e867685ca34a4f6e0aca65dd1afeed292dfd2a53f25c3d255cf49b69"
+        },
+        {
+          "path": "workspace/assistant-provider.cjs",
+          "sha256": "f6304a1496d6fdf3f961ce5de451d32ab5a0cbad64d59209ca7ad3554dfd0fc0"
+        },
+        {
+          "path": "workspace/assistant.cjs",
+          "sha256": "b7d5cdcd8372a79a3ddd622fdb623d85d30cb97988623955cdea117ef5b1e0f5"
+        },
+        {
+          "path": "workspace/auth.cjs",
+          "sha256": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5"
+        },
+        {
+          "path": "workspace/backup.cjs",
+          "sha256": "bfb438e53f985104b85a7023cd13cdddf880441dcdb73e7933ff18304e4f5a30"
+        },
+        {
+          "path": "workspace/callback-tasks.cjs",
+          "sha256": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff"
+        },
+        {
+          "path": "workspace/conversation.cjs",
+          "sha256": "edbf75aec1764aa77b905c93aa8d6912baaf420c2cfdf2d0bc565ca6c306b390"
+        },
+        {
+          "path": "workspace/dashboard.html",
+          "sha256": "d4b2d33efa7c8ac6143b005ac3f82c6784e5c4a9eaeca3d4bacc642598c582f2"
+        },
+        {
+          "path": "workspace/dashboard.js",
+          "sha256": "6dc659c482c5279f40b109bd415ea59cbd1ecadb0fcd5bfb067d53921ba139b4"
+        },
+        {
+          "path": "workspace/deletion.js",
+          "sha256": "0b15e7b7d9387c8e9ed62005b13933e1c6a5703a3c06e773bed40ac14acf0fc3"
+        },
+        {
+          "path": "workspace/file-safety.cjs",
+          "sha256": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad"
+        },
+        {
+          "path": "workspace/index.html",
+          "sha256": "62d2292361c936decbf07a01b5baef02ae46f0c6e0d27dda181abfdf93e063c4"
+        },
+        {
+          "path": "workspace/lifecycle.cjs",
+          "sha256": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec"
+        },
+        {
+          "path": "workspace/login.html",
+          "sha256": "0cbe93901a23a571b7d1ac021462273aa951b4c6b420691ec2e8257143e91029"
+        },
+        {
+          "path": "workspace/login.js",
+          "sha256": "7756811688ab7c5d19f3abc0652fea6c895d7f81938005ff75b906a777aa0dec"
+        },
+        {
+          "path": "workspace/ocr-isolation.cjs",
+          "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
+        },
+        {
+          "path": "workspace/ocr-preprocess.py",
+          "sha256": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014"
+        },
+        {
+          "path": "workspace/ocr.cjs",
+          "sha256": "75638551bd43b0fd5a37d059e1486f399b9941614650537961ea79f968771da1"
+        },
+        {
+          "path": "workspace/panels.cjs",
+          "sha256": "a8d342850cb2b43f206c41d6a8522894da5bb52d3e2a177a4e08bca85cecd637"
+        },
+        {
+          "path": "workspace/panels.html",
+          "sha256": "5899e9bba17bfaf45e5409931e0857a9aa9ab8ed001b81890e880ae9bb1fdef6"
+        },
+        {
+          "path": "workspace/panels.js",
+          "sha256": "3cc498bf100701342511beaf5c86680bedec9eb880d7e26794eec15091ed4c1c"
+        },
+        {
+          "path": "workspace/platform.css",
+          "sha256": "7f2d28a78d7f0d390295e9b997b407c62fa309de9337fabff88e999cc6cd883e"
+        },
+        {
+          "path": "workspace/preview.html",
+          "sha256": "0bd1a6617845ab02ade2a9ce1cd786755ab93401884ad0a3c5e69d2b082a90cd"
+        },
+        {
+          "path": "workspace/preview.js",
+          "sha256": "17dd4784b569170a96dc46b5f696bac19c0d73f39484da16837855112f5b3149"
+        },
+        {
+          "path": "workspace/product-ui.cjs",
+          "sha256": "a63ae23a7240d5f5c443959521ef818f5e50d9298c82bfc955a2f713f2387c0d"
+        },
+        {
+          "path": "workspace/products.cjs",
+          "sha256": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf"
+        },
+        {
+          "path": "workspace/retention.cjs",
+          "sha256": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4"
+        },
+        {
+          "path": "workspace/schedule.js",
+          "sha256": "daa6f26cf85e04e155a44536a3da615f1ee3abf09916d6db7fca615159d33fb9"
+        },
+        {
+          "path": "workspace/store.cjs",
+          "sha256": "3ae3f0cabee93b17f0dc1a1de5338004beae82ef895e30585eaef27b9058f462"
+        },
+        {
+          "path": "workspace/styles.css",
+          "sha256": "f285c96afb73440a933010e0b668f9e315c6622de6d30568182d87cf54730b99"
+        },
+        {
+          "path": "workspace/usage.cjs",
+          "sha256": "6a0e1e60fd6e3318e590e0786f5bbedf2975ed0e3e6f21a3a2cadb1dd2b4bee2"
+        },
+        {
+          "path": "workspace/xlsx.cjs",
+          "sha256": "51027a82df044bf444fe31965bbd39118fdaa6ed306022c7d3fadef083b4c217"
+        }
+      ]
+    },
+    "candidate": {
+      "sourceCommit": "e711d15d418406969631202642c9d055b47afca5",
+      "gitTreeHash": "530c65b61d65e5269183b0db22892a1c359e52f4",
+      "sourceTreeSha256": "d6de597b54a4a143241453489aceb35b52de409fd830b56bd5d00c088ab16c34",
+      "dirty": true,
+      "sourceManifest": [
+        {
+          "path": ".env.example",
+          "sha256": "9a0c513f779546e2b38736986743a2551de11532a0b9c4edc1b5da41f4029db8"
+        },
+        {
+          "path": ".gitattributes",
+          "sha256": "c8b8ee9e85458eacee1610cfceb0b6270b26655dd9b1f2050a94733eaf95ea3d"
+        },
+        {
+          "path": ".github/workflows/demo-tests.yml",
+          "sha256": "3fad5ad85bdb86b4093bc5b40667505ef86d2709194e2ff2580cb5bf530e265e"
+        },
+        {
+          "path": ".gitignore",
+          "sha256": "8a44f4036516ee90069b07d52d7d14b7289bd648a923b772006260b30faadd6e"
+        },
+        {
+          "path": "callback-server.cjs",
+          "sha256": "7007993d24140e2cb110a9c6ad84d9ce0e65ac0815fc90d7ab49c0d784f0ef22"
+        },
+        {
+          "path": "design-preview/app.js",
+          "sha256": "708cd186fdd0373b8d9b9833235d7069a5500b0c9ff665ce8fe566c2121249a5"
+        },
+        {
+          "path": "design-preview/demo-core.js",
+          "sha256": "ea52186803e712820a1b78ec72e95f708d4c2529bbadd564d4d98c979ec7dafe"
+        },
+        {
+          "path": "design-preview/index.html",
+          "sha256": "035e9e8c839a66923c7fdb82ffb869d12b863f764070cc73e251faefd590cf87"
+        },
+        {
+          "path": "design-preview/mark-on-dark.svg",
+          "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+        },
+        {
+          "path": "design-preview/mark-on-light.svg",
+          "sha256": "790faba6500e601710b0904141fdfdbba522d383cc3624e0eb72bafef9632b20"
+        },
+        {
+          "path": "design-preview/mark.svg",
+          "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+        },
+        {
+          "path": "design-preview/sample-label.svg",
+          "sha256": "f19e565c0d7c19421053102c1e368b361a9da6719bf251823cc569fd7c1e21e4"
+        },
+        {
+          "path": "design-preview/styles.css",
+          "sha256": "0155dbbe1f4f8f614a0173bb9712fdac1c70c77d04728f49b7cd2da61890e2d6"
+        },
+        {
+          "path": "docs/test-milestones.json",
+          "sha256": "0bae74dae8fa8906003e88ab2fe7c5f2e65640114f72450aab255027d9ff6005"
+        },
+        {
+          "path": "index.html",
+          "sha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82"
+        },
+        {
+          "path": "robots.txt",
+          "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+        },
+        {
+          "path": "scripts/aggregate-test-evidence.cjs",
+          "sha256": "e6fc977a09212c3285abb78885a9a2c0a077a3bc57dbb029c32792c9bfc08237"
+        },
+        {
+          "path": "scripts/benchmark-ocr.cjs",
+          "sha256": "43663bb797781049ece3ea674723912f248c937c8140464d9a19d57178bc0460"
+        },
+        {
+          "path": "scripts/build-demo.cjs",
+          "sha256": "dd197c8874e4bf5093f1083043b528acf72f1df5b485ab674704674e7f1c52f8"
+        },
+        {
+          "path": "scripts/callback-workload.cjs",
+          "sha256": "9df23dd408dbb5eb00724bd864aec42e15b72b2ddf66a17e227cca3e5b22a96b"
+        },
+        {
+          "path": "scripts/evaluate-assistant.cjs",
+          "sha256": "f018e8c5d789b2de370775b39c0b48d2d94278e6147a0514850c3418d1c84117"
+        },
+        {
+          "path": "scripts/http-workload.cjs",
+          "sha256": "3bd437d7e03be2f520886b4c97b25fe5b3f7ce70167df38bff793c174772e5d5"
+        },
+        {
+          "path": "scripts/ocr-isolation-diagnostics.cjs",
+          "sha256": "dbfc5aaf5d97e65ca0804078e0cf78f16d5428341e8ed822b8d7405e1f8b8f20"
+        },
+        {
+          "path": "scripts/ocr-process-metrics.cjs",
+          "sha256": "fd9637a0b89be8f556288a71453c65d8f4dfe46b1a09e0236ed9e9f986fd8789"
+        },
+        {
+          "path": "scripts/prelaunch-stress.cjs",
+          "sha256": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c"
+        },
+        {
+          "path": "scripts/run-release-node.cjs",
+          "sha256": "96db3c3d1cd21e2b4a7a0dc7710d3a891f57ca710c8f299fdbcf8590db776575"
+        },
+        {
+          "path": "scripts/test-evidence.cjs",
+          "sha256": "e6e1570da75b0018983dc91e6430d457c546cce2c10fd8a889396dcce9517584"
+        },
+        {
+          "path": "scripts/test-ocr-fixtures.cjs",
+          "sha256": "f606a742a326bafb4407725facf60a59913af06a6b78c06ed9bffb7c077f19b7"
+        },
+        {
+          "path": "scripts/test-ocr-isolation.cjs",
+          "sha256": "b3d1f65514aae5f13ef722b58f7ac36f0766b4a58df5d13cbb2868b53c0a67bd"
+        },
+        {
+          "path": "scripts/test-ocr-resource-limits.cjs",
+          "sha256": "89e951cff6b4f49f79e0b0c39d23b09ffc7f3a1c72b5417a3ad0ee73b3f995d4"
+        },
+        {
+          "path": "scripts/test-xlsx-reader.py",
+          "sha256": "8ef1e79dfb505203781518a992d707e4827c4be532723051a978861f3c486f3b"
+        },
+        {
+          "path": "scripts/workspace-admin.cjs",
+          "sha256": "cbbf45967c6b9302bab4ab82d4c8572b27816befcd6fc0f8150b08e304370f0a"
+        },
+        {
+          "path": "scripts/workspace-backup.cjs",
+          "sha256": "99e4beec53cd2ea3514cb8cb0bcdb469bcbb424d0f189d664ea595d7f3d80e40"
+        },
+        {
+          "path": "scripts/workspace-reset-password.cjs",
+          "sha256": "95c773fbfe4253e8e979c38a77c250704e5a6a5af7fa1c2b3562e15ceca23372"
+        },
+        {
+          "path": "server.cjs",
+          "sha256": "5b88a11280ab7086468995c6a70cf6169f643d8a035b52e9829c1294f9c08b71"
+        },
+        {
+          "path": "spreadsheet-server.cjs",
+          "sha256": "f552f097b884ce1ba77ee6afd6a0eaa34aea108dc2bf6745346bbe26abcd5a94"
+        },
+        {
+          "path": "src/business-info.js",
+          "sha256": "f1d9187d31d2e5a953614fa3824a9b54ad1683a7f0944d96943d4f643e9753a1"
+        },
+        {
+          "path": "src/demo.js",
+          "sha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974"
+        },
+        {
+          "path": "src/intake.js",
+          "sha256": "bf33576b3472b29d9375cc0ed422e279e6bf5cb9787e35fd42a66f7565358895"
+        },
+        {
+          "path": "src/questions.js",
+          "sha256": "96defee8d12af867f4d29672bb7c8a31c1cbb84a6cca5d707ba2e1ed31ec637a"
+        },
+        {
+          "path": "tests/assistant-adversarial.test.cjs",
+          "sha256": "706bcc87e313133af6a4ba2900496a85bae719f44687e46bb16e879bdb5ada85"
+        },
+        {
+          "path": "tests/assistant-api.test.cjs",
+          "sha256": "5b64d383fc1ad6e454790b9c8df9351e92eba6a9aed24ecf554e9e208e827593"
+        },
+        {
+          "path": "tests/assistant-evaluation.test.cjs",
+          "sha256": "e4216a886fa585bbea7ed3adb1d055578bac2bee7f62504a50812f3a1988149f"
+        },
+        {
+          "path": "tests/assistant-provider.test.cjs",
+          "sha256": "d319fda86badbf14f5ea5b259e383a157db391fe79ba7610051698229c44c398"
+        },
+        {
+          "path": "tests/assistant-usage.test.cjs",
+          "sha256": "4558bc4c0ae8256e0bb4c107fa028a0c4fac3a179a5c26addc83dbbc5cbacc28"
+        },
+        {
+          "path": "tests/assistant_browser_test.py",
+          "sha256": "c8d1c289c6b06d38838000e8159d4f80cf0cee3d40a8a98b29010f8524f254fd"
+        },
+        {
+          "path": "tests/browser-requirements.txt",
+          "sha256": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82"
+        },
+        {
+          "path": "tests/browser_engine.py",
+          "sha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5"
+        },
+        {
+          "path": "tests/browser_test.py",
+          "sha256": "93380a727c1a215128095457d11714064325f05036ce2abcb345eeb96bf2cbcf"
+        },
+        {
+          "path": "tests/callback-schedule-client.test.cjs",
+          "sha256": "1a22def2562bd3442f3096de8de255430d4823a2af853d8d20e04806f220bbb8"
+        },
+        {
+          "path": "tests/callback-task-parent-integrity.test.cjs",
+          "sha256": "f2183fae8996d981694ab3b6d4a12660c8f5dbfe12a06e050aa3ee6e645c0c3b"
+        },
+        {
+          "path": "tests/callback-task-resources.test.cjs",
+          "sha256": "24203d1f9b393df6a5fdd3824647854d26e76fcb264a4437596077acd704cf47"
+        },
+        {
+          "path": "tests/callback-tasks-api.test.cjs",
+          "sha256": "eaf876d1fb65ee4dff6161dafd5685d31372ab9a6b709a2a4bf0b2a797e1d2cd"
+        },
+        {
+          "path": "tests/callback-tasks.test.cjs",
+          "sha256": "1c6628fa3e9312f3e5ee91904ef192feedddc883fdf35051dd07c533e004d91d"
+        },
+        {
+          "path": "tests/data-lifecycle.test.cjs",
+          "sha256": "60cd78b78b597955b3b9dfbc9d77c044be7e2a51a587ddc3d3a057ffca18220c"
+        },
+        {
+          "path": "tests/deletion-client-review.test.cjs",
+          "sha256": "54d241e05fbc071bf3d6cd363dbbf97bd87137d05a858cd06b7a44af7cb8d33b"
+        },
+        {
+          "path": "tests/demo.test.cjs",
+          "sha256": "a18839cc242acc94865de602b5a627e9c3b010206ecc8f6fd8bafd9a62dd2b11"
+        },
+        {
+          "path": "tests/design-preview.test.cjs",
+          "sha256": "6e27175539d9ec2ae7ccc86e82bff771413417b7bfa4f2ef4605c6f96eea3f8a"
+        },
+        {
+          "path": "tests/design_browser_test.py",
+          "sha256": "174f1279dcd853bb3abee0842ed73b4da5b4dc2ae10f57e78f0eef759cb1376f"
+        },
+        {
+          "path": "tests/fixtures/assistant/corpus.json",
+          "sha256": "7cf62e652dbf9d059ab13a3c8b94a50655a11913412dbbb65ea43c895c4b5e22"
+        },
+        {
+          "path": "tests/fixtures/assistant/remediation-corpus.json",
+          "sha256": "a397bc55d927b231eb5a4f4122d64d87c9cff77085b96e36f20c584e044dec47"
+        },
+        {
+          "path": "tests/fixtures/fake-assistant-server.cjs",
+          "sha256": "bf9d3ffe96b4cd3dacfda24cbb95f74376215cc40bb91b49a36dc31af47555d0"
+        },
+        {
+          "path": "tests/fixtures/panels-benchmark/generate.py",
+          "sha256": "8a514a230e1864c5fbfd89e92bf5734a47e782226546130210e14a1a5cce0446"
+        },
+        {
+          "path": "tests/fixtures/panels/blank.png",
+          "sha256": "f0f703c91e3ebd1b2b6e36e248ef975bfdcadf79874e2dc01f5d18e6ff808d65"
+        },
+        {
+          "path": "tests/fixtures/panels/complete.jpg",
+          "sha256": "dc5a70009e1ffb39a72b52aa57ba53b0e2f9800896e4771906f6d97042b2de93"
+        },
+        {
+          "path": "tests/fixtures/panels/complete.png",
+          "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18"
+        },
+        {
+          "path": "tests/fixtures/panels/conflicting-parts.png",
+          "sha256": "f7a2abb5abaaee64f97c55bcf087c9d235afeb78efbef1e20665bb29ad5f3375"
+        },
+        {
+          "path": "tests/fixtures/panels/generate.py",
+          "sha256": "63f5b9ac99fb03ae33a510fdc980f0d743f331dd727e9996a9d954a25b7445c9"
+        },
+        {
+          "path": "tests/fixtures/panels/manifest.json",
+          "sha256": "df089f76f59a22abccd9904c6f4988abeaecb6d016c52a9930ab635ce3db5608"
+        },
+        {
+          "path": "tests/fixtures/panels/missing-manufacturer.png",
+          "sha256": "d9bba9861d3deebdff4f538fdbfd065ec2050ce37e73c5e9b4910fa1ef515964"
+        },
+        {
+          "path": "tests/fixtures/panels/unlabelled.png",
+          "sha256": "420326aad796fd00d5a1bf6ee679616eab8b1f1678e5040f112d880579f8ebd2"
+        },
+        {
+          "path": "tests/fixtures/release-api-matrix.cjs",
+          "sha256": "8c729270d45cf05074bb71228349227358b95080c9047dd45fe136ca860032b4"
+        },
+        {
+          "path": "tests/fixtures/xlsx-projects.cjs",
+          "sha256": "02671d7d22a639a9526dc69b1f697cf4a6a632c609f5897fa0eac90dad195c63"
+        },
+        {
+          "path": "tests/helpers/callback-capacity-fixture.cjs",
+          "sha256": "a5a05af78e533279f2ad37170e4378626761bf84a8fcf8b1f60d9e79bc7f7dac"
+        },
+        {
+          "path": "tests/helpers/callback-workload-server.cjs",
+          "sha256": "f57609f05c61580ead7dc2d297e9a1c7a243bb0767cd907fba61fa98a8f46e8b"
+        },
+        {
+          "path": "tests/helpers/concurrent-store.cjs",
+          "sha256": "fcb8e2d14a36cffc50280ffff309b9e1814ea80b146c0a32019a4a625536ab8c"
+        },
+        {
+          "path": "tests/helpers/fake-assistant.cjs",
+          "sha256": "4fd9688487fb4a550a7f5ee91241cab30cb4fbca15d95760987c95628dbe9fe1"
+        },
+        {
+          "path": "tests/helpers/http-workload-worker.cjs",
+          "sha256": "e23ab077993e70f55ef83400b8132b51b56f98a24604908afebab244e7c95fd6"
+        },
+        {
+          "path": "tests/helpers/lifecycle-worker.cjs",
+          "sha256": "65691db014882661747842c78c12ba89b299c27cec76b4da7042a01f61c38852"
+        },
+        {
+          "path": "tests/helpers/release-xlsx-reader.py",
+          "sha256": "b6f828b71309f9de45a56a459fa96fa56b28749303cdb5b84eeb45b495d579c8"
+        },
+        {
+          "path": "tests/helpers/usage-worker.cjs",
+          "sha256": "57855a14e0afc84d98582d6ba19ad447c5e377f98688e3425b25601d5a5d8b78"
+        },
+        {
+          "path": "tests/intake.test.cjs",
+          "sha256": "9a72732fda70299db244b234ded86038ebc1652351d042c5dd72c27381290d59"
+        },
+        {
+          "path": "tests/intake_browser_test.py",
+          "sha256": "75bce2172ec53c70b3a5022cdb2034aec18533d7a589ac620b05845b5ad4db9e"
+        },
+        {
+          "path": "tests/lifecycle-api.test.cjs",
+          "sha256": "f10ab6b25f465e0ce8b68f23ed421c83ed839eea8c0f0a3f2267b831a8f717f7"
+        },
+        {
+          "path": "tests/lifecycle_browser_test.py",
+          "sha256": "cb0da6df66fe8fb7b07fd518209b94639f46a273ef6e807571b8fab69c614489"
+        },
+        {
+          "path": "tests/live-smoke.test.cjs",
+          "sha256": "b6f11d3e4f3dbfca8c284f67c613830e3aebc5ccf6ca4a712997b4d9772afd3f"
+        },
+        {
+          "path": "tests/macos_product_browser_test.py",
+          "sha256": "05dd5e9e30e7141886d96849b3bdfdca060df498277f2f2d8b7f59e9658af50f"
+        },
+        {
+          "path": "tests/ocr-benchmark.test.cjs",
+          "sha256": "0a32b2fb16a85b107a75a460dbe74fd5015ca98f4677a55426f4b4008d900146"
+        },
+        {
+          "path": "tests/ocr-isolation-diagnostics.test.cjs",
+          "sha256": "0985944b34f0063e212609a14f4f9f4299eb21a5e0afb784a3a9a58cbc1cc2b5"
+        },
+        {
+          "path": "tests/ocr-isolation.test.cjs",
+          "sha256": "e7f6abc192ce85a2d09998b91503a656650fd587bfefc0786ca930bc3acd125d"
+        },
+        {
+          "path": "tests/ocr.test.cjs",
+          "sha256": "a83fc9f30da273019d177c8b4acc775e711df9b260a014adea165347a3988d4c"
+        },
+        {
+          "path": "tests/panel-api.test.cjs",
+          "sha256": "8e8055cfadd4d4cbc1dbc4ce5d5c2f21f18423cb61876384ed2dc05e47ece310"
+        },
+        {
+          "path": "tests/panel-store.test.cjs",
+          "sha256": "ebb80df565a9ff3846e760fe814403f75487d975b3c7e650a110886b3ef7b139"
+        },
+        {
+          "path": "tests/panel-xlsx.test.cjs",
+          "sha256": "90c7f1096c25d1c41690cf084192fd0018a2f3ba64a622c5b8ef01efbace0143"
+        },
+        {
+          "path": "tests/panel_browser_test.py",
+          "sha256": "3b2c0393be8a4dff46877ce2f67ef0cdcba51d989a8b4bc77cd10847ca89d4bf"
+        },
+        {
+          "path": "tests/platform-client-state.test.cjs",
+          "sha256": "6c58b873e1a3aa4959674c2b567917b22e37cdd5fba5dca71539987fdf32c140"
+        },
+        {
+          "path": "tests/platform_visual_browser_test.py",
+          "sha256": "22f3ab35929bdc072223bb664dada30311566ff763b5b65f653cca5d8c319639"
+        },
+        {
+          "path": "tests/prelaunch-concurrency.test.cjs",
+          "sha256": "e7b95be6ca08bdb02e02f0397e24fe11f662d1caf3debeb714fba8d4ffc7ec83"
+        },
+        {
+          "path": "tests/prelaunch-requirements.txt",
+          "sha256": "1b10a90ffd4411fa0fa250fc18fe206264df027453cb3f27b20414992bf3bd57"
+        },
+        {
+          "path": "tests/product-backup.test.cjs",
+          "sha256": "fb100876cad6e5aee275bd16a0afc6d8cd84e694613a14be73bedcbf8cf88114"
+        },
+        {
+          "path": "tests/product-boundaries.test.cjs",
+          "sha256": "653b26afd4db28951daa00a8d418a0bb8afb61cf95b9f2a8ed7c752f54c1774f"
+        },
+        {
+          "path": "tests/product-config.test.cjs",
+          "sha256": "f80d374597b0467593ce8f47f53686ec2ec010fb8245f7567b2f30b0618ad571"
+        },
+        {
+          "path": "tests/product-ui.test.cjs",
+          "sha256": "6d0db0ea3fe41bd873bd5db68963c214bd45cd26e3794f3af8cee9916dd7e9b0"
+        },
+        {
+          "path": "tests/product_browser_test.py",
+          "sha256": "bbd9f6c93574fc7eb3c380ef10b6a6d30388d001f04459cd62aea514f18753ef"
+        },
+        {
+          "path": "tests/questions.test.cjs",
+          "sha256": "949f917c506ec4b027113697802ffe143988ab03e23ee254bb6a241df1e6897c"
+        },
+        {
+          "path": "tests/release-api-matrix.test.cjs",
+          "sha256": "726ae18c83b7623d87091601bd340848614490e917844e6db77eb536e236594b"
+        },
+        {
+          "path": "tests/release-assistant-matrix.test.cjs",
+          "sha256": "2a39ec5242c2a1339b385cb7e28c0abbcf0a16c8dab052b92b76c9a500177808"
+        },
+        {
+          "path": "tests/release-deletion-model.test.cjs",
+          "sha256": "faf08d80e804a87a2a32c1b48bef325315802f93a104003c56d3a14b590bb15f"
+        },
+        {
+          "path": "tests/release-evidence.test.cjs",
+          "sha256": "9ee1bbd00f541e978be5471c687342b2c675398dce92f53fea684eb57ee96216"
+        },
+        {
+          "path": "tests/release-export-matrix.test.cjs",
+          "sha256": "6b1cec655128f5d71467be5f8c15059248097313666567b065622a5db9ae03c5"
+        },
+        {
+          "path": "tests/release-name-grounding.test.cjs",
+          "sha256": "3b236166ef2ae58102b5aeec63ead501f4621e861ad069146fc15a6dc098691b"
+        },
+        {
+          "path": "tests/release_mobile_browser_test.py",
+          "sha256": "8e4cc24298d9c221bdf9ecd5aad8771224790a65b42bacadd0e25f0457293b32"
+        },
+        {
+          "path": "tests/release_platform_runner.py",
+          "sha256": "c1198d7d4c3cc00d1f9a503b20c31c37e9a97052578fbbcfe47460b679f795aa"
+        },
+        {
+          "path": "tests/remediation-adversarial.test.cjs",
+          "sha256": "4f90f9efe510e5b2f5ece015a3ccdef048f8a3ea69cc24836d04792756270f91"
+        },
+        {
+          "path": "tests/remediation-review.test.cjs",
+          "sha256": "5bf239eb25a792e6eaba5bfd199f2d2cc89bf225111e08df502eb627fcb6b1b2"
+        },
+        {
+          "path": "tests/retention-review.test.cjs",
+          "sha256": "8bf0d5fc95f2a592065ca69b31def36cfbd8ad0ab9f042cb42923dd33ad3c01d"
+        },
+        {
+          "path": "tests/server-http.test.cjs",
+          "sha256": "270bc063c9b7203089264155bb0bf2295609ea9e780d6ce5b8a65d1960efa2e9"
+        },
+        {
+          "path": "tests/server.test.cjs",
+          "sha256": "9ed981af6c05c6743f8aaa4fe86f5469d057bdb94db27914b56ddf8491fdd4f4"
+        },
+        {
+          "path": "tests/ui_browser_test.py",
+          "sha256": "2babe308ea87a4c42fc0b84e574439242799cd4df3e614456aa931be9518821c"
+        },
+        {
+          "path": "tests/workspace-api.test.cjs",
+          "sha256": "63014e3a6d333f239753e9c49e5c55573b8279cf11c739eca82028499e3140b9"
+        },
+        {
+          "path": "tests/workspace-assistant.test.cjs",
+          "sha256": "4c1c50646faba3a4a9ced0ce841788c4156d8ce9add2372911ccdd10f1b6c6f1"
+        },
+        {
+          "path": "tests/workspace-backup.test.cjs",
+          "sha256": "5c79e37fc4af34800c33b847472eb48545467c1ecf2fa629541a25ff1da1fdd3"
+        },
+        {
+          "path": "tests/workspace-conversation.test.cjs",
+          "sha256": "403314e9600f5001a14ec347fe2a982ba36b2bf2786019130cc9557ed7bebdf8"
+        },
+        {
+          "path": "tests/workspace-export.test.cjs",
+          "sha256": "a4b43f56bde86e3221c8aedd990372f6a71084a19726ea3211267d58d9598abd"
+        },
+        {
+          "path": "tests/workspace-file-safety.test.cjs",
+          "sha256": "b8fcdc2bbe6d58bb65dc0eed4d281c7814ad873fd16b8efb23a116c69ba03cbe"
+        },
+        {
+          "path": "tests/workspace-http.test.cjs",
+          "sha256": "40bbb53eba37b13a83c88ed4e43075b90e28fd0dba6648447b0656092eaab1a1"
+        },
+        {
+          "path": "tests/workspace-recovery-auth.test.cjs",
+          "sha256": "4f1b17f263e67fc733f9fe5327687c2d665905771531a72f3f51a5d887ffc811"
+        },
+        {
+          "path": "tests/workspace-revocation.test.cjs",
+          "sha256": "749c3c194fd715624ff8688351fd3363467fdc852eca46c6d95827de13569515"
+        },
+        {
+          "path": "tests/workspace-store.test.cjs",
+          "sha256": "755e14fa50796fc7893e0a4704e36cb93b3907a88280129aa7ad4c1eb91d2c2b"
+        },
+        {
+          "path": "tests/workspace_browser_test.py",
+          "sha256": "4ddf7eb6c28ce6410664b6cbd30f127d887ece8f68a9f7f263e301a9a53c8cac"
+        },
+        {
+          "path": "tests/workspace_recovery_browser_test.py",
+          "sha256": "d9665c37f08c818d2acc19109e4f6d49d3691aabbc00414ebe2671814e0947cb"
+        },
+        {
+          "path": "tests/xlsx_browser_test.py",
+          "sha256": "4afba86c2653bf7b3c2ec0b4d9cd0695e87f1954558a46848ce0cbd9f086d984"
+        },
+        {
+          "path": "workspace-server.cjs",
+          "sha256": "a9bc61d6bfe55408943efb15b923632b22b552da6fda735135aba8614524e34c"
+        },
+        {
+          "path": "workspace/api.cjs",
+          "sha256": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e"
+        },
+        {
+          "path": "workspace/app.js",
+          "sha256": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989"
+        },
+        {
+          "path": "workspace/assistant-config.cjs",
+          "sha256": "fd982824e867685ca34a4f6e0aca65dd1afeed292dfd2a53f25c3d255cf49b69"
+        },
+        {
+          "path": "workspace/assistant-provider.cjs",
+          "sha256": "f6304a1496d6fdf3f961ce5de451d32ab5a0cbad64d59209ca7ad3554dfd0fc0"
+        },
+        {
+          "path": "workspace/assistant.cjs",
+          "sha256": "b7d5cdcd8372a79a3ddd622fdb623d85d30cb97988623955cdea117ef5b1e0f5"
+        },
+        {
+          "path": "workspace/auth.cjs",
+          "sha256": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5"
+        },
+        {
+          "path": "workspace/backup.cjs",
+          "sha256": "4a691dc0467c8e7919e4e8bd53b2984b1f492454c822209fee370eb6cdd6b6b1"
+        },
+        {
+          "path": "workspace/callback-tasks.cjs",
+          "sha256": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff"
+        },
+        {
+          "path": "workspace/conversation.cjs",
+          "sha256": "edbf75aec1764aa77b905c93aa8d6912baaf420c2cfdf2d0bc565ca6c306b390"
+        },
+        {
+          "path": "workspace/dashboard.html",
+          "sha256": "d4b2d33efa7c8ac6143b005ac3f82c6784e5c4a9eaeca3d4bacc642598c582f2"
+        },
+        {
+          "path": "workspace/dashboard.js",
+          "sha256": "6dc659c482c5279f40b109bd415ea59cbd1ecadb0fcd5bfb067d53921ba139b4"
+        },
+        {
+          "path": "workspace/deletion.js",
+          "sha256": "0b15e7b7d9387c8e9ed62005b13933e1c6a5703a3c06e773bed40ac14acf0fc3"
+        },
+        {
+          "path": "workspace/file-safety.cjs",
+          "sha256": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad"
+        },
+        {
+          "path": "workspace/index.html",
+          "sha256": "62d2292361c936decbf07a01b5baef02ae46f0c6e0d27dda181abfdf93e063c4"
+        },
+        {
+          "path": "workspace/lifecycle.cjs",
+          "sha256": "cc13bbcda7e3b36a242cfafdf8fdfef8d431fcd07d7cbee28b9f9edfa32a1299"
+        },
+        {
+          "path": "workspace/login.html",
+          "sha256": "0cbe93901a23a571b7d1ac021462273aa951b4c6b420691ec2e8257143e91029"
+        },
+        {
+          "path": "workspace/login.js",
+          "sha256": "7756811688ab7c5d19f3abc0652fea6c895d7f81938005ff75b906a777aa0dec"
+        },
+        {
+          "path": "workspace/ocr-isolation.cjs",
+          "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
+        },
+        {
+          "path": "workspace/ocr-preprocess.py",
+          "sha256": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014"
+        },
+        {
+          "path": "workspace/ocr.cjs",
+          "sha256": "75638551bd43b0fd5a37d059e1486f399b9941614650537961ea79f968771da1"
+        },
+        {
+          "path": "workspace/panels.cjs",
+          "sha256": "a8d342850cb2b43f206c41d6a8522894da5bb52d3e2a177a4e08bca85cecd637"
+        },
+        {
+          "path": "workspace/panels.html",
+          "sha256": "5899e9bba17bfaf45e5409931e0857a9aa9ab8ed001b81890e880ae9bb1fdef6"
+        },
+        {
+          "path": "workspace/panels.js",
+          "sha256": "3cc498bf100701342511beaf5c86680bedec9eb880d7e26794eec15091ed4c1c"
+        },
+        {
+          "path": "workspace/platform.css",
+          "sha256": "7f2d28a78d7f0d390295e9b997b407c62fa309de9337fabff88e999cc6cd883e"
+        },
+        {
+          "path": "workspace/preview.html",
+          "sha256": "0bd1a6617845ab02ade2a9ce1cd786755ab93401884ad0a3c5e69d2b082a90cd"
+        },
+        {
+          "path": "workspace/preview.js",
+          "sha256": "17dd4784b569170a96dc46b5f696bac19c0d73f39484da16837855112f5b3149"
+        },
+        {
+          "path": "workspace/product-ui.cjs",
+          "sha256": "a63ae23a7240d5f5c443959521ef818f5e50d9298c82bfc955a2f713f2387c0d"
+        },
+        {
+          "path": "workspace/products.cjs",
+          "sha256": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf"
+        },
+        {
+          "path": "workspace/retention.cjs",
+          "sha256": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4"
+        },
+        {
+          "path": "workspace/schedule.js",
+          "sha256": "daa6f26cf85e04e155a44536a3da615f1ee3abf09916d6db7fca615159d33fb9"
+        },
+        {
+          "path": "workspace/store.cjs",
+          "sha256": "1229ddc6cc989f8320dd7f0bb910052a028e1940f7556993dacc221ecab4775f"
+        },
+        {
+          "path": "workspace/styles.css",
+          "sha256": "f285c96afb73440a933010e0b668f9e315c6622de6d30568182d87cf54730b99"
+        },
+        {
+          "path": "workspace/usage.cjs",
+          "sha256": "6a0e1e60fd6e3318e590e0786f5bbedf2975ed0e3e6f21a3a2cadb1dd2b4bee2"
+        },
+        {
+          "path": "workspace/xlsx.cjs",
+          "sha256": "51027a82df044bf444fe31965bbd39118fdaa6ed306022c7d3fadef083b4c217"
+        }
+      ]
+    },
+    "captureScope": "Baseline captured after the new test cases and before runtime repair. Candidate captured after the focused and affected regression, before documentation packaging. No runtime/test file changed between candidate repair, verification and capture."
+  },
+  "files": [
+    {
+      "file": "workspace/store.cjs",
+      "baselineSha256": "3ae3f0cabee93b17f0dc1a1de5338004beae82ef895e30585eaef27b9058f462",
+      "candidateSha256": "1229ddc6cc989f8320dd7f0bb910052a028e1940f7556993dacc221ecab4775f"
+    },
+    {
+      "file": "workspace/lifecycle.cjs",
+      "baselineSha256": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec",
+      "candidateSha256": "cc13bbcda7e3b36a242cfafdf8fdfef8d431fcd07d7cbee28b9f9edfa32a1299"
+    },
+    {
+      "file": "workspace/backup.cjs",
+      "baselineSha256": "bfb438e53f985104b85a7023cd13cdddf880441dcdb73e7933ff18304e4f5a30",
+      "candidateSha256": "4a691dc0467c8e7919e4e8bd53b2984b1f492454c822209fee370eb6cdd6b6b1"
+    },
+    {
+      "file": "tests/callback-task-parent-integrity.test.cjs",
+      "baselineSha256": "f2183fae8996d981694ab3b6d4a12660c8f5dbfe12a06e050aa3ee6e645c0c3b",
+      "candidateSha256": "f2183fae8996d981694ab3b6d4a12660c8f5dbfe12a06e050aa3ee6e645c0c3b"
+    },
+    {
+      "file": "tests/workspace-backup.test.cjs",
+      "baselineSha256": "5c79e37fc4af34800c33b847472eb48545467c1ecf2fa629541a25ff1da1fdd3",
+      "candidateSha256": "5c79e37fc4af34800c33b847472eb48545467c1ecf2fa629541a25ff1da1fdd3"
+    }
+  ],
+  "defects": [
+    {
+      "id": "CALLBACK-REQUEST-01",
+      "finding": "Request creation/update and deletion can report success with invalid or backward timestamps. Public reads or encrypted recovery may then fail.",
+      "repair": "Validate and capture one operation timestamp before writes, and reject any change before the affected request updated time."
+    },
+    {
+      "id": "CALLBACK-REQUEST-02",
+      "finding": "Request and restriction fan-out can increment a safe terminal revision into an unsafe integer. Suppression/safety calls previously reported success and later reads failed.",
+      "repair": "Preflight all affected request metadata and revisions inside the transaction before ledger, row or audit writes."
+    },
+    {
+      "id": "CALLBACK-REQUEST-03",
+      "finding": "Archive validation accepted request timestamps outside the JavaScript Date range or in reversed chronology, then published an unreadable restored database.",
+      "repair": "Validate request creation/update range and chronology and suppression timestamp range before publishing a restored database."
+    }
+  ],
+  "compatibility": {
+    "schemaChanged": false,
+    "existingDataRewritten": false,
+    "allowedTimestampRange": "[0, 8640000000000000] safe integer milliseconds",
+    "allowedMutationClock": "At or after every affected request updated_at. Equal timestamps remain valid.",
+    "liveRevisionAdvance": "Only from positive safe versions below Number.MAX_SAFE_INTEGER - 1. The resulting live version may equal Number.MAX_SAFE_INTEGER - 1.",
+    "existingTerminalRevision": "Positive safe request versions through Number.MAX_SAFE_INTEGER remain readable and recoverable. New live increments from terminal revisions fail 409 version_exhausted before writes.",
+    "wholeRequestDeletion": "Version Number.MAX_SAFE_INTEGER - 1 may be removed with a safe Number.MAX_SAFE_INTEGER deletion receipt. Conversation deletion preserves a live record and follows the live increment bound.",
+    "exactRetries": "Existing create and deletion results return before mutation guards. Already-recorded restrictions with no remaining affected writes also succeed without mutating state.",
+    "invalidArchives": "Invalid request or suppression chronology/range fails invalid_database before restore publication. Source and temporary restore state remain unchanged or cleaned.",
+    "excludedPaths": "Profile revisions, session last_seen clocks and panel mutations are separately owned milestones."
+  },
+  "runs": [
+    {
+      "label": "beforeRequestCases",
+      "command": "node --test tests/callback-task-parent-integrity.test.cjs",
+      "total": 11,
+      "passed": 0,
+      "failed": 11,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 1109.9245,
+      "logSha256": "9c3aa2f0bc0a731739ebfae77c658e2259f146c4164c78ee9e2a28143b9d1372",
+      "log": "✖ new request writes reject invalid clocks while exact create retries preserve the saved result (294.994894ms)\n✖ a backward request edit preserves its fields, history and linked callback task (25.635528ms)\n✖ request deletion paths reject backward clocks before removing messages, tasks or receipts (5.544426ms)\n✖ request terminal revision preserves reads and permits a safe whole-record deletion receipt (13.255099ms)\n✖ STOP fan-out preflights every affected request before any restriction, audit or revision write (9.606464ms)\n✖ safety fan-out preflights every affected request before any restriction, audit or revision write (9.451621ms)\n✖ a held request phone correction rolls back both contact-point changes if propagation cannot advance (7.18468ms)\n✖ request and restriction audit records share the operation timestamp even when clock reads advance (8.487066ms)\n✖ failed STOP and safety persistence returns its explicit error without provider work or partial records (18.432711ms)\n✖ archive validation rejects unserializable request clocks, reversed chronology and invalid opt-out timestamps (6.840591ms)\n✖ encrypted recovery retains earlier epoch timestamps and already-existing safe terminal request revisions (583.044891ms)\nℹ tests 11\nℹ suites 0\nℹ pass 0\nℹ fail 11\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1109.9245\n\n✖ failing tests:\n\ntest at tests/callback-task-parent-integrity.test.cjs:68:1\n✖ new request writes reject invalid clocks while exact create retries preserve the saved result (294.994894ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:73:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'clock_unavailable', status: 503 },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:81:1\n✖ a backward request edit preserves its fields, history and linked callback task (25.635528ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:84:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'clock_unavailable', status: 503 },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:93:1\n✖ request deletion paths reject backward clocks before removing messages, tasks or receipts (5.544426ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:97:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'clock_unavailable', status: 503 },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:109:1\n✖ request terminal revision preserves reads and permits a safe whole-record deletion receipt (13.255099ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:115:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'version_exhausted', status: 409 },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:126:3\n✖ STOP fan-out preflights every affected request before any restriction, audit or revision write (9.606464ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:133:14)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'clock_unavailable' },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:126:3\n✖ safety fan-out preflights every affected request before any restriction, audit or revision write (9.451621ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:133:14)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'clock_unavailable' },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:147:1\n✖ a held request phone correction rolls back both contact-point changes if propagation cannot advance (7.18468ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:152:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'version_exhausted' },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:158:1\n✖ request and restriction audit records share the operation timestamp even when clock reads advance (8.487066ms)\n  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n  \n    assert.ok(stopped.audit.every(entry => entry.createdAt === expected))\n  \n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:164:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:172:1\n✖ failed STOP and safety persistence returns its explicit error without provider work or partial records (18.432711ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  200 !== 409\n  \n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:180:14)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 200,\n    expected: 409,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:187:1\n✖ archive validation rejects unserializable request clocks, reversed chronology and invalid opt-out timestamps (6.840591ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at /workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:200:32\n      at Object.db (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:46:115)\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:197:5)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'invalid_database' },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/callback-task-parent-integrity.test.cjs:207:1\n✖ encrypted recovery retains earlier epoch timestamps and already-existing safe terminal request revisions (583.044891ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    Comparison {\n  +   code: 'ERR_OUT_OF_RANGE'\n  -   code: 'version_exhausted'\n    }\n  \n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:217:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: RangeError: Value is too large to be represented as a JavaScript number: 9007199254740992\n        at Object.getLead (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/workspace/store.cjs:459:97)\n        at /workspace/scratch/8f544d546bb7/panelreply-callback-bounds/workspace/store.cjs:517:22\n        at tx (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/workspace/store.cjs:258:26)\n        at Object.updateLead (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/workspace/store.cjs:494:14)\n        at assert.throws.code (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:217:35)\n        at getActual (node:assert:611:5)\n        at strict.throws (node:assert:759:24)\n        at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/callback-task-parent-integrity.test.cjs:217:12)\n        at async Test.run (node:internal/test_runner/test:1409:7)\n        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),\n    expected: { code: 'version_exhausted' },\n    operator: 'throws',\n    diff: 'simple'\n  }\n"
+    },
+    {
+      "label": "beforeArchiveCase",
+      "command": "node --test --test-name-pattern='authenticated archives with invalid request chronology' tests/workspace-backup.test.cjs",
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 1575.362144,
+      "logSha256": "bf02bfd1d047a4d780b19bd31606fa05f896aab036f574bac191eec2fca99e10",
+      "log": "✖ authenticated archives with invalid request chronology cannot publish a restored database (1480.087112ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1575.362144\n\n✖ failing tests:\n\ntest at tests/workspace-backup.test.cjs:230:1\n✖ authenticated archives with invalid request chronology cannot publish a restored database (1480.087112ms)\n  AssertionError [ERR_ASSERTION]: Missing expected rejection.\n      at async TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-bounds/tests/workspace-backup.test.cjs:236:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    operator: 'rejects',\n    diff: 'simple'\n  }\n"
+    },
+    {
+      "label": "afterRequestCases",
+      "command": "node --test tests/callback-task-parent-integrity.test.cjs",
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 1062.675582,
+      "logSha256": "f642dfb55506616c2f935e8616225ff3a0b10032e066ff84d6bfa439745d0dbe",
+      "log": "✔ new request writes reject invalid clocks while exact create retries preserve the saved result (277.21942ms)\n✔ a backward request edit preserves its fields, history and linked callback task (55.544011ms)\n✔ request deletion paths reject backward clocks before removing messages, tasks or receipts (10.669059ms)\n✔ request terminal revision preserves reads and permits a safe whole-record deletion receipt (15.040007ms)\n✔ STOP fan-out preflights every affected request before any restriction, audit or revision write (24.834746ms)\n✔ safety fan-out preflights every affected request before any restriction, audit or revision write (20.641504ms)\n✔ a held request phone correction rolls back both contact-point changes if propagation cannot advance (8.238288ms)\n✔ request and restriction audit records share the operation timestamp even when clock reads advance (5.72889ms)\n✔ failed STOP and safety persistence returns its explicit error without provider work or partial records (30.325045ms)\n✔ archive validation rejects unserializable request clocks, reversed chronology and invalid opt-out timestamps (9.088823ms)\n✔ encrypted recovery retains earlier epoch timestamps and already-existing safe terminal request revisions (509.57998ms)\nℹ tests 11\nℹ suites 0\nℹ pass 11\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1062.675582\n"
+    },
+    {
+      "label": "afterArchiveCase",
+      "command": "node --test --test-name-pattern='authenticated archives with invalid request chronology' tests/workspace-backup.test.cjs",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 2174.095763,
+      "logSha256": "d14f13d00c3d3db2faefc5aff85a7f8cecff8a4ce64e4410f0a4d87b210ab8cd",
+      "log": "✔ authenticated archives with invalid request chronology cannot publish a restored database (2079.40281ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2174.095763\n"
+    },
+    {
+      "label": "affectedRegression",
+      "command": "WORKSPACE_HTTP_TESTS=1 node --test tests/callback-task-parent-integrity.test.cjs tests/workspace-store.test.cjs tests/workspace-api.test.cjs tests/workspace-backup.test.cjs tests/data-lifecycle.test.cjs tests/lifecycle-api.test.cjs tests/callback-tasks.test.cjs tests/callback-tasks-api.test.cjs tests/assistant-api.test.cjs tests/workspace-assistant.test.cjs tests/product-backup.test.cjs tests/callback-task-resources.test.cjs tests/workspace-recovery-auth.test.cjs",
+      "total": 428,
+      "passed": 428,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 29129.714894,
+      "logSha256": "d3fd9e84fa42200cbdd9dcf05b1c6535c3f8223eec3e0cae6650c46e273d44fb",
+      "log": "✔ assistant mode and generation require authentication, Origin, CSRF and the current session pin (324.404304ms)\n✔ validated assistant fields remain an unsaved draft until the normal authorized save (31.790003ms)\n✔ pending assistance cannot return private data after session expire (5.331146ms)\n✔ pending assistance cannot return private data after session revoke (5.049421ms)\n✔ a concurrent STOP cancels generation and persists contact suppression without saving a request (7.101587ms)\n✔ a concurrent safety message cancels generation without claiming emergency dispatch (5.719512ms)\n✔ provider context is business-scoped and a stale business pin prevents generation (7.718189ms)\n✔ changed business facts invalidate a pending answer before it reaches the browser (5.527953ms)\n✔ a disconnected preview aborts generation and cannot create records (5.707294ms)\n✔ a response disconnected before listeners attach never starts the provider (4.046737ms)\n✔ durable usage summary is private and a generated attempt is counted exactly once (8.007455ms)\n✔ durable server allowance blocks provider calls across new sessions without changing the draft (10.474489ms)\n✔ a known suppressPhone in the first message prevents provider disclosure (4.245757ms)\n✔ a known holdPhone in the first message prevents provider disclosure (4.396024ms)\n✔ an unsaved hazard persists the phone restriction across fresh preview sessions (4.953346ms)\n✔ new request writes reject invalid clocks while exact create retries preserve the saved result (337.601892ms)\n✔ a backward request edit preserves its fields, history and linked callback task (48.614519ms)\n✔ request deletion paths reject backward clocks before removing messages, tasks or receipts (13.634819ms)\n✔ request terminal revision preserves reads and permits a safe whole-record deletion receipt (16.41247ms)\n✔ STOP fan-out preflights every affected request before any restriction, audit or revision write (30.867766ms)\n✔ safety fan-out preflights every affected request before any restriction, audit or revision write (28.606033ms)\n✔ a held request phone correction rolls back both contact-point changes if propagation cannot advance (7.950109ms)\n✔ request and restriction audit records share the operation timestamp even when clock reads advance (6.032615ms)\n✔ failed STOP and safety persistence returns its explicit error without provider work or partial records (28.919175ms)\n✔ archive validation rejects unserializable request clocks, reversed chronology and invalid opt-out timestamps (12.484301ms)\n✔ encrypted recovery retains earlier epoch timestamps and already-existing safe terminal request revisions (559.941806ms)\n✔ callback queue reads no transcript or audit history and keeps current tenant/contact controls (318.890012ms)\n✔ queue summary preserves every request restriction without changing the full request contract (17.614755ms)\n✔ task-only export materialization does not read request histories a second time (13.684734ms)\n✔ callback recovery validation scans ledgers a bounded number of times as record count grows (125.022595ms)\n✔ near-capacity callback archive restores all task states, histories, restrictions and page boundaries (10221.549828ms)\n✔ callback API supports create, queue, reschedule, completion and follow-up without claiming outbound delivery (618.274707ms)\n✔ callback API creation and completion retries return current saved state without another mutation (326.99931ms)\n✔ callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks (215.342209ms)\n✔ callback writes require exact origin, CSRF and host before reading the mutation body (266.471677ms)\n✔ callback API cross-business identifiers cannot read, create or cancel another business task (463.725489ms)\n✔ spreadsheet product denies every scheduling route before session lookup or body consumption (5.550658ms)\n✔ callback queue rejects duplicate, unsupported and malformed query filters (264.427451ms)\n✔ callback scheduling rejects malformed, oversized and non-JSON bodies without writing partial data (268.047155ms)\n✔ largest valid escaped Unicode task notes fit the explicit request boundary (318.27998ms)\n✔ sign-out during delayed callback create body prevents the pending write (310.708911ms)\n✔ sign-out during delayed callback complete body prevents the pending write (216.889705ms)\n✔ STOP received while a callback body is arriving blocks contact with fresh parent revision (251.140826ms)\n✔ version2 record export includes saved scheduling and safe audit identifiers without internal operation data (523.837789ms)\n✔ callback scheduling persists UTC instant, zone, notes and a parent revision without changing intake preferences (353.718386ms)\n✔ callback schedule audit identifies actor, action and task without copying notes or contact data (5.284274ms)\n✔ lost create response replays once and reports current restrictions after a later STOP (6.689447ms)\n✔ reschedule is versioned, idempotent and preserves callback kind (6.496655ms)\n✔ reported callback outcome reached closes only its task and supports a separate follow-up (10.396981ms)\n✔ reported callback outcome no_answer closes only its task and supports a separate follow-up (5.626171ms)\n✔ reported callback outcome voicemail closes only its task and supports a separate follow-up (5.593622ms)\n✔ reported callback outcome other closes only its task and supports a separate follow-up (5.319118ms)\n✔ cancel can resolve a blocked pending task and cannot be reopened through reschedule (4.924081ms)\n✔ create and task mutation retry identifiers share one business-scoped operation namespace (5.424637ms)\n✔ parent and task revision conflicts preserve task, operation and audit records (7.673581ms)\n✔ separate store connections serialize callback plans against the reviewed parent version (4.938223ms)\n✔ operation persistence failure rolls back task, parent revision and audit in one transaction (6.037812ms)\n✔ callback mutations reject an exhausted parent revision while preserving a valid recovery snapshot (11.898788ms)\n✔ last supported parent increment stays recoverable and a further task mutation fails without writes (5.880145ms)\n✔ task revision exhaustion rejects changes before arithmetic can overflow or alter parent state (4.718241ms)\n✔ tenant and forged-actor boundaries protect queue, creation and mutations (5.389804ms)\n✔ SQLite rejects task-to-request tenant and operation-to-task relationship corruption with foreign keys enabled (5.641304ms)\n✔ STOP suppression blocks scheduling, reschedule and completion while keeping cancellation available (6.400661ms)\n✔ safety hold blocks scheduling, reschedule and completion while keeping cancellation available (7.854906ms)\n✔ missing permission blocks scheduling, reschedule and completion while keeping cancellation available (6.306136ms)\n✔ closed request blocks scheduling, reschedule and completion while keeping cancellation available (7.296212ms)\n✔ request under review blocks scheduling, reschedule and completion while keeping cancellation available (5.994658ms)\n✔ due queue uses UTC instants across a DST fold and excludes future or terminal tasks (5.961527ms)\n✔ queue paging is ordered, scoped and complete without mutating tasks (7.339677ms)\n✔ callback creation rejects local time without offset without writes (6.382919ms)\n✔ callback creation rejects offset string instead of UTC without writes (6.602434ms)\n✔ callback creation rejects missing milliseconds without writes (5.244104ms)\n✔ callback creation rejects nonexistent calendar date without writes (5.137383ms)\n✔ callback creation rejects leap second without writes (11.286394ms)\n✔ callback creation rejects out of range year without writes (3.276004ms)\n✔ callback creation rejects unknown zone without writes (3.972795ms)\n✔ callback creation rejects numeric offset zone without writes (3.792804ms)\n✔ callback creation rejects zone control character without writes (4.543738ms)\n✔ callback creation rejects unknown kind without writes (4.023432ms)\n✔ callback creation rejects notes too long without writes (5.050002ms)\n✔ callback creation rejects notes control without writes (4.30711ms)\n✔ callback creation rejects numeric notes without writes (5.257594ms)\n✔ callback creation rejects unpaired high surrogate without writes (4.486822ms)\n✔ callback creation rejects unpaired low surrogate without writes (4.236074ms)\n✔ callback creation rejects missing lead version without writes (5.0493ms)\n✔ callback creation rejects fractional lead version without writes (4.756949ms)\n✔ callback creation rejects overflow lead version without writes (4.970051ms)\n✔ callback creation rejects unknown field without writes (4.714495ms)\n✔ callback mutations reject extra fields, invalid outcomes and absent retry identifiers without writes (5.532921ms)\n✔ paired astral Unicode task notes survive SQLite, reopen and backup validation exactly (5.683338ms)\n✔ callback queue rejects invalid query fields, page bounds and invalid clocks without writes (5.535404ms)\n✔ backwards clock rejects callback edits atomically and leaves the connection usable (4.842458ms)\n✔ closing a request with a pending task keeps it out of retention until cancellation (4.129643ms)\n✔ deleting a request removes tasks and operation contents and blocks stale create retries (9.171332ms)\n✔ transcript deletion retains task plans and forces a fresh parent version for task changes (3.384528ms)\n✔ callback task and operation quotas reject further writes without losing existing work (383.096643ms)\n✔ schema3 migration adds scheduling while preserving all original records and schema3 read-only recovery (12.365012ms)\n✔ schema4 encrypted recovery preserves callback state and replay metadata while disabling restored authentication (567.925857ms)\n✔ backup validation rejects task tenant mismatch (10.505088ms)\n✔ backup validation rejects unknown task kind (5.719684ms)\n✔ backup validation rejects unknown task status (5.628335ms)\n✔ backup validation rejects invalid zone (5.275073ms)\n✔ backup validation rejects negative due time (5.327682ms)\n✔ backup validation rejects completion without outcome (9.507541ms)\n✔ backup validation rejects scheduled task with outcome (9.592158ms)\n✔ backup validation rejects incorrect terminal timestamp (14.66066ms)\n✔ backup validation rejects version without operation history (10.062168ms)\n✔ backup validation rejects missing operation history (5.667525ms)\n✔ backup validation rejects operation after task update (5.658091ms)\n✔ backup validation rejects missing task audit (5.676629ms)\n✔ backup validation rejects task audit for another record (5.452169ms)\n✔ backup validation rejects task audit after update (5.559191ms)\n✔ backup validation rejects malformed retry digest (5.483307ms)\n✔ backup validation rejects operation wrong parent (5.318058ms)\n✔ project deletion removes its rows and private images without changing another business (357.134541ms)\n✔ source deletion preserves corrected cells, clears only matching links and requires review again (14.828149ms)\n✔ request deletion removes customer fields, notes and transcript and keeps a content-free receipt (12.72177ms)\n✔ conversation removal preserves the request, safety hold, opt-out and corrected fields (3.853246ms)\n✔ deleting an opted-out request never removes phone suppression or another business boundary (6.412257ms)\n✔ deleting and recreating a hazardous request cannot clear its retained safety hold (9.072263ms)\n✔ preview safety holds persist without saving a request and cannot cross a business boundary (7.671799ms)\n✔ preview safety holds atomically update existing requests and invalidate stale contact edits (8.078661ms)\n✔ correcting a held request phone preserves both old and new contact safeguards (5.197925ms)\n✔ lead deletion blocks a late original create retry from recreating data (4.832954ms)\n✔ panel_project deletion blocks a late original create retry from recreating data (3.87629ms)\n✔ panel_source deletion blocks a late original create retry from recreating data (7.683757ms)\n✔ lead deletion retries return one stable receipt with one committed change (4.485529ms)\n✔ lead deletion refuses another business and an obsolete saved version (3.354833ms)\n✔ lead transaction rolls back all removals when receipt persistence fails (6.006756ms)\n✔ lead_conversation deletion retries return one stable receipt with one committed change (4.229013ms)\n✔ lead_conversation deletion refuses another business and an obsolete saved version (3.749199ms)\n✔ lead_conversation transaction rolls back all removals when receipt persistence fails (4.37321ms)\n✔ panel_project deletion retries return one stable receipt with one committed change (4.022761ms)\n✔ panel_project deletion refuses another business and an obsolete saved version (3.55125ms)\n✔ panel_project transaction rolls back all removals when receipt persistence fails (4.696739ms)\n✔ panel_source deletion retries return one stable receipt with one committed change (6.164082ms)\n✔ panel_source deletion refuses another business and an obsolete saved version (4.606352ms)\n✔ panel_source transaction rolls back all removals when receipt persistence fails (7.156922ms)\n✔ deletion requires explicit own-property confirmation, bounded version and retry key (7.92499ms)\n✔ failed hazardous update does not leave an unintended persistent safety mutation (3.378288ms)\n✔ four simultaneous deletion retries across real connections commit one receipt (147.058031ms)\n✔ lead simultaneous edit and deletion never loses an acknowledged edit (118.697279ms)\n✔ panel_project simultaneous edit and deletion never loses an acknowledged edit (100.384842ms)\n✔ simultaneous source and project deletions retain consistent source ownership (69.271536ms)\n✔ bounded deletion metadata rejects further changes while exact retry receipts still work (52.501576ms)\n✔ new backups preserve deletion state, retry tombstones, holds, unrelated records and images (939.680494ms)\n✔ an older archive retains older records and restores with disabled access for reconciliation (797.873515ms)\n✔ backup taken while a deletion commits never restores a partially deleted record (523.14203ms)\n✔ legacy schema 2 archive remains readable and migrates transactionally with its existing held data (516.391846ms)\n✔ backup validation rejects cross-tenant or malformed deletion metadata before publishing an archive (17.828161ms)\n✔ backup validation rejects a missing or contradictory retained safety restriction (10.789256ms)\n✔ killing an uncommitted deletion writer preserves the original record and transcript (133.985836ms)\n✔ restore interruption at before-publication never mutates the source or enables old credentials (592.201323ms)\n✔ restore interruption at after-link never mutates the source or enables old credentials (627.008241ms)\n✔ restore interruption at after-unlink never mutates the source or enables old credentials (609.885366ms)\n✔ lead deletion requires authenticated same-origin CSRF and current workspace identity (362.363923ms)\n✔ lead deletion has explicit confirmation, bounded body, version and retry-key validation (12.6632ms)\n✔ lead deletion and its replay are business-scoped and content-free (10.935605ms)\n✔ lead deletion rechecks expire after a delayed body (4.294521ms)\n✔ lead deletion rechecks revoke after a delayed body (9.927362ms)\n✔ lead deletion rejects an interrupted body without a mutation (4.814386ms)\n✔ lead_conversation deletion requires authenticated same-origin CSRF and current workspace identity (5.418047ms)\n✔ lead_conversation deletion has explicit confirmation, bounded body, version and retry-key validation (9.175788ms)\n✔ lead_conversation deletion and its replay are business-scoped and content-free (6.961025ms)\n✔ lead_conversation deletion rechecks expire after a delayed body (4.396335ms)\n✔ lead_conversation deletion rechecks revoke after a delayed body (5.038305ms)\n✔ lead_conversation deletion rejects an interrupted body without a mutation (4.06184ms)\n✔ panel_project deletion requires authenticated same-origin CSRF and current workspace identity (4.705362ms)\n✔ panel_project deletion has explicit confirmation, bounded body, version and retry-key validation (8.349951ms)\n✔ panel_project deletion and its replay are business-scoped and content-free (6.715546ms)\n✔ panel_project deletion rechecks expire after a delayed body (4.74385ms)\n✔ panel_project deletion rechecks revoke after a delayed body (3.419681ms)\n✔ panel_project deletion rejects an interrupted body without a mutation (3.839865ms)\n✔ panel_source deletion requires authenticated same-origin CSRF and current workspace identity (8.707492ms)\n✔ panel_source deletion has explicit confirmation, bounded body, version and retry-key validation (8.811439ms)\n✔ panel_source deletion and its replay are business-scoped and content-free (7.503945ms)\n✔ panel_source deletion rechecks expire after a delayed body (5.886884ms)\n✔ panel_source deletion rechecks revoke after a delayed body (4.703619ms)\n✔ panel_source deletion rejects an interrupted body without a mutation (5.319028ms)\n✔ callback authenticated backup preserves binding, data, disabled credentials and source state (1690.036499ms)\n✔ spreadsheet authenticated backup preserves binding, data, disabled credentials and source state (1041.22644ms)\n✔ callback restored archive retains binding through a second backup and restore (1269.370693ms)\n✔ spreadsheet restored archive retains binding through a second backup and restore (1453.932276ms)\n✔ callback bound source requires the matching explicit backup product (279.787133ms)\n✔ spreadsheet bound source requires the matching explicit backup product (273.539647ms)\n✔ callback bound restore requires the matching authenticated product before publishing files (947.71172ms)\n✔ spreadsheet bound restore requires the matching authenticated product before publishing files (879.838274ms)\n✔ callback cannot adopt an unbound source or legacy archive through backup flags (874.583568ms)\n✔ spreadsheet cannot adopt an unbound source or legacy archive through backup flags (889.175063ms)\n✔ callback backup refuses a missing or malformed binding without publishing an archive (217.205405ms)\n✔ spreadsheet backup refuses a missing or malformed binding without publishing an archive (205.134304ms)\n✔ callback archive rejects header tampering: different-product (657.17733ms)\n✔ callback archive rejects header tampering: downgrade-version (639.19079ms)\n✔ callback archive rejects header tampering: unknown-product-code (435.500976ms)\n✔ callback archive rejects header tampering: reserved-bytes (488.621572ms)\n✔ spreadsheet archive rejects header tampering: different-product (617.981065ms)\n✔ spreadsheet archive rejects header tampering: downgrade-version (629.275023ms)\n✔ spreadsheet archive rejects header tampering: unknown-product-code (420.42651ms)\n✔ spreadsheet archive rejects header tampering: reserved-bytes (483.232505ms)\n✔ callback restore rejects an existing destination without changing its permissions or contents (409.415935ms)\n✔ spreadsheet restore rejects an existing destination without changing its permissions or contents (432.819944ms)\n✔ callback restore interruption at empty-locked cannot adopt an incomplete workspace (693.026452ms)\n✔ callback restore interruption at database-linked cannot adopt an incomplete workspace (804.360376ms)\n✔ callback restore interruption at database-published cannot adopt an incomplete workspace (696.169106ms)\n✔ callback restore interruption at binding-linked cannot adopt an incomplete workspace (797.243954ms)\n✔ callback restore interruption at before-ready cannot adopt an incomplete workspace (844.019276ms)\n✔ callback restore interruption at ready cannot adopt an incomplete workspace (739.507108ms)\n✔ spreadsheet restore interruption at empty-locked cannot adopt an incomplete workspace (809.310691ms)\n✔ spreadsheet restore interruption at database-linked cannot adopt an incomplete workspace (854.302043ms)\n✔ spreadsheet restore interruption at database-published cannot adopt an incomplete workspace (728.662886ms)\n✔ spreadsheet restore interruption at binding-linked cannot adopt an incomplete workspace (708.79191ms)\n✔ spreadsheet restore interruption at before-ready cannot adopt an incomplete workspace (675.554724ms)\n✔ spreadsheet restore interruption at ready cannot adopt an incomplete workspace (707.085579ms)\n✔ callback backup CLI carries explicit binding without exposing the passphrase (623.359661ms)\n✔ spreadsheet backup CLI carries explicit binding without exposing the passphrase (643.540529ms)\n✔ backup CLI rejects ambiguous products and missing paths (0.439994ms)\nPanelReply Callback listening at http://127.0.0.1:36905. Assistant mode: deterministic. Booking is disabled.\n✔ callback fixed entrypoint starts its restored workspace with the correct product metadata (657.760853ms)\nPanelReply Spreadsheets listening at http://127.0.0.1:45329. Assistant mode: disabled. Booking is disabled.\n✔ spreadsheet fixed entrypoint starts its restored workspace with the correct product metadata (712.500932ms)\n✔ private pages redirect to login, APIs deny anonymous access, and safe health has no secrets (365.1879ms)\n✔ login/session/logout use private cookies and revoke replayed tokens (328.904508ms)\n✔ HTTPS handlers issue Secure host-only cookies and new sign-in rotates and revokes the old session (579.085318ms)\n✔ every mutation requires an exact origin and authenticated writes require the session CSRF token (460.051262ms)\n✔ duplicate or tampered cookies fail authentication and untrusted Host/forwarded headers cannot bypass the origin (207.302203ms)\n✔ login failures are generic and persistent throttling blocks further password attempts (1652.693283ms)\n✔ JSON content, bounded length, unsupported fields and invalid UTF-8 fail before saving (260.448828ms)\n✔ lead create/retry/update/profile operations preserve version and tenant boundaries (446.092103ms)\n✔ valid Unicode at every supported lead limit fits the bounded JSON body (224.581589ms)\n✔ API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export (247.010985ms)\n✔ preview only uses verified business facts and persists no lead until explicit save (240.548805ms)\n✔ STOP before saving persists and reset/START cannot restore a suppressed number (243.090501ms)\n✔ an opt-out without a phone is applied when contact details later become known (250.874922ms)\n✔ preview rejects overlong messages, untrusted fields and forged history roles with public errors (224.229587ms)\n✔ source files, database paths and traversal are not public assets (5.195933ms)\n✔ unexpected database errors return a generic failure without SQL, paths or private notes (216.829794ms)\n✔ startup binds only loopback with an explicit data location and rejects origin/port mismatch (5.190465ms)\n✔ admin CLI reads passwords only from stdin and creates one explicit local owner (221.747221ms)\n✔ assistant is disabled by default and matches established parser behavior (16.509977ms)\n✔ external provider cannot be selected without an explicit constructor authorization (0.522498ms)\n✔ declared provider transport without kind is rejected (0.131248ms)\n✔ invalid provider kinds are rejected (0.160142ms)\n✔ assistant limits reject {\"timeoutMs\":0} (0.153321ms)\n✔ assistant limits reject {\"timeoutMs\":15001} (0.071768ms)\n✔ assistant limits reject {\"maxConcurrent\":0} (0.05985ms)\n✔ assistant limits reject {\"maxConcurrent\":5} (0.057607ms)\n✔ assistant limits reject {\"maxAttempts\":0} (0.591573ms)\n✔ assistant limits reject {\"maxAttempts\":1001} (0.163156ms)\n✔ scope must come from authenticated server context (3.733776ms)\n✔ input strips unapproved facts and account metadata from provider context (0.893689ms)\n✔ provider cannot mutate nested state or approved business answers (7.816306ms)\n✔ fact snapshot cannot change while generation is pending (2.74356ms)\n✔ provider boundary rejects empty response without overwriting existing draft (1.108473ms)\n✔ provider boundary rejects non-JSON without overwriting existing draft (1.217648ms)\n✔ provider boundary rejects array without overwriting existing draft (1.158218ms)\n✔ provider boundary rejects null without overwriting existing draft (0.567696ms)\n✔ provider boundary rejects unknown output key without overwriting existing draft (0.758244ms)\n✔ provider boundary rejects missing required key without overwriting existing draft (0.437069ms)\n✔ provider boundary rejects oversized text without overwriting existing draft (1.418621ms)\n✔ provider boundary rejects non-array changes without overwriting existing draft (1.112128ms)\n✔ provider boundary rejects unknown intent without overwriting existing draft (0.39062ms)\n✔ provider boundary rejects invented answer topic without overwriting existing draft (0.379403ms)\n✔ provider boundary rejects duplicate answer topics without overwriting existing draft (0.262466ms)\n✔ provider boundary rejects unknown clarification without overwriting existing draft (0.277369ms)\n✔ provider boundary rejects duplicate clarification without overwriting existing draft (0.243938ms)\n✔ provider boundary rejects status proposal without overwriting existing draft (0.489399ms)\n✔ provider boundary rejects consent proposal without overwriting existing draft (0.442798ms)\n✔ provider boundary rejects extra change key without overwriting existing draft (0.337069ms)\n✔ provider boundary rejects duplicate change without overwriting existing draft (3.748677ms)\n✔ provider boundary rejects change and clarify same field without overwriting existing draft (0.807819ms)\n✔ provider boundary rejects unknown operation without overwriting existing draft (0.807759ms)\n✔ provider boundary rejects invented evidence without overwriting existing draft (0.376609ms)\n✔ provider boundary rejects prototype key without overwriting existing draft (0.320964ms)\n✔ provider boundary rejects tool output without overwriting existing draft (0.380153ms)\n✔ evidence checks reject ZIP from coverage question (0.266873ms)\n✔ evidence checks reject ZIP from dollar amount (0.975152ms)\n✔ evidence checks reject ZIP from watts (0.997836ms)\n✔ evidence checks reject ZIP from street address (0.237538ms)\n✔ evidence checks reject ZIP plus four (0.263358ms)\n✔ evidence checks reject conflicting ZIPs (0.312942ms)\n✔ evidence checks reject invalid phone (0.206982ms)\n✔ evidence checks reject international phone (0.161353ms)\n✔ evidence checks reject name contains number (0.678855ms)\n✔ evidence checks reject name from business question (0.910554ms)\n✔ evidence checks reject irrelevant job (1.181713ms)\n✔ evidence checks reject service question as job (0.309757ms)\n✔ evidence checks reject unsupported commitment (0.378452ms)\n✔ evidence checks reject work date from hours (0.594096ms)\n✔ evidence checks reject callback from work preference (0.325992ms)\n✔ evidence checks reject work date from callback (0.436519ms)\n✔ evidence checks reject invented correction flag (0.402588ms)\n✔ evidence checks reject negated name (0.141604ms)\n✔ evidence checks reject negated date (1.037456ms)\n✔ evidence checks reject evidence crosses unrelated clauses (0.170417ms)\n✔ evidence checks reject prompt instruction as job (0.297579ms)\n✔ multi-turn panel inquiry retains job and ZIP while accepting a requested Saturday (5.397857ms)\n✔ context-only name answer follows the final missing-field question (3.322304ms)\n✔ single timing clarification produces a usable context-only follow-up (2.909231ms)\n✔ synthetic fixture provider supports natural name, job and date workflow (1.609059ms)\n✔ provider proposal cannot overwrite existing value without explicit correction (0.527566ms)\n✔ explicit customer correction changes one field and clears that issue (0.760087ms)\n✔ natural name correction can resolve a previous issue beyond fallback wording (1.031537ms)\n✔ a direct confirmation resolves a prior conflict without losing other unresolved fields (0.507686ms)\n✔ local ambiguity cannot be cleared by a model with empty clarify (0.633897ms)\n✔ phone correction normalizes format while preserving contact preference (0.718835ms)\n✔ business answers use approved facts while unknown pricing remains unknown (0.587767ms)\n✔ handoff records a draft request without claiming contact or dispatch (0.770793ms)\n✔ summary uses retained validated fields and unresolved markers (0.816672ms)\n✔ model-provided unsolicited handoff is rejected (0.112239ms)\n✔ deterministic protection bypasses provider for STOP (0.263098ms)\n✔ deterministic protection bypasses provider for Do not text me (0.113311ms)\n✔ deterministic protection bypasses provider for Unsubscribe me (0.132581ms)\n✔ deterministic protection bypasses provider for The panel is sparking (0.104898ms)\n✔ deterministic protection bypasses provider for There is a burning smell (0.104989ms)\n✔ deterministic protection bypasses provider for STOP. The outlet is smoking (0.10577ms)\n✔ stored suppression cannot be overridden by START or model output (0.17239ms)\n✔ existing safety transcript keeps model disabled even if hold flag is cleared (0.242025ms)\n✔ provider outage never exposes provider error details (0.392843ms)\n✔ timeout returns unchanged fields and keeps uncooperative generation bounded (27.81578ms)\n✔ STOP during generation cancels late provider result and returns no replies (0.864605ms)\n✔ a newer turn supersedes earlier generation without stale result application (1.587797ms)\n✔ reset cancellation discards a pending result (0.610201ms)\n✔ session expiry guard discards completed generation (0.375967ms)\n✔ request AbortSignal cancels generation (0.591433ms)\n✔ shutdown aborts pending generation and prevents future calls (0.720888ms)\n✔ identical in-flight retries share one call and one transcript turn (0.77538ms)\n✔ completed retry is scoped and unaffected by caller mutation (0.798896ms)\n✔ changed business facts invalidate cached replies (3.427093ms)\n✔ business contexts never share cached data (1.008222ms)\n✔ attempt cap counts unsuccessful attempts and fails closed (0.559093ms)\n✔ conversation limits reject without mutating or truncating prior history (1.803902ms)\n✔ strict state validation remains independent of model output (0.276948ms)\n✔ actor-bound usage reserves bounded metadata once and never enters provider context (0.687898ms)\n✔ pending and completed identical retries share a durable reservation (1.129455ms)\n✔ usage limit failure prevents provider invocation (0.39809ms)\n✔ usage storage failure prevents provider invocation (0.266813ms)\n✔ malformed usage interface fails closed: array interface (0.306402ms)\n✔ malformed usage interface fails closed: missing reserve and finish (0.190137ms)\n✔ malformed usage interface fails closed: empty reservation id (0.21908ms)\n✔ malformed usage interface fails closed: numeric reservation id (0.751854ms)\n✔ failed proposals and failed transports retain their usage reservations (1.136415ms)\n✔ usage settlement failure discards a validated correction and does not cache it (1.104637ms)\n✔ timed-out abort-ignoring provider retains its active slot and unsettled usage until it exits (11.12416ms)\n✔ disconnected generation settles as cancelled after actual provider exit (0.754819ms)\n✔ session expiry after a reservation prevents generation and records cancellation (0.541167ms)\n✔ local STOP gate creates no usage reservation (0.155645ms)\n✔ local calling opt-out gate creates no usage reservation (0.139611ms)\n✔ local hazard gate creates no usage reservation (0.128644ms)\n✔ local stored hold gate creates no usage reservation (0.113401ms)\n✔ local stored opt-out gate creates no usage reservation (0.254143ms)\n✔ server safety hold survives cleared client fields, cleared history and START (0.201454ms)\n✔ editing only a STOP flag cannot resume an unchanged unknown-phone transcript (0.23217ms)\n✔ supported mixed privacy and appointment questions answer both topics when omitted by provider (0.727057ms)\n✔ external-mode wording is exercised with an in-memory adapter, without any HTTP call (1.501597ms)\n✔ encrypted restore preserves pending, failed and succeeded usage without refunding reservations (1194.635953ms)\n✔ backup record validation rejects malformed or cross-business usage metadata (262.215993ms)\n✔ authenticated archives with invalid usage metadata cannot publish a restored database (3654.649946ms)\n✔ encrypted backup roundtrip preserves tenant records, opt-outs, holds and idempotency (795.450468ms)\n✔ encrypted recovery preserves paired Unicode in business facts, requests, transcript and callback notes (667.292186ms)\n✔ authenticated archives with unpaired UTF-16 request data fail before publishing a restore (1737.296819ms)\n✔ authenticated archives with invalid request chronology cannot publish a restored database (1724.595072ms)\n✔ backup snapshot includes committed WAL contents while leaving source sessions and data unchanged (639.226595ms)\n✔ encrypted archives contain no customer text, account hash, session token or passphrase (424.04249ms)\n✔ separate backups use fresh salts and nonces and are not byte-identical (690.156174ms)\n✔ an existing archive is never overwritten (212.988918ms)\n✔ an existing restore directory is refused even when empty (426.964186ms)\n✔ wrong backup passphrase fails before publishing or writing plaintext restore files (612.217462ms)\n✔ ciphertext and authentication tag tampering cannot restore a database (907.8705ms)\n✔ authenticated header metadata cannot be changed unnoticed (637.451309ms)\n✔ truncated, appended, unsupported and empty archives fail without a restore directory (414.033669ms)\n✔ oversized sparse archives and impossible declared lengths fail before key derivation (413.879196ms)\n✔ database size limit includes uncheckpointed WAL pages rather than only the main file (533.677125ms)\n✔ missing sources never create a workspace or an empty archive (206.599986ms)\n✔ linked files, linked path components and public output directories are refused (428.08991ms)\n✔ invalid passphrases fail without changing source or creating files (235.678046ms)\n✔ restored directory and database remain owner-only with no sidecars or staging files (711.734093ms)\n✔ restoring an older archive cannot revive a password reset later on the source (1905.434998ms)\n✔ a restored database can be backed up again before its owners reset passwords (1246.014318ms)\n✔ authenticated archives with unsupported schema versions, views or triggers are refused (2458.100582ms)\n✔ authenticated archives with changed constraints, malformed records or tenant links are refused (2909.537258ms)\n✔ source database schema failures never publish an archive or leave plaintext staging files (208.252637ms)\n✔ archive publication refuses a destination created during key derivation (421.076436ms)\n✔ restore publication never overwrites a directory created during authentication (617.211226ms)\n✔ backup CLI accepts only supported unique flags and stdin passphrases (2.151817ms)\n✔ backup CLI roundtrip succeeds without logging paths, credentials or customer values (797.346887ms)\n✔ malformed Unicode passwords cannot collide with a different replacement-character password (736.1332ms)\n✔ owner recovery replaces the password and rejects the old password (792.668092ms)\n✔ owner recovery revokes every target session while preserving another owner session (876.038501ms)\n✔ owner recovery leaves profiles, requests, transcripts, audit history and restrictions unchanged (21.774538ms)\n✔ owner recovery clears only the target username throttle and preserves IP and other-user limits (6.396765ms)\n✔ owner recovery records metadata without password hashes or session secrets (234.147249ms)\n✔ unknown owner recovery never creates an account or writes an audit event (10.084343ms)\n✔ malformed recovery inputs cannot replace a password (60.745152ms)\n✔ password and session recovery remain effective after database reopen (810.495373ms)\n✔ a reset committed while login awaits password verification prevents a stale session (544.46267ms)\n✔ a failed recovery audit rolls back password, sessions and throttle changes together (281.57104ms)\n✔ recovery CLI accepts only explicit data directory and existing username options (1.0462ms)\n✔ recovery CLI changes an existing owner using stdin and returns only safe confirmation (750.280757ms)\n✔ a restored disabled account requires operator recovery before it can sign in (651.321256ms)\n✔ recovery CLI refuses missing directories, empty directories and empty database files without initialization (1.991226ms)\n✔ recovery CLI rejects unrelated and unsupported schemas without creating workspace tables (6.903176ms)\n✔ recovery CLI rejects missing owners, TTY, malformed or absent stdin without changing credentials (14.918478ms)\n✔ recovery process ignores password environment variables and never prints rejected password arguments (134.256871ms)\n✔ recovery process uses stdin and unexpected error messages remain generic (478.329702ms)\n✔ startup and recovery reject a read-only database without changing its permissions (4.379761ms)\n✔ startup rejects linked database and linked sidecar paths without touching their targets (1.512022ms)\n✔ recovery refuses injected triggers before changing an owner password (4.131166ms)\n✔ recovery rejects same-name schemas that drop constraints or change column types (11.731989ms)\n✔ business export uses one snapshot while another connection writes profile and requests (5.316365ms)\n✔ a failed export closes its read transaction and leaves records unchanged (2.928451ms)\n✔ store retention review authenticates and reports current saved versions without mutating records (325.038325ms)\n✔ passwords use salted scrypt and reject wrong, invalid, or malformed credentials (991.420165ms)\n✔ fresh storage has no default owner and stores files with owner-only permissions (7.843309ms)\n✔ profile, lead, transcript, audit, opt-out and session persist after close and reopen (236.785908ms)\n✔ tenant scopes prevent reads, writes, guessed actor identities and idempotency collisions (14.226944ms)\n✔ idempotent retries return one saved lead and conflicting payloads never overwrite it (4.821589ms)\n✔ stale lead/profile writes fail without changing saved data, version or audit (9.631668ms)\n✔ unsupported fields, malformed numbers, incomplete records and excessive transcripts fail closed (6.465008ms)\n✔ invalid profile updates leave the current business facts untouched (4.220931ms)\n✔ unpaired UTF-16 business names cannot create accounts or change profile and audit records (6.806224ms)\n✔ unpaired UTF-16 request text fails before transcript, revision, audit or restriction writes (6.13437ms)\n✔ hazards in customer evidence create a sticky review hold and assistant text cannot set it (8.473981ms)\n✔ contact permission is explicit and opting out survives new leads, restart and attempted reactivation (7.249081ms)\n✔ preview suppression persists separately without silently saving a lead (6.521074ms)\n✔ a new phone opt-out atomically moves matching new leads to review with a new version and audit (8.024052ms)\n✔ lead-based opt-out updates related new records without invalidating its own optimistic write (6.136693ms)\n✔ audit logs include field names and actors without storing changed note/message content (2.760597ms)\n✔ session idle/absolute expiry and revocation are enforced by durable storage (4.194381ms)\n✔ failed sign-in counters survive restart and expire after the rate-limit window (3.012217ms)\n✔ data location rejects relative, shared-permission and symbolic-link paths (0.640757ms)\nℹ tests 428\nℹ suites 0\nℹ pass 428\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 29129.714894\n"
+    }
+  ],
+  "verification": {
+    "newRegressionMethods": 12,
+    "before": {
+      "passed": 0,
+      "failed": 12
+    },
+    "afterFocused": {
+      "passed": 12,
+      "failed": 0
+    },
+    "affectedRegression": {
+      "passed": 428,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "preserved": [
+      "Two-business isolation",
+      "Pending callback task records and history",
+      "STOP and safety holds",
+      "Exact retry behavior",
+      "Safe terminal recovery/read compatibility",
+      "Source database and no partial restore publication"
+    ],
+    "failedRestrictionApi": "STOP and hazard previews return explicit 409 version_exhausted or 503 clock_unavailable; fake provider call count remains zero; requests, restrictions and audits remain unchanged.",
+    "counting": "The twelve focused passing methods overlap the 428-case affected regression and must not be added to that total. Internal loop mutations are assertions within their named method. Failed baseline cases remain failures. This record does not add a platform acceptance or milestone credit by itself."
+  },
+  "review": {
+    "status": "passed",
+    "reviewerScope": "Root independent read-only runtime diff review",
+    "result": "No concrete defect found",
+    "checked": [
+      "Preflight and transaction order",
+      "Business-scoped predicates",
+      "Single clock capture",
+      "Idempotent retry order",
+      "Terminal deletion",
+      "Existing safe revision compatibility",
+      "Archive timestamp alignment with public Date serialization"
+    ]
+  },
+  "next": [
+    "Root applies this delta after the Unicode prerequisite",
+    "Root runs integrated regression and platform CI on the combined source"
+  ]
+}

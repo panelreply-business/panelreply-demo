@@ -33,6 +33,15 @@ function validateVersion(version) {
   if (!Number.isSafeInteger(version) || version < 1 || version >= Number.MAX_SAFE_INTEGER) invalid('Use the current panel project version.', ['version']);
   return version;
 }
+function nextVersion(version) {
+  if (!Number.isSafeInteger(version) || version < 1 || version >= Number.MAX_SAFE_INTEGER - 1) throw new PanelError(409, 'version_exhausted', 'This panel project reached its revision limit. Export the saved project and ask the operator to review it.');
+  return version + 1;
+}
+function writeTime(time, previous = 0) {
+  if (!Number.isSafeInteger(time) || time < 0 || time > 8640000000000000) throw new PanelError(503, 'clock_unavailable', 'Check the workspace clock before changing panel projects.');
+  if (time < previous) throw new PanelError(503, 'clock_unavailable', 'The workspace clock moved backwards. Check it before changing this panel project.');
+  return time;
+}
 function validateIdempotencyKey(key) {
   if (typeof key !== 'string' || !/^[A-Za-z0-9_-]{16,128}$/.test(key)) invalid('A panel request retry identifier is required.');
   return key;
@@ -85,4 +94,4 @@ function exportProjectCsv(project) {
   return '\ufeff' + records.map(row => row.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }
 
-module.exports = { PanelError, MAX_ROWS, MAX_SOURCES, MAX_IMAGE_BYTES, MAX_PANEL_DATA_BYTES, MAX_PROJECTS_PER_BUSINESS, REVIEW_STATUSES, ROW_FIELDS, UUID, validateProject, validateVersion, validateIdempotencyKey, validateSource, csvCell, exportProjectCsv };
+module.exports = { PanelError, MAX_ROWS, MAX_SOURCES, MAX_IMAGE_BYTES, MAX_PANEL_DATA_BYTES, MAX_PROJECTS_PER_BUSINESS, REVIEW_STATUSES, ROW_FIELDS, UUID, validateProject, validateVersion, nextVersion, writeTime, validateIdempotencyKey, validateSource, csvCell, exportProjectCsv };

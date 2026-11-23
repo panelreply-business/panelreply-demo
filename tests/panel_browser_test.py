@@ -102,6 +102,23 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.assertTrue(data.endswith(b"\r\n"))
         return list(csv.reader(io.StringIO(data.decode("utf-8-sig"), newline="")))
 
+    def assert_receipt_retry_locked(self, upload=False):
+        for selector in ["#project-name", "#project-notes", "#new-project", "#save-project",
+                         "#reload-project", "#add-part", "#panel-image", "#clear-source-selection",
+                         "#export-project", "#export-project-xlsx", "#delete-project", "#sign-out"]:
+            expect(self.page.locator(selector)).to_be_disabled()
+        expect(self.page.locator("#project-fields")).to_be_enabled()
+        expect(self.page.get_by_label("Description row 1", exact=True)).to_be_disabled()
+        expect(self.page.locator("#project-conflict")).to_be_hidden()
+        if upload:
+            expect(self.page.locator("#project-retry")).to_be_hidden()
+            expect(self.page.locator("#upload-source")).to_be_enabled()
+            expect(self.page.locator("#upload-source")).to_have_text("Retry image save")
+        else:
+            expect(self.page.locator("#project-retry")).to_be_visible()
+            expect(self.page.locator("#retry-project-save")).to_be_enabled()
+            expect(self.page.locator("#upload-source")).to_be_disabled()
+
     def test_panel_pages_and_sources_require_the_existing_workspace_session(self):
         for path in ["/panels", "/dashboard"]:
             self.page.goto(self.origin + path)
@@ -262,16 +279,22 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.open_panels()
         self.start_draft()
         keys = []
+        bodies = []
         self.expected_console_errors.add("net::ERR_FAILED")
+        self.allow_http_error(403)
 
         def lose_first(route):
             if route.request.method != "POST":
                 route.continue_()
                 return
             keys.append(route.request.headers.get("idempotency-key"))
+            bodies.append(route.request.post_data)
             if len(keys) == 1:
                 self.assertEqual(route.fetch().status, 201)
                 route.abort("failed")
+            elif len(keys) == 2:
+                route.fulfill(status=403, content_type="application/json", body=json.dumps({
+                    "error": {"code": "forbidden", "message": "Synthetic retry refusal"}}))
             else:
                 route.continue_()
 
@@ -282,10 +305,18 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         expect(self.page.locator("#new-project")).to_be_disabled()
         self.assertEqual(len(self.api("GET", "/api/panel-projects")["projects"]), 1)
         self.page.locator("#retry-project-save").click()
+        expect(self.page.locator("#project-error")).to_contain_text("Synthetic retry refusal")
+        expect(self.page.locator("#project-retry")).to_be_visible()
+        expect(self.page.locator("#project-name")).to_be_disabled()
+        expect(self.page.locator("#new-project")).to_be_disabled()
+        expect(self.page.locator("#sign-out")).to_be_disabled()
+        self.assertEqual(len(self.api("GET", "/api/panel-projects")["projects"]), 1)
+        self.page.locator("#retry-project-save").click()
         expect(self.page.locator("#project-save-status")).to_contain_text("Project saved")
-        self.assertEqual(len(keys), 2)
+        self.assertEqual(len(keys), 3)
         self.assertTrue(keys[0])
-        self.assertEqual(keys[0], keys[1])
+        self.assertEqual(len(set(keys)), 1)
+        self.assertEqual(len(set(bodies)), 1)
         self.assertEqual(len(self.api("GET", "/api/panel-projects")["projects"]), 1)
 
     def test_lost_update_response_confirms_saved_data_without_a_second_revision(self):
@@ -294,9 +325,19 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.open_panels(saved["id"])
         self.page.locator("#project-notes").fill("Confirmed corrected note")
         writes = []
+        reads = []
         self.expected_console_errors.add("net::ERR_FAILED")
+        self.allow_http_error(403)
 
         def lose_update(route):
+            if route.request.method == "GET":
+                reads.append(route.request.url)
+                if len(reads) == 1:
+                    route.fulfill(status=403, content_type="application/json", body=json.dumps({
+                        "error": {"code": "forbidden", "message": "Synthetic reconciliation refusal"}}))
+                else:
+                    route.continue_()
+                return
             if route.request.method != "PATCH":
                 route.continue_()
                 return
@@ -308,11 +349,145 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.page.locator("#save-project").click()
         expect(self.page.locator("#project-retry")).to_be_visible()
         self.page.locator("#retry-project-save").click()
+        expect(self.page.locator("#project-error")).to_contain_text("Synthetic reconciliation refusal")
+        expect(self.page.locator("#project-retry")).to_be_visible()
+        expect(self.page.locator("#project-name")).to_be_disabled()
+        expect(self.page.locator("#reload-project")).to_be_disabled()
+        expect(self.page.locator("#project-conflict")).to_be_hidden()
+        self.page.locator("#retry-project-save").click()
         expect(self.page.locator("#project-save-status")).to_contain_text("Project saved")
         self.assertEqual(len(writes), 1)
+        self.assertEqual(len(reads), 2)
         actual = self.saved_panel(saved["id"])
         self.assertEqual(actual["version"], saved["version"] + 1)
         self.assertEqual(actual["notes"], "Confirmed corrected note")
+
+    def behavior_malformed_project_success_preserves_draft_and_reconciles_without_duplicate_writes(self):
+        self.login()
+        self.open_panels()
+        name = "Response receipt panel Ω"
+        notes = " Keep this create draft Ω\nwith its surrounding spaces. "
+        self.start_draft(name=name)
+        self.page.locator("#project-notes").fill(notes)
+        create_url = self.origin + "/api/panel-projects"
+        creates = []
+        create_receipts = []
+
+        def incomplete_create(route):
+            if route.request.method != "POST":
+                route.continue_()
+                return
+            creates.append({"key": route.request.headers.get("idempotency-key"),
+                            "body": route.request.post_data})
+            actual = route.fetch(max_redirects=0)
+            self.assertEqual(actual.status, 201 if len(creates) == 1 else 200)
+            receipt = actual.json()
+            create_receipts.append(receipt)
+            if len(creates) == 1:
+                incomplete = json.loads(json.dumps(receipt))
+                del incomplete["project"]["name"]
+                route.fulfill(response=actual, json=incomplete)
+            else:
+                route.fulfill(response=actual)
+
+        self.page.route(create_url, incomplete_create)
+        with self.page.expect_response(lambda response: response.url == create_url
+                                       and response.request.method == "POST") as created_response:
+            self.page.locator("#save-project").click()
+        self.assertEqual(created_response.value.status, 201)
+        expect(self.page.locator("#project-error")).to_contain_text("incomplete or invalid")
+        expect(self.page.locator("#project-save-status")).to_be_empty()
+        expect(self.page.locator("#project-name")).to_have_value(name)
+        expect(self.page.locator("#project-notes")).to_have_value(notes)
+        expect(self.page.locator("#project-version")).to_be_empty()
+        expect(self.page.get_by_label("Description row 1", exact=True)).to_have_value("Synthetic editable label")
+        self.assert_receipt_retry_locked()
+        self.assertEqual(len(create_receipts), 1)
+        committed = create_receipts[0]["project"]
+        self.assertTrue(create_receipts[0]["created"])
+        self.assertEqual(self.saved_panel(committed["id"]), committed)
+        self.assertEqual([item["id"] for item in self.api("GET", "/api/panel-projects")["projects"]], [committed["id"]])
+
+        with self.page.expect_response(lambda response: response.url == create_url
+                                       and response.request.method == "POST") as retried_create:
+            self.page.locator("#retry-project-save").click()
+        self.assertEqual(retried_create.value.status, 200)
+        expect(self.page.locator("#project-save-status")).to_contain_text("Project saved")
+        expect(self.page.locator("#project-retry")).to_be_hidden()
+        expect(self.page.locator("#project-name")).to_be_enabled()
+        expect(self.page.locator("#project-notes")).to_have_value(notes)
+        expect(self.page.locator("#project-version")).to_have_text("Version 1")
+        self.assertEqual(len(creates), 2)
+        self.assertTrue(creates[0]["key"])
+        self.assertEqual(creates[0], creates[1])
+        self.assertFalse(create_receipts[1]["created"])
+        self.assertEqual(create_receipts[1]["project"], committed)
+        self.assertEqual(self.saved_panel(committed["id"]), committed)
+        self.page.unroute(create_url, incomplete_create)
+
+        corrected_notes = " Retain this saved correction Ω\nwithout losing the draft. "
+        corrected_description = "Corrected label after the create retry"
+        self.page.locator("#project-notes").fill(corrected_notes)
+        self.page.get_by_label("Description row 1", exact=True).fill(corrected_description)
+        update_url = create_url + "/" + committed["id"]
+        updates = []
+        update_receipts = []
+        reconciliation_reads = []
+
+        def incomplete_update(route):
+            if route.request.method == "GET":
+                reconciliation_reads.append(route.request.url)
+                route.continue_()
+                return
+            if route.request.method != "PATCH":
+                route.continue_()
+                return
+            updates.append(route.request.post_data_json)
+            actual = route.fetch(max_redirects=0)
+            self.assertEqual(actual.status, 200)
+            receipt = actual.json()
+            update_receipts.append(receipt)
+            incomplete = json.loads(json.dumps(receipt))
+            del incomplete["project"]["notes"]
+            route.fulfill(response=actual, json=incomplete)
+
+        self.page.route(update_url, incomplete_update)
+        with self.page.expect_response(lambda response: response.url == update_url
+                                       and response.request.method == "PATCH") as updated_response:
+            self.page.locator("#save-project").click()
+        self.assertEqual(updated_response.value.status, 200)
+        expect(self.page.locator("#project-error")).to_contain_text("incomplete or invalid")
+        expect(self.page.locator("#project-save-status")).to_be_empty()
+        expect(self.page.locator("#project-notes")).to_have_value(corrected_notes)
+        expect(self.page.get_by_label("Description row 1", exact=True)).to_have_value(corrected_description)
+        expect(self.page.locator("#project-version")).to_have_text("Version 1")
+        self.assert_receipt_retry_locked()
+        self.assertEqual(len(update_receipts), 1)
+        updated = self.saved_panel(committed["id"])
+        self.assertEqual(updated, update_receipts[0]["project"])
+        self.assertEqual(updated["version"], committed["version"] + 1)
+        self.assertEqual(updated["notes"], corrected_notes)
+        self.assertEqual(updated["rows"][0]["description"], corrected_description)
+
+        with self.page.expect_response(lambda response: response.url == update_url
+                                       and response.request.method == "GET") as reconciled:
+            self.page.locator("#retry-project-save").click()
+        self.assertEqual(reconciled.value.status, 200)
+        expect(self.page.locator("#project-save-status")).to_contain_text("Project saved")
+        expect(self.page.locator("#project-retry")).to_be_hidden()
+        expect(self.page.locator("#project-dirty")).to_be_hidden()
+        expect(self.page.locator("#project-name")).to_be_enabled()
+        expect(self.page.locator("#project-version")).to_have_text("Version 2")
+        self.assertEqual(len(updates), 1)
+        self.assertEqual(updates[0]["version"], committed["version"])
+        self.assertEqual(reconciliation_reads, [update_url])
+        self.assertEqual(self.saved_panel(committed["id"]), updated)
+        self.assertEqual([item["id"] for item in self.api("GET", "/api/panel-projects")["projects"]], [committed["id"]])
+        self.page.unroute(update_url, incomplete_update)
+        self.open_panels(committed["id"])
+        expect(self.page.locator("#project-notes")).to_have_value(corrected_notes)
+        expect(self.page.get_by_label("Description row 1", exact=True)).to_have_value(corrected_description)
+        expect(self.page.locator("#project-version")).to_have_text("Version 2")
 
     def test_uncertain_whitespace_only_update_is_not_falsely_confirmed_by_trimming(self):
         self.login()
@@ -405,13 +580,19 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         self.open_panels(saved["id"])
         self.page.locator("#panel-image").set_input_files(str(FIXTURES / "complete.png"))
         keys = []
+        bodies = []
         self.expected_console_errors.add("net::ERR_FAILED")
+        self.allow_http_error(409)
 
         def lose_upload(route):
             keys.append(route.request.headers.get("idempotency-key"))
+            bodies.append(route.request.post_data)
             if len(keys) == 1:
                 self.assertEqual(route.fetch().status, 201)
                 route.abort("failed")
+            elif len(keys) == 2:
+                route.fulfill(status=409, content_type="application/json", body=json.dumps({
+                    "error": {"code": "version_conflict", "message": "Synthetic image retry conflict"}}))
             else:
                 route.continue_()
 
@@ -422,12 +603,113 @@ class PanelWorkspaceBrowserTests(PrivateWorkspaceBrowserTests):
         expect(self.page.locator("#panel-image")).to_be_disabled()
         self.assertEqual(len(self.saved_panel(saved["id"])["sources"]), 1)
         self.page.locator("#upload-source").click()
+        expect(self.page.locator("#source-error")).to_contain_text("Synthetic image retry conflict")
+        expect(self.page.locator("#source-status")).to_contain_text("unconfirmed")
+        expect(self.page.locator("#project-conflict")).to_be_hidden()
+        expect(self.page.locator("#project-name")).to_be_disabled()
+        expect(self.page.locator("#panel-image")).to_be_disabled()
+        expect(self.page.locator("#new-project")).to_be_disabled()
+        expect(self.page.locator("#upload-source")).to_be_enabled()
+        self.page.locator("#upload-source").click()
         expect(self.page.locator("#source-status")).to_contain_text("Source image saved")
-        self.assertEqual(len(keys), 2)
-        self.assertEqual(keys[0], keys[1])
+        self.assertEqual(len(keys), 3)
+        self.assertTrue(keys[0])
+        self.assertEqual(len(set(keys)), 1)
+        self.assertEqual(len(set(bodies)), 1)
         actual = self.saved_panel(saved["id"])
         self.assertEqual(len(actual["sources"]), 1)
         self.assertEqual(actual["version"], saved["version"] + 1)
+
+    def behavior_inconsistent_source_success_retries_original_image_without_duplicate_records(self):
+        self.login()
+        saved = self.create_panel(notes="Keep the saved project and row during image retry.")
+        self.open_panels(saved["id"])
+        image = (FIXTURES / "complete.png").read_bytes()
+        filename = "receipt-label Ω.png"
+        self.page.locator("#panel-image").set_input_files({
+            "name": filename, "mimeType": "image/png", "buffer": image,
+        })
+        endpoint = self.origin + "/api/panel-projects/" + saved["id"] + "/sources"
+        writes = []
+        receipts = []
+
+        def inconsistent_member(route):
+            if route.request.method != "POST":
+                route.continue_()
+                return
+            writes.append({"key": route.request.headers.get("idempotency-key"),
+                           "body": route.request.post_data})
+            actual = route.fetch(max_redirects=0)
+            self.assertEqual(actual.status, 201 if len(writes) == 1 else 200)
+            receipt = actual.json()
+            receipts.append(receipt)
+            if len(writes) == 1:
+                inconsistent = json.loads(json.dumps(receipt))
+                # Both source objects remain individually valid, but this
+                # project member no longer matches the upload receipt.
+                inconsistent["project"]["sources"][0]["bytes"] += 1
+                route.fulfill(response=actual, json=inconsistent)
+            else:
+                route.fulfill(response=actual)
+
+        self.page.route(endpoint, inconsistent_member)
+        with self.page.expect_response(lambda response: response.url == endpoint
+                                       and response.request.method == "POST") as upload:
+            self.page.locator("#upload-source").click()
+        self.assertEqual(upload.value.status, 201)
+        expect(self.page.locator("#source-error")).to_contain_text("incomplete or invalid")
+        expect(self.page.locator("#source-status")).to_contain_text("unconfirmed")
+        expect(self.page.locator("#source-selection")).to_be_visible()
+        expect(self.page.locator("#source-selection-text")).to_contain_text(filename)
+        expect(self.page.locator("#source-list li")).to_have_count(0)
+        expect(self.page.locator("#project-version")).to_have_text("Version 1")
+        expect(self.page.locator("#project-notes")).to_have_value(saved["notes"])
+        expect(self.page.get_by_label("Description row 1", exact=True)).to_have_value(saved["rows"][0]["description"])
+        self.assert_receipt_retry_locked(upload=True)
+        selected = self.page.locator("#panel-image").evaluate("input => ({name: input.files[0].name, size: input.files[0].size, type: input.files[0].type})")
+        self.assertEqual(selected, {"name": filename, "size": len(image), "type": "image/png"})
+        self.assertEqual(len(receipts), 1)
+        committed = receipts[0]["project"]
+        source = receipts[0]["source"]
+        self.assertTrue(receipts[0]["created"])
+        self.assertEqual(committed["sources"], [source])
+        self.assertEqual(committed["version"], saved["version"] + 1)
+        self.assertEqual(self.saved_panel(saved["id"]), committed)
+        original_body = json.loads(writes[0]["body"])
+        self.assertEqual(original_body["name"], filename)
+        self.assertEqual(original_body["mime"], "image/png")
+        self.assertEqual(original_body["version"], saved["version"])
+        self.assertEqual(base64.b64decode(original_body["dataBase64"], validate=True), image)
+
+        with self.page.expect_response(lambda response: response.url == endpoint
+                                       and response.request.method == "POST") as retried:
+            self.page.locator("#upload-source").click()
+        self.assertEqual(retried.value.status, 200)
+        expect(self.page.locator("#source-status")).to_contain_text("Source image saved")
+        expect(self.page.locator("#source-error")).to_be_hidden()
+        expect(self.page.locator("#source-selection")).to_be_hidden()
+        expect(self.page.locator("#source-list li")).to_have_count(1)
+        expect(self.page.locator("#project-name")).to_be_enabled()
+        expect(self.page.locator("#panel-image")).to_be_enabled()
+        expect(self.page.locator("#upload-source")).to_be_disabled()
+        expect(self.page.locator("#project-version")).to_have_text("Version 2")
+        self.assertEqual(len(writes), 2)
+        self.assertTrue(writes[0]["key"])
+        self.assertEqual(writes[0], writes[1])
+        self.assertFalse(receipts[1]["created"])
+        self.assertEqual(receipts[1]["project"], committed)
+        self.assertEqual(receipts[1]["source"], source)
+        self.assertEqual(self.saved_panel(saved["id"]), committed)
+        recovered_image = self.context.request.get(endpoint + "/" + source["id"], max_redirects=0)
+        self.assertEqual(recovered_image.status, 200)
+        self.assertEqual(recovered_image.body(), image)
+        self.assertEqual(recovered_image.headers["cache-control"], "no-store")
+        self.assertEqual(recovered_image.headers["cross-origin-resource-policy"], "same-origin")
+        self.page.unroute(endpoint, inconsistent_member)
+        self.open_panels(saved["id"])
+        expect(self.page.locator("#source-list li")).to_have_count(1)
+        expect(self.page.locator("#project-version")).to_have_text("Version 2")
+        expect(self.page.locator("#project-notes")).to_have_value(saved["notes"])
 
     def test_invalid_image_cannot_be_saved_and_a_fifth_source_reaches_the_limit(self):
         self.login()

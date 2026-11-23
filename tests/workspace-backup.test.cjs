@@ -186,6 +186,59 @@ test('encrypted backup roundtrip preserves tenant records, opt-outs, holds and i
   } finally { restored.close(); }
 });
 
+test('encrypted recovery preserves paired Unicode in business facts, requests, transcript and callback notes', async t => {
+  const f = await fixture(t), unicode = '\ud83d\udd0c e\u0301 \u6f22 \ufffd';
+  const profile = f.store.getProfile(f.alice);
+  profile.facts.services = { verified: true, answer: 'Synthetic service ' + unicode };
+  const expectedProfile = f.store.updateProfile(f.alice, { version: profile.version, businessName: 'Synthetic Electric ' + unicode, facts: profile.facts });
+  const created = f.store.createLead(f.alice, request({ phone: '+12485550111', customerName: 'Synthetic ' + unicode,
+    job: 'Replace an outlet ' + unicode, conversation: [{ role: 'customer', text: '\ud83d\udd0c'.repeat(1000) }] }), crypto.randomUUID()).lead;
+  const scheduled = f.store.createCallbackTask(f.alice, created.id, { leadVersion: created.version, kind: 'callback',
+    dueAt: '2026-12-01T15:00:00.000Z', timeZone: 'UTC', notes: unicode }, crypto.randomUUID());
+  const expectedLead = scheduled.lead, expectedTask = scheduled.task;
+  const before = snapshots(f.store.filename);
+  await create(f); await restore(f);
+  let recovered = openStore({ dataDir: f.restored, create: false });
+  try {
+    for (let pass = 0; pass < 2; pass++) {
+      assert.deepEqual(recovered.getProfile(f.alice), expectedProfile);
+      assert.deepEqual(recovered.getLead(f.alice, created.id), expectedLead);
+      const task = recovered.listCallbackTasks(f.alice, { leadId: created.id, state: 'all' }).tasks[0];
+      for (const field of ['id', 'kind', 'dueAt', 'timeZone', 'notes', 'version']) assert.deepEqual(task[field], expectedTask[field]);
+      if (pass === 0) { recovered.close(); recovered = openStore({ dataDir: f.restored, create: false }); }
+    }
+  } finally { recovered.close(); }
+  assert.deepEqual(snapshots(f.store.filename), before);
+});
+
+test('authenticated archives with unpaired UTF-16 request data fail before publishing a restore', async t => {
+  const f = await fixture(t), before = snapshots(f.store.filename);
+  await create(f); const original = fs.readFileSync(f.archive);
+  for (const [field, malformed] of [['customerName', 'Synthetic\ud800name'], ['notes', 'Synthetic\udc00note']]) {
+    fs.writeFileSync(f.archive, original);
+    rewriteAuthenticatedArchive(f, db => {
+      const row = db.prepare('SELECT id,data_json FROM leads WHERE business_id=? LIMIT 1').get(f.alice.businessId);
+      const data = JSON.parse(row.data_json); data[field] = malformed;
+      db.prepare('UPDATE leads SET data_json=? WHERE id=?').run(JSON.stringify(data), row.id);
+    });
+    await assert.rejects(restore(f), failure('invalid_database'));
+    assert.equal(fs.existsSync(f.restored), false); assert.deepEqual(temporaryNames(f.directory), []);
+    assert.deepEqual(snapshots(f.store.filename), before);
+  }
+});
+
+test('authenticated archives with invalid request chronology cannot publish a restored database', async t => {
+  const f = await fixture(t), before = snapshots(f.store.filename);
+  await create(f); const original = fs.readFileSync(f.archive);
+  for (const invalidTime of [8640000000000001, -1]) {
+    fs.writeFileSync(f.archive, original);
+    rewriteAuthenticatedArchive(f, db => db.prepare('UPDATE leads SET updated_at=?').run(invalidTime));
+    await assert.rejects(restore(f), failure('invalid_database'));
+    assert.equal(fs.existsSync(f.restored), false); assert.deepEqual(temporaryNames(f.directory), []);
+    assert.deepEqual(snapshots(f.store.filename), before);
+  }
+});
+
 test('backup snapshot includes committed WAL contents while leaving source sessions and data unchanged', async t => {
   const f = await fixture(t);
   assert.ok(fs.statSync(path.join(f.source, 'workspace.sqlite-wal')).size > 0);

@@ -226,7 +226,8 @@ input:focus, textarea:focus, select:focus { border-color: #2466dd; box-shadow: 0
 .callback-schedule .notice { margin: 14px 0; }
 .callback-schedule .form-footer { align-items: flex-start; flex-wrap: wrap; }
 .callback-schedule .form-footer .button-row { margin-left: auto; }
-.callback-schedule input[type="datetime-local"] { min-width: 0; max-width: 100%; }
+/* Native control minimums must not enlarge the request grid at enlarged text sizes. */
+.inbox-grid input, .inbox-grid select, .inbox-grid textarea { min-width: 0; max-width: 100%; }
 .callback-schedule #task-time-preview { overflow-wrap: anywhere; }
 .task-history-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px; }
 .callback-task-list { list-style: none; padding: 0; margin: 12px 0; }
@@ -248,4 +249,7 @@ input:focus, textarea:focus, select:focus { border-color: #2466dd; box-shadow: 0
   .callback-task-card { padding: 12px; }
   .callback-queue-panel > .callback-task-list, .callback-queue-panel > .notice { margin-left: 16px; margin-right: 16px; }
   .queue-toolbar, .queue-pagination { padding-left: 16px; padding-right: 16px; }
+}
+@media (max-width: 400px) {
+  .inbox-grid, .request-detail-panel .form-grid, .list-toolbar { grid-template-columns: minmax(0, 1fr); }
 }

@@ -1,5 +1,15 @@
 # Release acceptance
 
+## November 23 current integrity checkpoint
+
+Current local candidate verification is 9,192 PASS, zero failures/skips/cancellations/TODOs/infrastructure errors, across 55 files. Product credit is 9,056 after 136 harness exclusions. Manifest `e4c91c70dc0d92b087a49d5e3e2c529974da968ec6365efb5719f05f972ea6d3` remains unchanged during execution. These results verify the recorded dirty-tree candidate, not an unexecuted committed browser/platform pass. [Local evidence](evidence/integrity-local-2026-11-23.json).
+
+The final [run83 record](evidence/callback-scheduling-run83.json) applies to preceding source `1b35490`: 24,672 product passes, two selected callback WebKit reflow failures and one private WebKit recovery navigation error. Its 35 reports reconcile independently with CI. Forty automated requirements pass, four fail and ten ARM scopes remain unexecuted. Seven manual/actual-platform gates remain untested. All 24 callback touch executions pass. OCR dependency identity passes while accuracy stays FAIL at 289/310; required native isolation remains BLOCKED.
+
+The new batch repairs malformed-text persistence, panel/request chronology and revision bounds, legacy upgrade atomicity, session/profile invariants, uncertain spreadsheet retries and malformed response adoption. It adds two fixed-spreadsheet browser receipt journeys and candidate WebKit layout/navigation corrections. Relevant local regressions pass. Actual committed-source browser/platform execution remains required. The historical checkpoints below keep their original source and results and do not override this current status.
+
+Both products remain NO-GO for customer trial/public release. Actual/physical platforms, OCR/photo/Excel scope, required isolation, real-model and selected-host/offsite operating gates remain separate. No count, measurement-job success or schedule waives them. [Exact next work](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 integrated verification checkpoint
 
 The next candidate passes 9,123 local Node/API/HTTP checks with zero failures or skips: 8,987 product executions and 136 excluded verification-tool checks. The accounting correction removes 13 previously misclassified helper cases without rewriting prior reports. It adds fixed-product callback touch journeys and OCR dependency identity, plus the font-scaling calculation repair. Browser collection earns no passing credit. [Local record](evidence/mobile-metadata-local-2026-11-23.json).

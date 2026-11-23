@@ -198,6 +198,43 @@ test('valid Unicode at every supported lead limit fits the bounded JSON body', a
   assert.deepEqual(saved.body.lead.conversation, input.conversation);
 });
 
+test('API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export', async t => {
+  const f = await fixture(t), signed = await login(f), profile = f.store.getProfile(f.user);
+  const key = crypto.randomUUID(), headers = { ...signed.headers, 'idempotency-key': key };
+  for (const malformed of ['Synthetic\ud800message', 'Synthetic\udc00message']) {
+    const badLead = await request(f.app, { method: 'POST', url: '/api/leads', headers,
+      input: { ...LEAD, conversation: [{ role: 'customer', text: malformed }] } });
+    assert.equal(badLead.status, 400); assert.equal(badLead.body.error.code, 'invalid_input');
+    assert.deepEqual(badLead.body.error.fields, ['conversation']);
+    assert.deepEqual(f.store.listLeads(f.user), []);
+    const badProfile = await request(f.app, { method: 'PATCH', url: '/api/profile', headers: signed.headers,
+      input: { version: profile.version, businessName: malformed, facts: profile.facts } });
+    assert.equal(badProfile.status, 400); assert.deepEqual(badProfile.body.error.fields, ['businessName']);
+    assert.deepEqual(f.store.getProfile(f.user), profile);
+  }
+  // A valid pair at the transcript's UTF-16 length boundary must survive both
+  // escaped JSON and SQLite TEXT. A literal U+FFFD is valid text as well.
+  const message = '\ud83d\udd0c'.repeat(1000), businessName = 'Synthetic \ud83d\udd0c e\u0301 \u6f22 \ufffd';
+  const validProfile = await request(f.app, { method: 'PATCH', url: '/api/profile', headers: signed.headers,
+    input: { version: profile.version, businessName, facts: profile.facts } });
+  assert.equal(validProfile.status, 200); assert.equal(validProfile.body.business.name, businessName);
+  const input = { ...LEAD, conversation: [{ role: 'customer', text: message }] };
+  const raw = JSON.stringify(input).replaceAll('\ud83d\udd0c', '\\ud83d\\udd0c');
+  const accepted = await request(f.app, { method: 'POST', url: '/api/leads', headers, raw });
+  assert.equal(accepted.status, 201); assert.equal(accepted.body.lead.conversation[0].text, message);
+  const saved = accepted.body.lead;
+  const badNotes = await request(f.app, { method: 'PATCH', url: '/api/leads/' + saved.id, headers: signed.headers,
+    input: { version: saved.version, status: 'new', notes: 'Correction\ud800' } });
+  assert.equal(badNotes.status, 400); assert.deepEqual(badNotes.body.error.fields, ['notes']);
+  assert.deepEqual(f.store.getLead(f.user, saved.id), saved);
+  const retry = await request(f.app, { method: 'POST', url: '/api/leads', headers, raw });
+  assert.equal(retry.status, 200); assert.equal(retry.body.created, false); assert.deepEqual(retry.body.lead, saved);
+  const exported = await request(f.app, { url: '/api/export', headers: signed.headers });
+  assert.equal(exported.status, 200);
+  assert.equal(exported.body.profile.business.name, businessName);
+  assert.equal(exported.body.leads[0].conversation[0].text, message);
+});
+
 test('preview only uses verified business facts and persists no lead until explicit save', async t => {
   const f = await fixture(t);
   const signed = await login(f);

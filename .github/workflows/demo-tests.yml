@@ -456,7 +456,9 @@ jobs:
   apple-silicon-release:
     name: Apple Silicon contracts and selected products
     # Standard public-repository arm64 runner, never a paid -large/-xlarge label.
-    runs-on: macos-26
+    # Prior macos-26 attempts received no runner. Try the documented macos-15
+    # ARM64 image while retaining observed architecture and every test gate.
+    runs-on: macos-15
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
@@ -496,7 +498,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-apple-silicon-macos-26-attempt-${{ github.run_attempt }}
+          name: release-apple-silicon-macos-15-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-arm-evidence/*.json
           if-no-files-found: error
           retention-days: 30
@@ -504,7 +506,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: preview-apple-silicon-macos-26-attempt-${{ github.run_attempt }}
+          name: preview-apple-silicon-macos-15-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-arm-previews/**/*.jpg
           if-no-files-found: ignore
           retention-days: 30

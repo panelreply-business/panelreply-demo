@@ -1,5 +1,15 @@
 # Callback release acceptance
 
+## November 23 current callback checkpoint
+
+[Run83](evidence/callback-scheduling-run83.json) verifies all 24 fixed callback touch executions on source `1b35490`. Chromium and Firefox selected callback suites pass 15/15 on Linux and Intel Mac. Both selected WebKit suites pass 14/15 and fail the 320px doubled-text reflow requirement. The final callback ledger is 10,623 PASS and two FAIL across 3,460 distinct cases; shared cases remain counted once separately. One shared private WebKit recovery navigation error also remains recorded. Touch emulation does not establish physical devices.
+
+The next candidate rejects malformed text before storage, preflights request/restriction clocks and revisions, preserves atomic STOP/safety writes and migration preflight, and corrects shared session/profile invariants. The complete integrated local run passes 9,192 cases, of which 9,056 are product executions and 136 are excluded harness checks. This is a shared local total, not callback-only credit. [Integrity evidence](evidence/integrity-local-2026-11-23.json) and [request contract](CALLBACK_REQUEST_INTEGRITY.md).
+
+A native-control/grid sizing correction retains actual 200% root/body/control font and overflow assertions. Recovery now synchronizes the real UI logout before credential rejection. These browser repairs still need committed-source CI. CB-12 and the automated-platform gate remain incomplete on the changed source. The historical PASS rows below apply only to their named checkpoints.
+
+Actual-provider, actual/physical-platform, native Windows, selected-host/offsite recovery and operating gates remain open. No trial or release is approved. [Persistent next steps](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 touch and accounting checkpoint
 
 Callback scheduling remains implemented in its fixed product. The next candidate adds 24 prospective engine/profile touch executions, with separate product-bound reports and trusted touch evidence. Local collection executes none of them. The complete integrated Node/API/HTTP candidate passes 9,123 checks, with 8,987 product executions after excluding 136 evidence-tooling checks. The historical 9,000 product figure included 13 helper checks now excluded. [Local record](evidence/mobile-metadata-local-2026-11-23.json) and [touch scope](CALLBACK_MOBILE_VERIFICATION.md).

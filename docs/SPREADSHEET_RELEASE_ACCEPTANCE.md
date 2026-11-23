@@ -1,5 +1,17 @@
 # Spreadsheet release acceptance
 
+## November 23 current spreadsheet checkpoint
+
+[Run83](evidence/callback-scheduling-run83.json) completes on source `1b35490` with 11,865 passing spreadsheet case/platform executions across 4,125 distinct spreadsheet cases. Shared cases remain counted once separately, and the shared private WebKit recovery navigation error is unresolved on that source. All three Intel Mac manual spreadsheet suites pass 8/8. Their scope excludes native macOS extraction.
+
+OCR dependency identity passes with all 310 extraction outcomes unchanged from run82 on identical CI dataset/pipeline bytes. Accuracy remains FAIL at 289/310, with 263 expected blank fields preserved and zero native errors/review violations. Twenty-one nonexact cases remain. [Dependency CI evidence](evidence/ocr-dependency-ci-run83.json).
+
+The next candidate guards every affected panel mutation against invalid/backward clocks and exhausted live revisions before writes, with product-bound encrypted recovery regressions. Shared legacy migration now rejects unsafe propagation before schema or data changes and preserves the saved spreadsheet project through rejected-upgrade recovery. It retains unconfirmed commands through later refusals, validates full project/row/source receipts before replacing a draft and requires later revisions for update/upload confirmation. The complete integrated local run passes 9,192 cases, including 9,056 product executions and 136 excluded harness checks. This is a shared local total, not spreadsheet-only credit. [Mutation/recovery](SPREADSHEET_MUTATION_RECOVERY_2026_11_23.md) and [response integrity](PANEL_RESPONSE_INTEGRITY_2026_11_23.md).
+
+Two new fixed-spreadsheet browser journeys check real committed create/update/upload responses corrupted only in transit, preserved drafts and exact retry/readback without duplicate records/revisions or changed source bytes. Linux spreadsheet collects nine methods and Mac manual spreadsheet ten. Browser collection is not execution. The changed client, these journeys and the shared recovery navigation correction need committed-source CI. Historical PASS rows below apply only to their named checkpoints.
+
+Required isolation, representative photographs, actual Excel, actual/physical platforms, native Windows storage/full macOS extraction, selected-host/offsite recovery and operating approval remain open. No trial or release is approved. [Persistent next steps](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 committed deskew and dependency checkpoint
 
 Run82 independently measures 289/310 exact on its recorded CI image bytes, four gains with no regressions against run81. All 263 expected blank fields remain blank, with zero native errors or review violations. Twenty-one nonexact cases keep quality FAIL. [CI comparison](evidence/ocr-deskew-ci-run82.json). All three Intel Mac manual spreadsheet suites pass 8/8, including WebKit after the optional-preview repair. That scope excludes native macOS extraction. [CI snapshot](evidence/callback-scheduling-run82.json).

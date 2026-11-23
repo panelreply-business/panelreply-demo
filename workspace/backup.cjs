@@ -124,6 +124,7 @@ function validateDatabase(db) {
   ];
   if (badRelationships.some(sql => db.prepare(sql).get())) fail('invalid_database', 'The database business-isolation check failed.');
   try {
+    const timestamp = value => Number.isSafeInteger(value) && value >= 0 && value <= 8640000000000000;
     for (const row of db.prepare('SELECT * FROM businesses').iterate()) validateProfileInput({ version: row.version, businessName: row.name, facts: readJson(row.facts_json) });
     for (const row of db.prepare('SELECT username,password_hash FROM users').iterate()) {
       if (username(row.username) !== row.username || (row.password_hash !== RESTORE_DISABLED_PASSWORD && !/^scrypt\$32768\$8\$3\$[A-Za-z0-9_-]{22}\$[A-Za-z0-9_-]{86}$/.test(row.password_hash))) fail('invalid_database', 'The workspace contains an invalid account record.');
@@ -132,13 +133,14 @@ function validateDatabase(db) {
     const suppression = db.prepare('SELECT 1 FROM suppression WHERE business_id=? AND phone=?');
     for (const row of db.prepare('SELECT * FROM leads').iterate()) {
       const record = readJson(row.data_json);
-      if (!record || typeof record !== 'object' || Array.isArray(record) || typeof record.notes !== 'string' || record.notes.length > 2000 || typeof record.safetyHold !== 'boolean'
-        || !Number.isSafeInteger(row.version) || row.version < 1 || !STATUSES.includes(row.status) || !/^[a-f0-9]{64}$/.test(row.request_hash)) fail('invalid_database', 'The workspace contains an invalid request record.');
+      if (!record || typeof record !== 'object' || Array.isArray(record) || typeof record.notes !== 'string' || record.notes.length > 2000 || !record.notes.isWellFormed() || typeof record.safetyHold !== 'boolean'
+        || !Number.isSafeInteger(row.version) || row.version < 1 || !STATUSES.includes(row.status) || !/^[a-f0-9]{64}$/.test(row.request_hash)
+        || !timestamp(row.created_at) || !timestamp(row.updated_at) || row.updated_at < row.created_at) fail('invalid_database', 'The workspace contains an invalid request record.');
       const { notes, safetyHold, ...fields } = record;
       validateLeadInput({ ...fields, conversation: transcript.all(row.id).map(item => ({ role: item.role, text: item.text })) });
       if (normalizePhone(record.phone) !== record.phone || (record.contactPermission === 'opted_out' && !suppression.get(row.business_id, record.phone))) fail('invalid_database', 'The workspace contains an invalid contact restriction.');
     }
-    for (const row of db.prepare('SELECT phone FROM suppression').iterate()) if (normalizePhone(row.phone) !== row.phone) fail('invalid_database', 'The workspace contains an invalid contact restriction.');
+    for (const row of db.prepare('SELECT phone,created_at FROM suppression').iterate()) if (normalizePhone(row.phone) !== row.phone || !timestamp(row.created_at)) fail('invalid_database', 'The workspace contains an invalid contact restriction.');
     for (const row of db.prepare('SELECT details_json FROM audit').iterate()) {
       const details = readJson(row.details_json);
       if (!details || typeof details !== 'object' || Array.isArray(details)) fail('invalid_database', 'The workspace contains an invalid audit record.');

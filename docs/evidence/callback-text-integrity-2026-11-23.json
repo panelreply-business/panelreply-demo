@@ -1,0 +1,108 @@
+{
+  "format": "panelreply-callback-text-integrity",
+  "version": 1,
+  "date": "2026-11-23",
+  "baseCommit": "e711d15d418406969631202642c9d055b47afca5",
+  "scope": "Synthetic Linux Node/SQLite and in-process authenticated API/recovery verification. No browser, real customer, provider, production or hosted-capacity claim.",
+  "runtime": {
+    "node": "v24.22.3",
+    "platform": "linux",
+    "architecture": "x64"
+  },
+  "sourceEvidence": {
+    "sourceCommit": "e711d15d418406969631202642c9d055b47afca5",
+    "gitTreeHash": "530c65b61d65e5269183b0db22892a1c359e52f4",
+    "sourceTreeSha256": "feb7047d4d90d92960fa70af04e30524dead2684c59b18ff3f843d24bb053e62",
+    "dirty": true
+  },
+  "files": [
+    {
+      "file": "workspace/store.cjs",
+      "beforeRuntimeSha256": "ad432dfdc5597a46c66af180bd8205c15f76d66c595bbd4385268fccfdf5fa0f",
+      "candidateSha256": "3ae3f0cabee93b17f0dc1a1de5338004beae82ef895e30585eaef27b9058f462"
+    },
+    {
+      "file": "workspace/backup.cjs",
+      "beforeRuntimeSha256": "c1a3690060753cf6539d8f784b3c6c660a7765ff6fb557724dc26ac0c3bc5675",
+      "candidateSha256": "bfb438e53f985104b85a7023cd13cdddf880441dcdb73e7933ff18304e4f5a30"
+    },
+    {
+      "file": "tests/workspace-store.test.cjs",
+      "beforeRuntimeSha256": null,
+      "candidateSha256": "755e14fa50796fc7893e0a4704e36cb93b3907a88280129aa7ad4c1eb91d2c2b"
+    },
+    {
+      "file": "tests/workspace-api.test.cjs",
+      "beforeRuntimeSha256": null,
+      "candidateSha256": "63014e3a6d333f239753e9c49e5c55573b8279cf11c739eca82028499e3140b9"
+    },
+    {
+      "file": "tests/workspace-backup.test.cjs",
+      "beforeRuntimeSha256": null,
+      "candidateSha256": "e53f11710a06c8a9dbc1a21bf9fc39380c9f902f4ac0fab65879e877cd4a02ea"
+    }
+  ],
+  "defects": [
+    {
+      "id": "CALLBACK-TEXT-01",
+      "finding": "Unpaired UTF-16 in accepted business names or transcript TEXT is silently replaced by SQLite with U+FFFD.",
+      "repair": "Reject ill-formed strings in shared text validation before writes."
+    },
+    {
+      "id": "CALLBACK-TEXT-02",
+      "finding": "Authenticated archives can contain escaped unpaired UTF-16 in JSON request fields and publish restored data.",
+      "repair": "Reuse the shared field validator and reject ill-formed JSON request notes before publishing restore."
+    }
+  ],
+  "compatibility": {
+    "schemaChanged": false,
+    "rewriteExistingData": false,
+    "validSurrogatePairs": "preserved",
+    "literalReplacementCharacter": "preserved",
+    "malformedArchivedText": "invalid_database before restore publication",
+    "alreadyReplacedText": "cannot reconstruct original code unit; existing U+FFFD remains valid stored text"
+  },
+  "runs": [
+    {
+      "label": "before",
+      "command": "node --test --test-name-pattern='unpaired UTF-16|paired Unicode' tests/workspace-store.test.cjs tests/workspace-api.test.cjs tests/workspace-backup.test.cjs",
+      "passed": 1,
+      "failed": 4,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "3536859a58b5650356f299999d7db502bdcda3134bbb650665f3c5932735e082",
+      "log": "✖ API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export (546.431232ms)\n✔ encrypted recovery preserves paired Unicode in business facts, requests, transcript and callback notes (1129.472941ms)\n✖ authenticated archives with unpaired UTF-16 request data fail before publishing a restore (1087.63271ms)\n✖ unpaired UTF-16 business names cannot create accounts or change profile and audit records (299.402142ms)\n✖ unpaired UTF-16 request text fails before transcript, revision, audit or restriction writes (22.986826ms)\nℹ tests 5\nℹ suites 0\nℹ pass 1\nℹ fail 4\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2362.649166\n\n✖ failing tests:\n\ntest at tests/workspace-api.test.cjs:201:1\n✖ API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export (546.431232ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  201 !== 400\n  \n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-integrity/tests/workspace-api.test.cjs:207:12)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 201,\n    expected: 400,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/workspace-backup.test.cjs:214:1\n✖ authenticated archives with unpaired UTF-16 request data fail before publishing a restore (1087.63271ms)\n  AssertionError [ERR_ASSERTION]: Missing expected rejection.\n      at async TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-integrity/tests/workspace-backup.test.cjs:224:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    operator: 'rejects',\n    diff: 'simple'\n  }\n\ntest at tests/workspace-store.test.cjs:173:1\n✖ unpaired UTF-16 business names cannot create accounts or change profile and audit records (299.402142ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-integrity/tests/workspace-store.test.cjs:183:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'invalid_input', fields: [ 'businessName' ] },\n    operator: 'throws',\n    diff: 'simple'\n  }\n\ntest at tests/workspace-store.test.cjs:191:1\n✖ unpaired UTF-16 request text fails before transcript, revision, audit or restriction writes (22.986826ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-callback-integrity/tests/workspace-store.test.cjs:195:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: { code: 'invalid_input', fields: [ 'conversation' ] },\n    operator: 'throws',\n    diff: 'simple'\n  }\n"
+    },
+    {
+      "label": "afterFocused",
+      "command": "node --test --test-name-pattern='unpaired UTF-16|paired Unicode' tests/workspace-store.test.cjs tests/workspace-api.test.cjs tests/workspace-backup.test.cjs",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "2b09c354c74f3edaf3841be533cf7043ebfe328e755128a26b0133b946973c88",
+      "log": "✔ API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export (479.184071ms)\n✔ encrypted recovery preserves paired Unicode in business facts, requests, transcript and callback notes (996.280043ms)\n✔ authenticated archives with unpaired UTF-16 request data fail before publishing a restore (1740.883552ms)\n✔ unpaired UTF-16 business names cannot create accounts or change profile and audit records (247.58045ms)\n✔ unpaired UTF-16 request text fails before transcript, revision, audit or restriction writes (21.350738ms)\nℹ tests 5\nℹ suites 0\nℹ pass 5\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2849.727528\n"
+    },
+    {
+      "label": "regression",
+      "command": "node --test tests/workspace-store.test.cjs tests/workspace-api.test.cjs tests/workspace-backup.test.cjs",
+      "passed": 68,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "logSha256": "f14cb391b0989a411e0d13cc426385c2a8d284ad6324d79371ed09f19317bfa7",
+      "log": "✔ private pages redirect to login, APIs deny anonymous access, and safe health has no secrets (272.625328ms)\n✔ login/session/logout use private cookies and revoke replayed tokens (283.959736ms)\n✔ HTTPS handlers issue Secure host-only cookies and new sign-in rotates and revokes the old session (525.539539ms)\n✔ every mutation requires an exact origin and authenticated writes require the session CSRF token (413.474967ms)\n✔ duplicate or tampered cookies fail authentication and untrusted Host/forwarded headers cannot bypass the origin (244.436605ms)\n✔ login failures are generic and persistent throttling blocks further password attempts (1229.69394ms)\n✔ JSON content, bounded length, unsupported fields and invalid UTF-8 fail before saving (232.31852ms)\n✔ lead create/retry/update/profile operations preserve version and tenant boundaries (408.430535ms)\n✔ valid Unicode at every supported lead limit fits the bounded JSON body (218.919982ms)\n✔ API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export (212.023035ms)\n✔ preview only uses verified business facts and persists no lead until explicit save (211.568459ms)\n✔ STOP before saving persists and reset/START cannot restore a suppressed number (222.767707ms)\n✔ an opt-out without a phone is applied when contact details later become known (201.35012ms)\n✔ preview rejects overlong messages, untrusted fields and forged history roles with public errors (198.866702ms)\n✔ source files, database paths and traversal are not public assets (4.368532ms)\n✔ unexpected database errors return a generic failure without SQL, paths or private notes (197.037812ms)\n✔ startup binds only loopback with an explicit data location and rejects origin/port mismatch (0.777824ms)\n✔ admin CLI reads passwords only from stdin and creates one explicit local owner (210.750405ms)\n✔ encrypted restore preserves pending, failed and succeeded usage without refunding reservations (1102.017921ms)\n✔ backup record validation rejects malformed or cross-business usage metadata (225.070858ms)\n✔ authenticated archives with invalid usage metadata cannot publish a restored database (2943.227414ms)\n✔ encrypted backup roundtrip preserves tenant records, opt-outs, holds and idempotency (636.659294ms)\n✔ encrypted recovery preserves paired Unicode in business facts, requests, transcript and callback notes (654.472783ms)\n✔ authenticated archives with unpaired UTF-16 request data fail before publishing a restore (1682.183233ms)\n✔ backup snapshot includes committed WAL contents while leaving source sessions and data unchanged (638.933565ms)\n✔ encrypted archives contain no customer text, account hash, session token or passphrase (432.939348ms)\n✔ separate backups use fresh salts and nonces and are not byte-identical (623.580303ms)\n✔ an existing archive is never overwritten (227.685466ms)\n✔ an existing restore directory is refused even when empty (443.138834ms)\n✔ wrong backup passphrase fails before publishing or writing plaintext restore files (627.368423ms)\n✔ ciphertext and authentication tag tampering cannot restore a database (819.767307ms)\n✔ authenticated header metadata cannot be changed unnoticed (668.96858ms)\n✔ truncated, appended, unsupported and empty archives fail without a restore directory (415.08694ms)\n✔ oversized sparse archives and impossible declared lengths fail before key derivation (440.07381ms)\n✔ database size limit includes uncheckpointed WAL pages rather than only the main file (569.686077ms)\n✔ missing sources never create a workspace or an empty archive (228.558322ms)\n✔ linked files, linked path components and public output directories are refused (397.459863ms)\n✔ invalid passphrases fail without changing source or creating files (217.797566ms)\n✔ restored directory and database remain owner-only with no sidecars or staging files (600.202745ms)\n✔ restoring an older archive cannot revive a password reset later on the source (1640.23797ms)\n✔ a restored database can be backed up again before its owners reset passwords (1021.155558ms)\n✔ authenticated archives with unsupported schema versions, views or triggers are refused (2352.562646ms)\n✔ authenticated archives with changed constraints, malformed records or tenant links are refused (2882.942639ms)\n✔ source database schema failures never publish an archive or leave plaintext staging files (216.449556ms)\n✔ archive publication refuses a destination created during key derivation (398.944649ms)\n✔ restore publication never overwrites a directory created during authentication (625.965116ms)\n✔ backup CLI accepts only supported unique flags and stdin passphrases (2.352821ms)\n✔ backup CLI roundtrip succeeds without logging paths, credentials or customer values (752.867156ms)\n✔ store retention review authenticates and reports current saved versions without mutating records (275.508059ms)\n✔ passwords use salted scrypt and reject wrong, invalid, or malformed credentials (1060.902687ms)\n✔ fresh storage has no default owner and stores files with owner-only permissions (3.61191ms)\n✔ profile, lead, transcript, audit, opt-out and session persist after close and reopen (212.092338ms)\n✔ tenant scopes prevent reads, writes, guessed actor identities and idempotency collisions (4.324715ms)\n✔ idempotent retries return one saved lead and conflicting payloads never overwrite it (3.454172ms)\n✔ stale lead/profile writes fail without changing saved data, version or audit (4.527692ms)\n✔ unsupported fields, malformed numbers, incomplete records and excessive transcripts fail closed (3.292888ms)\n✔ invalid profile updates leave the current business facts untouched (2.724541ms)\n✔ unpaired UTF-16 business names cannot create accounts or change profile and audit records (3.609276ms)\n✔ unpaired UTF-16 request text fails before transcript, revision, audit or restriction writes (5.526329ms)\n✔ hazards in customer evidence create a sticky review hold and assistant text cannot set it (4.279017ms)\n✔ contact permission is explicit and opting out survives new leads, restart and attempted reactivation (5.225675ms)\n✔ preview suppression persists separately without silently saving a lead (3.039457ms)\n✔ a new phone opt-out atomically moves matching new leads to review with a new version and audit (5.051031ms)\n✔ lead-based opt-out updates related new records without invalidating its own optimistic write (4.48037ms)\n✔ audit logs include field names and actors without storing changed note/message content (3.826233ms)\n✔ session idle/absolute expiry and revocation are enforced by durable storage (4.124083ms)\n✔ failed sign-in counters survive restart and expire after the rate-limit window (2.958123ms)\n✔ data location rejects relative, shared-permission and symbolic-link paths (0.531852ms)\nℹ tests 68\nℹ suites 0\nℹ pass 68\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 24599.521147\n"
+    }
+  ],
+  "counting": "Five new regression methods. The five focused passes overlap the 68-case regression and must not be added to it. Before-fix failures remain failures. No browser or manual acceptance is credited.",
+  "independentReview": {
+    "reviewerScope": "Separate agent read-only source/test review",
+    "result": "No concrete defect found",
+    "coverage": [
+      "UTF-16 rejection before writes",
+      "valid pairs and literal U+FFFD",
+      "unchanged account/audit/request state",
+      "archive publication rejection and source preservation"
+    ]
+  }
+}

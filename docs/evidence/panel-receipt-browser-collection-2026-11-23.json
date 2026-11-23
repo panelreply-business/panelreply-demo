@@ -1,0 +1,66 @@
+{
+  "files": [
+    {
+      "file": "tests/panel_browser_test.py",
+      "baselineSha256": "2fedd2e40382a205fc5fb8602c9974e28dfbf05bbf2dfe74b2e6ff0386962a38",
+      "candidateSha256": "af5ad48980b501b4a4adaaa03964dc26f12953fd8002739d5459b00af931a3cf",
+      "baselineMethodsUnchanged": true,
+      "addedMethods": [
+        "PanelWorkspaceBrowserTests.assert_receipt_retry_locked",
+        "PanelWorkspaceBrowserTests.behavior_inconsistent_source_success_retries_original_image_without_duplicate_records",
+        "PanelWorkspaceBrowserTests.behavior_malformed_project_success_preserves_draft_and_reconciles_without_duplicate_writes"
+      ]
+    },
+    {
+      "file": "tests/product_browser_test.py",
+      "baselineSha256": "b95387daf6fbc5d44cf99f79ae4d8502d068a3bd006178d086cab7805b5ee649",
+      "candidateSha256": "ffb696aba2bacb564d174a894df94b6c9c648e93fb6e78b26fcd3b82b4d309e8",
+      "baselineMethodsUnchanged": true,
+      "addedMethods": [
+        "SpreadsheetProductBrowserTests.test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "SpreadsheetProductBrowserTests.test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once"
+      ]
+    }
+  ],
+  "suites": {
+    "spreadsheet": {
+      "status": "COLLECTED_ONLY",
+      "count": 9,
+      "newMethods": [
+        "product_browser_test.SpreadsheetProductBrowserTests.test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "product_browser_test.SpreadsheetProductBrowserTests.test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once"
+      ]
+    },
+    "spreadsheet-manual": {
+      "status": "COLLECTED_ONLY",
+      "count": 10,
+      "newMethods": [
+        "product_browser_test.SpreadsheetProductBrowserTests.test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "product_browser_test.SpreadsheetProductBrowserTests.test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once"
+      ]
+    },
+    "private": {
+      "status": "COLLECTED_ONLY",
+      "count": 132,
+      "newMethods": []
+    }
+  },
+  "browserExecutions": 0,
+  "fixture": {
+    "file": "tests/fixtures/panels/complete.png",
+    "bytes": 26973,
+    "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18"
+  },
+  "independentReview": {
+    "status": "PASS",
+    "scope": "Read-only API, harness, inheritance and collection review",
+    "reviewer": "platform_coverage",
+    "browserExecutions": 0,
+    "findings": "No concrete defect. Real route.fetch writes, response-only corruption, APIRequestContext readbacks, exact retry bodies/keys, preserved private headers and fixed-product wrapper collection reviewed."
+  },
+  "patch": {
+    "path": "/tmp/panelreply-panel-receipt-browser.patch",
+    "sha256": "8bb11c1bf274d6b22ecbdf05b31be050db25574b2970dbdc0201e7e12bb11565",
+    "scope": "Unstaged delta only, excluding root retry/reflow baseline held in the index."
+  }
+}

@@ -1,0 +1,2052 @@
+{
+  "format": "panelreply-final-ci-evidence-v1",
+  "recordedAt": "2026-11-23T16:54:39.365789+00:00",
+  "repository": "panelreply-business/panelreply-demo",
+  "run": {
+    "id": 45217347462,
+    "number": 83,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "headSha": "1b35490335203348572e938bcc30dfc0f05d93e1",
+    "event": "pull_request",
+    "createdAt": "2026-11-23T16:30:49Z",
+    "updatedAt": "2026-11-23T16:49:33Z",
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45217347462"
+  },
+  "status": "FINAL_FAILURES_AND_UNEXECUTED_SCOPE_RETAINED",
+  "supersedesPartialSnapshot": {
+    "path": "docs/evidence/callback-scheduling-run83.json",
+    "sha256": "d3039925c0128b54bf3353cdc6031abbd9a5916f1fb27986a245a94ebc252027",
+    "collectedAt": "2026-11-23T16:45:04.490445+00:00",
+    "reports": 30,
+    "productPasses": 24468,
+    "productFailures": 1,
+    "description": "The earlier snapshot remains a historical partial observation. This final record includes every emitted source-bound release report."
+  },
+  "source": {
+    "head": "1b35490335203348572e938bcc30dfc0f05d93e1",
+    "testedMerge": "017a1b39b00851f2fbacb4bed7f8ffbd3e23c880",
+    "gitTree": "510bc73ebc676725e166ae6b29ba0ac276c3589b",
+    "sourceManifestSha256": "a635027376caf189c9d11b0db747196683387e6d0b2783b85dded4124999803a",
+    "cleanCommittedEvidence": true,
+    "policy": {
+      "path": "docs/test-milestones.json",
+      "sha256": "1e23889598a3cfbf7a517aa308214f33a918dda288b04c15631f48223ba88717"
+    }
+  },
+  "scope": {
+    "releaseArtifacts": 34,
+    "sourceReports": 35,
+    "workflowJobs": 38,
+    "initialJobs": 37,
+    "initialJobConclusions": {
+      "success": 33,
+      "failure": 3,
+      "cancelled": 1
+    },
+    "allJobConclusions": {
+      "success": 33,
+      "failure": 4,
+      "cancelled": 1
+    },
+    "missingEmittedReleaseReports": 0,
+    "unknownOrIgnoredReportFiles": []
+  },
+  "aggregation": {
+    "generatedAt": "2026-11-23T16:49:29.139Z",
+    "valid": true,
+    "observations": 32086,
+    "duplicateObservationsExcluded": 7071,
+    "product": {
+      "total": 24675,
+      "PASS": 24672,
+      "SKIP": 0,
+      "TODO": 0,
+      "EXPECTED_FAILURE": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0,
+      "RUNNING": 0,
+      "CANCELLED": 0,
+      "UNEXPECTED_SUCCESS": 0,
+      "FAIL": 2,
+      "ERROR": 1
+    },
+    "harness": {
+      "total": 340,
+      "PASS": 340,
+      "SKIP": 0,
+      "TODO": 0,
+      "EXPECTED_FAILURE": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0,
+      "RUNNING": 0,
+      "CANCELLED": 0,
+      "UNEXPECTED_SUCCESS": 0,
+      "FAIL": 0,
+      "ERROR": 0
+    },
+    "distinctCases": {
+      "total": 9260,
+      "generated": 7467,
+      "notMarkedGenerated": 1793,
+      "passingOnEveryObservedPlatform": 9258,
+      "withAnyPass": 9260,
+      "withUnresolvedOutcome": 2
+    },
+    "productScopes": {
+      "callback": {
+        "executions": {
+          "total": 10625,
+          "PASS": 10623,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 2,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 3460,
+          "generated": 2389,
+          "passingOnEveryObservedPlatform": 3459,
+          "withUnresolvedOutcome": 1
+        }
+      },
+      "spreadsheet": {
+        "executions": {
+          "total": 11865,
+          "PASS": 11865,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 0,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 4125,
+          "generated": 3782,
+          "passingOnEveryObservedPlatform": 4125,
+          "withUnresolvedOutcome": 0
+        }
+      },
+      "shared": {
+        "executions": {
+          "total": 2185,
+          "PASS": 2184,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 0,
+          "ERROR": 1
+        },
+        "distinctCases": {
+          "total": 1675,
+          "generated": 1296,
+          "passingOnEveryObservedPlatform": 1674,
+          "withUnresolvedOutcome": 1
+        },
+        "availableTo": [
+          "callback",
+          "spreadsheet"
+        ],
+        "counting": "Counted once in portfolio totals, not added to either app-specific bucket."
+      }
+    },
+    "milestones": {
+      "scope": "portfolio",
+      "initialTarget": 10000,
+      "earlyTarget": 20000,
+      "activeTarget": 10000,
+      "deadline": "2026-12-31T00:00:00-05:00",
+      "releaseDate": "2026-12-31",
+      "timezone": "America/Detroit",
+      "recordedFirstGoalAchievedAt": null,
+      "numericTargetReached": true,
+      "initialNumericTargetReached": true,
+      "earlyNumericTargetReached": true,
+      "platformCoverageComplete": false,
+      "cleanCommittedEvidence": true,
+      "allObservedChecksPassed": false,
+      "initialGoalAchieved": false,
+      "fullGoalAchieved": false,
+      "earlyTargetEligible": false,
+      "suggestedTarget": 10000,
+      "policyChanged": false
+    },
+    "releaseDecision": "NOT_DETERMINED_BY_TEST_COUNT"
+  },
+  "verification": {
+    "ciSummaryArtifact": {
+      "id": 14840148125,
+      "name": "verified-release-test-summary-attempt-1",
+      "zipSha256": "177a808e4e9121d106bccca7f6f3c81398910ce1f7e70ca15d8499ae773df5c4",
+      "sizeBytes": 1026954,
+      "expired": false
+    },
+    "ciAggregateJsonSha256": "2b4524456326c6bf2f361a2062811fa6379c877cffa19ef8643dbde2b4e54dbc",
+    "localAggregateJsonSha256": "4f9a36422275d32fa5ab07c0e4de72f9dc22f8ad47a8bbdf48e386322f41bac6",
+    "localCliMatchesCiExceptGeneratedAt": true,
+    "implementationAndPolicyMatchedTestedManifest": true,
+    "policyBindingEnforcedForEveryReport": true,
+    "command": "node /tmp/panelreply-run83-immutable-tools/scripts/aggregate-test-evidence.cjs --input /tmp/panelreply-run83-complete-evidence --output /tmp/panelreply-run83-final-aggregate-local.json --source 017a1b39b00851f2fbacb4bed7f8ffbd3e23c880"
+  },
+  "failedExecutions": [
+    {
+      "artifactId": 14840107316,
+      "suite": "private",
+      "id": "workspace_recovery_browser_test.WorkspaceRecoveryBrowserTests.test_encrypted_restore_preserves_requests_and_restrictions_but_rejects_old_sessions",
+      "platformKey": "linux/x86_64/webkit/bundled/desktop",
+      "status": "ERROR",
+      "diagnostics": [
+        "Traceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/workspace_recovery_browser_test.py\", line 414, in test_encrypted_restore_preserves_requests_and_restrictions_but_rejects_old_sessions\n    self.assert_login_rejected(username=\"other-restore@example.test\", origin=restored_origin)\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/workspace_recovery_browser_test.py\", line 201, in assert_login_rejected\n    self.page.goto(origin + \"/login\")\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 9875, in goto\n    self._sync(\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_page.py\", line 560, in goto\n    return await self._main_frame.goto(**locals_to_params(locals()))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_frame.py\", line 156, in goto\n    await self._channel.send(\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.Error: Page.goto: Frame load interrupted\nCall log:\n  - navigating to \"http://127.0.0.1:33343/login\", waiting until \"load\"\n\n"
+      ],
+      "jobId": 137841954850
+    },
+    {
+      "artifactId": 14839995143,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "darwin/x86_64/webkit/bundled/desktop",
+      "status": "FAIL",
+      "diagnostics": [
+        "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 375, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    self.assert_no_overflow()\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/workspace_browser_test.py\", line 309, in assert_no_overflow\n    self.assertLessEqual(dimensions[\"document\"], dimensions[\"viewport\"] + 1,\nAssertionError: 443 not less than or equal to 321 : {\"viewport\": 320, \"document\": 443, \"body\": 443}\n"
+      ],
+      "jobId": 137841954799
+    },
+    {
+      "artifactId": 14840815190,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "linux/x86_64/webkit/bundled/desktop",
+      "status": "FAIL",
+      "diagnostics": [
+        "Traceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 375, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    self.assert_no_overflow()\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/workspace_browser_test.py\", line 309, in assert_no_overflow\n    self.assertLessEqual(dimensions[\"document\"], dimensions[\"viewport\"] + 1,\nAssertionError: 521 not less than or equal to 321 : {\"viewport\": 320, \"document\": 521, \"body\": 521}\n"
+      ],
+      "jobId": 137841954908
+    }
+  ],
+  "aggregateGate": {
+    "jobId": 137852137779,
+    "conclusion": "failure",
+    "reason": "Four failed automated platform requirements and ten untested ARM requirements remain unresolved. No failed report was suppressed."
+  },
+  "coverage": {
+    "automated": {
+      "requirements": 54,
+      "counts": {
+        "PASS": 40,
+        "FAIL": 4,
+        "NOT_TESTED": 10
+      },
+      "idsByStatus": {
+        "PASS": [
+          "node-linux",
+          "node-windows",
+          "node-darwin",
+          "client-linux-chromium",
+          "client-linux-firefox",
+          "client-windows-chromium",
+          "client-windows-firefox",
+          "client-windows-webkit",
+          "client-darwin-chromium",
+          "client-darwin-firefox",
+          "client-linux-chrome",
+          "client-linux-msedge",
+          "client-windows-chrome",
+          "client-windows-msedge",
+          "emulated-pixel-7-portrait",
+          "emulated-pixel-7-landscape",
+          "emulated-galaxy-tab-s4-portrait",
+          "emulated-galaxy-tab-s4-landscape",
+          "emulated-iphone-13-portrait",
+          "emulated-iphone-13-landscape",
+          "emulated-ipad-pro-11-portrait",
+          "emulated-ipad-pro-11-landscape",
+          "callback-mobile-linux-chromium-phone-portrait",
+          "callback-mobile-linux-chromium-phone-landscape",
+          "callback-mobile-linux-chromium-tablet-portrait",
+          "callback-mobile-linux-chromium-tablet-landscape",
+          "callback-mobile-linux-webkit-phone-portrait",
+          "callback-mobile-linux-webkit-phone-landscape",
+          "callback-mobile-linux-webkit-tablet-portrait",
+          "callback-mobile-linux-webkit-tablet-landscape",
+          "callback-program-linux-chromium",
+          "callback-program-linux-firefox",
+          "spreadsheet-program-linux-chromium",
+          "spreadsheet-program-linux-firefox",
+          "spreadsheet-program-linux-webkit",
+          "callback-program-darwin-intel-chromium",
+          "spreadsheet-manual-program-darwin-intel-chromium",
+          "callback-program-darwin-intel-firefox",
+          "spreadsheet-manual-program-darwin-intel-firefox",
+          "spreadsheet-manual-program-darwin-intel-webkit"
+        ],
+        "FAIL": [
+          "client-linux-webkit",
+          "client-darwin-webkit",
+          "callback-program-linux-webkit",
+          "callback-program-darwin-intel-webkit"
+        ],
+        "NOT_TESTED": [
+          "callback-program-darwin-arm64-chromium",
+          "spreadsheet-manual-program-darwin-arm64-chromium",
+          "callback-program-darwin-arm64-firefox",
+          "spreadsheet-manual-program-darwin-arm64-firefox",
+          "callback-program-darwin-arm64-webkit",
+          "spreadsheet-manual-program-darwin-arm64-webkit",
+          "node-darwin-arm64",
+          "client-darwin-arm64-chromium",
+          "client-darwin-arm64-firefox",
+          "client-darwin-arm64-webkit"
+        ]
+      }
+    },
+    "manual": {
+      "requirements": 7,
+      "counts": {
+        "NOT_TESTED": 7
+      },
+      "idsByStatus": {
+        "NOT_TESTED": [
+          "actual-macos-safari",
+          "physical-iphone-safari",
+          "physical-ipad-safari",
+          "physical-android-chrome",
+          "windows-private-product-workflows",
+          "macos-private-product-workflows",
+          "apple-silicon-macos"
+        ]
+      }
+    }
+  },
+  "appleSilicon": {
+    "jobId": 137841954965,
+    "labels": [
+      "macos-26"
+    ],
+    "status": "completed",
+    "conclusion": "cancelled",
+    "runnerId": 0,
+    "steps": 0,
+    "productExecutions": 0,
+    "reason": "Cancelled before runner assignment. The underlying unassigned-runner cause remains unconfirmed. This is unexecuted coverage, not a product failure or pass."
+  },
+  "verifiedHighlights": {
+    "callbackTouch": [
+      {
+        "artifactId": 14838568007,
+        "engine": "chromium",
+        "deploymentMode": "callback",
+        "passed": 12,
+        "emulated": true,
+        "physicalDeviceAcceptance": false,
+        "profiles": {
+          "phone_landscape": 3,
+          "phone_portrait": 3,
+          "tablet_landscape": 3,
+          "tablet_portrait": 3
+        },
+        "allWorkflowActionsHaveTrustedTouchPairs": true,
+        "observedWorkflowActions": 120,
+        "actionCountEarnsAdditionalTestCredit": false
+      },
+      {
+        "artifactId": 14839617445,
+        "engine": "webkit",
+        "deploymentMode": "callback",
+        "passed": 12,
+        "emulated": true,
+        "physicalDeviceAcceptance": false,
+        "profiles": {
+          "phone_landscape": 3,
+          "phone_portrait": 3,
+          "tablet_landscape": 3,
+          "tablet_portrait": 3
+        },
+        "allWorkflowActionsHaveTrustedTouchPairs": true,
+        "observedWorkflowActions": 120,
+        "actionCountEarnsAdditionalTestCredit": false
+      }
+    ],
+    "selectedCallbackSignOut": [
+      {
+        "artifactId": 14840200428,
+        "platformKey": "darwin/x86_64/chromium/bundled/desktop",
+        "status": "PASS"
+      },
+      {
+        "artifactId": 14840175146,
+        "platformKey": "darwin/x86_64/firefox/bundled/desktop",
+        "status": "PASS"
+      },
+      {
+        "artifactId": 14839995143,
+        "platformKey": "darwin/x86_64/webkit/bundled/desktop",
+        "status": "PASS"
+      },
+      {
+        "artifactId": 14839377336,
+        "platformKey": "linux/x86_64/chromium/bundled/desktop",
+        "status": "PASS"
+      },
+      {
+        "artifactId": 14839137698,
+        "platformKey": "linux/x86_64/firefox/bundled/desktop",
+        "status": "PASS"
+      },
+      {
+        "artifactId": 14840815190,
+        "platformKey": "linux/x86_64/webkit/bundled/desktop",
+        "status": "PASS"
+      }
+    ],
+    "intelMacSpreadsheetManualWorkflows": [
+      {
+        "artifactId": 14839896755,
+        "engine": "chromium",
+        "passed": 8,
+        "recoveryAndUnavailableOcr": [
+          {
+            "id": "macos_product_browser_test.MacSpreadsheetProductBrowserTests.test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source",
+            "status": "PASS"
+          },
+          {
+            "id": "macos_product_browser_test.MacSpreadsheetProductBrowserTests.test_spreadsheet_native_ocr_unavailable_preserves_manual_rows_and_source",
+            "status": "PASS"
+          }
+        ]
+      },
+      {
+        "artifactId": 14839880773,
+        "engine": "firefox",
+        "passed": 8,
+        "recoveryAndUnavailableOcr": [
+          {
+            "id": "macos_product_browser_test.MacSpreadsheetProductBrowserTests.test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source",
+            "status": "PASS"
+          },
+          {
+            "id": "macos_product_browser_test.MacSpreadsheetProductBrowserTests.test_spreadsheet_native_ocr_unavailable_preserves_manual_rows_and_source",
+            "status": "PASS"
+          }
+        ]
+      },
+      {
+        "artifactId": 14839891591,
+        "engine": "webkit",
+        "passed": 8,
+        "recoveryAndUnavailableOcr": [
+          {
+            "id": "macos_product_browser_test.MacSpreadsheetProductBrowserTests.test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source",
+            "status": "PASS"
+          },
+          {
+            "id": "macos_product_browser_test.MacSpreadsheetProductBrowserTests.test_spreadsheet_native_ocr_unavailable_preserves_manual_rows_and_source",
+            "status": "PASS"
+          }
+        ]
+      }
+    ]
+  },
+  "independentMeasurements": {
+    "auxiliaryEvidenceSha256": "31f291d7e768f3df0e59b0be8eba0e675cea4daa9874f40e5e7a1c782de7d6cd",
+    "ocr": {
+      "jobId": 137841954083,
+      "jobConclusion": "success",
+      "accuracyGate": "FAIL",
+      "identityGate": "PASS",
+      "cases": 310,
+      "exactCases": 289,
+      "fieldErrors": {
+        "partNumber": {
+          "known": 219,
+          "exact": 199,
+          "missed": 1,
+          "wrong": 19,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "manufacturer": {
+          "known": 219,
+          "exact": 217,
+          "missed": 2,
+          "wrong": 0,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "description": {
+          "known": 229,
+          "exact": 229,
+          "missed": 0,
+          "wrong": 0,
+          "expectedBlank": 81,
+          "preservedBlank": 81,
+          "falsePositive": 0
+        }
+      },
+      "latencyMs": {
+        "median": 265,
+        "p95": 499,
+        "max": 927
+      },
+      "pipelineSha256": "65b6a4d7bce19baabc5ea5480c19bbb159dd1fe9f9551b6691c28dcf923836b4",
+      "datasetSha256": "7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e",
+      "scope": "Synthetic stress conditions only. Not a real-world accuracy estimate. Measurement completion is not a passing accuracy claim.",
+      "countedAsProductTestExecutions": false
+    },
+    "nativeIsolation": {
+      "jobId": 137841954771,
+      "jobConclusion": "success",
+      "status": "BLOCKED",
+      "nativeCases": 0,
+      "nativeDenyBehavior": "NOT TESTED",
+      "classification": {
+        "kind": "worker_startup_cause_unconfirmed",
+        "confirmedExternalBlocker": false,
+        "status": "BLOCKED"
+      },
+      "stderr": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n",
+      "privilegedRetry": false,
+      "countedAsPassingAcceptance": false
+    },
+    "httpWorkload": {
+      "jobId": 137841954648,
+      "jobConclusion": "success",
+      "status": "PASS",
+      "checks": 9,
+      "completedRequests": 516,
+      "unexpectedErrors": 0,
+      "scope": "Synthetic CI loopback only. Same Node process runs HTTP server and clients. Native OCR child CPU/RSS excluded from these process totals. Not hosted capacity or an SLA.",
+      "countedAsProductTestExecutions": false
+    },
+    "publicSuspension": {
+      "jobId": 137841955085,
+      "status": "OWNER_SUSPENSION_VERIFIED",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 3,
+      "liveProbeSkipsIntentional": true,
+      "countedAsProductTestExecutions": false
+    }
+  },
+  "jobs": [
+    {
+      "id": 137841954083,
+      "name": "Synthetic OCR measurements",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000337,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:30:51Z",
+      "completedAt": "2026-11-23T16:32:50Z",
+      "reports": []
+    },
+    {
+      "id": 137841954545,
+      "name": "demo-tests",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000352,
+      "stepCount": 18,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:38:06Z",
+      "reports": [
+        {
+          "artifactId": 14839607087,
+          "suite": "node-all",
+          "tests": 9123,
+          "statuses": {
+            "PASS": 9123
+          },
+          "harnessChecks": 136
+        },
+        {
+          "artifactId": 14839607087,
+          "suite": "baseline",
+          "tests": 197,
+          "statuses": {
+            "PASS": 197
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954648,
+      "name": "Synthetic concurrent HTTP workload",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000346,
+      "stepCount": 8,
+      "startedAt": "2026-11-23T16:30:51Z",
+      "completedAt": "2026-11-23T16:31:16Z",
+      "reports": []
+    },
+    {
+      "id": 137841954721,
+      "name": "Emulated private workflows (chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000354,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:33:01Z",
+      "reports": [
+        {
+          "artifactId": 14838568007,
+          "suite": "callback-mobile",
+          "tests": 12,
+          "statuses": {
+            "PASS": 12
+          },
+          "harnessChecks": 0
+        },
+        {
+          "artifactId": 14837473914,
+          "suite": "mobile",
+          "tests": 40,
+          "statuses": {
+            "PASS": 40
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954724,
+      "name": "Portable release contracts (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000345,
+      "stepCount": 10,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:31:14Z",
+      "reports": [
+        {
+          "artifactId": 14839506120,
+          "suite": "node-portable",
+          "tests": 7071,
+          "statuses": {
+            "PASS": 7071
+          },
+          "harnessChecks": 102
+        }
+      ]
+    },
+    {
+      "id": 137841954761,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000358,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:31:24Z",
+      "completedAt": "2026-11-23T16:33:12Z",
+      "reports": [
+        {
+          "artifactId": 14839880773,
+          "suite": "spreadsheet-manual",
+          "tests": 8,
+          "statuses": {
+            "PASS": 8
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954763,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000351,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:32:10Z",
+      "reports": [
+        {
+          "artifactId": 14838113300,
+          "suite": "spreadsheet",
+          "tests": 7,
+          "statuses": {
+            "PASS": 7
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954771,
+      "name": "Restricted OCR worker verification",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000363,
+      "stepCount": 9,
+      "startedAt": "2026-11-23T16:32:36Z",
+      "completedAt": "2026-11-23T16:33:18Z",
+      "reports": []
+    },
+    {
+      "id": 137841954799,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000339,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:32:30Z",
+      "reports": [
+        {
+          "artifactId": 14839995143,
+          "suite": "callback",
+          "tests": 15,
+          "statuses": {
+            "PASS": 14,
+            "FAIL": 1
+          },
+          "harnessChecks": 0
+        }
+      ],
+      "failedSteps": [
+        {
+          "number": 7,
+          "name": "Verify this fixed product entrypoint and its own browser workflows"
+        }
+      ]
+    },
+    {
+      "id": 137841954806,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000350,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:35:01Z",
+      "reports": [
+        {
+          "artifactId": 14838393795,
+          "suite": "spreadsheet",
+          "tests": 7,
+          "statuses": {
+            "PASS": 7
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954811,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000349,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:38:49Z",
+      "reports": [
+        {
+          "artifactId": 14839377336,
+          "suite": "callback",
+          "tests": 15,
+          "statuses": {
+            "PASS": 15
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954819,
+      "name": "Portable release contracts (windows-2022)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000343,
+      "stepCount": 10,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:31:22Z",
+      "reports": [
+        {
+          "artifactId": 14838627853,
+          "suite": "node-portable",
+          "tests": 7071,
+          "statuses": {
+            "PASS": 7071
+          },
+          "harnessChecks": 102
+        }
+      ]
+    },
+    {
+      "id": 137841954850,
+      "name": "Private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000348,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:44:08Z",
+      "reports": [
+        {
+          "artifactId": 14840107316,
+          "suite": "private",
+          "tests": 132,
+          "statuses": {
+            "PASS": 131,
+            "ERROR": 1
+          },
+          "harnessChecks": 0
+        }
+      ],
+      "failedSteps": [
+        {
+          "number": 6,
+          "name": "Verify marketing, private workflows, recovery and exports"
+        }
+      ]
+    },
+    {
+      "id": 137841954851,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000341,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:55Z",
+      "completedAt": "2026-11-23T16:33:02Z",
+      "reports": [
+        {
+          "artifactId": 14839891591,
+          "suite": "spreadsheet-manual",
+          "tests": 8,
+          "statuses": {
+            "PASS": 8
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954861,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000340,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:30:54Z",
+      "completedAt": "2026-11-23T16:33:18Z",
+      "reports": [
+        {
+          "artifactId": 14840175146,
+          "suite": "callback",
+          "tests": 15,
+          "statuses": {
+            "PASS": 15
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954882,
+      "name": "Static client (ubuntu-24.04, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000347,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:34:02Z",
+      "reports": [
+        {
+          "artifactId": 14838693092,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954890,
+      "name": "Static client (windows-2022, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000344,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:30:51Z",
+      "completedAt": "2026-11-23T16:33:23Z",
+      "reports": [
+        {
+          "artifactId": 14839866671,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954892,
+      "name": "Portable release contracts (macos-15-intel)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000338,
+      "stepCount": 10,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:31:21Z",
+      "reports": [
+        {
+          "artifactId": 14837618457,
+          "suite": "node-portable",
+          "tests": 7071,
+          "statuses": {
+            "PASS": 7071
+          },
+          "harnessChecks": 102
+        }
+      ]
+    },
+    {
+      "id": 137841954897,
+      "name": "Private workflows (firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000353,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:35:59Z",
+      "reports": [
+        {
+          "artifactId": 14838858247,
+          "suite": "private",
+          "tests": 132,
+          "statuses": {
+            "PASS": 132
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954908,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000368,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:33:12Z",
+      "completedAt": "2026-11-23T16:46:14Z",
+      "reports": [
+        {
+          "artifactId": 14840815190,
+          "suite": "callback",
+          "tests": 15,
+          "statuses": {
+            "PASS": 14,
+            "FAIL": 1
+          },
+          "harnessChecks": 0
+        }
+      ],
+      "failedSteps": [
+        {
+          "number": 7,
+          "name": "Verify this fixed product entrypoint and its own browser workflows"
+        }
+      ]
+    },
+    {
+      "id": 137841954961,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000371,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:33:22Z",
+      "completedAt": "2026-11-23T16:35:05Z",
+      "reports": [
+        {
+          "artifactId": 14839896755,
+          "suite": "spreadsheet-manual",
+          "tests": 8,
+          "statuses": {
+            "PASS": 8
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841954965,
+      "name": "Apple Silicon contracts and selected products",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runnerId": 0,
+      "stepCount": 0,
+      "startedAt": "2026-11-23T16:30:49Z",
+      "completedAt": "2026-11-23T16:45:55Z",
+      "reports": []
+    },
+    {
+      "id": 137841955037,
+      "name": "Static client (ubuntu-24.04, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000359,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:31:24Z",
+      "completedAt": "2026-11-23T16:33:10Z",
+      "reports": [
+        {
+          "artifactId": 14838288815,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955085,
+      "name": "Required public suspension",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000360,
+      "stepCount": 7,
+      "startedAt": "2026-11-23T16:32:13Z",
+      "completedAt": "2026-11-23T16:32:34Z",
+      "reports": []
+    },
+    {
+      "id": 137841955098,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000366,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:33:05Z",
+      "completedAt": "2026-11-23T16:42:17Z",
+      "reports": [
+        {
+          "artifactId": 14838989212,
+          "suite": "spreadsheet",
+          "tests": 7,
+          "statuses": {
+            "PASS": 7
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955104,
+      "name": "Static client (windows-2022, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000362,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:32:32Z",
+      "completedAt": "2026-11-23T16:35:46Z",
+      "reports": [
+        {
+          "artifactId": 14839187827,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955106,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000355,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:30:52Z",
+      "completedAt": "2026-11-23T16:33:03Z",
+      "reports": [
+        {
+          "artifactId": 14839476421,
+          "suite": "portable-extra",
+          "tests": 65,
+          "statuses": {
+            "PASS": 65
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955128,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000367,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:33:07Z",
+      "completedAt": "2026-11-23T16:34:57Z",
+      "reports": [
+        {
+          "artifactId": 14840200428,
+          "suite": "callback",
+          "tests": 15,
+          "statuses": {
+            "PASS": 15
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955168,
+      "name": "Emulated private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000364,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:32:53Z",
+      "completedAt": "2026-11-23T16:41:26Z",
+      "reports": [
+        {
+          "artifactId": 14839617445,
+          "suite": "callback-mobile",
+          "tests": 12,
+          "statuses": {
+            "PASS": 12
+          },
+          "harnessChecks": 0
+        },
+        {
+          "artifactId": 14839397709,
+          "suite": "mobile",
+          "tests": 40,
+          "statuses": {
+            "PASS": 40
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955177,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000365,
+      "stepCount": 13,
+      "startedAt": "2026-11-23T16:33:03Z",
+      "completedAt": "2026-11-23T16:34:20Z",
+      "reports": [
+        {
+          "artifactId": 14839137698,
+          "suite": "callback",
+          "tests": 15,
+          "statuses": {
+            "PASS": 15
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955188,
+      "name": "Static client (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000357,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:31:19Z",
+      "completedAt": "2026-11-23T16:33:14Z",
+      "reports": [
+        {
+          "artifactId": 14839147632,
+          "suite": "portable-extra",
+          "tests": 65,
+          "statuses": {
+            "PASS": 65
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955271,
+      "name": "Static client (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000372,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:33:23Z",
+      "completedAt": "2026-11-23T16:36:55Z",
+      "reports": [
+        {
+          "artifactId": 14839792593,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955306,
+      "name": "Static client (windows-2022, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000361,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:32:16Z",
+      "completedAt": "2026-11-23T16:34:20Z",
+      "reports": [
+        {
+          "artifactId": 14839067786,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955343,
+      "name": "Static client (windows-2022, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000356,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:31:15Z",
+      "completedAt": "2026-11-23T16:33:31Z",
+      "reports": [
+        {
+          "artifactId": 14839182584,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955466,
+      "name": "Static client (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000373,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:33:26Z",
+      "completedAt": "2026-11-23T16:38:22Z",
+      "reports": [
+        {
+          "artifactId": 14839832683,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841955602,
+      "name": "Static client (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000374,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:35:04Z",
+      "completedAt": "2026-11-23T16:39:33Z",
+      "reports": [
+        {
+          "artifactId": 14837969314,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137841956985,
+      "name": "Static client (windows-2022, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000370,
+      "stepCount": 11,
+      "startedAt": "2026-11-23T16:33:16Z",
+      "completedAt": "2026-11-23T16:35:35Z",
+      "reports": [
+        {
+          "artifactId": 14839721539,
+          "suite": "portable",
+          "tests": 92,
+          "statuses": {
+            "PASS": 92
+          },
+          "harnessChecks": 0
+        }
+      ]
+    },
+    {
+      "id": 137852137779,
+      "name": "Account for distinct product and platform tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000377,
+      "stepCount": 10,
+      "startedAt": "2026-11-23T16:46:16Z",
+      "completedAt": "2026-11-23T16:49:32Z",
+      "reports": [],
+      "failedSteps": [
+        {
+          "number": 6,
+          "name": "Report the measured totals and separate release decisions"
+        }
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "artifactId": 14839607087,
+      "artifactName": "release-baseline-linux-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "20103aea8d7f8d43533b84cbea4137f7823ff9f318171a0ceacd99c087543f15",
+      "suite": "node-all",
+      "deploymentMode": null,
+      "platform": {
+        "os": "linux",
+        "architecture": "x86_64"
+      },
+      "tests": 9123,
+      "statuses": {
+        "PASS": 9123
+      },
+      "harnessChecks": 136,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839607087,
+      "artifactName": "release-baseline-linux-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "3a8012e593c811daca72490a57087f13165ef4aed957d664f8482ab1857c9c5c",
+      "suite": "baseline",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 197,
+      "statuses": {
+        "PASS": 197
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838568007,
+      "artifactName": "release-callback-mobile-linux-chromium-attempt-1",
+      "file": "panelreply-release-callback-mobile.json",
+      "sha256": "6f029409ffa71295d1ccf968232b89614615498532baec819eac5fbf993f6948",
+      "suite": "callback-mobile",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 12,
+      "statuses": {
+        "PASS": 12
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839617445,
+      "artifactName": "release-callback-mobile-linux-webkit-attempt-1",
+      "file": "panelreply-release-callback-mobile.json",
+      "sha256": "4affe0717ada6fa15de61dfc9b250ece5af63c8bc3662b225a91227e72c0b041",
+      "suite": "callback-mobile",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 12,
+      "statuses": {
+        "PASS": 12
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14837473914,
+      "artifactName": "release-mobile-linux-chromium-attempt-1",
+      "file": "panelreply-release-mobile.json",
+      "sha256": "942f5095ce03b48a09b078949c38c1ac93c146b3901eb5c1f3701a10c1df9790",
+      "suite": "mobile",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 40,
+      "statuses": {
+        "PASS": 40
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839397709,
+      "artifactName": "release-mobile-linux-webkit-attempt-1",
+      "file": "panelreply-release-mobile.json",
+      "sha256": "baf853346f1732e17d65a2a80bb8b602276f38a268ef3e05bba5195c3e11d9c3",
+      "suite": "mobile",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 40,
+      "statuses": {
+        "PASS": 40
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14837618457,
+      "artifactName": "release-node-macos-15-intel-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "977089e64a8c0d77e464f1719372ecf35293e42abd4cb60258acc0ba192d24b8",
+      "suite": "node-portable",
+      "deploymentMode": null,
+      "platform": {
+        "os": "darwin",
+        "architecture": "x86_64"
+      },
+      "tests": 7071,
+      "statuses": {
+        "PASS": 7071
+      },
+      "harnessChecks": 102,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839506120,
+      "artifactName": "release-node-ubuntu-24.04-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "a3b47e855d519a726a7e5cf8b57549cdc74a09ac6e8ffb09bccf87524a4f4d99",
+      "suite": "node-portable",
+      "deploymentMode": null,
+      "platform": {
+        "os": "linux",
+        "architecture": "x86_64"
+      },
+      "tests": 7071,
+      "statuses": {
+        "PASS": 7071
+      },
+      "harnessChecks": 102,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838627853,
+      "artifactName": "release-node-windows-2022-attempt-1",
+      "file": "panelreply-release-node.json",
+      "sha256": "835952678465cd27cd7599464c98b753aed9ebbd4af04b1a1dd5e2b66a8e7ed1",
+      "suite": "node-portable",
+      "deploymentMode": null,
+      "platform": {
+        "os": "windows",
+        "architecture": "x86_64"
+      },
+      "tests": 7071,
+      "statuses": {
+        "PASS": 7071
+      },
+      "harnessChecks": 102,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839792593,
+      "artifactName": "release-platform-macos-15-intel-chromium-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "fad7c02fa5b2bafb0b817d5b158e21fda6c0df6231aecb9ba08f93be2abe0dba",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839832683,
+      "artifactName": "release-platform-macos-15-intel-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "22307d792293a0e5d19019feb5310fb90f3ecc2f7ac5e6ff80d60574a7b4b9f3",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14837969314,
+      "artifactName": "release-platform-macos-15-intel-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "d83cda49c971545e649c4b77c1cb2061e20f2a48aa16682b3af323e7e211993f",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838288815,
+      "artifactName": "release-platform-ubuntu-24.04-chrome-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "08a98a4b134ace2700f2308c12f1a0af8da1e008fe17503848e8c97ba262018d",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839147632,
+      "artifactName": "release-platform-ubuntu-24.04-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "145b48d1f8549fff796d2c78a226ddeaf31bba07d5f02a02876190cfbcd1086a",
+      "suite": "portable-extra",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 65,
+      "statuses": {
+        "PASS": 65
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838693092,
+      "artifactName": "release-platform-ubuntu-24.04-msedge-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "e7346f33c003d758909b979200b37548ac1a9056246498de4835b4e61952a031",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839476421,
+      "artifactName": "release-platform-ubuntu-24.04-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "cca30659620b36088eb86b2109f6015a98adffe81e044750e2ab4339315b8335",
+      "suite": "portable-extra",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 65,
+      "statuses": {
+        "PASS": 65
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839866671,
+      "artifactName": "release-platform-windows-2022-chrome-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "2a760bbe9408c3ce57264402083fb2c4780b4b7e23d1627737109a7c30ef81d6",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "architecture": "AMD64",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839182584,
+      "artifactName": "release-platform-windows-2022-chromium-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "44b2622230eff4216c6005d58ca193342d8a7ac434c7685b785e1e82300fb011",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "architecture": "AMD64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839721539,
+      "artifactName": "release-platform-windows-2022-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "d0cd7bd48e2d35338f8399d2ee1fb1d75579741e3e732a465a42e308005cf7dd",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "architecture": "AMD64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839187827,
+      "artifactName": "release-platform-windows-2022-msedge-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "62255decde879e40675efd94fa9338ecaf4374453d4b4b17e88e3ff96f14e8ca",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "architecture": "AMD64",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839067786,
+      "artifactName": "release-platform-windows-2022-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "cdbf38fc320ddc8da5ca75a1e034a6ba5318fc9016b441236e2eb17c2815d3d0",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "architecture": "AMD64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 92,
+      "statuses": {
+        "PASS": 92
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838858247,
+      "artifactName": "release-private-linux-firefox-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "d5c8c01ac3cb4a2e81735e1623a43d052b132763096badc9de8f3582a6e77b1a",
+      "suite": "private",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 132,
+      "statuses": {
+        "PASS": 132
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14840107316,
+      "artifactName": "release-private-linux-webkit-attempt-1",
+      "file": "panelreply-release-platform.json",
+      "sha256": "64fa25e5a43bb947c63125ac99155528e3476cb7646f50c71d5a88d4ab212a86",
+      "suite": "private",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 132,
+      "statuses": {
+        "PASS": 131,
+        "ERROR": 1
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14840200428,
+      "artifactName": "release-selected-macos-15-intel-callback-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "d46b29341e46f54e18b421989dd719dbc502bc36d7c8dd3c61e26cd36a3bc4b4",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 15,
+      "statuses": {
+        "PASS": 15
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14840175146,
+      "artifactName": "release-selected-macos-15-intel-callback-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "c54d0cd40b3c89c976892c19cdd870870ec049e38de5779be1806442d47d3e44",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 15,
+      "statuses": {
+        "PASS": 15
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839995143,
+      "artifactName": "release-selected-macos-15-intel-callback-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "9571db2bcf43c4f4e841038d17b45e37ec801cbb3a888bd31f7cd319cbb43b52",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 15,
+      "statuses": {
+        "PASS": 14,
+        "FAIL": 1
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839896755,
+      "artifactName": "release-selected-macos-15-intel-spreadsheet-manual-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "91e75d91cbcb42549cd101682e6767823957e6ec3f770bb42c6d9ecfb51d79db",
+      "suite": "spreadsheet-manual",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 8,
+      "statuses": {
+        "PASS": 8
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839880773,
+      "artifactName": "release-selected-macos-15-intel-spreadsheet-manual-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "b6984d7a1a23c877c783bd500c72fb71a38554020f860ddaf9fab6d3aa5f3a27",
+      "suite": "spreadsheet-manual",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 8,
+      "statuses": {
+        "PASS": 8
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839891591,
+      "artifactName": "release-selected-macos-15-intel-spreadsheet-manual-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "8327e942cfed11bb71242f11b49be858f1d7025d708d78e6826e025dde33a219",
+      "suite": "spreadsheet-manual",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 8,
+      "statuses": {
+        "PASS": 8
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839377336,
+      "artifactName": "release-selected-ubuntu-24.04-callback-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "5364e197f087cb31268c9677af87e26f9a63c5cc9844bef1cd61fbad33963999",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 15,
+      "statuses": {
+        "PASS": 15
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14839137698,
+      "artifactName": "release-selected-ubuntu-24.04-callback-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "042b6ed7eb74372d34c075f7f8f47e26eb79a0be92fb23ec851251b181434f6d",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 15,
+      "statuses": {
+        "PASS": 15
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14840815190,
+      "artifactName": "release-selected-ubuntu-24.04-callback-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "923fc91647a37d45ce37ac49bf25598345c84b93f4f95841361939c3c122cd12",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 15,
+      "statuses": {
+        "PASS": 14,
+        "FAIL": 1
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838393795,
+      "artifactName": "release-selected-ubuntu-24.04-spreadsheet-chromium-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "3fa464f7c3af4a2755c0406ce4bed8c9466938c9abe3bbde8c9ae947d42da108",
+      "suite": "spreadsheet",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled"
+      },
+      "tests": 7,
+      "statuses": {
+        "PASS": 7
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838113300,
+      "artifactName": "release-selected-ubuntu-24.04-spreadsheet-firefox-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "d7356f0b346e6e8eddc90815fd380d73063d5f558b8ece4b24afc89cc02ee357",
+      "suite": "spreadsheet",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled"
+      },
+      "tests": 7,
+      "statuses": {
+        "PASS": 7
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    },
+    {
+      "artifactId": 14838989212,
+      "artifactName": "release-selected-ubuntu-24.04-spreadsheet-webkit-attempt-1",
+      "file": "panelreply-selected-product.json",
+      "sha256": "5b9afef1c40ec6177a90026996c215a7f2007dd7be820fae07a007f5915c814b",
+      "suite": "spreadsheet",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled"
+      },
+      "tests": 7,
+      "statuses": {
+        "PASS": 7
+      },
+      "harnessChecks": 0,
+      "infrastructureErrors": 0
+    }
+  ],
+  "releaseReadiness": "NOT_READY",
+  "limitations": [
+    "The counts describe immutable run83 source. Later repairs and local passing tests do not change these failures.",
+    "Bundled WebKit and emulated touch do not establish actual Safari or physical device acceptance.",
+    "Intel Mac manual spreadsheet coverage does not establish native Mac OCR support.",
+    "Numeric10,000 and20,000 targets are exceeded, but the full platform goal is unmet. The milestone policy is unchanged."
+  ],
+  "realProviderCalls": 0,
+  "productionCustomerData": false,
+  "publicActivation": false,
+  "rerunsRequested": false,
+  "runnerOrGateChanges": false
+}

@@ -23,7 +23,7 @@ const OPERATION_KINDS = new Set([...KINDS, 'lead_conversation']);
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const phoneHash = (businessId, phone) => hash(businessId + '\0' + phone);
 
-function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, enabled, callbackTasksEnabled = false }) {
+function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, assertLeadMutation, enabled, callbackTasksEnabled = false }) {
   function requireCurrentSchema() {
     if (!enabled) throw new StoreError(409, 'upgrade_required', 'Start the current workspace version before using deletion.');
   }
@@ -73,6 +73,8 @@ function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, e
     deleteLead(actor, id, input, key) {
       return operation(actor, 'lead', id, '', input, key, time => {
         const lead = store.getLead(actor, id); assertVersion(lead, input.version);
+        // The record is removed, so a safe terminal receipt is sufficient.
+        assertLeadMutation(lead, time, false);
         const row = db.prepare('SELECT * FROM leads WHERE id=? AND business_id=?').get(id, actor.businessId);
         if (lead.safetyHold) lifecycle.preserveSafetyHold(actor, lead.phone, time);
         // STOP suppression is intentionally independent and is never removed.
@@ -84,33 +86,37 @@ function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, e
         db.prepare('DELETE FROM audit WHERE lead_id=? AND business_id=?').run(id, actor.businessId);
         tombstone(actor, 'lead', row, '', input.version, time);
         db.prepare('DELETE FROM leads WHERE id=? AND business_id=? AND version=?').run(id, actor.businessId, input.version);
-        addAudit(actor, null, 'lead.deleted', input.version + 1, { recordId: id, messagesDeleted });
+        addAudit(actor, null, 'lead.deleted', input.version + 1, { recordId: id, messagesDeleted }, time);
         return { messagesDeleted };
       });
     },
     deleteLeadConversation(actor, id, input, key) {
       return operation(actor, 'lead_conversation', id, '', input, key, time => {
         const lead = store.getLead(actor, id); assertVersion(lead, input.version);
+        assertLeadMutation(lead, time);
         const messagesDeleted = Number(db.prepare('DELETE FROM messages WHERE lead_id=? AND business_id=?').run(id, actor.businessId).changes);
         db.prepare('UPDATE leads SET version=version+1,updated_at=? WHERE id=? AND business_id=? AND version=?').run(time, id, actor.businessId, input.version);
-        addAudit(actor, id, 'lead.conversation_deleted', input.version + 1, { messagesDeleted });
+        addAudit(actor, id, 'lead.conversation_deleted', input.version + 1, { messagesDeleted }, time);
         return { messagesDeleted };
       });
     },
     deletePanelProject(actor, id, input, key) {
       return operation(actor, 'panel_project', id, '', input, key, time => {
         const project = store.getPanelProject(actor, id); assertVersion(project, input.version);
+        panels.writeTime(time, Date.parse(project.updatedAt));
         const row = db.prepare('SELECT * FROM panel_projects WHERE id=? AND business_id=?').get(id, actor.businessId);
         const sourcesDeleted = Number(db.prepare('DELETE FROM panel_sources WHERE project_id=? AND business_id=?').run(id, actor.businessId).changes);
         tombstone(actor, 'panel_project', row, '', input.version, time);
         db.prepare('DELETE FROM panel_projects WHERE id=? AND business_id=? AND version=?').run(id, actor.businessId, input.version);
-        addAudit(actor, null, 'panel.deleted', input.version + 1, { projectId: id, sourcesDeleted });
+        addAudit(actor, null, 'panel.deleted', input.version + 1, { projectId: id, sourcesDeleted }, time);
         return { sourcesDeleted };
       });
     },
     deletePanelSource(actor, projectId, sourceId, input, key) {
       return operation(actor, 'panel_source', sourceId, projectId, input, key, time => {
         const project = store.getPanelProject(actor, projectId); assertVersion(project, input.version);
+        const version = panels.nextVersion(project.version);
+        panels.writeTime(time, Date.parse(project.updatedAt));
         const row = db.prepare('SELECT * FROM panel_sources WHERE id=? AND project_id=? AND business_id=?').get(sourceId, projectId, actor.businessId);
         if (!row) throw new StoreError(404, 'not_found', 'The source image was not found.');
         let referencesCleared = 0;
@@ -120,9 +126,9 @@ function createLifecycle({ db, tx, now, getActor, store, StoreError, addAudit, e
           return { ...item, sourceImageId: null, reviewStatus: 'unreviewed' };
         });
         tombstone(actor, 'panel_source', row, projectId, input.version, time);
-        db.prepare('UPDATE panel_projects SET rows_json=?,version=version+1,updated_at=? WHERE id=? AND business_id=? AND version=?').run(JSON.stringify(rows), time, projectId, actor.businessId, input.version);
+        db.prepare('UPDATE panel_projects SET rows_json=?,version=?,updated_at=? WHERE id=? AND business_id=? AND version=?').run(JSON.stringify(rows), version, time, projectId, actor.businessId, input.version);
         db.prepare('DELETE FROM panel_sources WHERE id=? AND project_id=? AND business_id=?').run(sourceId, projectId, actor.businessId);
-        addAudit(actor, null, 'panel.source_deleted', input.version + 1, { projectId, sourceId, referencesCleared });
+        addAudit(actor, null, 'panel.source_deleted', version, { projectId, sourceId, referencesCleared }, time);
         return { referencesCleared };
       });
     }
