@@ -1,5 +1,11 @@
 # Release acceptance
 
+## November 23 integrated verification checkpoint
+
+The next candidate passes 9,123 local Node/API/HTTP checks with zero failures or skips: 8,987 product executions and 136 excluded verification-tool checks. The accounting correction removes 13 previously misclassified helper cases without rewriting prior reports. It adds fixed-product callback touch journeys and OCR dependency identity, plus the font-scaling calculation repair. Browser collection earns no passing credit. [Local record](evidence/mobile-metadata-local-2026-11-23.json).
+
+Run82 confirms the sidebar repair, both 40-method mobile suites, all three 8-method Mac manual spreadsheet suites, and deskew at 289/310 exact with no regression against run81. The completed callback failures retain the font-probe calculation defect. ARM remains unassigned in the recorded snapshot. OCR quality remains FAIL and required native isolation remains BLOCKED. The next committed source needs its own CI reports and matching policy hash. No numeric total closes unresolved product/platform or owner-dependent gates. [Run snapshot](evidence/callback-scheduling-run82.json) and [current continuation](AUTONOMOUS_CONTINUATION.md).
+
 ## November 23 active development acceptance
 
 Development has resumed beyond the earlier daily audit. Callback scheduling and follow-up are implemented in the separate callback product. Run81 verifies the changed source's full Linux Node/API/HTTP scope but retains nine browser-job failures and an unassigned Apple Silicon job. Corrections address the tablet sign-out defect and strict-CSP test helpers. [Current failure record](evidence/callback-scheduling-run81.json).

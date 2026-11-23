@@ -140,6 +140,7 @@ jobs:
             format: 'panelreply-ci-ocr-evidence',
             engine: r.engine, engineModuleSha256: r.engineModuleSha256,
             pipelineSources: r.pipelineSources, pipelineSha256: r.pipelineSha256,
+            dependencyEvidence: r.dependencyEvidence, identityGate: r.identityGate,
             datasetSha256: r.datasetSha256, pillowVersion: r.pillowVersion, fonts: r.fonts,
             accuracyGate: r.accuracyGate, overall: r.overall, byCondition: r.byCondition,
             elapsedMs: r.elapsedMs, nativeProcess: r.nativeProcess, nodeProcess: r.nodeProcess,
@@ -352,17 +353,30 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install the selected emulation engine
+        id: mobile_dependencies
         run: |
           python -m pip install -r tests/browser-requirements.txt
           python -m playwright install --with-deps ${{ matrix.browser }}
       - name: Exercise touch, saved data, failures, exports and private source images
         run: python tests/release_platform_runner.py --suite mobile --output "${{ runner.temp }}/panelreply-release-mobile.json"
+      - name: Exercise fixed callback scheduling and guards with trusted touch
+        if: ${{ !cancelled() && steps.mobile_dependencies.outcome == 'success' }}
+        run: python tests/release_platform_runner.py --suite callback-mobile --output "${{ runner.temp }}/panelreply-release-callback-mobile.json"
       - name: Preserve emulated-device evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: release-mobile-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
           path: ${{ runner.temp }}/panelreply-release-mobile.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Preserve fixed callback emulation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-callback-mobile-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-callback-mobile.json
           if-no-files-found: error
           retention-days: 30
 

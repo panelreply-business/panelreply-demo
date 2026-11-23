@@ -3,7 +3,8 @@
 The portable suite serves copied static files on loopback. Its results do not
 establish Windows/macOS support for the private Linux SQLite/OCR server. The
 mobile suite uses the private Linux server with emulated browser contexts, not
-physical iOS/Android devices. All test data is synthetic and external browser
+physical iOS/Android devices. The callback-mobile suite uses that same emulation
+on the fixed callback program. All test data is synthetic and external browser
 requests remain blocked by the existing test harnesses.
 """
 
@@ -34,6 +35,7 @@ SUITES = {
                 "workspace_recovery_browser_test", "platform_visual_browser_test",
                 "assistant_browser_test", "xlsx_browser_test", "lifecycle_browser_test"],
     "mobile": ["release_mobile_browser_test"],
+    "callback-mobile": ["callback_mobile_browser_test"],
     "callback": ["product_browser_test"],
     "spreadsheet": ["product_browser_test"],
     "spreadsheet-manual": ["product_browser_test", "macos_product_browser_test"],
@@ -49,6 +51,7 @@ CLASSES = {
     "assistant_browser_test": "AssistantBrowserTests", "lifecycle_browser_test": "LifecycleBrowserTests",
     "xlsx_browser_test": "XlsxBrowserTests", "release_mobile_browser_test": "MobileWorkspaceTests",
     "macos_product_browser_test": "MacSpreadsheetProductBrowserTests",
+    "callback_mobile_browser_test": "CallbackMobileBrowserTests",
 }
 
 
@@ -255,7 +258,8 @@ def main():
         item.get("classification") == "BROWSER_RUNTIME_UNAVAILABLE" for item in result.infrastructure_errors)
     report = {
         "format": "panelreply-platform-evidence-v1", "suite": args.suite, **source,
-        "deploymentMode": "spreadsheet" if args.suite == "spreadsheet-manual" else
+        "deploymentMode": "callback" if args.suite == "callback-mobile" else
+                          "spreadsheet" if args.suite == "spreadsheet-manual" else
                           args.suite if args.suite in SELECTED_PRODUCT_CLASSES else
                           "combined" if args.suite in {"baseline", "private", "mobile"} else "static-demo",
         "status": "PASS" if passed else "BLOCKED" if blocked else "FAIL", "expectedMethods": len(expected),
@@ -270,11 +274,13 @@ def main():
                      "browserEngine": os.environ.get("PANELREPLY_BROWSER", "chromium"),
                      "browserChannel": browser_variant(),
                      "observedBrowsers": browser_evidence(),
-                     "emulated": args.suite == "mobile"},
+                     "emulated": args.suite in {"mobile", "callback-mobile"}},
         "tests": records, "totals": totals,
         "infrastructureErrors": result.infrastructure_errors,
         "blocked": ["Browser runtime unavailable; no browser cases executed."] if blocked else [],
-        "scope": "Private Linux server with emulated device contexts; no physical device evidence."
+        "scope": "Fixed callback program with product-bound synthetic data and emulated phone/tablet touch contexts on the private Linux server; no physical device evidence."
+                 if args.suite == "callback-mobile" else
+                 "Private Linux server with emulated device contexts; no physical device evidence."
                  if args.suite == "mobile" else
                  "Fixed spreadsheet product on macOS: manual entry/correction, private source storage, CSV/XLSX, restart and bound recovery. Native OCR is unavailable and asserted fail-closed; no extraction support claim."
                  if args.suite == "spreadsheet-manual" else

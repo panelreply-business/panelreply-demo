@@ -1,0 +1,4223 @@
+{
+  "format": "panelreply-source-bound-ocr-ci-v1",
+  "runId": 45214236178,
+  "jobId": 137830931599,
+  "sourceHead": "e711d15d418406969631202642c9d055b47afca5",
+  "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+  "workflowUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178",
+  "comparison": {
+    "priorRunId": 45210035769,
+    "priorPipelineSha256": "b4d3c0e7e486ec10b15416bccee186adfdf0786a661b2adf6130b34e2500d731",
+    "priorExact": 285,
+    "currentExact": 289,
+    "sameDataset": true,
+    "sameEngineVersion": true,
+    "gains": [
+      "abbreviated--rotate-plus-1",
+      "abbreviated--rotate-plus-3",
+      "lowercase--rotate-minus-3",
+      "punctuation--rotate-minus-3"
+    ],
+    "regressions": [],
+    "scope": "Identical recorded CI dataset and engine version. No controlled latency or complete dependency-identity claim."
+  },
+  "report": {
+    "format": "panelreply-ci-ocr-evidence",
+    "engine": {
+      "available": true,
+      "engine": "tesseract",
+      "version": "5.3.4",
+      "language": "eng",
+      "normalizer": {
+        "method": "median3-deskew-small-text-v3",
+        "pillowVersion": "10.2.0"
+      },
+      "orientationAvailable": true
+    },
+    "engineModuleSha256": "75638551bd43b0fd5a37d059e1486f399b9941614650537961ea79f968771da1",
+    "pipelineSources": [
+      {
+        "file": "ocr.cjs",
+        "sha256": "75638551bd43b0fd5a37d059e1486f399b9941614650537961ea79f968771da1"
+      },
+      {
+        "file": "ocr-preprocess.py",
+        "sha256": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014"
+      },
+      {
+        "file": "ocr-isolation.cjs",
+        "sha256": "ea1dc8d0143686dc84c8e7d9a795f1019923b79375e1a5b4b3aae227b348dea8"
+      }
+    ],
+    "pipelineSha256": "65b6a4d7bce19baabc5ea5480c19bbb159dd1fe9f9551b6691c28dcf923836b4",
+    "datasetSha256": "7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e",
+    "pillowVersion": "13.0.0",
+    "fonts": {
+      "sans": {
+        "name": "DejaVuSans.ttf",
+        "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+      },
+      "serif": {
+        "name": "DejaVuSerif.ttf",
+        "sha256": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab"
+      },
+      "mono": {
+        "name": "DejaVuSansMono.ttf",
+        "sha256": "c805f9436dbc268644c1d9584f01a601a653e028e08fd74b9b949f6cf8304d88"
+      }
+    },
+    "accuracyGate": "FAIL",
+    "overall": {
+      "cases": 310,
+      "exactCases": 289,
+      "errors": 0,
+      "reviewViolations": 0,
+      "fields": {
+        "partNumber": {
+          "known": 219,
+          "exact": 199,
+          "missed": 1,
+          "wrong": 19,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "manufacturer": {
+          "known": 219,
+          "exact": 217,
+          "missed": 2,
+          "wrong": 0,
+          "expectedBlank": 91,
+          "preservedBlank": 91,
+          "falsePositive": 0
+        },
+        "description": {
+          "known": 229,
+          "exact": 229,
+          "missed": 0,
+          "wrong": 0,
+          "expectedBlank": 81,
+          "preservedBlank": 81,
+          "falsePositive": 0
+        }
+      },
+      "latencyMs": {
+        "median": 221,
+        "p95": 417,
+        "max": 773
+      }
+    },
+    "byCondition": {
+      "clear-sans": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 217,
+          "p95": 368,
+          "max": 368
+        }
+      },
+      "clear-serif": {
+        "cases": 15,
+        "exactCases": 13,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 10,
+            "missed": 1,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 219,
+          "p95": 379,
+          "max": 379
+        }
+      },
+      "clear-mono": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 216,
+          "p95": 367,
+          "max": 367
+        }
+      },
+      "small-22px": {
+        "cases": 15,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 203,
+          "p95": 345,
+          "max": 345
+        }
+      },
+      "large-64px": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 229,
+          "p95": 395,
+          "max": 395
+        }
+      },
+      "rotate-plus-1": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 252,
+          "p95": 406,
+          "max": 406
+        }
+      },
+      "rotate-plus-3": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 266,
+          "p95": 412,
+          "max": 412
+        }
+      },
+      "rotate-minus-3": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 267,
+          "p95": 417,
+          "max": 417
+        }
+      },
+      "rotate-90": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 524,
+          "p95": 773,
+          "max": 773
+        }
+      },
+      "skew-horizontal": {
+        "cases": 16,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 9,
+            "missed": 1,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 10,
+            "missed": 1,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 217,
+          "p95": 370,
+          "max": 370
+        }
+      },
+      "blur-0.6": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 217,
+          "p95": 376,
+          "max": 376
+        }
+      },
+      "blur-1.4": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 219,
+          "p95": 371,
+          "max": 371
+        }
+      },
+      "low-contrast": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 214,
+          "p95": 369,
+          "max": 369
+        }
+      },
+      "inverted": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 246,
+          "p95": 404,
+          "max": 404
+        }
+      },
+      "noise": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 240,
+          "p95": 392,
+          "max": 392
+        }
+      },
+      "downsample": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 182,
+          "p95": 320,
+          "max": 320
+        }
+      },
+      "jpeg-35": {
+        "cases": 16,
+        "exactCases": 15,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 218,
+          "p95": 372,
+          "max": 372
+        }
+      },
+      "crop-last-line": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 10,
+            "exact": 9,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 10,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 5,
+            "preservedBlank": 5,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 1,
+            "exact": 1,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 14,
+            "preservedBlank": 14,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 174,
+          "p95": 305,
+          "max": 305
+        }
+      },
+      "tight-spacing": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 209,
+          "p95": 355,
+          "max": 355
+        }
+      },
+      "wide-spacing": {
+        "cases": 15,
+        "exactCases": 14,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 11,
+            "exact": 10,
+            "missed": 0,
+            "wrong": 1,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 11,
+            "exact": 11,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 4,
+            "preservedBlank": 4,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 12,
+            "exact": 12,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 3,
+            "preservedBlank": 3,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 241,
+          "p95": 396,
+          "max": 396
+        }
+      }
+    },
+    "elapsedMs": 77304,
+    "nativeProcess": {
+      "processes": 660,
+      "processesWithSamples": 660,
+      "samples": 7862,
+      "sampledPeakResidentBytes": 81182720,
+      "allClosed": true,
+      "samplingIntervalMs": 10,
+      "scope": "Linux /proc child VmRSS/VmHWM sampled every 10 ms. Observed lower bound, not a complete kernel peak. Does not sum concurrent descendants. Parent memory is separate."
+    },
+    "nodeProcess": {
+      "rssBeforeBytes": 53465088,
+      "rssAfterBytes": 81997824,
+      "cpuUserMs": 825,
+      "cpuSystemMs": 573,
+      "scope": "Node parent only. Does not measure native child CPU or peak RSS."
+    },
+    "results": [
+      {
+        "id": "standard--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--skew-horizontal",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--crop-last-line",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "standard--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--skew-horizontal",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--crop-last-line",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "abbreviated--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--clear-sans",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--clear-serif",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--clear-mono",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--small-22px",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--large-64px",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--rotate-plus-1",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--rotate-plus-3",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--rotate-minus-3",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--rotate-90",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--skew-horizontal",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--blur-0.6",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--blur-1.4",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--low-contrast",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--inverted",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--noise",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--downsample",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--jpeg-35",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--crop-last-line",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--tight-spacing",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "lowercase--wide-spacing",
+        "actual": {
+          "partNumber": "sample-2042",
+          "manufacturer": "fictional components",
+          "description": "synthetic label alpha"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--skew-horizontal",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--crop-last-line",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "reordered--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--clear-sans",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--clear-serif",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--clear-mono",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--small-22px",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--large-64px",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--rotate-plus-1",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--rotate-plus-3",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--rotate-minus-3",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--rotate-90",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--skew-horizontal",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--blur-0.6",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--blur-1.4",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--low-contrast",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--inverted",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--noise",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--downsample",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--jpeg-35",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--crop-last-line",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--tight-spacing",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "leading-zero--wide-spacing",
+        "actual": {
+          "partNumber": "0000123400",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--clear-sans",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--clear-serif",
+        "actual": {
+          "partNumber": "O0-I1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--clear-mono",
+        "actual": {
+          "partNumber": "00-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--small-22px",
+        "actual": {
+          "partNumber": "O0-I1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--large-64px",
+        "actual": {
+          "partNumber": "OO-I1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--rotate-plus-1",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--rotate-plus-3",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--rotate-minus-3",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--rotate-90",
+        "actual": {
+          "partNumber": "OO0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--skew-horizontal",
+        "actual": {
+          "partNumber": "O0-\\1-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--blur-0.6",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--blur-1.4",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--low-contrast",
+        "actual": {
+          "partNumber": "OO0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--inverted",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--noise",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--downsample",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--jpeg-35",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--crop-last-line",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--tight-spacing",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "confusable--wide-spacing",
+        "actual": {
+          "partNumber": "O0-11-S5-B8",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--clear-sans",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--clear-serif",
+        "actual": {
+          "partNumber": "X/24_ A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": false,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--clear-mono",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--small-22px",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--large-64px",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--rotate-plus-1",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--rotate-plus-3",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--rotate-minus-3",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--rotate-90",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--skew-horizontal",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--blur-0.6",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--blur-1.4",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--low-contrast",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--inverted",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--noise",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--downsample",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--jpeg-35",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--crop-last-line",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--tight-spacing",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "punctuation--wide-spacing",
+        "actual": {
+          "partNumber": "X/24_A.03-7",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--skew-horizontal",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--crop-last-line",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unknown-manufacturer--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "INVENTED ZETA LAB",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--skew-horizontal",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--crop-last-line",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-manufacturer--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--clear-sans",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--clear-serif",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--clear-mono",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--small-22px",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--large-64px",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--rotate-plus-1",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--rotate-plus-3",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--rotate-minus-3",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--rotate-90",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--skew-horizontal",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--blur-0.6",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--blur-1.4",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--low-contrast",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--inverted",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--noise",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--downsample",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--jpeg-35",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--crop-last-line",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--tight-spacing",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-part--wide-spacing",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--skew-horizontal",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--crop-last-line",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "missing-description--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--clear-sans",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--clear-serif",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--clear-mono",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--small-22px",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--large-64px",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--rotate-plus-1",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--rotate-plus-3",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--rotate-minus-3",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--rotate-90",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--skew-horizontal",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--blur-0.6",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--blur-1.4",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--low-contrast",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--inverted",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--noise",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--downsample",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--jpeg-35",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--crop-last-line",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--tight-spacing",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-parts--wide-spacing",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "FICTIONAL COMPONENTS",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--clear-sans",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--clear-serif",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--clear-mono",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--small-22px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--large-64px",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--rotate-plus-1",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--rotate-plus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--rotate-minus-3",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--rotate-90",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--skew-horizontal",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--blur-0.6",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--blur-1.4",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--low-contrast",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--inverted",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--noise",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--downsample",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--jpeg-35",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--crop-last-line",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--tight-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "conflicting-manufacturers--wide-spacing",
+        "actual": {
+          "partNumber": "SAMPLE-2042",
+          "manufacturer": "",
+          "description": "SYNTHETIC LABEL ALPHA"
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--clear-sans",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--clear-serif",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--clear-mono",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--small-22px",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--large-64px",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--rotate-plus-1",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--rotate-plus-3",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--rotate-minus-3",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--rotate-90",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--skew-horizontal",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--blur-0.6",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--blur-1.4",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--low-contrast",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--inverted",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--noise",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--downsample",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--jpeg-35",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--crop-last-line",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--tight-spacing",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "multiple-components--wide-spacing",
+        "actual": {
+          "partNumber": "",
+          "manufacturer": "",
+          "description": ""
+        },
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--clear-sans",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--clear-serif",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--clear-mono",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--small-22px",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--large-64px",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--rotate-plus-1",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--rotate-plus-3",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--rotate-minus-3",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--rotate-90",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--skew-horizontal",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--blur-0.6",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--blur-1.4",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--low-contrast",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--inverted",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--noise",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--downsample",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--jpeg-35",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--crop-last-line",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--tight-spacing",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "unlabelled--wide-spacing",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--clear-sans",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--rotate-plus-1",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--rotate-plus-3",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--rotate-90",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--skew-horizontal",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--low-contrast",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--inverted",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--noise",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--downsample",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      },
+      {
+        "id": "blank--jpeg-35",
+        "actual": null,
+        "exact": true,
+        "error": null,
+        "reviewViolation": false
+      }
+    ],
+    "scope": "Synthetic stress conditions only. Not a real-world accuracy estimate. Measurement completion is not a passing accuracy claim."
+  }
+}

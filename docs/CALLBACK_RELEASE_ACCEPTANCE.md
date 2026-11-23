@@ -1,5 +1,14 @@
 # Callback release acceptance
 
+## November 23 touch and accounting checkpoint
+
+Callback scheduling remains implemented in its fixed product. The next candidate adds 24 prospective engine/profile touch executions, with separate product-bound reports and trusted touch evidence. Local collection executes none of them. The complete integrated Node/API/HTTP candidate passes 9,123 checks, with 8,987 product executions after excluding 136 evidence-tooling checks. The historical 9,000 product figure included 13 helper checks now excluded. [Local record](evidence/mobile-metadata-local-2026-11-23.json) and [touch scope](CALLBACK_MOBILE_VERIFICATION.md).
+
+Run82 verifies the committed sidebar/sign-out correction and both existing 40-method mobile suites. Completed selected callback suites pass 14/15 with the same font-scaling helper assertion. The candidate fixes the calculation while retaining 200% root/body and reflow requirements; its actual browser result remains pending. [CI snapshot](evidence/callback-scheduling-run82.json). Other-platform, actual-provider, host/offsite recovery and operating gates remain open. No trial or release is approved.
+
+A subsequent audit reproduced silent replacement of malformed UTF-16 in business names and request transcripts. A shared-validator repair with store/API/recovery regressions is in progress and is not included in this candidate.
+
+
 ## November 23 continued verification
 
 Run81 executes the new scheduling source and passes the full Linux Node/API/HTTP scope. The selected callback suites run all 15 methods on Linux and Intel Mac Chromium/Firefox/WebKit. They retain failures from the inline 200% font injection and WebKit optional capture under strict CSP. The mobile Chromium suite also reproduces a real tablet sign-out reachability defect. The next candidate repairs those issues without relaxing CSP, console checks, keyboard or geometry assertions. It also aligns named-zone validation between the form and server. Fresh corrected-source browser evidence is required before CB-12 passes. [Run81 record](evidence/callback-scheduling-run81.json).

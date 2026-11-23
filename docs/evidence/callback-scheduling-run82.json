@@ -1,0 +1,1674 @@
+{
+  "format": "panelreply-ci-run-candidate-snapshot-v1",
+  "observedAt": "2026-11-23T16:27:53Z",
+  "repository": "panelreply-business/panelreply-demo",
+  "run": {
+    "id": 45214236178,
+    "number": 82,
+    "attempt": 1,
+    "event": "pull_request",
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178",
+    "headBranch": "feature/interactive-dual-product-site"
+  },
+  "source": {
+    "headCommit": "e711d15d418406969631202642c9d055b47afca5",
+    "testedMergeCommit": "f4bd404ba58730bd7110f6a88dbccf19ef96e580",
+    "gitTree": "530c65b61d65e5269183b0db22892a1c359e52f4",
+    "mergeParents": [
+      "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+      "e711d15d418406969631202642c9d055b47afca5"
+    ],
+    "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+    "evidence": "GitHub run metadata identifies the PR head. Checkout logs and all four printed Node reports identify the tested merge. GitHub commit data verifies that its tree equals the head tree. Node source summaries agree on the manifest digest.",
+    "artifactManifestsRevalidated": false
+  },
+  "status": "INCOMPLETE_WITH_RECORDED_FAILURES",
+  "jobSummary": {
+    "listed": 37,
+    "completed": 34,
+    "success": 29,
+    "failure": 5,
+    "inProgress": 2,
+    "queued": 1
+  },
+  "counting": {
+    "aggregateProductTotal": null,
+    "reason": "This compact log/API snapshot does not replace source-bound artifact aggregation. Per-job counts can overlap and must not be added as unique coverage. Historical source classification remains intact; the later candidate excludes additional tooling-only tests.",
+    "measurementsAreNotPassingProductExecutions": true
+  },
+  "jobs": [
+    {
+      "id": 137830930960,
+      "name": "Restricted OCR worker verification",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830930960",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000298,
+      "startedAt": "2026-11-23T16:14:28Z",
+      "completedAt": "2026-11-23T16:14:57Z",
+      "releaseRunnerSummaries": [],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931343,
+      "name": "Static client (ubuntu-24.04, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931343",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000300,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:16:31Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable-extra",
+          "status": "PASS",
+          "counts": {
+            "passed": 65,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931443,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931443",
+      "status": "in_progress",
+      "conclusion": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000308,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": null,
+      "releaseRunnerSummaries": [],
+      "currentStep": "Install Linux native OCR prerequisites"
+    },
+    {
+      "id": 137830931446,
+      "name": "Private workflows (webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931446",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000302,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:27:15Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "private",
+          "status": "PASS",
+          "counts": {
+            "passed": 132,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931466,
+      "name": "Synthetic concurrent HTTP workload",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931466",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000311,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:17:13Z",
+      "releaseRunnerSummaries": [],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931491,
+      "name": "Required public suspension",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931491",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000299,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:14:45Z",
+      "releaseRunnerSummaries": [],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931564,
+      "name": "Static client (windows-2022, msedge)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931564",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-2022"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000305,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:17:51Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931582,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931582",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000303,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:18:49Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "spreadsheet",
+          "status": "PASS",
+          "counts": {
+            "passed": 7,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931592,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931592",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000309,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:15:49Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "callback",
+          "status": "FAIL",
+          "counts": {
+            "passed": 14,
+            "failed": 1,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "failure": {
+        "classification": "TEST_SETUP_FONT_PERCENTAGE_MISMATCH",
+        "failedTests": [
+          "test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels (product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels)"
+        ],
+        "assertion": "AssertionError: 32 != 30 within 2 places (2 difference)",
+        "interpretation": "The 200% root CSS probe resolved to 32px instead of twice the measured 15px application root font. The probe failed before completing the enlarged-font assertions. Root has prepared an exact-pixel doubling fix on a later candidate; this source remains failed.",
+        "rawLog": "/tmp/panelreply-run82-job-137830931592.log"
+      },
+      "logsInspected": true
+    },
+    {
+      "id": 137830931599,
+      "name": "Synthetic OCR measurements",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931599",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000315,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:17:28Z",
+      "releaseRunnerSummaries": [],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931618,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931618",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000322,
+      "startedAt": "2026-11-23T16:15:52Z",
+      "completedAt": "2026-11-23T16:17:52Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "spreadsheet-manual",
+          "status": "PASS",
+          "counts": {
+            "passed": 8,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931628,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931628",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000310,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:16:16Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "callback",
+          "status": "FAIL",
+          "counts": {
+            "passed": 14,
+            "failed": 1,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "failure": {
+        "classification": "TEST_SETUP_FONT_PERCENTAGE_MISMATCH",
+        "failedTests": [
+          "test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels (product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels)"
+        ],
+        "assertion": "AssertionError: 32 != 30 within 2 places (2 difference)",
+        "interpretation": "The 200% root CSS probe resolved to 32px instead of twice the measured 15px application root font. The probe failed before completing the enlarged-font assertions. Root has prepared an exact-pixel doubling fix on a later candidate; this source remains failed.",
+        "rawLog": "/tmp/panelreply-run82-job-137830931628.log"
+      },
+      "logsInspected": true
+    },
+    {
+      "id": 137830931629,
+      "name": "Portable release contracts (ubuntu-24.04)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931629",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000301,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:15:00Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "node",
+          "suite": "node-portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 7060,
+            "failed": 0,
+            "skipped": 0,
+            "todo": 0,
+            "cancelled": 0,
+            "harnessPassed": 91,
+            "productPassing": 6969
+          },
+          "sourceCommit": "f4bd404ba58730bd7110f6a88dbccf19ef96e580",
+          "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+          "sourceChanged": false,
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931663,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931663",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000321,
+      "startedAt": "2026-11-23T16:15:03Z",
+      "completedAt": "2026-11-23T16:16:38Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "callback",
+          "status": "FAIL",
+          "counts": {
+            "passed": 14,
+            "failed": 1,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "failure": {
+        "classification": "TEST_SETUP_FONT_PERCENTAGE_MISMATCH",
+        "failedTests": [
+          "test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels (product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels)"
+        ],
+        "assertion": "AssertionError: 32 != 30 within 2 places (2 difference)",
+        "interpretation": "The 200% root CSS probe resolved to 32px instead of twice the measured 15px application root font. The probe failed before completing the enlarged-font assertions. Root has prepared an exact-pixel doubling fix on a later candidate; this source remains failed.",
+        "rawLog": "/tmp/panelreply-run82-job-137830931663.log"
+      },
+      "logsInspected": true
+    },
+    {
+      "id": 137830931704,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931704",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000307,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:18:57Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "spreadsheet",
+          "status": "PASS",
+          "counts": {
+            "passed": 7,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931721,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931721",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000325,
+      "startedAt": "2026-11-23T16:16:35Z",
+      "completedAt": "2026-11-23T16:18:10Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "callback",
+          "status": "FAIL",
+          "counts": {
+            "passed": 14,
+            "failed": 1,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "failure": {
+        "classification": "TEST_SETUP_FONT_PERCENTAGE_MISMATCH",
+        "failedTests": [
+          "test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels (product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels)"
+        ],
+        "assertion": "AssertionError: 32 != 30 within 2 places (2 difference)",
+        "interpretation": "The 200% root CSS probe resolved to 32px instead of twice the measured 15px application root font. The probe failed before completing the enlarged-font assertions. Root has prepared an exact-pixel doubling fix on a later candidate; this source remains failed.",
+        "rawLog": "/tmp/panelreply-run82-job-137830931721.log"
+      },
+      "logsInspected": true
+    },
+    {
+      "id": 137830931751,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931751",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000320,
+      "startedAt": "2026-11-23T16:15:03Z",
+      "completedAt": "2026-11-23T16:16:26Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "callback",
+          "status": "FAIL",
+          "counts": {
+            "passed": 14,
+            "failed": 1,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "failure": {
+        "classification": "TEST_SETUP_FONT_PERCENTAGE_MISMATCH",
+        "failedTests": [
+          "test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels (product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels)"
+        ],
+        "assertion": "AssertionError: 32 != 30 within 2 places (2 difference)",
+        "interpretation": "The 200% root CSS probe resolved to 32px instead of twice the measured 15px application root font. The probe failed before completing the enlarged-font assertions. Root has prepared an exact-pixel doubling fix on a later candidate; this source remains failed.",
+        "rawLog": "/tmp/panelreply-run82-job-137830931751.log"
+      },
+      "logsInspected": true
+    },
+    {
+      "id": 137830931753,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931753",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000324,
+      "startedAt": "2026-11-23T16:16:30Z",
+      "completedAt": "2026-11-23T16:17:56Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "spreadsheet-manual",
+          "status": "PASS",
+          "counts": {
+            "passed": 8,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931759,
+      "name": "Emulated private workflows (webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931759",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000314,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:16:45Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "mobile",
+          "status": "PASS",
+          "counts": {
+            "passed": 40,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931865,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931865",
+      "status": "in_progress",
+      "conclusion": null,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000323,
+      "startedAt": "2026-11-23T16:16:19Z",
+      "completedAt": null,
+      "releaseRunnerSummaries": [],
+      "currentStep": "Install selected-product test dependencies"
+    },
+    {
+      "id": 137830931879,
+      "name": "Emulated private workflows (chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931879",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000313,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:20:12Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "mobile",
+          "status": "PASS",
+          "counts": {
+            "passed": 40,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931930,
+      "name": "Portable release contracts (macos-15-intel)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931930",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000304,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:14:59Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "node",
+          "suite": "node-portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 7060,
+            "failed": 0,
+            "skipped": 0,
+            "todo": 0,
+            "cancelled": 0,
+            "harnessPassed": 91,
+            "productPassing": 6969
+          },
+          "sourceCommit": "f4bd404ba58730bd7110f6a88dbccf19ef96e580",
+          "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+          "sourceChanged": false,
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830931983,
+      "name": "Private workflows (firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830931983",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000316,
+      "startedAt": "2026-11-23T16:14:30Z",
+      "completedAt": "2026-11-23T16:20:45Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "private",
+          "status": "PASS",
+          "counts": {
+            "passed": 132,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932057,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932057",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000328,
+      "startedAt": "2026-11-23T16:16:50Z",
+      "completedAt": "2026-11-23T16:18:23Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "spreadsheet-manual",
+          "status": "PASS",
+          "counts": {
+            "passed": 8,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932117,
+      "name": "Portable release contracts (windows-2022)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932117",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-2022"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000331,
+      "startedAt": "2026-11-23T16:17:15Z",
+      "completedAt": "2026-11-23T16:17:47Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "node",
+          "suite": "node-portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 7060,
+            "failed": 0,
+            "skipped": 0,
+            "todo": 0,
+            "cancelled": 0,
+            "harnessPassed": 91,
+            "productPassing": 6969
+          },
+          "sourceCommit": "f4bd404ba58730bd7110f6a88dbccf19ef96e580",
+          "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+          "sourceChanged": false,
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932176,
+      "name": "Static client (windows-2022, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932176",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-2022"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000327,
+      "startedAt": "2026-11-23T16:16:40Z",
+      "completedAt": "2026-11-23T16:18:50Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932181,
+      "name": "demo-tests",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932181",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000317,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:19:49Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "node",
+          "suite": "node-all",
+          "status": "PASS",
+          "counts": {
+            "passed": 9091,
+            "failed": 0,
+            "skipped": 0,
+            "todo": 0,
+            "cancelled": 0,
+            "harnessPassed": 91,
+            "productPassing": 9000
+          },
+          "sourceCommit": "f4bd404ba58730bd7110f6a88dbccf19ef96e580",
+          "sourceTreeSha256": "0b64d9d37f324dcdd43776fe67cd3079c94415ae589977a3fa601132d10d1f62",
+          "sourceChanged": false,
+          "infrastructureErrors": 0
+        },
+        {
+          "type": "browser",
+          "suite": "baseline",
+          "status": "PASS",
+          "counts": {
+            "passed": 197,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932210,
+      "name": "Static client (windows-2022, chrome)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932210",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-2022"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000306,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:16:55Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932235,
+      "name": "Static client (ubuntu-24.04, msedge)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932235",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000312,
+      "startedAt": "2026-11-23T16:14:29Z",
+      "completedAt": "2026-11-23T16:16:34Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932271,
+      "name": "Static client (windows-2022, chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932271",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-2022"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000318,
+      "startedAt": "2026-11-23T16:14:47Z",
+      "completedAt": "2026-11-23T16:17:05Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932289,
+      "name": "Static client (macos-15-intel, chromium)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932289",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000333,
+      "startedAt": "2026-11-23T16:18:00Z",
+      "completedAt": "2026-11-23T16:20:48Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932383,
+      "name": "Apple Silicon contracts and selected products",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932383",
+      "status": "queued",
+      "conclusion": null,
+      "labels": [
+        "macos-26"
+      ],
+      "runnerAssigned": false,
+      "runnerId": 0,
+      "startedAt": "2026-11-23T16:14:27Z",
+      "completedAt": null,
+      "releaseRunnerSummaries": [],
+      "currentStep": null
+    },
+    {
+      "id": 137830932413,
+      "name": "Static client (windows-2022, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932413",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-2022"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000326,
+      "startedAt": "2026-11-23T16:16:36Z",
+      "completedAt": "2026-11-23T16:18:47Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932420,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932420",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000329,
+      "startedAt": "2026-11-23T16:16:57Z",
+      "completedAt": "2026-11-23T16:19:17Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable-extra",
+          "status": "PASS",
+          "counts": {
+            "passed": 65,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932482,
+      "name": "Static client (ubuntu-24.04, chrome)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932482",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000330,
+      "startedAt": "2026-11-23T16:17:08Z",
+      "completedAt": "2026-11-23T16:25:55Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932494,
+      "name": "Static client (macos-15-intel, firefox)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932494",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000334,
+      "startedAt": "2026-11-23T16:18:13Z",
+      "completedAt": "2026-11-23T16:22:23Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    },
+    {
+      "id": 137830932724,
+      "name": "Static client (macos-15-intel, webkit)",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45214236178/job/137830932724",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runnerAssigned": true,
+      "runnerId": 1000000332,
+      "startedAt": "2026-11-23T16:17:57Z",
+      "completedAt": "2026-11-23T16:22:32Z",
+      "releaseRunnerSummaries": [
+        {
+          "type": "browser",
+          "suite": "portable",
+          "status": "PASS",
+          "counts": {
+            "passed": 92,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expectedFailures": 0,
+            "unexpectedSuccesses": 0,
+            "notRun": 0,
+            "incomplete": 0
+          },
+          "infrastructureErrors": 0
+        }
+      ],
+      "logsInspected": true
+    }
+  ],
+  "failureSummary": {
+    "classifications": [
+      {
+        "kind": "TEST_SETUP_FONT_PERCENTAGE_MISMATCH",
+        "jobs": [
+          137830931592,
+          137830931628,
+          137830931663,
+          137830931721,
+          137830931751
+        ],
+        "count": 5,
+        "caseId": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+        "assertion": "32 != 30 within 2 places (2 difference)",
+        "otherCompletedTestFailuresObserved": false
+      }
+    ],
+    "repairVerification": "NOT_VERIFIED_ON_THIS_SOURCE"
+  },
+  "verifiedRegressions": {
+    "callbackSignOut": {
+      "status": "PASS_IN_FIVE_COMPLETED_SELECTED_PRODUCT_JOBS",
+      "jobIds": [
+        137830931592,
+        137830931628,
+        137830931663,
+        137830931721,
+        137830931751
+      ],
+      "caseId": "product_browser_test.CallbackProductBrowserTests.test_callback_sign_out_revokes_its_named_program_session",
+      "evidence": [
+        {
+          "jobId": 137830931592,
+          "passed": true
+        },
+        {
+          "jobId": 137830931628,
+          "passed": true
+        },
+        {
+          "jobId": 137830931663,
+          "passed": true
+        },
+        {
+          "jobId": 137830931721,
+          "passed": true
+        },
+        {
+          "jobId": 137830931751,
+          "passed": true
+        }
+      ],
+      "scope": "Individual case passed despite each job's separate font-probe failure. The pending Linux WebKit callback job supplies no result yet."
+    },
+    "existingMobile": {
+      "status": "PASS",
+      "scope": "Existing combined private-workflow suite on Linux with emulated devices. These are not the new fixed callback-mobile journeys or physical-device evidence.",
+      "engines": [
+        {
+          "engine": "chromium",
+          "jobId": 137830931879,
+          "passed": 40,
+          "failed": 0
+        },
+        {
+          "engine": "webkit",
+          "jobId": 137830931759,
+          "passed": 40,
+          "failed": 0
+        }
+      ],
+      "tabletLandscape": {
+        "casesPerEngine": 10,
+        "chromium": [
+          "test_tablet_landscape_expired_session_does_not_save",
+          "test_tablet_landscape_failed_save_retains_draft",
+          "test_tablet_landscape_login_logout",
+          "test_tablet_landscape_markup_remains_literal",
+          "test_tablet_landscape_navigation_preserves_draft",
+          "test_tablet_landscape_orientation_retains_edits",
+          "test_tablet_landscape_request_save_and_reopen",
+          "test_tablet_landscape_row_removal_requires_confirmation",
+          "test_tablet_landscape_save_reopen_edit_export",
+          "test_tablet_landscape_upload_and_private_preview"
+        ],
+        "webkit": [
+          "test_tablet_landscape_expired_session_does_not_save",
+          "test_tablet_landscape_failed_save_retains_draft",
+          "test_tablet_landscape_login_logout",
+          "test_tablet_landscape_markup_remains_literal",
+          "test_tablet_landscape_navigation_preserves_draft",
+          "test_tablet_landscape_orientation_retains_edits",
+          "test_tablet_landscape_request_save_and_reopen",
+          "test_tablet_landscape_row_removal_requires_confirmation",
+          "test_tablet_landscape_save_reopen_edit_export",
+          "test_tablet_landscape_upload_and_private_preview"
+        ]
+      }
+    },
+    "macosSpreadsheetManual": {
+      "status": "PASS",
+      "scope": "Intel macOS manual entry/correction, storage, source images, CSV/XLSX, restart and bound recovery. Native OCR remains unavailable and was asserted fail-closed.",
+      "engines": [
+        {
+          "engine": "chromium",
+          "jobId": 137830931753,
+          "passed": 8,
+          "failed": 0
+        },
+        {
+          "engine": "firefox",
+          "jobId": 137830932057,
+          "passed": 8,
+          "failed": 0
+        },
+        {
+          "engine": "webkit",
+          "jobId": 137830931618,
+          "passed": 8,
+          "failed": 0
+        }
+      ],
+      "webkitPassedCases": [
+        "test_spreadsheet_data_survives_fixed_entrypoint_restart",
+        "test_spreadsheet_layout_and_controls_at_phone_tablet_desktop_widths",
+        "test_spreadsheet_login_navigation_and_callback_routes_are_absent",
+        "test_spreadsheet_save_reopen_correct_and_download_both_formats",
+        "test_spreadsheet_sign_out_revokes_its_named_program_session",
+        "test_spreadsheet_source_upload_and_reopen_preserve_private_image",
+        "test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source",
+        "test_spreadsheet_native_ocr_unavailable_preserves_manual_rows_and_source"
+      ]
+    }
+  },
+  "independentGates": {
+    "ocr": {
+      "jobId": 137830931599,
+      "jobConclusion": "success",
+      "measurementStatus": "MEASURED",
+      "accuracyGate": "FAIL",
+      "cases": 310,
+      "exactCases": 289,
+      "errors": 0,
+      "reviewViolations": 0,
+      "datasetSha256": "7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e",
+      "pipelineSha256": "65b6a4d7bce19baabc5ea5480c19bbb159dd1fe9f9551b6691c28dcf923836b4",
+      "scope": "Synthetic OCR measurements only. Successful measurement execution does not pass the accuracy gate."
+    },
+    "isolation": {
+      "jobId": 137830930960,
+      "jobConclusion": "success",
+      "status": "BLOCKED",
+      "reason": "isolation_unavailable",
+      "cases": 0,
+      "diagnostic": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+      "classification": "worker_startup_cause_unconfirmed",
+      "confirmedExternalBlocker": false,
+      "nativeDenyBehavior": "NOT TESTED",
+      "privilegedRetry": false,
+      "scope": "Required-mode readiness did not pass. The log does not establish a confirmed host cause. No unconfined fallback or privileged retry."
+    },
+    "syntheticHttpWorkload": {
+      "jobId": 137830931466,
+      "status": "PASS",
+      "checks": 9,
+      "completedRequests": 516,
+      "unexpectedErrors": 0,
+      "scope": "Synthetic CI loopback only. Same Node process runs HTTP server and clients. Native OCR child CPU/RSS excluded from these process totals. Not hosted capacity or an SLA."
+    },
+    "publicSuspension": {
+      "jobId": 137830931491,
+      "jobConclusion": "success",
+      "passed": 2,
+      "skipped": 3,
+      "scope": "Three live-demo probes were explicitly blocked because public demos remain offline. They are not successful product tests."
+    }
+  },
+  "pendingScopes": {
+    "jobs": [
+      {
+        "id": 137830931443,
+        "name": "Selected callback program (ubuntu-24.04, webkit)",
+        "status": "in_progress",
+        "currentStep": "Install Linux native OCR prerequisites",
+        "runnerAssigned": true
+      },
+      {
+        "id": 137830931865,
+        "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+        "status": "in_progress",
+        "currentStep": "Install selected-product test dependencies",
+        "runnerAssigned": true
+      },
+      {
+        "id": 137830932383,
+        "name": "Apple Silicon contracts and selected products",
+        "status": "queued",
+        "currentStep": null,
+        "runnerAssigned": false
+      }
+    ],
+    "arm": {
+      "jobId": 137830932383,
+      "status": "QUEUED_UNEXECUTED",
+      "runnerId": 0,
+      "runnerName": "",
+      "steps": 0,
+      "label": "macos-26",
+      "cause": "UNCONFIRMED",
+      "acceptance": "OPEN",
+      "documentedStandardArmLabels": [
+        "macos-latest",
+        "macos-15",
+        "macos-26",
+        "xcode-27"
+      ],
+      "alternativeExecutionEvidence": "No alternative standard label was executed or proven available by this investigation. Documentation of a label does not establish assignment in this repository.",
+      "documentation": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "changesMade": false
+    },
+    "aggregate": {
+      "status": "NOT_STARTED",
+      "reason": "The aggregate job awaits upstream completion, including the unassigned ARM job. No aggregate acceptance claim."
+    }
+  },
+  "artifacts": [
+    {
+      "id": 14839370958,
+      "name": "release-platform-ubuntu-24.04-chrome-attempt-1",
+      "sizeBytes": 12352,
+      "expired": false
+    },
+    {
+      "id": 14839045155,
+      "name": "release-platform-ubuntu-24.04-webkit-attempt-1",
+      "sizeBytes": 11385,
+      "expired": false
+    },
+    {
+      "id": 14838865183,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-firefox-attempt-1",
+      "sizeBytes": 9430,
+      "expired": false
+    },
+    {
+      "id": 14838800861,
+      "name": "release-platform-macos-15-intel-webkit-attempt-1",
+      "sizeBytes": 12367,
+      "expired": false
+    },
+    {
+      "id": 14838735665,
+      "name": "release-private-linux-firefox-attempt-1",
+      "sizeBytes": 13759,
+      "expired": false
+    },
+    {
+      "id": 14838705372,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-firefox-attempt-1",
+      "sizeBytes": 9295,
+      "expired": false
+    },
+    {
+      "id": 14838705002,
+      "name": "release-platform-windows-2022-chrome-attempt-1",
+      "sizeBytes": 12105,
+      "expired": false
+    },
+    {
+      "id": 14838696086,
+      "name": "release-platform-macos-15-intel-firefox-attempt-1",
+      "sizeBytes": 12377,
+      "expired": false
+    },
+    {
+      "id": 14838590650,
+      "name": "release-baseline-linux-attempt-1",
+      "sizeBytes": 414406,
+      "expired": false
+    },
+    {
+      "id": 14838425570,
+      "name": "preview-selected-macos-15-intel-spreadsheet-manual-firefox-attempt-1",
+      "sizeBytes": 183583,
+      "expired": false
+    },
+    {
+      "id": 14838391319,
+      "name": "release-node-windows-2022-attempt-1",
+      "sizeBytes": 336679,
+      "expired": false
+    },
+    {
+      "id": 14838386789,
+      "name": "release-platform-macos-15-intel-chromium-attempt-1",
+      "sizeBytes": 12380,
+      "expired": false
+    },
+    {
+      "id": 14838377688,
+      "name": "release-private-linux-webkit-attempt-1",
+      "sizeBytes": 13747,
+      "expired": false
+    },
+    {
+      "id": 14838357047,
+      "name": "release-selected-ubuntu-24.04-callback-firefox-attempt-1",
+      "sizeBytes": 9827,
+      "expired": false
+    },
+    {
+      "id": 14838321453,
+      "name": "release-node-macos-15-intel-attempt-1",
+      "sizeBytes": 347212,
+      "expired": false
+    },
+    {
+      "id": 14838316684,
+      "name": "release-selected-macos-15-intel-callback-chromium-attempt-1",
+      "sizeBytes": 9827,
+      "expired": false
+    },
+    {
+      "id": 14838296639,
+      "name": "preview-selected-ubuntu-24.04-callback-chromium-attempt-1",
+      "sizeBytes": 144894,
+      "expired": false
+    },
+    {
+      "id": 14838216461,
+      "name": "preview-selected-ubuntu-24.04-spreadsheet-firefox-attempt-1",
+      "sizeBytes": 98562,
+      "expired": false
+    },
+    {
+      "id": 14838121242,
+      "name": "release-platform-windows-2022-chromium-attempt-1",
+      "sizeBytes": 12086,
+      "expired": false
+    },
+    {
+      "id": 14838101610,
+      "name": "release-platform-windows-2022-webkit-attempt-1",
+      "sizeBytes": 12115,
+      "expired": false
+    },
+    {
+      "id": 14837951528,
+      "name": "release-selected-macos-15-intel-callback-webkit-attempt-1",
+      "sizeBytes": 9815,
+      "expired": false
+    },
+    {
+      "id": 14837831494,
+      "name": "release-platform-windows-2022-msedge-attempt-1",
+      "sizeBytes": 12120,
+      "expired": false
+    },
+    {
+      "id": 14837736350,
+      "name": "release-platform-ubuntu-24.04-msedge-attempt-1",
+      "sizeBytes": 12363,
+      "expired": false
+    },
+    {
+      "id": 14837552389,
+      "name": "preview-selected-macos-15-intel-callback-chromium-attempt-1",
+      "sizeBytes": 145249,
+      "expired": false
+    },
+    {
+      "id": 14837537664,
+      "name": "preview-selected-macos-15-intel-spreadsheet-manual-chromium-attempt-1",
+      "sizeBytes": 189674,
+      "expired": false
+    },
+    {
+      "id": 14837497780,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-chromium-attempt-1",
+      "sizeBytes": 9438,
+      "expired": false
+    },
+    {
+      "id": 14837353313,
+      "name": "preview-selected-macos-15-intel-callback-firefox-attempt-1",
+      "sizeBytes": 143902,
+      "expired": false
+    },
+    {
+      "id": 14837328423,
+      "name": "release-mobile-linux-webkit-attempt-1",
+      "sizeBytes": 10857,
+      "expired": false
+    },
+    {
+      "id": 14837198581,
+      "name": "release-selected-ubuntu-24.04-callback-chromium-attempt-1",
+      "sizeBytes": 9832,
+      "expired": false
+    },
+    {
+      "id": 14837178983,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-webkit-attempt-1",
+      "sizeBytes": 9427,
+      "expired": false
+    },
+    {
+      "id": 14837178693,
+      "name": "release-selected-macos-15-intel-callback-firefox-attempt-1",
+      "sizeBytes": 9820,
+      "expired": false
+    },
+    {
+      "id": 14836774794,
+      "name": "release-platform-windows-2022-firefox-attempt-1",
+      "sizeBytes": 12104,
+      "expired": false
+    },
+    {
+      "id": 14836729484,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-chromium-attempt-1",
+      "sizeBytes": 9301,
+      "expired": false
+    },
+    {
+      "id": 14836724519,
+      "name": "preview-selected-ubuntu-24.04-callback-firefox-attempt-1",
+      "sizeBytes": 157280,
+      "expired": false
+    },
+    {
+      "id": 14836629445,
+      "name": "preview-selected-ubuntu-24.04-spreadsheet-chromium-attempt-1",
+      "sizeBytes": 88221,
+      "expired": false
+    },
+    {
+      "id": 14836629122,
+      "name": "release-platform-ubuntu-24.04-firefox-attempt-1",
+      "sizeBytes": 11391,
+      "expired": false
+    },
+    {
+      "id": 14836549754,
+      "name": "release-mobile-linux-chromium-attempt-1",
+      "sizeBytes": 10745,
+      "expired": false
+    },
+    {
+      "id": 14836484622,
+      "name": "release-node-ubuntu-24.04-attempt-1",
+      "sizeBytes": 343830,
+      "expired": false
+    }
+  ],
+  "sources": [
+    "https://api.github.com/repos/panelreply-business/panelreply-demo/actions/runs/45214236178",
+    "https://api.github.com/repos/panelreply-business/panelreply-demo/actions/runs/45214236178/jobs?per_page=100",
+    "https://api.github.com/repos/panelreply-business/panelreply-demo/actions/runs/45214236178/artifacts?per_page=100",
+    "https://api.github.com/repos/panelreply-business/panelreply-demo/git/commits/f4bd404ba58730bd7110f6a88dbccf19ef96e580",
+    "https://docs.github.com/en/actions/reference/runners/github-hosted-runners"
+  ]
+}

@@ -11,7 +11,8 @@ const FORMATS = new Set(['panelreply-node-evidence-v1', 'panelreply-platform-evi
 const STATUSES = Object.freeze(['PASS', 'SKIP', 'TODO', 'EXPECTED_FAILURE', 'BLOCKED', 'NOT_RUN', 'RUNNING', 'CANCELLED', 'UNEXPECTED_SUCCESS', 'FAIL', 'ERROR']);
 const SEVERITY = new Map(STATUSES.map((status, index) => [status, index]));
 const NODE_SUITES = new Set(['node-all', 'node-portable']);
-const BROWSER_SUITES = new Set(['portable', 'portable-extra', 'portable-complement', 'baseline', 'private', 'mobile', 'callback', 'spreadsheet', 'spreadsheet-manual']);
+const BROWSER_SUITES = new Set(['portable', 'portable-extra', 'portable-complement', 'baseline', 'private', 'mobile', 'callback', 'callback-mobile', 'spreadsheet', 'spreadsheet-manual']);
+const CALLBACK_MOBILE_PROFILES = new Set(['phone_portrait', 'phone_landscape', 'tablet_portrait', 'tablet_landscape']);
 const SHA1 = /^[a-f0-9]{40}$/;
 const SHA256 = /^[a-f0-9]{64}$/;
 const MAX_REPORT_BYTES = 128 * 1024 * 1024;
@@ -26,6 +27,11 @@ function requireValue(value, code, message) { if (!value) throw new EvidenceErro
 function object(value) { return !!value && typeof value === 'object' && !Array.isArray(value); }
 function string(value, maximum = 4096) { return typeof value === 'string' && value.length > 0 && value.length <= maximum && !/[\u0000-\u001f]/.test(value); }
 function hash(value) { return crypto.createHash('sha256').update(value).digest('hex'); }
+function trustedTouchPair(events) {
+  return Array.isArray(events) && events.length === 2 && events.every((event, index) => object(event)
+    && event.type === (index === 0 ? 'touchstart' : 'touchend') && event.trusted === true
+    && event.touches === (index === 0 ? 1 : 0) && event.changedTouches === 1);
+}
 function normalizeOs(value) {
   const normalized = String(value || '').toLowerCase();
   return ({ win32: 'windows', win64: 'windows', windows: 'windows', darwin: 'darwin', macos: 'darwin', 'mac os x': 'darwin', linux: 'linux', ios: 'ios', android: 'android' })[normalized] || normalized;
@@ -82,6 +88,11 @@ function validateReport(report, label = 'report') {
   const node = report.format === 'panelreply-node-evidence-v1';
   requireValue((node ? NODE_SUITES : BROWSER_SUITES).has(report.suite), 'INVALID_SUITE', 'Unknown evidence suite: ' + label);
   if (['callback', 'spreadsheet'].includes(report.suite)) requireValue(report.deploymentMode === report.suite, 'INVALID_DEPLOYMENT_MODE', 'Selected-product browser evidence must identify its actual deployment mode.');
+  if (report.suite === 'callback-mobile') {
+    requireValue(report.deploymentMode === 'callback', 'INVALID_DEPLOYMENT_MODE', 'Callback mobile evidence must use the fixed callback entrypoint.');
+    requireValue(normalizeOs(report.platform?.os) === 'linux' && ['chromium', 'webkit'].includes(report.platform?.browserEngine)
+      && (report.platform?.browserChannel || 'bundled') === 'bundled', 'INVALID_PLATFORM', 'Callback mobile evidence requires the measured Linux bundled Chromium or WebKit scope.');
+  }
   if (report.suite === 'spreadsheet-manual') {
     requireValue(report.deploymentMode === 'spreadsheet', 'INVALID_DEPLOYMENT_MODE', 'Manual spreadsheet evidence must use the fixed spreadsheet entrypoint.');
     requireValue(normalizeOs(report.platform?.os) === 'darwin', 'INVALID_PLATFORM', 'The macOS manual spreadsheet suite cannot establish another platform.');
@@ -111,10 +122,22 @@ function validateReport(report, label = 'report') {
     requireValue(['product', 'harness'].includes(kind), 'INVALID_CASE_KIND', 'Unknown case kind.');
     const productScope = item.productScope === undefined ? 'shared' : item.productScope;
     requireValue(['callback', 'spreadsheet', 'shared'].includes(productScope), 'INVALID_PRODUCT_SCOPE', 'Unknown product evidence scope.');
+    if (report.suite === 'callback-mobile') {
+      requireValue(CALLBACK_MOBILE_PROFILES.has(platform.profile) && platform.emulated, 'INVALID_PLATFORM', 'Callback mobile cases require an explicit supported emulated phone or tablet profile.');
+      requireValue(productScope === 'callback', 'INVALID_PRODUCT_SCOPE', 'Callback mobile cases must retain their callback product scope.');
+      if (item.status === 'PASS') {
+        const touch = item.touchEvidence;
+        requireValue(item.emulation?.has_touch === true && item.emulation?.is_mobile === true
+          && object(touch) && touch.observed?.touchEvents === true && trustedTouchPair(touch.events)
+          && Array.isArray(touch.actions) && touch.actions.length > 0 && touch.actions.length <= 64
+          && touch.actions.every(action => object(action) && string(action.action, 100) && trustedTouchPair(action.events)),
+        'MISSING_TRUSTED_TOUCH', 'Passing callback mobile cases need observed mobile context and trusted touch pairs for actual workflow controls.');
+      }
+    }
     if (node) {
       requireValue(typeof item.generated === 'boolean', 'INVALID_CASE', 'Node cases must identify generated coverage.');
       requireValue(string(item.file) && item.file.startsWith('tests/') && item.file.endsWith('.test.cjs') && !item.file.includes('..') && item.id.startsWith(item.file + '::'), 'INVALID_CASE', 'Node cases need their repository test-file identity.');
-      requireValue(item.file !== 'tests/release-evidence.test.cjs' || kind === 'harness', 'HARNESS_MISCLASSIFIED', 'Evidence-harness tests cannot count as product tests.');
+      requireValue(!['tests/release-evidence.test.cjs', 'tests/ocr-dependency-evidence.test.cjs', 'tests/ocr-benchmark.test.cjs', 'tests/ocr-isolation-diagnostics.test.cjs'].includes(item.file) || kind === 'harness', 'HARNESS_MISCLASSIFIED', 'Evidence-harness tests cannot count as product tests.');
     }
     const generated = item.generated === true;
     requireValue(!generated || string(item.caseFamily, 80), 'INVALID_CASE', 'Generated cases need an explicit family.');
@@ -142,7 +165,7 @@ function validateMilestones(policy) {
   requireValue(policy.firstGoalAchievedAt === null || (typeof policy.firstGoalAchievedAt === 'string' && Number.isFinite(Date.parse(policy.firstGoalAchievedAt))), 'INVALID_POLICY', 'Invalid recorded first-goal timestamp.');
   requireValue(Array.isArray(policy.requiredPlatforms) && policy.requiredPlatforms.length > 0, 'INVALID_POLICY', 'Required platforms must be explicit and nonempty.');
   const ids = new Set();
-  const allowed = new Set(['os', 'architecture', 'browserEngine', 'browserChannel', 'profile', 'suite', 'nodeMajor']);
+  const allowed = new Set(['os', 'architecture', 'browserEngine', 'browserChannel', 'profile', 'suite', 'deploymentMode', 'nodeMajor']);
   for (const entry of policy.requiredPlatforms) {
     requireValue(object(entry) && string(entry.id, 100) && !ids.has(entry.id), 'INVALID_POLICY', 'Required platform IDs must be unique.'); ids.add(entry.id);
     requireValue(['node', 'browser', 'manual'].includes(entry.kind) && object(entry.match), 'INVALID_POLICY', 'A platform requirement needs a kind and match object.');
@@ -159,8 +182,12 @@ function countStatuses(items) {
 }
 function matches(requirement, execution) {
   if (requirement.kind !== execution.platform.kind) return false;
+  // Suite and deployment must come from the same observation. Independent
+  // union lists cannot combine a combined-app suite with another app's run.
+  if (!execution.contexts.some(context => (!requirement.match.suite || context.suite === requirement.match.suite)
+    && (!requirement.match.deploymentMode || context.deploymentMode === requirement.match.deploymentMode))) return false;
   for (const [key, value] of Object.entries(requirement.match)) {
-    if (key === 'suite') { if (!execution.suites.includes(value)) return false; }
+    if (key === 'suite' || key === 'deploymentMode') continue;
     else if (key === 'os') { if (execution.platform.os !== normalizeOs(value)) return false; }
     else if (key === 'architecture') { if (execution.platform.architecture !== normalizeArchitecture(value)) return false; }
     else if (execution.platform[key] !== value) return false;
@@ -194,7 +221,7 @@ function aggregateReports(inputs, { milestones, policySha256, source, now = new 
     let execution = executions.get(identity);
     if (!execution) {
       execution = { id: item.id, platformKey: item.platform.key, platform: item.platform, kind: item.kind, productScope: item.productScope, generated: item.generated, caseFamily: item.caseFamily,
-        status: item.status, observedStatuses: [], suites: [], deploymentModes: [], reports: [], nodeVersions: [], browserVersions: [], observations: 0 };
+        status: item.status, observedStatuses: [], suites: [], deploymentModes: [], contexts: [], reports: [], nodeVersions: [], browserVersions: [], observations: 0 };
       executions.set(identity, execution); cases.get(item.id).executions.push(execution);
     }
     if (SEVERITY.get(item.status) > SEVERITY.get(execution.status)) execution.status = item.status;
@@ -202,6 +229,9 @@ function aggregateReports(inputs, { milestones, policySha256, source, now = new 
     if (!execution.observedStatuses.includes(item.status)) execution.observedStatuses.push(item.status);
     if (!execution.suites.includes(item.suite)) execution.suites.push(item.suite);
     if (!execution.deploymentModes.includes(item.deploymentMode)) execution.deploymentModes.push(item.deploymentMode);
+    if (!execution.contexts.some(context => context.suite === item.suite && context.deploymentMode === item.deploymentMode)) {
+      execution.contexts.push({ suite: item.suite, deploymentMode: item.deploymentMode });
+    }
     if (!execution.reports.includes(report.label)) execution.reports.push(report.label);
     if (!execution.nodeVersions.includes(report.raw.platform.node)) execution.nodeVersions.push(report.raw.platform.node);
     for (const browser of report.raw.platform.observedBrowsers || []) if (browser.engine === item.platform.browserEngine && browser.channel === item.platform.browserChannel && !execution.browserVersions.includes(browser.version)) execution.browserVersions.push(browser.version);

@@ -266,6 +266,126 @@
       "minimumCases": 10
     },
     {
+      "id": "callback-mobile-linux-chromium-phone-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone portrait in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "phone_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-chromium-phone-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone landscape in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "phone_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-chromium-tablet-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet portrait in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "tablet_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-chromium-tablet-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet landscape in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "tablet_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-phone-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone portrait in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "phone_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-phone-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone landscape in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "phone_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-tablet-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet portrait in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "tablet_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-tablet-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet landscape in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "tablet_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
       "id": "actual-macos-safari",
       "kind": "manual",
       "match": {},

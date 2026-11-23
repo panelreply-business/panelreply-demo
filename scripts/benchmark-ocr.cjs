@@ -7,6 +7,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
 const { createProcessSampler } = require('./ocr-process-metrics.cjs');
+const { createDependencyEvidence } = require('./ocr-dependency-evidence.cjs');
 const FIELDS = ['partNumber', 'manufacturer', 'description'];
 
 function percentile(values, quantile) {
@@ -49,14 +50,28 @@ async function main() {
     .map(file => ({ file, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(path.dirname(engineModule), file))).digest('hex') }));
   const pipelineSha256 = crypto.createHash('sha256').update(JSON.stringify(pipelineSources)).digest('hex');
   const sampler = createProcessSampler();
+  const dependencies = createDependencyEvidence({ spawnProcess: sampler.spawnProcess });
   const { createOcrService } = require(engineModule);
-  const service = createOcrService({ spawnProcess: sampler.spawnProcess });
+  const service = createOcrService({ spawnProcess: dependencies.spawnProcess });
   const manifestBytes = fs.readFileSync(path.join(directory, 'manifest.json'));
   const manifest = JSON.parse(manifestBytes);
   if (manifest.format !== 'panelreply-synthetic-ocr-benchmark' || manifest.version !== 1 || !Array.isArray(manifest.cases) || !manifest.cases.length || manifest.cases.length > 500) throw new Error('Invalid benchmark manifest');
   if (new Set(manifest.cases.map(fixture => fixture.sha256)).size !== manifest.cases.length) throw new Error('Duplicate image bytes would inflate benchmark case counts');
   const status = await service.getOcrStatus();
-  if (!status.available) { console.log(JSON.stringify({ status: 'BLOCKED', engine: status, cases: 0 })); process.exitCode = 2; return; }
+  if (!status.available) {
+    const dependencySnapshot = dependencies.snapshot();
+    const dependencyEvidence = dependencies.summarize(dependencySnapshot, structuredClone(dependencySnapshot));
+    const report = { format: 'panelreply-ocr-benchmark-results', version: 1, status: 'BLOCKED', accuracyGate: 'BLOCKED', identityGate: dependencyEvidence.identityGate,
+      engine: status, engineModuleSha256, pipelineSources, pipelineSha256, datasetSha256: crypto.createHash('sha256').update(manifestBytes).digest('hex'),
+      dependencyEvidence, overall: metrics([]), results: [], failureCorpus: [] };
+    await service.shutdown();
+    fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
+    console.log(JSON.stringify({ status: 'BLOCKED', identityGate: report.identityGate, engine: status, cases: 0, output }));
+    process.exitCode = 2;
+    return;
+  }
+  const beforeHashStart = performance.now(), dependenciesBefore = dependencies.snapshot();
+  const beforeHashMs = performance.now() - beforeHashStart;
   const results = [], start = performance.now(), cpuStart = process.cpuUsage(), rssStart = process.memoryUsage().rss;
   for (const fixture of manifest.cases) {
     if (!/^[a-z0-9.-]+\.(?:png|jpg)$/.test(fixture.file)) throw new Error('Unsafe fixture filename');
@@ -78,20 +93,27 @@ async function main() {
   const overall = metrics(results);
   const byCondition = Object.fromEntries([...new Set(results.map(row => row.condition))].map(condition => [condition, metrics(results.filter(row => row.condition === condition))]));
   const cpu = process.cpuUsage(cpuStart);
-  const report = { format: 'panelreply-ocr-benchmark-results', version: 1, status: overall.errors || overall.reviewViolations ? 'FAIL' : 'MEASURED',
+  const elapsedMs = Math.round(performance.now() - start), rssAfter = process.memoryUsage().rss;
+  const afterHashStart = performance.now(), dependenciesAfter = dependencies.snapshot();
+  const dependencyEvidence = dependencies.summarize(dependenciesBefore, dependenciesAfter);
+  dependencyEvidence.collectionMs = Math.round(beforeHashMs + performance.now() - afterHashStart);
+  const identityGate = dependencyEvidence.identityGate;
+  const report = { format: 'panelreply-ocr-benchmark-results', version: 1, status: overall.errors || overall.reviewViolations || identityGate === 'FAIL' ? 'FAIL' : 'MEASURED',
     accuracyGate: overall.exactCases === results.length ? 'PASS' : 'FAIL',
+    identityGate, dependencyEvidence,
     scope: 'Synthetic stress conditions only. Not a real-world accuracy estimate. Measurement completion is not a passing accuracy claim.',
     engine: status, engineModuleSha256, pipelineSources, pipelineSha256, datasetSha256: crypto.createHash('sha256').update(manifestBytes).digest('hex'), pillowVersion: manifest.pillowVersion, fonts: manifest.fonts,
-    scenarios: manifest.scenarios, conditions: manifest.conditions, omittedDuplicateCases: manifest.omittedDuplicateCases || [], elapsedMs: Math.round(performance.now() - start),
-    nodeProcess: { rssBeforeBytes: rssStart, rssAfterBytes: process.memoryUsage().rss, cpuUserMs: Math.round(cpu.user / 1000), cpuSystemMs: Math.round(cpu.system / 1000), scope: 'Node parent only. Does not measure native child CPU or peak RSS.' },
+    scenarios: manifest.scenarios, conditions: manifest.conditions, omittedDuplicateCases: manifest.omittedDuplicateCases || [], elapsedMs,
+    nodeProcess: { rssBeforeBytes: rssStart, rssAfterBytes: rssAfter, cpuUserMs: Math.round(cpu.user / 1000), cpuSystemMs: Math.round(cpu.system / 1000), scope: 'Node parent only. Does not measure native child CPU or peak RSS. Dependency file snapshot collection is outside this measurement.' },
     nativeProcess: sampler.summarize(),
     overall, byCondition, failureCorpus: results.filter(row => !row.exact), results };
   await service.shutdown();
   fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
-  console.log(JSON.stringify({ status: report.status, accuracyGate: report.accuracyGate, output, overall, elapsedMs: report.elapsedMs }));
+  console.log(JSON.stringify({ status: report.status, accuracyGate: report.accuracyGate, identityGate, output, overall, elapsedMs: report.elapsedMs }));
   // Accuracy mismatches remain explicit evidence and are not an arbitrary CI
   // threshold. Execution/contract failures fail the measurement command itself.
-  if (overall.errors || overall.reviewViolations) process.exitCode = 1;
+  if (overall.errors || overall.reviewViolations || identityGate === 'FAIL') process.exitCode = 1;
+  else if (identityGate === 'BLOCKED') process.exitCode = 2;
 }
 
 if (require.main === module) main().catch(error => { console.error(JSON.stringify({ status: 'FAIL', error: error.message })); process.exitCode = 1; });

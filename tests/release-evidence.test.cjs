@@ -53,6 +53,30 @@ function browser(statuses = ['PASS'], overrides = {}) {
   delete result.profile;
   return result;
 }
+const CALLBACK_MOBILE_PROFILES = ['phone_portrait', 'phone_landscape', 'tablet_portrait', 'tablet_landscape'];
+const CALLBACK_MOBILE_BEHAVIORS = ['scheduling_lifecycle', 'blocked_contact', 'unsaved_edits'];
+function touchPair() {
+  return [{ type: 'touchstart', trusted: true, touches: 1, changedTouches: 1 },
+    { type: 'touchend', trusted: true, touches: 0, changedTouches: 1 }];
+}
+function callbackMobile({ engine = 'chromium', profile = 'phone_portrait', statuses = ['PASS', 'PASS', 'PASS'] } = {}) {
+  const raw = browser(statuses, { profile, suite: 'callback-mobile', deploymentMode: 'callback',
+    platform: { browserEngine: engine, observedBrowsers: [{ engine, channel: 'bundled', version: '151.0.1' }] } });
+  raw.tests.forEach((item, index) => Object.assign(item, {
+    id: `callback_mobile_browser_test.CallbackMobileBrowserTests.test_${profile}_${CALLBACK_MOBILE_BEHAVIORS[index]}`,
+    productScope: 'callback', emulation: { has_touch: true, is_mobile: true },
+    touchEvidence: { observed: { touchEvents: true, maxTouchPoints: engine === 'webkit' ? 0 : 1 }, events: touchPair(),
+      actions: [{ action: 'schedule-task', events: touchPair() }] }
+  }));
+  return raw;
+}
+function callbackMobileReports() {
+  return ['chromium', 'webkit'].flatMap(engine => CALLBACK_MOBILE_PROFILES.map(profile => callbackMobile({ engine, profile })));
+}
+function callbackMobileRequirements() {
+  return JSON.parse(fs.readFileSync(path.join(__dirname, '..', MILESTONE_POLICY_PATH), 'utf8'))
+    .requiredPlatforms.filter(entry => entry.match.suite === 'callback-mobile');
+}
 function refreshSourceHash(report) {
   report.sourceTreeSha256 = sha(JSON.stringify(report.sourceManifest));
   report.sourceTreeSha256After = report.sourceTreeSha256;
@@ -184,6 +208,141 @@ test('an explicitly empty browser channel cannot default to a bundled browser', 
 test('selected-product browser reports require the matching deployment mode', () => {
   const raw = browser(['PASS'], { suite: 'callback', deploymentMode: 'combined' });
   expectCode(() => validateReport(raw), 'INVALID_DEPLOYMENT_MODE');
+});
+
+test('callback mobile policy requires all eight fixed-product emulation scopes', () => {
+  const requirements = callbackMobileRequirements();
+  assert.equal(requirements.length, 8);
+  for (const engine of ['chromium', 'webkit']) for (const profile of CALLBACK_MOBILE_PROFILES) {
+    const requirement = requirements.find(entry => entry.match.browserEngine === engine && entry.match.profile === profile);
+    assert.ok(requirement, engine + '/' + profile);
+    assert.equal(requirement.kind, 'browser'); assert.equal(requirement.minimumCases, 3);
+    assert.deepEqual(requirement.match, { os: 'linux', architecture: 'x86_64', browserEngine: engine,
+      browserChannel: 'bundled', profile, suite: 'callback-mobile', deploymentMode: 'callback' });
+  }
+});
+
+test('callback mobile counts 24 scoped executions once and leaves physical-device acceptance open', () => {
+  const inputs = callbackMobileReports();
+  const requirements = [...callbackMobileRequirements(), { id: 'physical-iphone', kind: 'manual', match: { os: 'ios' } }];
+  const report = aggregate([...inputs, ...structuredClone(inputs)], { milestones: policy({ requiredPlatforms: requirements }) });
+  assert.equal(report.product.PASS, 24); assert.equal(report.distinctCases.total, 12);
+  assert.equal(report.observations, 48); assert.equal(report.duplicateObservationsExcluded, 24);
+  assert.equal(report.productScopes.callback.executions.PASS, 24); assert.equal(report.productScopes.shared.executions.PASS, 0);
+  assert.equal(report.requiredPlatforms.filter(entry => entry.complete).length, 8);
+  assert.equal(report.requiredPlatforms.at(-1).status, 'NOT_TESTED'); assert.equal(report.fullGoalAchieved, false);
+  assert.ok(report.executions.every(item => item.platform.emulated));
+  assert.ok(report.executions.every(item => item.contexts.length === 1
+    && item.contexts[0].suite === 'callback-mobile' && item.contexts[0].deploymentMode === 'callback'));
+});
+
+test('combined mobile and fixed desktop reports cannot satisfy callback mobile requirements', () => {
+  const combined = callbackMobileReports().map(report => ({ ...report, suite: 'mobile', deploymentMode: 'combined' }));
+  const desktop = browser(['PASS', 'PASS', 'PASS'], { suite: 'callback', deploymentMode: 'callback' });
+  desktop.tests.forEach(item => { item.productScope = 'callback'; });
+  const report = aggregate([...combined, desktop], { milestones: policy({ requiredPlatforms: callbackMobileRequirements() }) });
+  assert.ok(report.requiredPlatforms.every(entry => entry.status === 'NOT_TESTED'));
+  assert.equal(report.platformCoverageComplete, false);
+});
+
+test('callback mobile rejects absent or different product deployment metadata', () => {
+  for (const deploymentMode of [undefined, 'combined', 'spreadsheet']) {
+    const raw = callbackMobile(); raw.deploymentMode = deploymentMode;
+    expectCode(() => validateReport(raw), 'INVALID_DEPLOYMENT_MODE');
+  }
+});
+
+test('callback mobile rejects another host, engine, channel or desktop profile', () => {
+  const mutations = [
+    raw => { raw.platform.os = 'Windows'; },
+    raw => { raw.platform.os = 'Darwin'; },
+    raw => { raw.platform.browserEngine = 'firefox'; },
+    raw => { raw.platform.browserChannel = 'chrome'; },
+    raw => { raw.tests[0].emulated = false; },
+    raw => { raw.tests[0].profile = 'desktop'; raw.tests[0].emulated = false; raw.tests[0].platformKey = 'linux/x86_64/chromium/bundled/desktop'; },
+    raw => { raw.tests[0].profile = 'unknown-device'; raw.tests[0].platformKey = 'linux/x86_64/chromium/bundled/unknown-device'; }
+  ];
+  for (const mutate of mutations) {
+    const raw = callbackMobile(); mutate(raw);
+    expectCode(() => validateReport(raw), 'INVALID_PLATFORM');
+  }
+});
+
+test('callback mobile cannot default to shared or spreadsheet product coverage', () => {
+  for (const productScope of [undefined, 'shared', 'spreadsheet']) {
+    const raw = callbackMobile(); raw.tests[0].productScope = productScope;
+    expectCode(() => validateReport(raw), 'INVALID_PRODUCT_SCOPE');
+  }
+});
+
+test('callback mobile rejects viewport-only, synthetic or missing workflow touch proof', () => {
+  const mutations = [
+    item => { delete item.touchEvidence; },
+    item => { delete item.emulation; },
+    item => { item.emulation.has_touch = false; },
+    item => { item.emulation.is_mobile = false; },
+    item => { item.touchEvidence.observed.touchEvents = false; },
+    item => { item.touchEvidence.events = []; },
+    item => { item.touchEvidence.events[0].trusted = false; },
+    item => { item.touchEvidence.events[1].touches = 1; },
+    item => { item.touchEvidence.actions = []; },
+    item => { item.touchEvidence.actions[0].action = ''; },
+    item => { item.touchEvidence.actions[0].events[0].trusted = false; },
+    item => { item.touchEvidence.actions[0].events[0].type = 'mousedown'; },
+    item => { item.touchEvidence.actions[0].events[1].changedTouches = 0; },
+    item => { item.touchEvidence.actions[0].events.pop(); }
+  ];
+  for (const mutate of mutations) {
+    const raw = callbackMobile(); mutate(raw.tests[0]);
+    expectCode(() => validateReport(raw), 'MISSING_TRUSTED_TOUCH');
+  }
+});
+
+test('callback mobile records failed and unexecuted cases without fabricated touch metadata', () => {
+  for (const status of ['FAIL', 'NOT_RUN']) {
+    const raw = callbackMobile({ statuses: [status, status, status] });
+    raw.tests.forEach(item => { delete item.touchEvidence; delete item.emulation; });
+    const report = aggregate([raw], { milestones: policy({ requiredPlatforms: callbackMobileRequirements().slice(0, 1) }) });
+    assert.equal(report.product[status], 3); assert.equal(report.product.PASS, 0);
+    assert.equal(report.requiredPlatforms[0].status, status === 'FAIL' ? 'FAIL' : 'BLOCKED');
+    assert.equal(report.platformCoverageComplete, false);
+  }
+});
+
+test('a missing callback profile cannot borrow coverage from another orientation or engine', () => {
+  const report = aggregate(callbackMobileReports().slice(0, -1), { milestones: policy({ requiredPlatforms: callbackMobileRequirements() }) });
+  assert.equal(report.product.PASS, 21);
+  assert.equal(report.requiredPlatforms.filter(entry => entry.complete).length, 7);
+  assert.equal(report.requiredPlatforms.at(-1).status, 'NOT_TESTED');
+});
+
+test('a failed or omitted callback journey leaves its profile requirement unresolved', () => {
+  for (const omission of [false, true]) {
+    const inputs = callbackMobileReports(), changed = inputs.at(-1);
+    if (omission) { changed.tests.pop(); changed.expectedMethods--; }
+    else { changed.tests[2].status = 'FAIL'; changed.status = 'FAIL'; }
+    const report = aggregate(inputs, { milestones: policy({ requiredPlatforms: callbackMobileRequirements() }) });
+    assert.equal(report.requiredPlatforms.filter(entry => entry.complete).length, 7);
+    assert.equal(report.requiredPlatforms.at(-1).passingExecutions, 2);
+    assert.equal(report.requiredPlatforms.at(-1).status, omission ? 'BLOCKED' : 'FAIL');
+    assert.equal(report.platformCoverageComplete, false);
+  }
+});
+
+test('suite and deployment matches must belong to the same execution observation', () => {
+  const combined = browser(['PASS'], { suite: 'private', deploymentMode: 'combined' });
+  const callback = browser(['PASS'], { suite: 'callback', deploymentMode: 'callback' });
+  const requirements = [
+    { id: 'invented-context', kind: 'browser', match: { suite: 'private', deploymentMode: 'callback' } },
+    { id: 'actual-combined', kind: 'browser', match: { suite: 'private', deploymentMode: 'combined' } },
+    { id: 'actual-callback', kind: 'browser', match: { suite: 'callback', deploymentMode: 'callback' } }
+  ];
+  const report = aggregate([combined, callback], { milestones: policy({ requiredPlatforms: requirements }) });
+  assert.equal(report.product.PASS, 1);
+  assert.deepEqual(report.requiredPlatforms.map(entry => entry.status), ['NOT_TESTED', 'PASS', 'PASS']);
+  assert.deepEqual(report.executions[0].contexts, [
+    { suite: 'private', deploymentMode: 'combined' }, { suite: 'callback', deploymentMode: 'callback' }
+  ]);
 });
 
 test('manual spreadsheet evidence retains the fixed product and actual macOS boundary', () => {

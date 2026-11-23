@@ -111,7 +111,7 @@ function collectNodeResults(events, root, platformKey) {
     const family = /\b(RAM[.\-]|RAP[.\-]|RDM[.\-]|REM[.\-])/.exec(name)?.[1]?.slice(0, 3) || null;
     tests.push({ id, name, file, platformKey, status, durationMs: data.details?.duration_ms || 0,
       generated: !!family, caseFamily: family, productScope: productScope(file, name),
-      kind: file === 'tests/release-evidence.test.cjs' ? 'harness' : 'product',
+      kind: ['tests/release-evidence.test.cjs', 'tests/ocr-dependency-evidence.test.cjs', 'tests/ocr-benchmark.test.cjs', 'tests/ocr-isolation-diagnostics.test.cjs'].includes(file) ? 'harness' : 'product',
       ...(error ? { diagnostic: String(error.message || error).slice(0, 4000), code: error.code || null } : {}) });
   }
   const totals = { passed: 0, failed: 0, skipped: 0, todo: 0, cancelled: 0, harnessPassed: 0 };

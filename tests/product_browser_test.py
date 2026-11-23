@@ -367,7 +367,7 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         original_body_font = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
         # Use CSSOM to exercise font scaling without inserting an inline style
         # element that the application's strict stylesheet CSP must reject.
-        self.page.evaluate("() => document.documentElement.style.fontSize = '200%'")
+        self.page.evaluate("size => document.documentElement.style.fontSize = size + 'px'", original_font * 2)
         scaled_font = self.page.locator("html").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
         scaled_body_font = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
         self.assertAlmostEqual(scaled_font, original_font * 2, places=2)

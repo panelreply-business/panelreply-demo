@@ -1,5 +1,16 @@
 # Spreadsheet release acceptance
 
+## November 23 committed deskew and dependency checkpoint
+
+Run82 independently measures 289/310 exact on its recorded CI image bytes, four gains with no regressions against run81. All 263 expected blank fields remain blank, with zero native errors or review violations. Twenty-one nonexact cases keep quality FAIL. [CI comparison](evidence/ocr-deskew-ci-run82.json). All three Intel Mac manual spreadsheet suites pass 8/8, including WebKit after the optional-preview repair. That scope excludes native macOS extraction. [CI snapshot](evidence/callback-scheduling-run82.json).
+
+The next candidate records native executable/model/configuration identities and a separate identity gate. Its complete local replay retains every previous extraction outcome and matching pre/post identities. Missing identity blocks provenance, changed identity fails it, and neither state is treated as an accuracy pass. The integrated Node/API/HTTP regression passes 9,123 checks, with 136 verifier checks excluded from the 8,987 product executions. [Identity and count correction](OCR_DEPENDENCY_EVIDENCE_2026_11_23.md) and [local record](evidence/mobile-metadata-local-2026-11-23.json).
+
+Required OS isolation, representative photographs, actual Excel, physical/actual platform scopes, native Windows storage and full macOS extraction, host/offsite recovery and operating approval remain open. No trial or release is approved.
+
+A subsequent audit reproduced project mutations that can invalidate recovery after a clock rollback or revision exhaustion. Pre-mutation guards and recovery regressions are in progress and are not included in this candidate.
+
+
 ## November 23 deskew and platform follow-up
 
 The next production OCR candidate measures 289/310 exact on the same local synthetic image bytes, with four gains over the small-text candidate, no earlier exact-image regression, all 263 expected blank fields preserved and zero native errors/review violations. Twenty-one nonexact images keep the quality gate FAIL. Independent review and actual native geometry/resource/cancellation checks pass their named scopes. [Deskew measurements and reproduction](OCR_DESKEW_2026_11_23.md).
