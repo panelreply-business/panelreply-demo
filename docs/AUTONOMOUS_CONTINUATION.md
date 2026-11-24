@@ -12,7 +12,9 @@ The products have separate entrypoints, data binding, sessions, recovery and rel
 
 ## Current resumption checkpoint
 
-Resume from the actual head of PR 8. The old request-save candidate below was published as `f8bd497` and tested by run 94. Commit `831fef3` preserves the callback save button during input changes. Run 95 confirms the previously failing Intel macOS and emulated WebKit save paths. The next commit after `831fef3` covers spreadsheet image reads, same-file retry, session expiry and the Linux WebKit package mirror. Read the newest entries in [development progress](DEVELOPMENT_PROGRESS.md) and [release acceptance](RELEASE_ACCEPTANCE.md), then fetch CI for the actual branch head. Run 93 below remains a historical independently reconciled ledger. Keep each later run's evidence tied to its own source.
+Read the newest entries in [development progress](DEVELOPMENT_PROGRESS.md) and the [run 96 job record](evidence/run96-resumption.json). The latest tested source is `1fcbb4e2c092cef9573763d44d1a8a15a4fe675a`. The following documentation commit uses the same executable files. PR 8 stays in draft. Fetch fresh refs and the [current run](https://github.com/panelreply-business/panelreply-demo/actions/runs/45313971458) before continuing.
+
+Run 96 attempt 1 confirmed both the callback save fix and the spreadsheet same-file retry across six fixed-product browser environments. Native Safari still fails two spreadsheet upload journeys. Its manual correction/export case and all native callback journeys passed. Reconcile the Apple Silicon retry on the same source. Next, inspect the installed-Safari diagnostic artifact for the two failures and the unresolved Windows component case. Keep Ubuntu 24 isolation, extraction accuracy, representative photographs, desktop Excel and outstanding operations gates open. Desktop Excel remained untested after app access timed out. Run 93 below remains a historical independently reconstructed ledger.
 
 ## Historical development source before run 94
 

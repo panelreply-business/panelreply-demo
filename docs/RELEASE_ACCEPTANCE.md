@@ -1,5 +1,9 @@
 # Release acceptance
 
+## November 23 — run 96 acceptance checkpoint
+
+[Run 96, attempt 1](https://github.com/panelreply-business/panelreply-demo/actions/runs/45313971458/attempts/1) reports 45 automated requirements passed, one failed and ten untested, plus seven manual requirements untested. Both products remain NO-GO for public release. [Per-product counts, source and native evidence](evidence/run96-resumption.json).
+
 ## November 23 — callback and image-upload follow-up
 
 | Product | Verified on the callback commit `831fef3` | Open requirement |

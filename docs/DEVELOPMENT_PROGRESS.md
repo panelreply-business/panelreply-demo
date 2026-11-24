@@ -1,5 +1,13 @@
 # PanelReply development progress
 
+## November 23 — verified callback and spreadsheet results
+
+[Run 96, attempt 1](https://github.com/panelreply-business/panelreply-demo/actions/runs/45313971458/attempts/1) tested `1fcbb4e` through merge `93da23c`. All six selected callback suites passed their 18 cases. The same-image spreadsheet retry passed in all six selected Linux and Intel macOS suites and verified the saved bytes after reopening. All affected Linux WebKit jobs completed successfully. The 40 WebKit workspace emulations and 12 callback touch cases also passed. [Recorded job results](evidence/run96-resumption.json).
+
+The CI aggregate records 24,952 product passes and two errors across 9,409 distinct cases. It excludes 415 harness passes and 7,131 duplicate observations. Of 56 automated requirements, 45 passed, one failed and ten were untested. Seven manual requirements are untested. Installed Safari passed all three callback workflows and manual spreadsheet editing/export. Both image-dependent Safari workflows still errored. The Apple Silicon job had no runner and no executed steps. A targeted retry was requested for that job. Check the current attempt before making a platform claim.
+
+The Linux application run passed 9,124 product checks and 191 harness checks. Windows storage component checks finished 14/15. All six required OCR isolation checks passed on Ubuntu 26 on this invocation. The Ubuntu 24 verifier reported BLOCKED. The image benchmark remained 289/310 exact with all 263 expected blank fields preserved. Both product release decisions remain NO-GO.
+
 ## November 23 — spreadsheet image read and retry
 
 The spreadsheet now starts reading a selected image before disabling the file picker, checks the byte count before sending it, and clears an unreadable selection so the owner can choose the same file again. A file read that finishes after session expiry is discarded. Three client regression cases cover these paths, including a successful retry. A new browser journey checks that the server stores the exact fixture bytes after reselection. Native Safari's original upload journeys and success assertions remain in place.

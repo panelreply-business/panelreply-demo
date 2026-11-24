@@ -1,5 +1,9 @@
 # Spreadsheet release acceptance
 
+## November 23 — same-image recovery verified
+
+After an injected read failure, all six selected Linux and Intel macOS browser suites saved the reselected image exactly once and checked its bytes after reopening. Installed Safari passed its manual correction and export case, but both journeys requiring a source upload errored. The CI collector assigned 12,019 passing spreadsheet executions and two errors across 4,202 distinct spreadsheet cases. OCR matched all three fields on 289/310 synthetic images. Native Safari, OCR quality, representative photos, native Excel and operating requirements remain open. [Run 96, attempt 1](https://github.com/panelreply-business/panelreply-demo/actions/runs/45313971458/attempts/1).
+
 ## November 23 — request-save recovery and native diagnostics
 
 The next 207-file candidate has manifest `ed53015aaf8936613d1f32c1542c5820544b83f9d8b9eaeedf206cab9a59425c`, based on published `6b4964f`. Callback request receipts now bind identity, revision and normalized fields. Uncertain retries retain their command, and explicit validated reload resolves a permanent-refusal dead end without claiming the earlier write succeeded. The integrated 58-file Node/API/HTTP run passes 9,311 checks: 9,120 product and 191 excluded harness, with no failures/skips or source changes. Eleven new product IDs are added and all prior 9,109 remain. The full raw report is preserved. The two new callback browser journeys await source-bound CI. [Milestone](REQUEST_RECOVERY_NATIVE_DIAGNOSTICS_2026_11_23.md), [root evidence](evidence/request-recovery-root-integration-2026-11-24.json).

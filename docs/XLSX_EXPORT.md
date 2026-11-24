@@ -1,5 +1,9 @@
 # Private panel project XLSX export
 
+## November 23 — Windows export verification
+
+The nine existing synthetic exports passed the independent ZIP, XML and openpyxl readback again. Native Excel build 16.0.20625.20108 was present on Windows. An isolated instance could not start through COM (0x80070005), and interactive app launch approval timed out. No workbook was opened or saved in Excel. Native Excel compatibility remains untested.
+
 ## Scope
 
 The authenticated panel workspace can export the current **saved** project as an
