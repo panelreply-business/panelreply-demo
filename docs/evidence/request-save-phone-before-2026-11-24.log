@@ -1,0 +1,13 @@
+FAIL request receipt phone normalization rejects forbidden input while preserving permitted whitespace
+Error [ERR_TEST_FAILURE]: [{"phone":"\u000b2485550123","apiStatus":400,"fieldsLocked":false,"version":"Revision 2","status":"Changes saved · Nov 24, 2026, 1:31 AM","phoneRetained":false,"note":"Keep rejected phone draft"},{"phone":"248\f5550123","apiStatus":400,"fieldsLocked":false,"version":"Revision 2","status":"Changes saved · Nov 24, 2026, 1:31 AM","phoneRetained":false,"note":"Keep rejected phone draft"},{"phone":"2485550123\f","apiStatus":400,"fieldsLocked":false,"version":"Revision 2","status":"Changes saved · Nov 24, 2026, 1:31 AM","phoneRetained":false,"note":"Keep rejected phone draft"},{"phone":"248\ud8005550123","apiStatus":400,"fieldsLocked":true,"version":"Revision 1","status":"","phoneRetained":true,"note":"Keep rejected phone draft"}]
+
+false !== true
+
+tests 1
+suites 0
+pass 0
+fail 1
+cancelled 0
+skipped 0
+todo 0
+duration_ms 788.498787

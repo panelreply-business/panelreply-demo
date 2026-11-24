@@ -1,5 +1,11 @@
 # PanelReply development progress
 
+## November 23 — request-save recovery and native diagnostics
+
+The next 207-file candidate has manifest `ed53015aaf8936613d1f32c1542c5820544b83f9d8b9eaeedf206cab9a59425c`, based on published `6b4964f`. Callback request receipts now bind identity, revision and normalized fields. Uncertain retries retain their command, and explicit validated reload resolves a permanent-refusal dead end without claiming the earlier write succeeded. The integrated 58-file Node/API/HTTP run passes 9,311 checks: 9,120 product and 191 excluded harness, with no failures/skips or source changes. Eleven new product IDs are added and all prior 9,109 remain. The full raw report is preserved. The two new callback browser journeys await source-bound CI. [Milestone](REQUEST_RECOVERY_NATIVE_DIAGNOSTICS_2026_11_23.md), [root evidence](evidence/request-recovery-root-integration-2026-11-24.json).
+
+Root independently reconciles run 93 on `6b4964f`: 24,893 product PASS/zeroFAIL/twoERROR,9,391 distinct cases. It excludes 405 harness passes and 7,118 duplicate observations. Requirements remain 45 automated PASS/oneFAIL/tenNOT_TESTED plus seven manual NOT_TESTED. Actual Safari is 4 PASS/two upload ERROR, native Windows 13 PASS/twoFAIL with cleanup verified, OCR 26 fivePASS/oneFAIL and OCR 24 BLOCKED. Native diagnostic/fixture changes preserve the outstanding acceptance checks. Both independent products remain NO-GO. [Verified ledger](evidence/run93-independent-verification-2026-11-23.json).
+
 ## Native compatibility review and final run91 — November 23, 2026
 
 Root independently reconciles all 35 release ZIPs and 37 reports from run91 against its 200 committed source entries. The immutable aggregate equals CI except generatedAt. It records 24,852 product PASS, four FAIL and two ERROR across 9,375 distinct cases. Exclude 402 harness passes and 7,110 duplicate observations. Required automated coverage is 44 PASS, two FAIL and ten NOT_TESTED, plus seven manual NOT_TESTED. Both installed-Safari product suites fail. Windows Firefox now passes, without proving its earlier failure cause. ARM has no runner/steps. [Final record](evidence/release-run91.json) and [independent verification](evidence/run91-independent-verification-2026-11-23.json).

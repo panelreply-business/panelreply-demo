@@ -1,0 +1,13 @@
+FAIL intake uncertain request offers explicit validated reload after a permanent retry refusal
+Error [ERR_TEST_FAILURE]: The owner can explicitly choose to load the saved version
+
+true !== false
+
+tests 1
+suites 0
+pass 0
+fail 1
+cancelled 0
+skipped 0
+todo 0
+duration_ms 159.270563

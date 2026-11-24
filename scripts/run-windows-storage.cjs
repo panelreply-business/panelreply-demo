@@ -2,26 +2,31 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { run } = require('node:test');
 const { sourceEvidence, platformEvidence, collectNodeResults } = require('./test-evidence.cjs');
 const { inspectBuild, loadCandidate, ARTIFACTS } = require('../workspace/native/windows-storage/load.cjs');
 const { CASES, TEST_FILE } = require('../tests/windows-storage-cases.cjs');
 const { selectNtfsParent } = require('../tests/windows-storage-support.cjs');
+const { outputLocation, prepareOutputs } = require('../tests/windows-storage-output-support.cjs');
+const { CHANNEL_ENV, createObservationReceiver } = require('../tests/windows-storage-observation-protocol.cjs');
 const ROOT = path.resolve(__dirname, '..');
 
 function argumentsFor(args) {
-  const result = { buildFailed: false };
+  const result = { buildFailed: false }, seen = new Set();
   for (let index = 0; index < args.length; index++) {
-    if (args[index] === '--build-directory' && args[index + 1]) result.buildDirectory = path.resolve(args[++index]);
-    else if (args[index] === '--output' && args[index + 1]) result.output = path.resolve(args[++index]);
-    else if (args[index] === '--build-failed') result.buildFailed = true;
+    const name = args[index];
+    if (seen.has(name)) throw new Error('Repeated component argument: ' + name);
+    seen.add(name);
+    if (name === '--build-directory' && args[index + 1] && !args[index + 1].startsWith('--')) result.buildDirectory = path.resolve(args[++index]);
+    else if (name === '--output' && args[index + 1] && !args[index + 1].startsWith('--')) result.output = args[++index];
+    else if (name === '--build-failed') result.buildFailed = true;
     else throw new Error('Usage: node scripts/run-windows-storage.cjs --build-directory DIR --output FILE [--build-failed]');
   }
   if (!result.buildDirectory || !result.output) throw new Error('The component build directory and evidence output are required.');
-  const relative = path.relative(ROOT, result.output);
-  if (!relative.startsWith('..' + path.sep) && !path.isAbsolute(relative)
-      && !relative.startsWith('artifacts' + path.sep)) throw new Error('Keep generated component evidence outside source files or within artifacts/.');
-  if (path.basename(result.output).startsWith('release-')) throw new Error('Component-only evidence must not use a release-* report name.');
+  // Read-only validation preserves alias/.. semantics. Exclusive preparation
+  // repeats this check before source observation or any native work.
+  outputLocation(result.output, { root: ROOT });
   return result;
 }
 
@@ -58,56 +63,91 @@ function rawLeafOutcomes(events) {
   });
 }
 
-async function main(args) {
-  const options = argumentsFor(args);
-  const before = sourceEvidence(ROOT);
+function componentOutcome(report) {
+  return { tests: report.tests.map(item => ({ id: item.id, status: item.status,
+    ...(item.diagnostic ? { diagnostic: item.diagnostic } : {}) })), totals: report.totals,
+    summarySuccess: false, productPassing: 0, releaseCredit: false,
+    infrastructureErrors: report.infrastructureErrors.slice(0, 32) };
+}
+
+async function collectComponent(options, outputs, dependencies = {}) {
+  const source = dependencies.source || sourceEvidence, platformFor = dependencies.platform || platformEvidence;
+  const load = dependencies.load || loadCandidate, inspect = dependencies.inspect || inspectBuild;
+  const selectParent = dependencies.selectParent || selectNtfsParent, runTests = dependencies.run || run;
+  const before = source(ROOT);
   const startedAt = new Date().toISOString();
-  const platform = platformEvidence();
-  const prefix = options.output.replace(/\.json$/, '');
-  fs.mkdirSync(path.dirname(options.output), { recursive: true });
-  const logPath = prefix + '.log', observationsPath = prefix + '.observations.jsonl';
-  fs.writeFileSync(logPath, 'Windows native storage component. No product acceptance or release-counter credit.\n');
-  fs.writeFileSync(observationsPath, '');
-  const log = message => fs.appendFileSync(logPath, String(message).slice(0, 16000) + '\n');
+  const platform = platformFor();
+  const logPath = outputs.logPath, observationsPath = outputs.journalPath;
+  outputs.appendLog('Windows native storage component. No product acceptance or release-counter credit.\n');
   const failures = [];
   const events = [];
+  let logError = null;
+  const log = message => {
+    if (logError) throw logError;
+    try { outputs.appendLog(String(message).slice(0, 16000) + '\n'); }
+    catch (error) { logError = error; throw error; }
+  };
   let identity = null, identityAfter = null, fixtureParent = null, fixtureRoot = null;
   let actual = [], runnerSummary = null, nativeRuntimeChanged = false;
+  let receiver = null, observationTransport = { state: 'NOT_STARTED', records: 0, bytes: 0 }, transportFailed = false;
+  const controller = new AbortController();
   const previous = new Map();
   const environment = (key, value) => { previous.set(key, process.env[key]); process.env[key] = value; };
   const failure = (stage, error) => {
     failures.push({ stage, status: 'ERROR', message: String(error.message || error).slice(0, 4000),
       ...(error.attempts ? { attempts: error.attempts } : {}) });
-    log(stage + ': ' + String(error.stack || error));
+    try { log(stage + ': ' + String(error.stack || error)); }
+    catch (logFailure) {
+      if (!failures.some(item => item.stage === 'component-log-output')) failures.push({ stage: 'component-log-output', status: 'ERROR',
+        message: String(logFailure.message || logFailure).slice(0, 4000), code: logFailure.code || null });
+    }
   };
   try {
     if (options.buildFailed) throw new Error('The separate native build step did not complete. No component method was run.');
-    const candidate = loadCandidate(options.buildDirectory, before);
+    const candidate = load(options.buildDirectory, before);
     identity = candidate.identity;
-    fixtureParent = selectNtfsParent(candidate.fixtureExecutable);
+    fixtureParent = selectParent(candidate.fixtureExecutable);
     fixtureRoot = fs.mkdtempSync(path.join(fixtureParent.path, 'panelreply-windows-storage-'));
     environment('PANELREPLY_WINDOWS_COMPONENT_BUILD', identity.root);
     environment('PANELREPLY_WINDOWS_COMPONENT_COMMIT', before.sourceCommit);
     environment('PANELREPLY_WINDOWS_COMPONENT_SOURCE', before.sourceTreeSha256);
-    environment('PANELREPLY_WINDOWS_COMPONENT_OBSERVATIONS', observationsPath);
+    const channel = crypto.randomBytes(32).toString('hex');
+    environment(CHANNEL_ENV, channel);
     environment('PANELREPLY_WINDOWS_TEST_ROOT', fixtureRoot);
-    for await (const event of run({ files: [path.join(ROOT, TEST_FILE)], concurrency: 1,
-      signal: AbortSignal.timeout(120000), timeout: 20000 })) {
-      if (['test:enqueue', 'test:start', 'test:pass', 'test:fail', 'test:summary'].includes(event.type)) events.push(event);
-      if (['test:stdout', 'test:stderr', 'test:diagnostic'].includes(event.type)) log(event.data.message || '');
-      if (event.type === 'test:pass' || event.type === 'test:fail') {
-        log(event.type + ' ' + event.data.name + (event.data.skip ? ' SKIP ' + event.data.skip : ''));
-        if (event.type === 'test:fail') log(event.data.details?.error?.stack || event.data.details?.error?.message || 'Unknown component failure');
+    receiver = createObservationReceiver(channel, {
+      appendJournal: text => outputs.appendJournal(text), appendLog: text => outputs.appendLog(text),
+    });
+    for await (const event of runTests({ files: [path.join(ROOT, TEST_FILE)], concurrency: 1,
+      signal: AbortSignal.any([AbortSignal.timeout(120000), controller.signal]), timeout: 20000 })) {
+      // Retain native outcomes before any output operation can fail. Drain the
+      // aborted runner so later reported failures/cancellations are retained.
+      if (['test:enqueue', 'test:start', 'test:pass', 'test:fail', 'test:summary'].includes(event.type)) {
+        if (events.length < 1024) events.push(event);
+        else if (!failures.some(item => item.stage === 'component-event-bound')) {
+          const error = new Error('The component event catalog exceeded its bound.');
+          failure('component-event-bound', error); controller.abort(error);
+        }
+      }
+      try {
+        if (event.type === 'test:stdout' && !transportFailed) receiver.push(event.data.message || '');
+        if (['test:stderr', 'test:diagnostic'].includes(event.type)) log(event.data.message || '');
+        if (event.type === 'test:pass' || event.type === 'test:fail') {
+          log(event.type + ' ' + event.data.name + (event.data.skip ? ' SKIP ' + event.data.skip : ''));
+          if (event.type === 'test:fail') log(event.data.details?.error?.stack || event.data.details?.error?.message || 'Unknown component failure');
+        }
+      } catch (error) {
+        if (!transportFailed) failure('component-evidence-output', error);
+        transportFailed = true; controller.abort(error);
       }
     }
-  } catch (error) { failure(identity ? 'component-execution-or-fixture' : 'build-or-loader', error); }
+  } catch (error) { controller.abort(error); failure(identity ? 'component-execution-or-fixture' : 'build-or-loader', error); }
   finally {
     for (const [key, value] of previous) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
     if (identity) {
       try {
-        identityAfter = inspectBuild(options.buildDirectory, before);
+        identityAfter = inspect(options.buildDirectory, before);
         nativeRuntimeChanged = identity.manifestSha256 !== identityAfter.manifestSha256
           || JSON.stringify(identity.observed) !== JSON.stringify(identityAfter.observed);
         if (nativeRuntimeChanged) throw new Error('The native build identity or loaded artifact bytes changed during the component run.');
@@ -121,6 +161,15 @@ async function main(args) {
       } catch (error) { failure('fixture-cleanup', error); }
     }
   }
+  if (receiver) {
+    try {
+      observationTransport = receiver.finish();
+      if (transportFailed) throw new Error('The component output stream failed before completion.');
+    } catch (error) {
+      observationTransport = { ...receiver.state(), state: 'ERROR', message: String(error.message).slice(0, 4000) };
+      failure('component-observation-protocol', error);
+    }
+  }
   try {
     const result = collectNodeResults(events, ROOT, platform.platformKey);
     actual = result.tests; runnerSummary = result.runnerSummary;
@@ -129,27 +178,59 @@ async function main(args) {
   const completed = completeOutcomes(actual, identity, platform.platformKey);
   const tests = completed.tests;
   failures.push(...completed.accountingErrors);
-  const after = sourceEvidence(ROOT);
-  const sourceChanged = before.sourceCommit !== after.sourceCommit || before.sourceTreeSha256 !== after.sourceTreeSha256;
+  let after = null, sourceChanged = true;
+  try { after = source(ROOT); sourceChanged = before.sourceCommit !== after.sourceCommit || before.sourceTreeSha256 !== after.sourceTreeSha256; }
+  catch (error) { failure('source-identity-after', error); }
   if (sourceChanged) failure('source-identity', new Error('The source changed during the component run.'));
+  const outputStateBeforeReport = outputs.evidence();
+  for (const [name, item] of Object.entries(outputStateBeforeReport)) {
+    if (item.failed) failures.push({ stage: 'component-' + name + '-identity', status: 'ERROR', message: 'The retained component output could not verify its expected identity and bytes.' });
+  }
   const totals = { passed: 0, failed: 0, skipped: 0, cancelled: 0, notRun: 0, todo: 0 };
   for (const item of tests) totals[{ PASS: 'passed', FAIL: 'failed', SKIP: 'skipped', CANCELLED: 'cancelled', NOT_RUN: 'notRun', TODO: 'todo' }[item.status]]++;
   const success = totals.passed === CASES.length && failures.length === 0 && !sourceChanged && !nativeRuntimeChanged
     && !!identityAfter && runnerSummary?.success === true;
   const report = { format: 'panelreply-windows-storage-component-v1', suite: 'windows-storage-component',
-    startedAt, completedAt: new Date().toISOString(), ...before, sourceTreeSha256After: after.sourceTreeSha256, sourceChanged,
+    startedAt, completedAt: new Date().toISOString(), ...before, sourceTreeSha256After: after?.sourceTreeSha256 || null, sourceChanged,
     platform, buildDirectory: options.buildDirectory, buildFailed: options.buildFailed,
     nativeIdentity: identity, nativeIdentityAfter: identityAfter, nativeRuntimeChanged,
     fixtureParent, fixtureRoot, fixtureCleaned: !!fixtureRoot && !fs.existsSync(fixtureRoot),
     tests, totals, unexpectedOutcomes: completed.unexpectedOutcomes, infrastructureErrors: failures, runnerSummary, summarySuccess: success,
-    logPath, observationsPath, releaseCredit: false, productPassing: 0, realProviderCalls: 0,
+    logPath, observationsPath, observationTransport, outputStateBeforeReport,
+    outputCompletion: 'Final descriptor verification and closure require the runner completion receipt and successful process exit. This report cannot record its own later close.',
+    outputScope: 'Exclusive held evidence descriptors in an existing trusted outside parent. No hostile-parent, reparse-race, native ACL or durability acceptance.',
+    releaseCredit: false, productPassing: 0, realProviderCalls: 0,
     scope: 'Inactive Windows native storage component only. Probe cases use a separately hashed instrumented binary. No application, SQLite-sidecar, restore-publication, ordinary second-account, physical-device or release acceptance.' };
-  fs.writeFileSync(options.output, JSON.stringify(report, null, 2) + '\n');
-  console.log(JSON.stringify({ output: options.output, suite: report.suite, sourceTreeSha256: before.sourceTreeSha256,
-    ...totals, infrastructureErrors: failures.length, sourceChanged, nativeRuntimeChanged, summarySuccess: success, productPassing: 0 }));
-  if (!success) process.exitCode = 1;
+  try { outputs.writeReport(report); }
+  catch (error) { error.componentOutcome = componentOutcome(report); throw error; }
   return report;
 }
 
-module.exports = { argumentsFor, completeOutcomes, rawLeafOutcomes, main };
-if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error.stack); process.exitCode = 1; });
+async function main(args, { prepare = prepareOutputs, collect = collectComponent, dependencies, emit = console.log } = {}) {
+  const options = argumentsFor(args);
+  // All three exclusive descriptors exist before any source/native work.
+  const outputs = prepare(options.output, { root: ROOT });
+  let report = null;
+  try {
+    report = await collect(options, outputs, dependencies);
+    outputs.finish();
+    emit(JSON.stringify({ output: outputs.reportPath, suite: report.suite, sourceTreeSha256: report.sourceTreeSha256,
+      ...report.totals, infrastructureErrors: report.infrastructureErrors.length, sourceChanged: report.sourceChanged,
+      nativeRuntimeChanged: report.nativeRuntimeChanged, summarySuccess: report.summarySuccess, productPassing: 0,
+      outputState: outputs.state(), outputCompletion: 'VERIFIED_AND_CLOSED' }));
+    if (!report.summarySuccess) process.exitCode = 1;
+    return report;
+  } catch (error) {
+    if (report) error.componentOutcome = componentOutcome(report);
+    try { outputs.close(); } catch { /* Preserve the primary failure and all close outcomes. */ }
+    throw outputs.annotate(error);
+  }
+}
+
+module.exports = { argumentsFor, completeOutcomes, rawLeafOutcomes, collectComponent, main };
+if (require.main === module) main(process.argv.slice(2)).catch(error => {
+  console.error(JSON.stringify({ status: 'INCOMPLETE', code: error.code || null, message: String(error.message || error).slice(0, 4000),
+    ...(error.outputState ? { outputState: error.outputState } : {}),
+    ...(error.componentOutcome ? { componentOutcome: error.componentOutcome } : {}), productPassing: 0, releaseCredit: false }));
+  process.exitCode = 1;
+});

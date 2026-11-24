@@ -165,6 +165,186 @@ class CallbackProductBrowserTests(SelectedProductHarness, PrivateWorkspaceBrowse
         self.assertEqual(self.api("GET", "/api/leads/" + saved["id"])["lead"]["notes"], "Callback program review")
         self.assert_product_navigation()
 
+    def test_callback_request_receipts_retain_drafts_and_confirm_current_state(self):
+        self.login()
+        saved = self.create_request(customerName="Synthetic Request Receipt")
+        self.open_callback_request(saved)
+        url = self.origin + "/api/leads/" + saved["id"]
+        commands = []
+        for status in (403, 409, 503):
+            self.allow_http_error(status)
+
+        def interrupt_receipts(route):
+            if route.request.method != "PATCH":
+                route.continue_()
+                return
+            commands.append((route.request.headers.get("idempotency-key"), route.request.post_data_json))
+            if len(commands) in (1, 4):
+                response = route.fetch()
+                self.assertEqual(response.status, 200)
+                if len(commands) == 1:
+                    delivered = response.json()
+                    delivered["lead"]["id"] = str(uuid.uuid4())
+                    route.fulfill(status=200, content_type="application/json", body=json.dumps(delivered))
+                else:
+                    route.fulfill(status=503, content_type="application/json", body=json.dumps({"error": {
+                        "code": "synthetic_response_loss", "message": "Synthetic response lost after a committed request save."
+                    }}))
+            elif len(commands) == 2:
+                route.fulfill(status=403, content_type="application/json", body=json.dumps({"error": {
+                    "code": "forbidden", "message": "Synthetic later refusal."
+                }}))
+            else:
+                route.continue_()
+
+        self.page.route(url, interrupt_receipts)
+        notes = self.page.get_by_label("Internal notes", exact=True)
+        notes.fill("  Keep the first request draft  ")
+        with self.page.expect_response(lambda response: response.url == url and response.request.method == "PATCH") as first:
+            self.page.locator("#save-lead").click()
+        self.assertEqual(first.value.status, 200)
+        self.assertNotEqual(first.value.json()["lead"]["id"], saved["id"])
+        expect(self.page.locator("#lead-error")).to_contain_text("did not confirm")
+        expect(notes).to_have_value("  Keep the first request draft  ")
+        expect(notes).to_be_disabled()
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"]))
+        expect(self.page.locator("#lead-status")).to_be_empty()
+        expect(self.page.locator("#save-lead")).to_have_text("Retry save")
+        expect(self.page.locator("#export-records")).to_be_disabled()
+        self.page.locator("#nav-profile").click()
+        expect(self.page.locator("#inbox-view")).to_be_visible()
+        expect(self.page.locator("#app-error")).to_contain_text("unconfirmed")
+        with self.page.expect_response(lambda response: response.url == url and response.request.method == "PATCH") as refusal:
+            self.page.locator("#save-lead").click()
+        self.assertEqual(refusal.value.status, 403)
+        expect(self.page.locator("#lead-error")).to_contain_text("Synthetic later refusal")
+        expect(notes).to_have_value("  Keep the first request draft  ")
+        expect(notes).to_be_disabled()
+        with self.page.expect_response(lambda response: response.url == url and response.request.method == "PATCH") as retry:
+            self.page.locator("#save-lead").click()
+        self.assertEqual(retry.value.status, 409)
+        expect(self.page.locator("#lead-status")).to_contain_text("Saved values confirmed")
+        expect(notes).to_have_value("Keep the first request draft")
+        expect(notes).to_be_enabled()
+        expect(self.page.locator("#lead-dirty")).not_to_be_visible()
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"] + 1))
+        self.assertEqual(len(commands), 3)
+        self.assertIsNone(commands[0][0])
+        self.assertEqual(commands, [commands[0]] * 3)
+        confirmed = self.api("GET", "/api/leads/" + saved["id"])["lead"]
+        self.assertEqual(confirmed["version"], saved["version"] + 1)
+        self.assertEqual(sum(entry["action"] == "lead.updated" for entry in confirmed["audit"]), 1)
+
+        notes.fill("  Keep the next draft until I review the saved record  ")
+        self.save_lead(503)
+        expect(notes).to_have_value("  Keep the next draft until I review the saved record  ")
+        expect(notes).to_be_disabled()
+        self.create_request(customerName="Synthetic Later Opt Out", phone=saved["phone"], contactPermission="opted_out")
+        restricted = self.api("GET", "/api/leads/" + saved["id"])["lead"]
+        self.assertEqual(restricted["contactPermission"], "opted_out")
+        self.assertEqual(restricted["status"], "needs_review")
+        self.assertFalse(restricted["contactAllowed"])
+        with self.page.expect_response(lambda response: response.url == url and response.request.method == "PATCH") as conflict:
+            self.page.locator("#save-lead").click()
+        self.assertEqual(conflict.value.status, 409)
+        expect(self.page.locator("#lead-conflict")).to_be_visible()
+        expect(self.page.locator("#lead-error")).to_contain_text("now differs")
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"] + 1))
+        expect(notes).to_have_value("  Keep the next draft until I review the saved record  ")
+        expect(self.page.locator("#save-lead")).to_be_disabled()
+        self.page.locator("#reload-lead").click()
+        expect(self.page.locator("#navigation-guard")).to_be_visible()
+        expect(self.page.locator("#guard-description")).to_contain_text("previous save may have completed")
+        self.page.locator("#keep-editing").click()
+        expect(notes).to_have_value("  Keep the next draft until I review the saved record  ")
+        expect(notes).to_be_disabled()
+        self.page.locator("#reload-lead").click()
+        self.page.locator("#discard-changes").click()
+        expect(self.page.locator("#lead-status")).to_contain_text("Previous save outcome not established")
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(restricted["version"]))
+        expect(notes).to_have_value(restricted["notes"])
+        expect(self.page.locator("#lead-permission")).to_have_value("opted_out")
+        expect(self.page.locator("#lead-dirty")).not_to_be_visible()
+        expect(self.page.locator("#save-callback-task")).to_be_disabled()
+        self.assertEqual(len(commands), 5)
+        self.assertIsNone(commands[3][0])
+        self.assertEqual(commands[3], commands[4])
+        final = self.api("GET", "/api/leads/" + saved["id"])["lead"]
+        self.assertEqual(final, restricted)
+        self.assertEqual(sum(entry["action"] == "lead.updated" for entry in final["audit"]), 2)
+        self.assert_product_navigation()
+
+    def test_callback_uncertain_request_reload_requires_owner_choice_and_valid_current_record(self):
+        self.login()
+        saved = self.create_request(customerName="Synthetic Unconfirmed Reload")
+        self.open_callback_request(saved)
+        url = self.origin + "/api/leads/" + saved["id"]
+        commands, reads = [], []
+        for status in (403, 503):
+            self.allow_http_error(status)
+
+        def refuse_write_and_corrupt_one_read(route):
+            if route.request.method == "PATCH":
+                commands.append((route.request.headers.get("idempotency-key"), route.request.post_data_json))
+                route.fulfill(status=503 if len(commands) == 1 else 403, content_type="application/json",
+                              body=json.dumps({"error": {"code": "synthetic_refusal", "message": "Synthetic unconfirmed save refusal."}}))
+                return
+            self.assertEqual(route.request.method, "GET")
+            reads.append(route.request.url)
+            if len(reads) == 1:
+                response = route.fetch()
+                self.assertEqual(response.status, 200)
+                delivered = response.json()
+                delivered["lead"]["id"] = str(uuid.uuid4())
+                route.fulfill(status=200, content_type="application/json", body=json.dumps(delivered))
+            else:
+                route.continue_()
+
+        self.page.route(url, refuse_write_and_corrupt_one_read)
+        notes = self.page.get_by_label("Internal notes", exact=True)
+        notes.fill("Keep this draft until I choose the saved version")
+        self.save_lead(503)
+        expect(self.page.locator("#lead-uncertain")).to_be_visible()
+        expect(self.page.locator("#lead-conflict")).not_to_be_visible()
+        with self.page.expect_response(lambda response: response.url == url and response.request.method == "PATCH") as retry:
+            self.page.locator("#save-lead").click()
+        self.assertEqual(retry.value.status, 403)
+        expect(self.page.locator("#lead-error")).to_contain_text("Synthetic unconfirmed save refusal")
+        expect(notes).to_have_value("Keep this draft until I choose the saved version")
+        expect(notes).to_be_disabled()
+        self.page.locator("#reload-uncertain-lead").click()
+        expect(self.page.locator("#navigation-guard")).to_be_visible()
+        expect(self.page.locator("#guard-description")).to_contain_text("previous save may have completed")
+        self.page.locator("#keep-editing").click()
+        expect(self.page.locator("#navigation-guard")).not_to_be_visible()
+        expect(notes).to_have_value("Keep this draft until I choose the saved version")
+        self.assertEqual(reads, [])
+        self.page.locator("#reload-uncertain-lead").click()
+        self.page.locator("#discard-changes").click()
+        expect(self.page.locator("#lead-error")).to_contain_text("saved request details were incomplete")
+        expect(self.page.locator("#lead-uncertain")).to_be_visible()
+        expect(notes).to_have_value("Keep this draft until I choose the saved version")
+        expect(notes).to_be_disabled()
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"]))
+        self.assertEqual(len(reads), 1)
+        self.page.locator("#reload-uncertain-lead").click()
+        self.page.locator("#discard-changes").click()
+        expect(self.page.locator("#lead-status")).to_contain_text("Saved version loaded. Previous save outcome not established")
+        expect(self.page.locator("#lead-uncertain")).not_to_be_visible()
+        expect(self.page.locator("#lead-conflict")).not_to_be_visible()
+        expect(notes).to_have_value(saved["notes"])
+        expect(notes).to_be_enabled()
+        expect(self.page.locator("#lead-version")).to_have_text("Revision " + str(saved["version"]))
+        expect(self.page.locator("#lead-dirty")).not_to_be_visible()
+        self.assertEqual(len(reads), 2)
+        self.assertEqual(len(commands), 2)
+        self.assertIsNone(commands[0][0])
+        self.assertEqual(commands[0], commands[1])
+        current = self.api("GET", "/api/leads/" + saved["id"])["lead"]
+        self.assertEqual(current, saved)
+        self.assertEqual(sum(entry["action"] == "lead.updated" for entry in current["audit"]), 0)
+        self.assert_product_navigation()
+
     def test_callback_approved_business_answers_stay_in_this_program(self):
         PrivateWorkspaceBrowserTests.test_approved_profile_answer_persists_and_is_used_by_preview(self)
         self.assert_product_navigation()

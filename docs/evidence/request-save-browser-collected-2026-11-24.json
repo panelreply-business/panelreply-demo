@@ -1,0 +1,26 @@
+{
+  "suite": "callback",
+  "status": "COLLECTED_ONLY",
+  "ids": [
+    "product_browser_test.CallbackProductBrowserTests.test_callback_approved_business_answers_stay_in_this_program",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_closed_and_opted_out_tasks_can_be_cancelled_but_not_contacted",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_corrupt_task_receipts_preserve_drafts_until_matching_replays",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_data_survives_fixed_entrypoint_restart",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_export_and_request_deletion_include_task_records",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_login_navigation_and_server_boundaries",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_queue_filters_overdue_completed_and_open_requests",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_request_receipts_retain_drafts_and_confirm_current_state",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_review_save_and_reopen_without_spreadsheet_requests",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_schedule_reschedule_outcome_and_follow_up_persist",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_sign_out_revokes_its_named_program_session",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_stop_persists_without_another_product_or_live_provider",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_task_clock_changes_require_an_exact_occurrence",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_task_concurrent_edit_keeps_draft_and_requires_reload",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+    "product_browser_test.CallbackProductBrowserTests.test_callback_task_uncertain_save_retries_once_without_duplicate_task"
+  ],
+  "expectedProfiles": {
+    "desktop": null
+  }
+}

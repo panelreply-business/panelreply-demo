@@ -7,10 +7,14 @@ runtime. Keyboard doubles verify harness behavior, never native date entry.
 """
 
 import contextlib
+import errno
+import hashlib
 import io
 import json
 import copy
+import os
 from pathlib import Path
+import stat
 import subprocess
 from tempfile import TemporaryDirectory
 import types
@@ -18,7 +22,10 @@ import unittest
 from unittest.mock import Mock, patch
 
 import release_safari_runner as runner
-from safari_product_browser_test import select_keyboard_plan, UPLOAD_READ_DIAGNOSTIC
+import safari_product_browser_test as product_harness
+import safari_fixture_observer as fixture_observer
+from safari_product_browser_test import select_keyboard_plan, UPLOAD_READ_DIAGNOSTIC, \
+    UPLOAD_EVENT_DIAGNOSTIC_BEGIN, UPLOAD_EVENT_DIAGNOSTIC_END
 
 
 SOURCE = {"sourceCommit": "a" * 40, "gitTreeHash": "b" * 40, "dirty": True,
@@ -468,6 +475,217 @@ class SafariRunnerHarnessTests(unittest.TestCase):
             self.assertEqual(callback["totals"]["FAIL"], 1)
             self.assertEqual(spreadsheet["status"], "PASS")
             self.assertEqual(spreadsheet["totals"]["PASS"], 3)
+
+
+class SafariFixtureObservationTests(unittest.TestCase):
+    def test_host_fixture_records_identity_modes_and_hash_without_content_or_writes(self):
+        with TemporaryDirectory() as directory:
+            filename = Path(directory) / "owned-image.png"
+            data = bytes(range(256)) + b"Owned synthetic fixture, never customer content."
+            filename.write_bytes(data)
+            before = fixture_observer.metadata(filename.lstat())
+            with patch.object(fixture_observer.os, "open", wraps=os.open) as opened, \
+                    patch.object(fixture_observer.os, "read", wraps=os.read) as read:
+                result = fixture_observer.observe_fixture(filename)
+            self.assertEqual(result["status"], "READ")
+            self.assertEqual(result["sha256"], hashlib.sha256(data).hexdigest())
+            self.assertEqual(result["bytesRead"], len(data))
+            self.assertTrue(result["descriptorOpened"])
+            self.assertTrue(result["descriptorClosed"])
+            self.assertTrue(result["stableIdentityAndMetadata"])
+            self.assertEqual(result["pathBefore"], before)
+            self.assertEqual(result["pathAfter"], before)
+            self.assertEqual(fixture_observer.metadata(filename.lstat()), before)
+            self.assertEqual(filename.read_bytes(), data)
+            opened.assert_called_once()
+            self.assertEqual(opened.call_args.args[1] & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC), 0)
+            self.assertTrue(all(0 < call.args[1] <= fixture_observer.READ_CHUNK for call in read.call_args_list))
+            self.assertEqual(result["ancestors"][0]["metadata"]["mode"], oct(stat.S_IMODE(Path(directory).lstat().st_mode)))
+            self.assertFalse(result["fileContentRecorded"])
+            self.assertFalse(result["originalBrowserExceptionCaptured"])
+            self.assertNotIn(data.decode("latin1"), json.dumps(result))
+
+    def test_host_fixture_refuses_nonregular_empty_and_oversize_files_before_opening(self):
+        with TemporaryDirectory() as directory:
+            parent = Path(directory)
+            empty = parent / "empty.png"
+            empty.touch()
+            too_large = parent / "large.png"
+            too_large.write_bytes(b"x" * (fixture_observer.MAX_BYTES + 1))
+            for filename, reason in [(parent, "NOT_A_REGULAR_FILE"), (empty, "FILE_SIZE_OUTSIDE_BOUND"),
+                                     (too_large, "FILE_SIZE_OUTSIDE_BOUND")]:
+                with patch.object(fixture_observer.os, "open") as opened:
+                    result = fixture_observer.observe_fixture(filename)
+                opened.assert_not_called()
+                self.assertEqual(result["status"], "NOT_READ")
+                self.assertEqual(result["reason"], reason)
+                self.assertEqual(result["bytesRead"], 0)
+                self.assertFalse(result["descriptorOpened"])
+            with patch.object(fixture_observer.os, "open") as opened:
+                missing = fixture_observer.observe_fixture(parent / "missing.png")
+            opened.assert_not_called()
+            self.assertEqual(missing["error"]["stage"], "path-metadata")
+            self.assertEqual(missing["error"]["code"], "ENOENT")
+
+    def test_host_fixture_preserves_open_read_identity_and_close_error_observations(self):
+        with TemporaryDirectory() as directory:
+            filename = Path(directory) / "owned.png"
+            filename.write_bytes(b"owned fixture")
+            with patch.object(fixture_observer.os, "open", side_effect=PermissionError(errno.EACCES, "Owned denial")):
+                denied = fixture_observer.observe_fixture(filename)
+            self.assertEqual((denied["status"], denied["error"]["stage"], denied["error"]["code"]), ("ERROR", "open", "EACCES"))
+            self.assertFalse(denied["descriptorOpened"])
+            close = os.close
+            with patch.object(fixture_observer.os, "read", side_effect=OSError(errno.EIO, "Owned read failure")), \
+                    patch.object(fixture_observer.os, "close", wraps=close) as closed:
+                unreadable = fixture_observer.observe_fixture(filename)
+            closed.assert_called_once()
+            self.assertEqual((unreadable["status"], unreadable["error"]["stage"], unreadable["error"]["code"]), ("ERROR", "read", "EIO"))
+            self.assertTrue(unreadable["descriptorClosed"])
+            original = filename.lstat()
+            changed = types.SimpleNamespace(**{key: getattr(original, key) for key in (
+                "st_mode", "st_uid", "st_gid", "st_dev", "st_ino", "st_nlink", "st_size", "st_mtime_ns", "st_ctime_ns")})
+            changed.st_size += 1
+            with patch.object(fixture_observer.os, "fstat", side_effect=[original, changed]):
+                moved = fixture_observer.observe_fixture(filename)
+            self.assertEqual(moved["status"], "CHANGED")
+            self.assertFalse(moved["stableIdentityAndMetadata"])
+            self.assertNotIn("sha256", moved)
+            self.assertTrue(moved["descriptorClosed"])
+
+            def close_then_error(descriptor):
+                close(descriptor)
+                raise OSError(errno.EIO, "Owned uncertain close")
+
+            with patch.object(fixture_observer.os, "close", side_effect=close_then_error) as closed:
+                uncertain = fixture_observer.observe_fixture(filename)
+            closed.assert_called_once()
+            self.assertEqual(uncertain["status"], "ERROR")
+            self.assertEqual(uncertain["closeError"]["code"], "EIO")
+            self.assertFalse(uncertain["descriptorClosed"])
+            self.assertEqual(filename.read_bytes(), b"owned fixture")
+
+    def test_host_fixture_bounds_growing_file_reads_and_ancestor_inventory(self):
+        with TemporaryDirectory() as directory:
+            parent = Path(directory)
+            for _ in range(fixture_observer.MAX_ANCESTORS + 2):
+                parent /= "d"
+                parent.mkdir()
+            filename = parent / "owned.png"
+            filename.write_bytes(b"tiny")
+            requests = []
+
+            def growing_file(_descriptor, count):
+                requests.append(count)
+                return b"x" * count
+
+            with patch.object(fixture_observer.os, "read", side_effect=growing_file):
+                result = fixture_observer.observe_fixture(filename)
+            self.assertEqual(result["status"], "CHANGED")
+            self.assertEqual(result["reason"], "READ_EXCEEDED_BYTE_BOUND")
+            self.assertEqual(result["bytesRead"], fixture_observer.MAX_BYTES + 1)
+            self.assertEqual(sum(requests), fixture_observer.MAX_BYTES + 1)
+            self.assertTrue(all(0 < count <= fixture_observer.READ_CHUNK for count in requests))
+            self.assertEqual(len(result["ancestors"]), fixture_observer.MAX_ANCESTORS)
+            self.assertTrue(result["ancestorsTruncated"])
+            self.assertTrue(result["descriptorClosed"])
+            self.assertEqual(filename.read_bytes(), b"tiny")
+
+    def test_host_diagnostic_errors_cannot_replace_original_upload_failure_or_success(self):
+        for succeeds in (False, True):
+            case = runner.SafariSpreadsheetBrowserTests("test_file_upload_source_links_and_unavailable_ocr")
+            case.input_evidence = []
+            element = Mock()
+            element.is_enabled.return_value = True
+            case.element = Mock(return_value=element)
+            case.click = Mock()
+            case.text_contains = Mock(side_effect=[None, None if succeeds else RuntimeError("Original upload assertion")])
+            case.api = Mock(return_value={"project": {"sources": [{"id": "owned-source"}]}})
+            case.page_state = Mock(return_value={"phase": "owned"})
+            case.driver = types.SimpleNamespace(execute_script=Mock(side_effect=[None, {"events": [], "overflow": False}]),
+                execute_async_script=Mock(return_value={"status": "ERROR", "originalExceptionCaptured": False}))
+            with patch.object(product_harness, "observe_fixture", side_effect=RuntimeError("Owned observer failure")) as observe:
+                if succeeds:
+                    self.assertEqual(case.upload_source({"id": "owned-project"}), {"id": "owned-source"})
+                    case.driver.execute_async_script.assert_not_called()
+                else:
+                    with self.assertRaisesRegex(RuntimeError, "Original upload assertion"):
+                        case.upload_source({"id": "owned-project"})
+                    case.api.assert_not_called()
+                self.assertEqual(observe.call_count, 2)
+                self.assertTrue(all(call.args == (product_harness.IMAGE,) for call in observe.call_args_list))
+            element.send_keys.assert_called_once_with(str(product_harness.IMAGE))
+            case.click.assert_called_once_with("#upload-source")
+            self.assertEqual(case.text_contains.call_args_list[-1].args, ("#source-status", "Source image saved"))
+            observation = case.input_evidence[0]
+            self.assertEqual(observation["hostFixtureBeforeError"], "RuntimeError")
+            self.assertEqual(observation["hostFixtureAfterError"], "RuntimeError")
+            self.assertEqual(observation["status"], "OBSERVED" if succeeds else "ATTEMPTED")
+
+    def test_upload_policy_listener_is_bounded_passive_and_omits_uris_policy_text_and_samples(self):
+        script = r"""
+            const vm = require('node:vm');
+            const input = JSON.parse(require('node:fs').readFileSync(0, 'utf8'));
+            const bindings = [], removals = [], listeners = new Map();
+            function target(id) {
+                return {id,
+                    addEventListener(type, fn, options) { const key = id + ':' + type; listeners.set(key, fn); bindings.push({key, options}); },
+                    removeEventListener(type, fn, options) { const key = id + ':' + type;
+                        if (listeners.get(key) !== fn) throw new Error('Wrong observer removed');
+                        listeners.delete(key); removals.push({key, options}); }};
+            }
+            const file = target('panel-image'), button = target('upload-source'), window = target('window');
+            Object.defineProperty(file, 'value', {set() { throw new Error('No file value assignment permitted'); }});
+            const context = {window, document: {querySelector(selector) {
+                if (selector !== '#upload-source') throw new Error('Unexpected DOM query'); return button;
+            }}, arguments: [file]};
+            vm.runInNewContext('(function(){' + input.begin + '\n}).apply(null, arguments)', context, {timeout: 1000});
+            for (const [key, type, target] of [['panel-image:input', 'input', file], ['panel-image:change', 'change', file], ['upload-source:click', 'click', button]])
+                listeners.get(key)({type, target, isTrusted: true});
+            for (let index = 0; index < 18; index++) {
+                const event = {type: 'securitypolicyviolation', isTrusted: index !== 0,
+                    effectiveDirective: index === 0 ? 'img-src https://SECRET_POLICY_URI' : 'img-src',
+                    violatedDirective: index === 0 ? 'https://SECRET_DIRECTIVE_URI' : 'img-src',
+                    disposition: index === 0 ? 'report SECRET_DISPOSITION_TEXT' : 'enforce',
+                    blockedURI: 'data:image/png;base64,SECRET_FILE_BYTES', sourceFile: 'file:///private/SECRET_FILE_PATH',
+                    statusCode: 200, lineNumber: 17, columnNumber: 3,
+                    preventDefault() { throw new Error('No event cancellation permitted'); },
+                    stopPropagation() { throw new Error('No event interference permitted'); }};
+                for (const key of ['sample', 'originalPolicy']) Object.defineProperty(event, key, {get() { throw new Error('Sensitive policy field read'); }});
+                listeners.get('window:securitypolicyviolation')(event);
+            }
+            context.arguments = [];
+            const result = vm.runInNewContext('(function(){' + input.end + '\n}).apply(null, arguments)', context, {timeout: 1000});
+            process.stdout.write(JSON.stringify({result, bindings, removals, listenersRemaining: listeners.size,
+                probeRemoved: !Object.hasOwn(window, '__panelreplyNativeUploadProbe')}));
+        """
+        result = subprocess.run(["node", "-e", script], input=json.dumps({"begin": UPLOAD_EVENT_DIAGNOSTIC_BEGIN, "end": UPLOAD_EVENT_DIAGNOSTIC_END}),
+                                text=True, capture_output=True, timeout=10, check=True)
+        value = json.loads(result.stdout)
+        report = value["result"]
+        self.assertEqual([item["type"] for item in report["events"]], ["input", "change", "click"])
+        self.assertTrue(all(item["trusted"] for item in report["events"]))
+        self.assertEqual(len(report["policyEvents"]), 16)
+        self.assertTrue(report["policyOverflow"])
+        self.assertFalse(report["policyEvents"][0]["trusted"])
+        self.assertEqual({item["blockedResourceKind"] for item in report["policyEvents"]}, {"data"})
+        self.assertEqual({item["sourceResourceKind"] for item in report["policyEvents"]}, {"file"})
+        self.assertEqual(report["policyEvents"][0]["effectiveDirective"], "UNKNOWN")
+        self.assertEqual(report["policyEvents"][0]["violatedDirective"], "UNKNOWN")
+        self.assertEqual(report["policyEvents"][0]["disposition"], "UNKNOWN")
+        self.assertTrue(all(item["effectiveDirective"] == "img-src" and item["violatedDirective"] == "img-src"
+                            and item["disposition"] == "enforce" for item in report["policyEvents"][1:]))
+        policy_binding = next(item for item in value["bindings"] if item["key"] == "window:securitypolicyviolation")
+        self.assertEqual(policy_binding["options"], {"capture": True, "passive": True})
+        self.assertEqual(value["listenersRemaining"], 0)
+        self.assertTrue(value["probeRemoved"])
+        self.assertEqual(len(value["bindings"]), len(value["removals"]))
+        self.assertNotIn("SECRET_FILE_BYTES", result.stdout)
+        self.assertNotIn("SECRET_FILE_PATH", result.stdout)
+        self.assertNotIn("SECRET_POLICY_URI", result.stdout)
+        self.assertNotIn("SECRET_DIRECTIVE_URI", result.stdout)
+        self.assertNotIn("SECRET_DISPOSITION_TEXT", result.stdout)
+        self.assertFalse(report["policyObservation"]["originalBrowserExceptionCaptured"])
 
 
 if __name__ == "__main__":

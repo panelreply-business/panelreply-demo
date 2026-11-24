@@ -1,0 +1,153 @@
+{
+  "format": "panelreply-request-save-receipts-candidate-v2",
+  "recordedAt": "2026-11-24T01:34:13.576Z",
+  "baseCommit": "7fec73b7ca7fe323accaf22eb99e11d905f698b3",
+  "publishedIntegrationBase": "6b4964ff65c2cd8b904d5974382cb6c241e2c378",
+  "sourceManifestSha256": "c57a66e3ef4c2c52800c6ccf37059f190efa42116c7fa38ddc5ae4fc583f068c",
+  "sourceFiles": 201,
+  "sourceDirty": true,
+  "runtimeFiles": [
+    {
+      "path": "workspace/app.js",
+      "sha256": "2f42e5df4f936956819a086a9c9c9e2829e765ee62b30b5b5335bc0ff04b2f83"
+    },
+    {
+      "path": "workspace/schedule.js",
+      "sha256": "3678a15c44102a286b9d35cd5c1e7e758c3c88019eae60f8ba0c0752e270965d"
+    }
+  ],
+  "verification": {
+    "originalRuntimeNewMethods": {
+      "passed": 1,
+      "failed": 8,
+      "skipped": 0
+    },
+    "firstCandidateAffected": {
+      "passed": 151,
+      "failed": 0,
+      "skipped": 0
+    },
+    "phoneRegressionBeforeCorrection": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    "finalCandidateAffected": {
+      "passed": 152,
+      "failed": 0,
+      "skipped": 0,
+      "infrastructureErrors": 0,
+      "sourceChanged": false
+    },
+    "newNodeMethods": 10,
+    "oldPlatformMethodsPreserved": 38,
+    "oldBrowserMethodsBytePreserved": 38,
+    "callbackBrowserMethodsCollected": 17,
+    "newBrowserMethods": 1,
+    "browserExecutions": 0,
+    "nativeAttempts": 0,
+    "providerCalls": 0,
+    "additionalGoalCredit": 0
+  },
+  "contract": {
+    "freshPatch": "Same request ID and creation instant, complete consumed parent shape, exact next writable revision and server-normalized submitted fields.",
+    "retry": "Original payload and revision retained through uncertainty and later client errors. No idempotency key or implicit revision rebase.",
+    "readback": "A matching complete later revision confirms current persisted values only. It is not proof of prior command execution.",
+    "conflict": "Different current values preserve the draft until explicit owner reload confirmation and a valid current record.",
+    "taskGuard": "The validLeadReceipt body and every task save rule remain byte-identical. Only the existing predicate export was added.",
+    "profile": "No profile receipt or backend policy change. Profile writes are locked while a request command is pending."
+  },
+  "limitations": [
+    "No committed-source integration gate or browser execution is part of this isolated candidate.",
+    "Pending commands remain in memory and do not survive browser termination.",
+    "The PATCH protocol cannot prove execution of a specific lost command.",
+    "The November23 temporary request baseline and first API fixture report were not retained. New observations and all current evidence are persisted in this worktree."
+  ],
+  "records": [
+    {
+      "path": "docs/evidence/request-save-after-node-2026-11-24.json",
+      "bytes": 107407,
+      "sha256": "edd8a7c36d28de7f926f2ab88ee3b197add52fda316116d51f8e04abbeca143f"
+    },
+    {
+      "path": "docs/evidence/request-save-after-node-2026-11-24.log",
+      "bytes": 13450,
+      "sha256": "4412710f45049200975298c90cb226c5c6201ff936708adf0dc28141651d6c22"
+    },
+    {
+      "path": "docs/evidence/request-save-after-node-v2-2026-11-24.json",
+      "bytes": 108735,
+      "sha256": "981f4281ca26488ef2dc6155520951b81b8c9f2c25888931479e7bad34d90484"
+    },
+    {
+      "path": "docs/evidence/request-save-after-node-v2-2026-11-24.log",
+      "bytes": 13553,
+      "sha256": "75ffdbb210612dbae13fb67606dd875ca55d2b5bdf81c1232088d27d1c5d8d3f"
+    },
+    {
+      "path": "docs/evidence/request-save-before-node-2026-11-24.json",
+      "bytes": 36767,
+      "sha256": "dc59da28ea7259c2d2aa283fdd38ab046c242d5ed12a4496a2fffc06a5308900"
+    },
+    {
+      "path": "docs/evidence/request-save-before-node-2026-11-24.log",
+      "bytes": 1838,
+      "sha256": "3da89abcfdfb33d354ae20b1e79ca1b13e2d6f0b1688bb538ffe6b61f0057a12"
+    },
+    {
+      "path": "docs/evidence/request-save-browser-collected-2026-11-24.json",
+      "bytes": 2177,
+      "sha256": "8827d7208f21b707b67f3eb0794a8f61f35b755ff7b32a3976e2677e0687bd0d"
+    },
+    {
+      "path": "docs/evidence/request-save-counterexamples-2026-11-24.json",
+      "bytes": 47632,
+      "sha256": "013a3d0c61b392ee8b4bcc9ce7c38addd893f883eac45fe1c20a2e1eb2482e29"
+    },
+    {
+      "path": "docs/evidence/request-save-independent-review-supplement-2026-11-24.json",
+      "bytes": 2770,
+      "sha256": "0ae4a9b3ef162880533fe41028947f7af608a00784d1dc9b02270111949f7597"
+    },
+    {
+      "path": "docs/evidence/request-save-independent-review-v1-2026-11-24.json",
+      "bytes": 4041,
+      "sha256": "361035d8790e0e278f15fa2a0b7c65423ba314b8ca069e2a893845f723d7733e"
+    },
+    {
+      "path": "docs/evidence/request-save-phone-before-2026-11-24.json",
+      "bytes": 32954,
+      "sha256": "c4fcf4cc994277fad4fe7ae31f6e1c325ef6e7d01db80bb599a8177889b97df6"
+    },
+    {
+      "path": "docs/evidence/request-save-phone-before-2026-11-24.log",
+      "bytes": 967,
+      "sha256": "b2dc1105a9405a57529ecdc168ee34bf5ec0960cc661bec68ee581b71eadcf0a"
+    },
+    {
+      "path": "docs/evidence/request-save-phone-initial-runner-2026-11-24.json",
+      "bytes": 33373,
+      "sha256": "c3ba168326156ac489f902a611b4a519ccd84f8bc47253845994bc6eaa8d3f10"
+    },
+    {
+      "path": "docs/evidence/request-save-phone-initial-runner-2026-11-24.log",
+      "bytes": 1074,
+      "sha256": "b92162877275fa0cbacf62ab7043975afe06474888c87bfe2723dc1450a171c0"
+    },
+    {
+      "path": "docs/evidence/request-save-preservation-2026-11-24.json",
+      "bytes": 2376,
+      "sha256": "1186d83ecc0420e0f8c40b9525723f85f0e8a6dc2a787e486e804aa0eb3093d2"
+    },
+    {
+      "path": "docs/evidence/request-save-preservation-v2-2026-11-24.json",
+      "bytes": 1654,
+      "sha256": "94ed6102d463815166c519b4c977ca6796b18d15d9ec4593d436bcc7ed2175a5"
+    },
+    {
+      "path": "docs/evidence/request-save-session-cleanup-before-2026-11-24.json",
+      "bytes": 31442,
+      "sha256": "925d30bb4882ab8d707b904ee6c366facb8ec40805dc046227030c1e2ac4dc8a"
+    }
+  ]
+}

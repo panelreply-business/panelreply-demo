@@ -11,14 +11,20 @@ const { spawn } = require('node:child_process');
 const { createOcrService, LIMITS } = require('../workspace/ocr.cjs');
 const { isolationSupported } = require('../workspace/ocr-isolation.cjs');
 const { createReadinessDiagnostics } = require('./ocr-isolation-diagnostics.cjs');
+const { createProcessDiagnostics, probeAlive } = require('./ocr-process-diagnostics.cjs');
 const IMAGE = fs.readFileSync(path.join(__dirname, '../tests/fixtures/panels/complete.png'));
 const HEADER = 'level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext';
 const TSV = HEADER + '\n5\t1\t1\t1\t1\t1\t0\t0\t1\t1\t95\tPART NUMBER: ISOLATION-OK\n';
 
-function alive(pid) {
-  if (!pid) return false;
-  try { process.kill(pid, 0); return true; }
-  catch (error) { if (error.code === 'ESRCH') return false; throw error; }
+let activeProcessDiagnostics = null;
+function alive(pid) { return probeAlive(pid, activeProcessDiagnostics); }
+
+async function checkCase(name, task) {
+  const diagnostics = createProcessDiagnostics();
+  activeProcessDiagnostics = diagnostics;
+  try { return { test: name, status: 'PASS', ...await task(), processDiagnostics: diagnostics.snapshot() }; }
+  catch (error) { return { test: name, status: 'FAIL', code: error.code || 'ASSERTION_FAILED', detail: error.message, processDiagnostics: diagnostics.snapshot() }; }
+  finally { activeProcessDiagnostics = null; }
 }
 
 function injectedWorker(code, onWorkerPid) {
@@ -32,6 +38,10 @@ function injectedWorker(code, onWorkerPid) {
     command.splice(wrapper + 1, 0, '--info-fd', '4');
     const child = spawn(binary, command, { ...options, stdio: [...options.stdio, 'pipe'] });
     const record = { child, nativePid: null, closed: false };
+    const diagnostics = activeProcessDiagnostics;
+    diagnostics?.register('wrapper', child.pid);
+    child.once('spawn', () => diagnostics?.event('spawn'));
+    child.once('exit', (code, signal) => diagnostics?.event('exit', code, signal));
     records.push(record);
     let info = '';
     child.stdio[4].on('data', bytes => {
@@ -42,11 +52,12 @@ function injectedWorker(code, onWorkerPid) {
         if (!record.nativePid && Number.isInteger(data['child-pid']) && data['child-pid'] > 0) {
           record.nativePid = data['child-pid'];
           onWorkerPid?.();
+          diagnostics?.register('native', record.nativePid);
         }
       } catch { /* a bounded partial JSON message */ }
     });
     child.stdio[4].on('error', () => child.kill('SIGKILL'));
-    child.once('close', () => { record.closed = true; });
+    child.once('close', (code, signal) => { record.closed = true; diagnostics?.event('close', code, signal); });
     return child;
   } };
 }
@@ -102,10 +113,7 @@ async function main() {
     fs.writeFileSync(canary, 'Synthetic host-only canary. No customer information.\n', { mode: 0o600 });
     const parentNetworkNamespace = fs.readlinkSync('/proc/self/ns/net');
     const results = [];
-    const check = async (name, task) => {
-      try { results.push({ test: name, status: 'PASS', ...await task() }); }
-      catch (error) { results.push({ test: name, status: 'FAIL', code: error.code || 'ASSERTION_FAILED', detail: error.message }); }
-    };
+    const check = async (name, task) => { results.push(await checkCase(name, task)); };
     await check('host-only canary unreadable and runtime/root mounts read only', async () => ({ ...await workerAssertions([
       'denied = False', 'try:', ` open(${JSON.stringify(canary)}, "rb").read()`, 'except OSError as error:', ' denied = error.errno in (errno.ENOENT, errno.EACCES)', 'assert denied',
       'for target in ("/usr/panelreply-isolation-synthetic", "/tmp/panelreply-isolation-synthetic"):',
@@ -162,4 +170,5 @@ async function main() {
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 
-main().catch(error => { output({ status: 'FAIL', code: error.code || 'ISOLATION_TEST_FAILED', detail: error.message }); process.exitCode = 1; });
+module.exports = { checkCase };
+if (require.main === module) main().catch(error => { output({ status: 'FAIL', code: error.code || 'ISOLATION_TEST_FAILED', detail: error.message }); process.exitCode = 1; });

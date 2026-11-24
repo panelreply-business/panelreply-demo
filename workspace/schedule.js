@@ -399,7 +399,7 @@
       isBusy: () => busy, isPending: () => Boolean(pending), setLocked(value) { locked = value; update(); } };
   }
 
-  const exported = { create, localInstants, localValue, describeInstant, validateSaveReceipt };
+  const exported = { create, localInstants, localValue, describeInstant, validateSaveReceipt, validLeadReceipt };
   if (typeof module === 'object' && module.exports) module.exports = exported;
   else window.PanelReplySchedule = Object.freeze(exported);
 })();

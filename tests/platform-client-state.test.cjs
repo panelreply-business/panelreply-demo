@@ -2,118 +2,9 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const vm = require('node:vm');
 const { webcrypto } = require('node:crypto');
 
-// Execute the shipped client scripts against synthetic DOM nodes and explicit
-// API responses. These are state/authorization regressions, not browser or
-// layout tests. No network socket, provider or customer data is used.
-const PROJECT_ID = '11111111-1111-4111-8111-111111111111';
-const LEAD_ID = '22222222-2222-4222-8222-222222222222';
-const TIME = '2026-11-19T00:00:00.000Z';
-const savedProject = { id: PROJECT_ID, name: 'Business A private project', notes: '', rows: [], sources: [], version: 1, createdAt: TIME, updatedAt: TIME };
-const savedLead = { id: LEAD_ID, customerName: 'Synthetic customer A', phone: '2025550142', job: 'Synthetic request A', zip: '48103', callbackWindow: 'Afternoon', requestedWorkDate: '', contactPermission: 'requested_callback', status: 'new', notes: '', safetyHold: false, optedOut: false, contactAllowed: true, version: 1, createdAt: TIME, updatedAt: TIME, conversation: [], audit: [] };
-
-function client(script, options = {}) {
-  const nodes = new Map(), allNodes = new Set(), calls = [], redirects = [], events = new Map();
-  const state = { actor: 'A', failSession: false, mutationError: null, holdReads: false, respond: null };
-  let document;
-  function make(tag = 'div', initialId = '') {
-    const attributes = new Map();
-    const classes = new Set();
-    let id = '', content = '';
-    const element = {
-      tagName: tag.toUpperCase(), children: [], parentNode: null, value: '', checked: false,
-      files: [], hidden: false, disabled: false, open: false, showModal() { this.open = true; }, close() { this.open = false; }, dataset: {}, listeners: new Map(), style: {},
-      classList: { add: value => classes.add(value), remove: value => classes.delete(value), toggle(value, force) { const next = force ?? !classes.has(value); if (next) classes.add(value); else classes.delete(value); return next; } },
-      append(...items) {
-        for (const item of items) {
-          if (item?.tagName === '#FRAGMENT') { this.append(...item.children); continue; }
-          const child = typeof item === 'string' ? Object.assign(make('#text'), { textContent: item }) : item;
-          child.parentNode = this;
-          this.children.push(child);
-        }
-      },
-      replaceChildren(...items) { content = ''; this.children = []; this.append(...items); },
-      addEventListener(name, handler) { if (!this.listeners.has(name)) this.listeners.set(name, []); this.listeners.get(name).push(handler); },
-      async emit(name, detail = {}) { for (const handler of this.listeners.get(name) || []) await handler({ preventDefault() {}, target: this, ...detail }); },
-      setAttribute(name, value) { attributes.set(name, String(value)); },
-      getAttribute(name) { return attributes.get(name) ?? null; },
-      removeAttribute(name) { attributes.delete(name); },
-      toggleAttribute(name, force) { if (force) attributes.set(name, ''); else attributes.delete(name); },
-      setCustomValidity() {}, reportValidity() { return true; }, focus() { document.activeElement = this; }, scrollIntoView() {},
-      contains(target) { return target === this || this.children.some(child => child.contains(target)); },
-      reset() { for (const node of allNodes) { if (['INPUT', 'SELECT', 'TEXTAREA'].includes(node.tagName) || /^(?:project-|lead-|business-name)/.test(node.id)) { node.value = ''; node.checked = false; } } },
-      querySelectorAll(selector) {
-        const children = this.children.flatMap(child => [child, ...child.querySelectorAll('*')]);
-        if (selector === '*') return children;
-        return children.filter(child => selector.split(',').some(part => {
-          const query = part.trim();
-          if (/^[a-z]+$/.test(query)) return child.tagName === query.toUpperCase();
-          const match = query.match(/^\[data-([a-z-]+)(?:="([^"]*)")?\]$/);
-          if (!match) return false;
-          const key = match[1].replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-          return key in child.dataset && (match[2] === undefined || child.dataset[key] === match[2]);
-        }));
-      },
-      querySelector(selector) { return this.querySelectorAll(selector)[0] || null; },
-    };
-    Object.defineProperties(element, {
-      id: { get: () => id, set(value) { if (id) nodes.delete(id); id = value; if (value) nodes.set(value, element); } },
-      textContent: { get: () => content + element.children.map(child => child.textContent).join(''), set(value) { content = value === undefined || value === null ? '' : String(value); element.children = []; } },
-      options: { get: () => element.children.filter(child => child.tagName === 'OPTION') },
-      lastElementChild: { get: () => element.children.at(-1) || null },
-    });
-    element.id = initialId;
-    allNodes.add(element);
-    return element;
-  }
-  const element = id => nodes.get(id) || make('div', id);
-  document = { getElementById: element, createElement: tag => make(tag), createDocumentFragment: () => make('#fragment'), querySelectorAll: () => [], body: make('body'), activeElement: null };
-  if (script === 'panels.js') element('project-fields').append(make('input', 'project-name'), make('textarea', 'project-notes'), make('tbody', 'panel-parts-body'));
-  if (options.productId) document.body.dataset.productId = options.productId;
-  element('status-filter').value = 'all';
-  const pagePath = script === 'panels.js' ? '/panels' : script === 'dashboard.js' ? '/dashboard' : '/';
-  let href = `http://127.0.0.1:10001${pagePath}`;
-  if (options.project) href += `?project=${PROJECT_ID}`;
-  if (options.lead) href += `?lead=${LEAD_ID}`;
-  const location = { get href() { return href; }, get pathname() { return new URL(href).pathname; }, get search() { return new URL(href).search; }, get hash() { return new URL(href).hash; }, replace(value) { redirects.push(value); }, assign(value) { redirects.push(value); } };
-  const window = { location, history: { replaceState(_state, _title, value) { href = new URL(value, href).href; } }, addEventListener(name, handler) { if (!events.has(name)) events.set(name, []); events.get(name).push(handler); } };
-  const fetch = async (requestPath, request = {}) => {
-    const method = request.method || 'GET';
-    calls.push({ path: requestPath, method, headers: request.headers, body: request.body });
-    if (state.respond) {
-      const custom = await state.respond(requestPath, request);
-      if (custom !== undefined) return custom;
-    }
-    if (requestPath === '/api/session' && state.failSession) throw new Error('Synthetic network failure');
-    if (state.holdReads && requestPath !== '/api/session') return new Promise(() => {});
-    let status = 200, data;
-    if (requestPath === '/api/session') data = { user: { id: `user-${state.actor}`, username: `owner-${state.actor}`, businessId: `business-${state.actor}` }, csrfToken: `csrf-${state.actor}`, ...(options.productId ? { product: { id: options.productId } } : {}) };
-    else if (requestPath === '/api/profile') data = { business: { id: `business-${state.actor}`, name: `Business ${state.actor}` }, version: 1, facts: {} };
-    else if (requestPath === '/api/panel-ocr') data = { available: false, engine: 'tesseract', version: null, language: 'eng', reason: 'engine_unavailable' };
-    else if (method !== 'GET' && state.mutationError) { status = 409; data = { error: state.mutationError }; }
-    else if (requestPath === '/api/panel-projects') data = { projects: state.actor === 'A' ? [{ ...savedProject, rowCount: 0, unreviewedCount: 0 }] : [] };
-    else if (requestPath === `/api/panel-projects/${PROJECT_ID}` && state.actor === 'A') data = { project: savedProject };
-    else if (requestPath === '/api/leads') data = { leads: state.actor === 'A' ? [savedLead] : [] };
-    else if (requestPath.startsWith('/api/callback-tasks?')) data = { tasks: [], total: 0, limit: 100, offset: 0, generatedAt: TIME };
-    else if (requestPath === `/api/leads/${LEAD_ID}` && state.actor === 'A') data = { lead: savedLead };
-    else { status = 404; data = { error: { code: 'not_found', message: 'The record is not in this workspace.' } }; }
-    return { status, ok: status >= 200 && status < 300, json: async () => structuredClone(data), headers: new Map() };
-  };
-  const source = fs.readFileSync(path.join(__dirname, '../workspace', script), 'utf8');
-  const context = { document, window, location, history: window.history, URL, fetch, crypto: webcrypto, setTimeout, clearTimeout, Intl, Date, Blob, TextEncoder, btoa, console };
-  if (options.failSession) state.failSession = true;
-  vm.createContext(context);
-  vm.runInContext(fs.readFileSync(path.join(__dirname, '../workspace/deletion.js'), 'utf8'), context, { filename: 'deletion.js' });
-  if (script === 'app.js') vm.runInContext(fs.readFileSync(path.join(__dirname, '../workspace/schedule.js'), 'utf8'), context, { filename: 'schedule.js' });
-  vm.runInContext(source, context, { filename: script });
-  return { element, state, calls, redirects, window, document };
-}
-
-async function settle() { for (let turn = 0; turn < 3; turn += 1) await new Promise(resolve => setImmediate(resolve)); }
+const { client, settle, savedProject, savedLead, PROJECT_ID, LEAD_ID, TIME } = require('./platform-client-fixture.cjs');
 
 for (const [productId, label] of [[undefined, 'PanelReply'], ['callback', 'PanelReply Callback']]) {
   test(`intake ${productId || 'combined'} navigation preserves its program title`, async () => {
@@ -964,5 +855,387 @@ test('intake callback malformed parent history preserves the task draft, request
   assert.equal(page.element('lead-version').textContent, 'Revision 2');
   assert.equal(page.element('task-notes').value, ''); assert.equal(page.element('task-uncertain').hidden, true);
   assert.match(page.element('task-save-status').textContent, /Task scheduled/);
+});
+
+function savedRequestReceipt(body, extra = {}) {
+  const lead = { ...structuredClone(savedLead), ...body, phone: '+12025550142', version: body.version + 1 };
+  for (const key of ['customerName', 'job', 'zip', 'callbackWindow', 'requestedWorkDate', 'notes']) lead[key] = body[key].trim();
+  lead.optedOut = body.contactPermission === 'opted_out';
+  lead.contactAllowed = !lead.optedOut && body.contactPermission === 'requested_callback';
+  lead.audit = [{ action: 'lead.updated', version: lead.version, createdAt: TIME,
+    details: { fields: Object.keys(body).filter(key => key !== 'version') } }];
+  return Object.assign(lead, extra);
+}
+
+function assertRequestSavePending(page, { conflict = false } = {}) {
+  assert.equal(page.element('lead-fields').disabled, true);
+  assert.equal(page.element('save-lead').textContent, 'Retry save');
+  assert.equal(page.element('save-lead').disabled, conflict);
+  for (const id of ['delete-lead', 'delete-conversation', 'save-profile', 'export-records', 'callback-task-fields']) {
+    assert.equal(page.element(id).disabled, true, id + ' must stay locked while the request save is unconfirmed');
+  }
+  assert.equal(page.element('lead-conflict').hidden, !conflict);
+  assert.equal(page.element('lead-status').textContent, '');
+}
+
+test('intake request save rejects wrong identities revisions fields and malformed history before replacing its draft', async () => {
+  const changes = [
+    lead => { lead.id = PROJECT_ID; },
+    lead => { lead.version = 1; lead.audit = []; },
+    lead => { lead.version = 3; },
+    lead => { lead.createdAt = '2026-11-18T00:00:00.000Z'; },
+    lead => { lead.notes = 'Another saved note'; },
+    lead => { lead.phone = '+12025550143'; },
+    lead => { lead.status = 'closed'; },
+    lead => { lead.contactPermission = 'not_recorded'; lead.contactAllowed = false; },
+    lead => { lead.audit = [null]; },
+    lead => { lead.conversation = [{ role: 'customer' }]; },
+    lead => { delete lead.customerName; },
+  ];
+  for (const change of changes) {
+    const page = client('app.js', { productId: 'callback', lead: true });
+    await settle();
+    const before = { name: page.element('lead-name').value, title: page.element('lead-title').textContent,
+      history: page.element('lead-audit').textContent, conversation: page.element('lead-conversation').textContent };
+    page.element('lead-notes').value = 'Keep this exact unsaved note';
+    await page.element('lead-form').emit('input');
+    let attempts = 0;
+    page.state.respond = (url, request) => {
+      if (url !== `/api/leads/${LEAD_ID}` || request.method !== 'PATCH') return;
+      const lead = savedRequestReceipt(JSON.parse(request.body));
+      if (++attempts === 1) change(lead);
+      return panelReply(200, { lead });
+    };
+    await page.element('lead-form').emit('submit');
+    assertRequestSavePending(page);
+    assert.match(page.element('lead-error').textContent, /did not confirm/);
+    assert.equal(page.element('lead-notes').value, 'Keep this exact unsaved note');
+    assert.equal(page.element('lead-name').value, before.name);
+    assert.equal(page.element('lead-title').textContent, before.title);
+    assert.equal(page.element('lead-version').textContent, 'Revision 1');
+    assert.equal(page.element('lead-audit').textContent, before.history);
+    assert.equal(page.element('lead-conversation').textContent, before.conversation);
+    assert.equal(page.element('lead-dirty').hidden, false);
+    await page.element('lead-form').emit('submit');
+    const writes = page.calls.filter(call => call.method === 'PATCH');
+    assert.equal(writes.length, 2);
+    assert.deepEqual(writes[1], writes[0]);
+    assert.equal(writes[0].headers['Idempotency-Key'], undefined);
+    assert.equal(page.element('lead-version').textContent, 'Revision 2');
+    assert.equal(page.element('lead-fields').disabled, false);
+    assert.equal(page.element('lead-dirty').hidden, true);
+    assert.match(page.element('lead-status').textContent, /Changes saved/);
+  }
+});
+
+test('intake request first-attempt refusals retain editable drafts and explicit version conflicts without uncertain retries', async () => {
+  for (const [status, code] of [[400, 'invalid_input'], [403, 'forbidden'], [409, 'version_exhausted'], [409, 'version_conflict']]) {
+    const page = client('app.js', { lead: true });
+    await settle();
+    page.element('lead-notes').value = 'Retain this rejected draft';
+    page.state.respond = (url, request) => request.method === 'PATCH'
+      ? panelReply(status, { error: { code, message: 'Synthetic first refusal' } }) : undefined;
+    await page.element('lead-form').emit('submit');
+    assert.equal(page.element('lead-fields').disabled, false);
+    assert.equal(page.element('save-lead').textContent, 'Save changes');
+    assert.equal(page.element('save-lead').disabled, code === 'version_conflict');
+    assert.equal(page.element('lead-conflict').hidden, code !== 'version_conflict');
+    assert.equal(page.element('lead-notes').value, 'Retain this rejected draft');
+    assert.equal(page.element('lead-version').textContent, 'Revision 1');
+    assert.equal(page.calls.filter(call => call.method === 'PATCH').length, 1);
+    assert.match(page.element('lead-error').textContent, /Synthetic first refusal/);
+    assert.equal(page.element('lead-status').textContent, '');
+  }
+});
+
+test('intake request uncertain saves retain the original payload through later refusals and confirm only current saved values', async () => {
+  for (const initial of ['network', 'server', 'json', 'timeout', 'rate']) {
+    const page = client('app.js', { productId: 'callback', lead: true });
+    await settle();
+    page.element('lead-name').value = '  Synthetic owner-reviewed name  ';
+    page.element('lead-phone').value = '1 (202) 555-0142';
+    page.element('lead-notes').value = '  Keep the Unicode repair 🔧\nwith two lines  ';
+    page.element('lead-status-select').value = 'needs_review';
+    await page.element('lead-form').emit('input');
+    // A dialog opened before the write must never authorize discarding a later
+    // uncertain command.
+    await page.element('nav-profile').emit('click');
+    assert.equal(page.element('navigation-guard').hidden, false);
+    let attempts = 0, current;
+    page.state.respond = (url, request) => {
+      if (url !== `/api/leads/${LEAD_ID}`) return;
+      if (request.method !== 'PATCH') return panelReply(200, { lead: current });
+      attempts++;
+      if (attempts === 1) {
+        current = savedRequestReceipt(JSON.parse(request.body), { version: 4, contactPermission: 'opted_out', optedOut: true, contactAllowed: false });
+        if (initial === 'network') throw new Error('Synthetic response lost after commit');
+        if (initial === 'server') return panelReply(503, { error: { code: 'unavailable', message: 'Synthetic server response lost' } });
+        if (initial === 'timeout' || initial === 'rate') return panelReply(initial === 'timeout' ? 408 : 429,
+          { error: { code: 'synthetic_intermediary', message: 'Synthetic timeout or rate response' } });
+        return { status: 200, ok: true, json: async () => { throw new Error('Synthetic malformed JSON'); } };
+      }
+      if (attempts === 2) return panelReply(403, { error: { code: 'forbidden', message: 'Synthetic later refusal' } });
+      return panelReply(409, { error: { code: 'version_conflict', message: 'The request changed' } });
+    };
+    await page.element('lead-form').emit('submit');
+    assertRequestSavePending(page);
+    assert.equal(page.element('navigation-guard').hidden, true);
+    await page.element('discard-changes').emit('click');
+    assertRequestSavePending(page);
+    await page.element('nav-profile').emit('click');
+    assert.match(page.element('app-error-text').textContent, /unconfirmed/);
+    assert.equal(page.element('navigation-guard').hidden, true);
+    assert.equal(page.element('lead-notes').value, '  Keep the Unicode repair 🔧\nwith two lines  ');
+    await page.element('lead-form').emit('submit');
+    assertRequestSavePending(page);
+    assert.match(page.element('lead-error').textContent, /Synthetic later refusal/);
+    await page.element('lead-form').emit('submit');
+    const writes = page.calls.filter(call => call.method === 'PATCH');
+    assert.equal(writes.length, 3);
+    assert.deepEqual(writes, [writes[0], writes[0], writes[0]]);
+    assert.equal(writes[0].headers['Idempotency-Key'], undefined);
+    assert.equal(JSON.parse(writes[0].body).version, 1);
+    assert.equal(page.element('lead-version').textContent, 'Revision 4');
+    assert.equal(page.element('lead-name').value, current.customerName);
+    assert.equal(page.element('lead-phone').value, '+12025550142');
+    assert.equal(page.element('lead-notes').value, current.notes);
+    assert.equal(page.element('lead-permission').value, 'opted_out');
+    assert.equal(page.element('lead-fields').disabled, false);
+    assert.equal(page.element('lead-dirty').hidden, true);
+    assert.match(page.element('lead-status').textContent, /Saved values confirmed/);
+    assert.doesNotMatch(page.element('lead-status').textContent, /Changes saved/);
+    assert.equal(page.element('callback-task-fields').disabled, true);
+  }
+});
+
+test('intake request unchanged drafts cannot be confirmed by a same-revision readback after an uncertain write', async () => {
+  const page = client('app.js', { lead: true });
+  await settle();
+  let attempts = 0, originalBody;
+  page.state.respond = (url, request) => {
+    if (url !== `/api/leads/${LEAD_ID}`) return;
+    if (request.method !== 'PATCH') return panelReply(200, { lead: savedRequestReceipt(originalBody, { version: 1, audit: [] }) });
+    attempts++;
+    originalBody = JSON.parse(request.body);
+    if (attempts === 1) throw new Error('Synthetic transport failed before commit');
+    if (attempts === 2) return panelReply(409, { error: { code: 'version_conflict', message: 'Synthetic stale conflict response' } });
+    return panelReply(200, { lead: savedRequestReceipt(originalBody) });
+  };
+  assert.equal(page.element('lead-dirty').hidden, true);
+  await page.element('lead-form').emit('submit');
+  assertRequestSavePending(page);
+  const unload = { prevented: false, preventDefault() { this.prevented = true; } };
+  for (const handler of page.events.get('beforeunload')) handler(unload);
+  assert.equal(unload.prevented, true);
+  assert.equal(unload.returnValue, '');
+  // Navigation must also stay blocked when the submitted values were unchanged.
+  await page.element('nav-profile').emit('click');
+  assert.match(page.element('app-error-text').textContent, /unconfirmed/);
+  await page.element('lead-form').emit('submit');
+  assertRequestSavePending(page);
+  assert.match(page.element('lead-error').textContent, /later revision/);
+  assert.equal(page.element('lead-version').textContent, 'Revision 1');
+  await page.element('lead-form').emit('submit');
+  const writes = page.calls.filter(call => call.method === 'PATCH');
+  assert.deepEqual(writes, [writes[0], writes[0], writes[0]]);
+  assert.equal(page.element('lead-version').textContent, 'Revision 2');
+  assert.match(page.element('lead-status').textContent, /Changes saved/);
+});
+
+test('intake request readback rejects mismatched identities and incomplete parent fields before confirming an uncertain save', async () => {
+  for (const mutate of [lead => { lead.id = PROJECT_ID; }, lead => { lead.createdAt = '2026-11-18T00:00:00.000Z'; },
+    lead => { lead.audit = [null]; }, lead => { delete lead.notes; }]) {
+    const page = client('app.js', { lead: true });
+    await settle();
+    page.element('lead-notes').value = 'Keep the unconfirmed readback draft';
+    let attempts = 0, current, corrupt = true;
+    page.state.respond = (url, request) => {
+      if (url !== `/api/leads/${LEAD_ID}`) return;
+      if (request.method === 'PATCH') {
+        if (++attempts === 1) { current = savedRequestReceipt(JSON.parse(request.body)); throw new Error('Synthetic lost receipt'); }
+        return panelReply(409, { error: { code: 'version_conflict', message: 'Already advanced' } });
+      }
+      const lead = structuredClone(current);
+      if (corrupt) mutate(lead);
+      return panelReply(200, { lead });
+    };
+    await page.element('lead-form').emit('submit');
+    await page.element('lead-form').emit('submit');
+    assertRequestSavePending(page);
+    assert.equal(page.element('lead-notes').value, 'Keep the unconfirmed readback draft');
+    assert.equal(page.element('lead-version').textContent, 'Revision 1');
+    corrupt = false;
+    await page.element('lead-form').emit('submit');
+    assert.equal(page.element('lead-version').textContent, 'Revision 2');
+    assert.match(page.element('lead-status').textContent, /Saved values confirmed/);
+  }
+});
+
+test('intake request differing readback preserves its draft until an explicit validated current-record reload', async () => {
+  const page = client('app.js', { lead: true });
+  await settle();
+  page.element('lead-notes').value = 'Keep this draft until I choose the saved version';
+  let attempts = 0, reads = 0, current;
+  page.state.respond = (url, request) => {
+    if (url !== `/api/leads/${LEAD_ID}`) return;
+    if (request.method === 'PATCH') {
+      if (++attempts === 1) {
+        current = savedRequestReceipt(JSON.parse(request.body), { version: 3, notes: 'Later owner note', status: 'needs_review', safetyHold: true, contactAllowed: false });
+        throw new Error('Synthetic lost receipt before later edit');
+      }
+      return panelReply(409, { error: { code: 'version_conflict', message: 'The request changed' } });
+    }
+    return panelReply(200, { lead: ++reads === 2 ? { ...current, audit: [null] } : current });
+  };
+  await page.element('lead-form').emit('submit');
+  await page.element('lead-form').emit('submit');
+  assertRequestSavePending(page, { conflict: true });
+  assert.equal(page.element('lead-notes').value, 'Keep this draft until I choose the saved version');
+  assert.equal(page.element('lead-version').textContent, 'Revision 1');
+  assert.match(page.element('lead-error').textContent, /now differs/);
+  await page.element('reload-lead').emit('click');
+  assert.equal(page.element('navigation-guard').hidden, false);
+  assert.match(page.element('guard-description').textContent, /previous save may have completed/);
+  await page.element('keep-editing').emit('click');
+  assertRequestSavePending(page, { conflict: true });
+  await page.element('reload-lead').emit('click');
+  await page.element('discard-changes').emit('click');
+  assertRequestSavePending(page, { conflict: true });
+  assert.equal(page.element('lead-notes').value, 'Keep this draft until I choose the saved version');
+  assert.match(page.element('lead-error').textContent, /details were incomplete/);
+  await page.element('reload-lead').emit('click');
+  await page.element('discard-changes').emit('click');
+  assert.equal(page.element('lead-notes').value, 'Later owner note');
+  assert.equal(page.element('lead-version').textContent, 'Revision 3');
+  assert.equal(page.element('lead-status-select').value, 'needs_review');
+  assert.equal(page.element('lead-fields').disabled, false);
+  assert.equal(page.element('save-lead').textContent, 'Save changes');
+  assert.equal(page.element('lead-dirty').hidden, true);
+  assert.equal(page.element('callback-task-fields').disabled, true);
+  assert.match(page.element('lead-status').textContent, /Previous save outcome not established/);
+  assert.equal(page.calls.filter(call => call.method === 'PATCH').length, 2);
+  await page.element('nav-profile').emit('click');
+  assert.equal(page.element('profile-view').hidden, false);
+});
+
+test('intake request save accepts the final writable revision and numeric extended-year chronology without weakening fresh receipt bounds', async () => {
+  const original = { ...savedLead, version: Number.MAX_SAFE_INTEGER - 2,
+    createdAt: '9999-12-31T23:59:59.999Z', updatedAt: '9999-12-31T23:59:59.999Z' };
+  let attempts = 0;
+  const page = client('app.js', { lead: true, respond: (url, request) => {
+    if (url !== `/api/leads/${LEAD_ID}`) return;
+    if (request.method !== 'PATCH') return panelReply(200, { lead: original });
+    const lead = savedRequestReceipt(JSON.parse(request.body), { createdAt: original.createdAt,
+      updatedAt: '+010000-01-01T00:00:00.000Z', audit: [] });
+    if (++attempts === 1) lead.version = Number.MAX_SAFE_INTEGER;
+    return panelReply(200, { lead });
+  } });
+  await settle();
+  assert.equal(page.element('lead-version').textContent, 'Revision ' + original.version);
+  page.element('lead-notes').value = 'Last supported revision at an extended year';
+  await page.element('lead-form').emit('submit');
+  assertRequestSavePending(page);
+  assert.equal(page.element('lead-version').textContent, 'Revision ' + original.version);
+  await page.element('lead-form').emit('submit');
+  assert.equal(page.element('lead-version').textContent, 'Revision ' + (Number.MAX_SAFE_INTEGER - 1));
+  assert.equal(page.element('lead-notes').value, 'Last supported revision at an extended year');
+  assert.match(page.element('lead-status').textContent, /Changes saved/);
+  assert.equal(page.element('lead-fields').disabled, false);
+});
+
+test('intake request in-flight receipt cannot restore private values after session expiry clears its pending draft', async () => {
+  const page = client('app.js', { lead: true });
+  await settle();
+  page.element('lead-notes').value = 'Do not restore this private draft after expiry';
+  let release, expired = false;
+  page.state.respond = (url, request) => {
+    if (url === '/api/session' && expired) return panelReply(401, { error: { code: 'session_expired', message: 'Synthetic expired session' } });
+    if (url === `/api/leads/${LEAD_ID}` && request.method === 'PATCH') {
+      return new Promise(resolve => { release = () => resolve(panelReply(200, { lead: savedRequestReceipt(JSON.parse(request.body)) })); });
+    }
+  };
+  const saving = page.element('lead-form').emit('submit');
+  await settle();
+  assert.equal(page.element('lead-fields').disabled, true);
+  expired = true;
+  for (const handler of page.events.get('focus')) handler();
+  await settle();
+  assert.deepEqual(page.redirects, ['/login']);
+  assert.equal(page.element('lead-notes').value, '');
+  assert.equal(page.element('lead-detail').hidden, true);
+  release();
+  await saving;
+  assert.equal(page.element('lead-notes').value, '');
+  assert.equal(page.element('lead-detail').hidden, true);
+  assert.equal(page.element('requests-list').children.length, 0);
+  assert.equal(page.element('lead-audit').children.length, 0);
+  assert.equal(page.element('lead-status').textContent, '');
+});
+
+test('intake uncertain request offers explicit validated reload after a permanent retry refusal', async () => {
+  for (const [first, later] of [['network', 400], ['receipt', 403]]) {
+    const page = client('app.js', { lead: true });
+    await settle();
+    page.element('lead-notes').value = 'Keep the draft until I confirm the saved-version choice';
+    let attempts = 0, reads = 0, releaseRead;
+    page.state.respond = (url, outgoing) => {
+      if (url !== `/api/leads/${LEAD_ID}`) return;
+      if (outgoing.method === 'PATCH') {
+        if (++attempts === 1) {
+          if (first === 'network') throw new Error('Synthetic unknown write outcome');
+          return panelReply(200, { lead: savedRequestReceipt(JSON.parse(outgoing.body), { id: PROJECT_ID }) });
+        }
+        return panelReply(later, { error: { code: later === 400 ? 'invalid_input' : 'forbidden', message: 'Synthetic permanent refusal' } });
+      }
+      if (++reads === 1) return new Promise(resolve => { releaseRead = () => resolve(panelReply(200, { lead: { ...savedLead, id: PROJECT_ID } })); });
+      return panelReply(200, { lead: savedLead });
+    };
+    await page.element('lead-form').emit('submit');
+    await page.element('lead-form').emit('submit');
+    assertRequestSavePending(page);
+    assert.equal(page.element('lead-uncertain').hidden, false);
+    assert.equal(page.element('reload-uncertain-lead').disabled, false);
+    assert.equal(reads, 0, 'An uncertain command does not automatically discard or reload its draft');
+    await page.element('reload-uncertain-lead').emit('click');
+    assert.equal(page.element('navigation-guard').hidden, false, 'The owner can explicitly choose to load the saved version');
+    assert.match(page.element('guard-description').textContent, /discards your draft/);
+    assert.match(page.element('guard-description').textContent, /previous save may have completed/);
+    await page.element('keep-editing').emit('click');
+    assertRequestSavePending(page);
+    assert.equal(reads, 0);
+    await page.element('reload-uncertain-lead').emit('click');
+    const reloading = page.element('discard-changes').emit('click');
+    await settle();
+    assert.equal(page.element('lead-notes').value, 'Keep the draft until I confirm the saved-version choice');
+    assert.equal(page.element('lead-fields').disabled, true);
+    assert.equal(page.element('save-lead').disabled, true);
+    assert.equal(page.element('reload-uncertain-lead').disabled, true);
+    await page.element('reload-uncertain-lead').emit('click');
+    assert.equal(page.element('navigation-guard').hidden, true);
+    assert.equal(reads, 1);
+    releaseRead();
+    await reloading;
+    assertRequestSavePending(page);
+    assert.equal(page.element('lead-uncertain').hidden, false);
+    assert.equal(page.element('lead-notes').value, 'Keep the draft until I confirm the saved-version choice');
+    assert.equal(page.element('lead-version').textContent, 'Revision 1');
+    assert.match(page.element('lead-error').textContent, /details were incomplete/);
+    await page.element('reload-uncertain-lead').emit('click');
+    await page.element('discard-changes').emit('click');
+    assert.equal(reads, 2);
+    assert.equal(page.element('lead-notes').value, savedLead.notes);
+    assert.equal(page.element('lead-version').textContent, 'Revision 1');
+    assert.equal(page.element('lead-fields').disabled, false);
+    assert.equal(page.element('lead-uncertain').hidden, true);
+    assert.equal(page.element('save-lead').textContent, 'Save changes');
+    assert.equal(page.element('lead-dirty').hidden, true);
+    assert.match(page.element('lead-status').textContent, /Saved version loaded.*Previous save outcome not established/);
+    assert.doesNotMatch(page.element('lead-status').textContent, /Changes saved|Saved values confirmed/);
+    const writes = page.calls.filter(call => call.path === `/api/leads/${LEAD_ID}` && call.method === 'PATCH');
+    assert.equal(writes.length, 2);
+    assert.deepEqual(writes[1], writes[0]);
+    await page.element('nav-profile').emit('click');
+    assert.equal(page.element('profile-view').hidden, false);
+  }
 });
 

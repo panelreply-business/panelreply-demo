@@ -177,7 +177,9 @@ const { outputLocation, prepareOutputs, JOURNAL_LIMIT } = require('./windows-sql
 const { main: sqliteObservationMain } = require('../scripts/observe-windows-sqlite.cjs');
 const crypto = require('node:crypto');
 function outputFixture() {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-sqlite-output-'));
+  // The output guard resolves its parent. Bind injected faults to the same
+  // existing directory when TEMP contains a short-name or symlink alias.
+  const directory = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'panelreply-sqlite-output-')));
   const root = path.join(directory, 'repository'), outside = path.join(directory, 'outside');
   fs.mkdirSync(root); fs.mkdirSync(outside);
   return { directory, root, outside, output: path.join(outside, 'observation.json'),
@@ -300,14 +302,21 @@ test('SQLite journal limit rejects overflow before writing and preserves the ver
 });
 
 test('parent replacement during output creation closes the report before journal or native work', () => {
-  const fixture = outputFixture(); const parked = path.join(fixture.directory, 'parked'); let closes = 0;
+  const fixture = outputFixture(); const selectedParent = path.join(fixture.directory, 'selected-parent'); let closes = 0;
   try {
+    // Retarget the raw parent alias. Windows may refuse to rename a directory
+    // with an open child, which would fail the injection before guard checks.
+    aliasDirectory(fixture.outside, selectedParent);
     const io = outputIo({ openSync: (...args) => {
-      const fd = fs.openSync(...args); fs.renameSync(fixture.outside, parked); aliasDirectory(fixture.root, fixture.outside); return fd;
+      const fd = fs.openSync(...args);
+      try { fs.unlinkSync(selectedParent); aliasDirectory(fixture.root, selectedParent); }
+      catch (error) { fs.closeSync(fd); throw error; }
+      return fd;
     }, closeSync: fd => { closes++; fs.closeSync(fd); } });
-    assert.throws(() => prepareOutputs(fixture.output, { root: fixture.root, fsImpl: io }), error => error.code === 'OUTPUT_OVERLAP'
+    assert.throws(() => prepareOutputs(path.join(selectedParent, 'observation.json'), { root: fixture.root, fsImpl: io }), error => error.code === 'OUTPUT_OVERLAP'
       && error.outputState.report.descriptorClosed && error.outputState.journal.state === 'NOT_CREATED');
-    assert.equal(closes, 1); assert.equal(fs.statSync(path.join(parked, 'observation.json')).size, 0);
+    assert.equal(closes, 1); assert.equal(fs.statSync(fixture.output).size, 0);
+    assert.equal(fs.existsSync(fixture.journal), false);
     assert.deepEqual(fs.readdirSync(fixture.root), []);
   } finally { fixture.cleanup(); }
 });

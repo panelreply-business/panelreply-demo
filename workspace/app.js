@@ -25,6 +25,8 @@
   let leadBaseline = '';
   let profileBaseline = '';
   let leadSaving = false;
+  let pendingLeadSave = null;
+  let pendingLeadReview = null;
   let leadLoading = false;
   let profileSaving = false;
   let profileLoading = false;
@@ -68,6 +70,9 @@
     user = null;
     leads = [];
     selected = null;
+    pendingLeadSave = null;
+    pendingLeadReview = null;
+    pendingNavigation = null;
     profile = null;
     leadBaseline = '';
     profileBaseline = '';
@@ -78,6 +83,7 @@
     $('export-records').disabled = true;
     $('requests-list').replaceChildren();
     $('lead-form').reset();
+    $('lead-status').textContent = '';
     $('profile-form').reset();
     $('lead-conversation').replaceChildren();
     $('lead-audit').replaceChildren();
@@ -126,24 +132,28 @@
   }
   function leadDirty() { return Boolean(selected && leadBaseline && JSON.stringify(leadDraft()) !== leadBaseline); }
   function profileDirty() { return Boolean(profile && profileBaseline && JSON.stringify(profileDraft()) !== profileBaseline); }
-  function hasDirty() { return leadDirty() || profileDirty() || schedule.isDirty(); }
+  function hasDirty() { return Boolean(pendingLeadSave) || leadDirty() || profileDirty() || schedule.isDirty(); }
   function updateDirty() {
     const deleting = deletion.isOpen();
     const taskLocked = schedule.isBusy() || schedule.isPending();
+    const requestPending = Boolean(pendingLeadSave);
     const deleteLocked = deleting || !selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict || taskLocked;
     $('delete-lead').disabled = deleteLocked;
     $('delete-conversation').disabled = deleteLocked || !selected?.conversation?.length;
-    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests || taskLocked || schedule.isDirty();
+    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests || requestPending || taskLocked || schedule.isDirty();
     $('lead-dirty').hidden = !leadDirty();
     $('profile-dirty').hidden = !profileDirty();
     $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting || taskLocked || schedule.isDirty();
-    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting;
-    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting || taskLocked;
-    schedule.setLocked(deleting || expired || !user || leadSaving || leadLoading || refreshingRequests || profileSaving || exportBusy || leadDirty() || profileDirty() || leadConflict);
+    $('save-lead').textContent = requestPending ? 'Retry save' : 'Save changes';
+    $('lead-uncertain').hidden = expired || !pendingLeadSave?.uncertain || leadConflict;
+    $('reload-uncertain-lead').disabled = expired || !pendingLeadSave?.uncertain || leadSaving || leadLoading || refreshingRequests;
+    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting || requestPending;
+    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting || taskLocked || requestPending;
+    schedule.setLocked(deleting || expired || !user || leadSaving || leadLoading || refreshingRequests || profileSaving || exportBusy || requestPending || leadDirty() || profileDirty() || leadConflict);
   }
 
   async function exportRecords() {
-    if (!user || expired || loading || leadSaving || profileSaving || exportBusy || schedule.isBusy() || schedule.isPending()) return;
+    if (!user || expired || loading || leadSaving || profileSaving || exportBusy || pendingLeadSave || schedule.isBusy() || schedule.isPending()) return;
     exportBusy = true;
     showError('export-error', '');
     $('export-status').textContent = 'Preparing a copy of the saved records…';
@@ -184,6 +194,12 @@
 
   function guarded(action) {
     if (expired) return;
+    if (pendingLeadSave) {
+      showAppError(leadConflict
+        ? 'Review the saved request with Reload saved version before leaving this draft.'
+        : 'The request save is unconfirmed. Use Retry save before leaving this draft.');
+      return;
+    }
     if (schedule.isPending()) {
       showAppError('Confirm the pending task save with Retry task save before leaving this request.');
       return;
@@ -359,7 +375,7 @@
     try {
       const data = await api(`/api/leads/${encodeURIComponent(id)}`);
       if (serial !== selectionSerial || expired) return;
-      if (!data?.lead?.id) throw new Error('The request details were incomplete. Please try again.');
+      if (!window.PanelReplySchedule.validLeadReceipt(data?.lead) || data.lead.id !== id) throw new Error('The request details were incomplete. Please try again.');
       renderLead(data.lead);
       const url = new URL(window.location.href);
       url.searchParams.set('lead', data.lead.id);
@@ -493,31 +509,142 @@
     if (!expired && selected?.id === operation.id) $('lead-status').textContent = 'Conversation deleted. Contact restrictions remain.';
   }
 
+  function receiptPhone(value) {
+    if (typeof value !== 'string' || value.length > 40 || !value.isWellFormed()
+      || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value)) return null;
+    const input = value.trim();
+    if (!/^\+?[\d\s().-]+$/.test(input)) return null;
+    let digits = input.replace(/\D/g, '');
+    if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+    if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(digits) || (input.startsWith('+') && !input.startsWith('+1'))) return null;
+    return '+1' + digits;
+  }
+
+  function savedLeadMatches(lead, command) {
+    const limits = { customerName: 120, job: 2000, zip: 5, callbackWindow: 200, requestedWorkDate: 200, notes: 2000 };
+    for (const [key, limit] of Object.entries(limits)) {
+      const input = command.body[key];
+      if (typeof input !== 'string' || input.length > limit || !input.isWellFormed()
+        || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(input) || lead[key] !== input.trim()) return false;
+    }
+    const phone = receiptPhone(command.body.phone);
+    if (!phone || lead.phone !== phone || lead.status !== command.body.status || !/[a-z]/i.test(command.body.job)) return false;
+    // The public permission reflects the current phone suppression, including
+    // restrictions discovered while saving or after an uncertain write.
+    if (lead.contactPermission !== (lead.optedOut ? 'opted_out' : command.body.contactPermission)
+      || (command.body.contactPermission === 'opted_out' && !lead.optedOut)
+      || (command.optedOut && receiptPhone(command.phone) === phone && !lead.optedOut)
+      || (command.safetyHold && !lead.safetyHold)
+      || (lead.safetyHold && lead.status !== 'needs_review')
+      || ((lead.optedOut || lead.contactPermission !== 'requested_callback') && ['new', 'contacted'].includes(lead.status))) return false;
+    return true;
+  }
+
+  function validSavedLead(lead, command) {
+    return selected?.id === command.id && selected.createdAt === command.createdAt
+      && window.PanelReplySchedule.validLeadReceipt(lead) && lead.id === command.id && lead.createdAt === command.createdAt
+      && Date.parse(lead.updatedAt) >= Date.parse(command.updatedAt);
+  }
+
+  function acceptLeadSave(lead, message) {
+    const index = leads.findIndex(item => item.id === lead.id);
+    if (index >= 0) leads[index] = lead; else leads.unshift(lead);
+    renderLead(lead, `${message} · ${dateText(lead.updatedAt)}`);
+    pendingLeadSave = null;
+  }
+
+  async function confirmLeadValues(command) {
+    const data = await api(`/api/leads/${encodeURIComponent(command.id)}`);
+    if (expired || pendingLeadSave !== command) return;
+    if (!validSavedLead(data?.lead, command) || data.lead.version <= command.body.version) {
+      throw new Error('The saved request could not be confirmed at a later revision. Your draft is still here. Use Retry save.');
+    }
+    if (!savedLeadMatches(data.lead, command)) {
+      leadConflict = true;
+      $('lead-conflict').hidden = false;
+      showError('lead-error', 'The saved request now differs from this draft. Your previous save may have completed. Use Reload saved version to review it before making another change.');
+      return;
+    }
+    // PATCH has no idempotency receipt. This confirms current saved values,
+    // not which earlier command or writer produced them.
+    acceptLeadSave(data.lead, 'Saved values confirmed');
+  }
+
+  function closeNavigationGuard() {
+    pendingNavigation = null;
+    pendingLeadReview = null;
+    $('navigation-guard').hidden = true;
+    $('guard-title').textContent = 'You have unsaved changes';
+    $('guard-description').textContent = 'Keep editing, or discard these changes before leaving this view.';
+  }
+
+  async function reloadReviewedLead(command) {
+    if (pendingLeadSave !== command || expired || leadSaving || leadLoading) return;
+    leadLoading = true;
+    updateDirty();
+    try {
+      const data = await api(`/api/leads/${encodeURIComponent(command.id)}`);
+      if (expired || pendingLeadSave !== command) return;
+      if (!validSavedLead(data?.lead, command) || data.lead.version < command.body.version) throw new Error('The saved request details were incomplete. Your draft is still here. Try Reload saved version again.');
+      // The owner chose to discard this command after reviewing the conflict.
+      // Do not discard it until a complete current record is available.
+      acceptLeadSave(data.lead, 'Saved version loaded. Previous save outcome not established');
+    } catch (cause) {
+      if (!expired) showError('lead-error', cause.message || 'Could not load the saved request. Your draft is still here.');
+    } finally {
+      leadLoading = false;
+      if (!expired) updateDirty();
+    }
+  }
+
+  function reviewLeadReload() {
+    if (!pendingLeadSave) return guarded(() => { if (selected) selectLead(selected.id); });
+    if (!pendingLeadSave.uncertain || leadSaving || leadLoading || expired) return;
+    pendingLeadReview = pendingLeadSave;
+    pendingNavigation = null;
+    $('guard-title').textContent = 'Load the current saved request?';
+    $('guard-description').textContent = 'This discards your draft and stops retrying it. Your previous save may have completed. The saved request will load only after its details are confirmed.';
+    $('navigation-guard').hidden = false;
+    $('keep-editing').focus();
+    $('navigation-guard').scrollIntoView({ block: 'nearest' });
+  }
+
   async function saveLead(event) {
     event.preventDefault();
-    if (!selected || leadSaving || leadLoading || refreshingRequests || leadConflict || schedule.isBusy() || schedule.isPending() || schedule.isDirty() || !$('lead-form').reportValidity()) return;
+    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || leadConflict || deletion.isOpen() || schedule.isBusy() || schedule.isPending() || schedule.isDirty()
+      || (!pendingLeadSave && !$('lead-form').reportValidity())) return;
     leadSaving = true;
-    const id = selected.id;
-    const payload = { version: selected.version, ...leadDraft() };
+    const command = pendingLeadSave || { id: selected.id, createdAt: selected.createdAt, updatedAt: selected.updatedAt,
+      phone: selected.phone, optedOut: selected.optedOut, safetyHold: selected.safetyHold,
+      body: { version: selected.version, ...leadDraft() }, uncertain: false };
+    pendingLeadSave = command;
+    closeNavigationGuard();
     showError('lead-error', '');
     $('lead-status').textContent = 'Saving changes…';
     $('lead-fields').disabled = true;
     updateDirty();
     try {
-      const data = await api(`/api/leads/${encodeURIComponent(id)}`, { method: 'PATCH', body: payload });
-      if (expired) return;
-      if (!data?.lead?.id) throw new Error('The save response was incomplete. Reload the saved version before making another change.');
-      const index = leads.findIndex(lead => lead.id === data.lead.id);
-      if (index >= 0) leads[index] = data.lead;
-      else leads.unshift(data.lead);
-      renderLead(data.lead, `Changes saved · ${dateText(data.lead.updatedAt)}`);
+      const data = await api(`/api/leads/${encodeURIComponent(command.id)}`, { method: 'PATCH', body: command.body });
+      if (expired || pendingLeadSave !== command) return;
+      if (!validSavedLead(data?.lead, command) || data.lead.version !== command.body.version + 1
+        || data.lead.version >= Number.MAX_SAFE_INTEGER || !savedLeadMatches(data.lead, command)) {
+        throw new Error('The save response did not confirm this request and its submitted values. Your draft is still here. Use Retry save.');
+      }
+      acceptLeadSave(data.lead, 'Changes saved');
     } catch (cause) {
       if (expired) return;
       $('lead-status').textContent = '';
+      if (!cause.status || cause.status >= 500 || cause.status < 400 || cause.status === 408 || cause.status === 429) command.uncertain = true;
+      if (!command.uncertain) pendingLeadSave = null;
       showError('lead-error', cause.message || 'Could not save the changes. Your edits are still here.');
       if (cause.status === 409 && cause.code === 'version_conflict') {
-        leadConflict = true;
-        $('lead-conflict').hidden = false;
+        if (command.uncertain) {
+          try { await confirmLeadValues(command); }
+          catch (readError) { if (!expired) showError('lead-error', readError.message || 'The saved request could not be confirmed. Your draft is still here. Use Retry save.'); }
+        } else {
+          leadConflict = true;
+          $('lead-conflict').hidden = false;
+        }
       }
       markInvalid(cause, $('lead-form'), FIELD_IDS);
     } finally {
@@ -532,7 +659,7 @@
   async function saveProfile(event) {
     event.preventDefault();
     updateApprovals();
-    if (!profile || profileSaving || profileLoading || profileConflict || !$('profile-form').reportValidity()) return;
+    if (!profile || profileSaving || profileLoading || profileConflict || pendingLeadSave || !$('profile-form').reportValidity()) return;
     profileSaving = true;
     const payload = { version: profile.version, ...profileDraft() };
     showError('profile-error', '');
@@ -666,12 +793,17 @@
     try { await api('/api/logout', { method: 'POST' }); if (!expired) clearSession(); }
     catch (cause) { if (!expired) { showAppError(`Could not sign out. ${cause.message}`); $('sign-out').disabled = false; } }
   }));
-  $('keep-editing').addEventListener('click', () => { pendingNavigation = null; $('navigation-guard').hidden = true; });
+  $('keep-editing').addEventListener('click', closeNavigationGuard);
   $('discard-changes').addEventListener('click', () => {
-    if (schedule.isBusy() || schedule.isPending()) return;
+    if (leadSaving || leadLoading || schedule.isBusy() || schedule.isPending()) return;
+    if (pendingLeadSave) {
+      if (pendingLeadReview !== pendingLeadSave) return;
+      const command = pendingLeadSave;
+      closeNavigationGuard();
+      return reloadReviewedLead(command);
+    }
     const action = pendingNavigation;
-    pendingNavigation = null;
-    $('navigation-guard').hidden = true;
+    closeNavigationGuard();
     if (selected) renderLead(selected);
     if (profile) renderProfile(profile);
     schedule.discard();
@@ -691,7 +823,8 @@
   $('lead-form').addEventListener('change', () => { updateAllowedStatuses(); updateDirty(); });
   $('profile-form').addEventListener('input', event => { event.target.removeAttribute('aria-invalid'); $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
   $('profile-form').addEventListener('change', () => { $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
-  $('reload-lead').addEventListener('click', () => guarded(() => { if (selected) selectLead(selected.id); }));
+  $('reload-lead').addEventListener('click', reviewLeadReload);
+  $('reload-uncertain-lead').addEventListener('click', reviewLeadReload);
   $('reload-profile').addEventListener('click', () => guarded(loadProfile));
   window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving || deletion.isPending() || schedule.isPending() || schedule.isBusy())) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });

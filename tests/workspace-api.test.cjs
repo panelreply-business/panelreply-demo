@@ -13,6 +13,7 @@ const { hashPassword } = require('../workspace/auth.cjs');
 const { createWorkspaceApp, MAX_BODY_BYTES } = require('../workspace/api.cjs');
 const { workspaceConfig } = require('../workspace-server.cjs');
 const { main: createOwner, parseArgs, readPassword } = require('../scripts/workspace-admin.cjs');
+const { client, settle } = require('./platform-client-fixture.cjs');
 
 const ORIGIN = 'http://127.0.0.1:10001';
 const PASSWORD = 'fixture-only-password-2026';
@@ -184,6 +185,131 @@ test('lead create/retry/update/profile operations preserve version and tenant bo
   profileInput.facts.services = { verified: true, answer: 'EV charger installations' };
   assert.equal((await request(f.app, { method: 'PATCH', url: '/api/profile', headers, input: profileInput })).status, 200);
   assert.equal((await request(f.app, { method: 'PATCH', url: '/api/profile', headers, input: profileInput })).status, 409);
+});
+
+test('request editor consumes API normalization and confirms later opt-out state without replaying a committed update', async t => {
+  const f = await fixture(t), signed = await login(f);
+  const created = await request(f.app, { method: 'POST', url: '/api/leads',
+    headers: { ...signed.headers, 'idempotency-key': crypto.randomUUID() }, input: LEAD });
+  assert.equal(created.status, 201);
+  const initial = created.body.lead, url = '/api/leads/' + initial.id;
+  let phase = 'fresh', lostWrites = 0;
+  const reply = result => ({ status: result.status, ok: result.status >= 200 && result.status < 300,
+    headers: result.headers, json: async () => structuredClone(result.body) });
+  const page = client('app.js', { lead: initial.id, respond: async (route, outgoing) => {
+    if (route === url && outgoing.method === 'PATCH' && phase === 'lost' && ++lostWrites === 2) {
+      return reply({ status: 403, body: { error: { code: 'forbidden', message: 'Synthetic refusal after a lost committed response' } } });
+    }
+    const response = await request(f.app, { method: outgoing.method || 'GET', url: route, raw: outgoing.body || '',
+      headers: { cookie: signed.headers.cookie, ...Object.fromEntries(Object.entries(outgoing.headers || {}).map(([key, value]) => [key.toLowerCase(), value])) } });
+    if (route === url && outgoing.method === 'PATCH' && phase === 'lost' && lostWrites === 1) {
+      assert.equal(response.status, 200);
+      throw new Error('Synthetic loss of the real committed API response');
+    }
+    return reply(response);
+  } });
+  await settle();
+  assert.equal(page.element('lead-version').textContent, 'Revision 1');
+  page.element('lead-name').value = '  Fixture owner 🔧  ';
+  page.element('lead-phone').value = '1 (248) 555-0123';
+  page.element('lead-job').value = '  Install a charger\nUse the reviewed plan  ';
+  page.element('lead-callback').value = '  Afternoon  ';
+  page.element('lead-work-date').value = '  Next week  ';
+  page.element('lead-notes').value = '  First saved note 🔧  ';
+  page.element('lead-status-select').value = 'needs_review';
+  await page.element('lead-form').emit('submit');
+  assert.match(page.element('lead-status').textContent, /Changes saved/);
+  const fresh = f.store.getLead(f.user, initial.id);
+  assert.equal(fresh.version, 2);
+  for (const [key, id] of Object.entries({ customerName: 'lead-name', phone: 'lead-phone', job: 'lead-job', callbackWindow: 'lead-callback', requestedWorkDate: 'lead-work-date', notes: 'lead-notes' })) {
+    assert.equal(page.element(id).value, fresh[key]);
+  }
+  assert.equal(fresh.customerName, 'Fixture owner 🔧');
+  assert.equal(fresh.phone, '+12485550123');
+  assert.equal(fresh.notes, 'First saved note 🔧');
+  phase = 'lost';
+  page.element('lead-notes').value = '  Confirm this saved note after STOP  ';
+  await page.element('lead-form').emit('submit');
+  assert.equal(page.element('lead-fields').disabled, true);
+  assert.equal(page.element('lead-status').textContent, '');
+  assert.equal(page.element('save-lead').textContent, 'Retry save');
+  assert.equal(f.store.getLead(f.user, initial.id).version, 3);
+  await page.element('lead-form').emit('submit');
+  assert.equal(page.element('lead-fields').disabled, true);
+  assert.equal(page.element('lead-notes').value, '  Confirm this saved note after STOP  ');
+  assert.match(page.element('lead-error').textContent, /Synthetic refusal/);
+  const stop = await request(f.app, { method: 'POST', url: '/api/leads',
+    headers: { ...signed.headers, 'idempotency-key': crypto.randomUUID() }, input: { ...LEAD, contactPermission: 'opted_out' } });
+  assert.equal(stop.status, 201);
+  const restricted = f.store.getLead(f.user, initial.id);
+  // This request already needs review, so STOP changes the public restriction
+  // without another parent revision. Revision3 still follows submitted version2.
+  assert.equal(restricted.version, 3);
+  assert.equal(restricted.contactPermission, 'opted_out');
+  assert.equal(restricted.contactAllowed, false);
+  await page.element('lead-form').emit('submit');
+  assert.match(page.element('lead-status').textContent, /Saved values confirmed/);
+  assert.doesNotMatch(page.element('lead-status').textContent, /Changes saved/);
+  assert.equal(page.element('lead-notes').value, 'Confirm this saved note after STOP');
+  assert.equal(page.element('lead-permission').value, 'opted_out');
+  assert.equal(page.element('lead-version').textContent, 'Revision ' + restricted.version);
+  assert.equal(page.element('callback-task-fields').disabled, true);
+  const writes = page.calls.filter(call => call.path === url && call.method === 'PATCH').slice(1);
+  assert.equal(writes.length, 3);
+  assert.deepEqual(writes, [writes[0], writes[0], writes[0]]);
+  assert.equal(JSON.parse(writes[0].body).version, 2);
+  assert.equal(writes[0].headers['Idempotency-Key'], undefined);
+  assert.equal(f.store.getLead(f.user, initial.id).audit.filter(entry => entry.action === 'lead.updated').length, 2);
+  assert.deepEqual(f.store.getLead(f.user, initial.id), restricted);
+});
+
+test('request receipt phone normalization rejects forbidden input while preserving permitted whitespace', async t => {
+  const f = await fixture(t), signed = await login(f);
+  const created = await request(f.app, { method: 'POST', url: '/api/leads',
+    headers: { ...signed.headers, 'idempotency-key': crypto.randomUUID() }, input: LEAD });
+  assert.equal(created.status, 201);
+  const initial = created.body.lead, url = '/api/leads/' + initial.id, observations = [];
+  const reply = result => ({ status: result.status, ok: result.status >= 200 && result.status < 300,
+    headers: result.headers, json: async () => structuredClone(result.body) });
+  async function transport(route, outgoing) {
+    return reply(await request(f.app, { method: outgoing.method || 'GET', url: route, raw: outgoing.body || '',
+      headers: { cookie: signed.headers.cookie, ...Object.fromEntries(Object.entries(outgoing.headers || {}).map(([key, value]) => [key.toLowerCase(), value])) } }));
+  }
+  for (const phone of ['\u000b2485550123', '248\u000c5550123', '2485550123\u000c', '248\ud8005550123']) {
+    const rejected = await request(f.app, { method: 'PATCH', url, headers: signed.headers,
+      input: { version: initial.version, status: initial.status, phone, notes: 'Keep rejected phone draft' } });
+    assert.equal(rejected.status, 400);
+    assert.deepEqual(rejected.body.error.fields, ['phone']);
+    assert.deepEqual(f.store.getLead(f.user, initial.id), initial);
+    const page = client('app.js', { lead: initial.id, respond: async (route, outgoing) => {
+      if (route === url && outgoing.method === 'PATCH') {
+        const body = JSON.parse(outgoing.body), version = initial.version + 1;
+        return reply({ status: 200, body: { lead: { ...initial, ...body, phone: initial.phone, version,
+          audit: [...initial.audit, { action: 'lead.updated', version, createdAt: initial.updatedAt, details: { fields: ['phone', 'notes'] } }] } } });
+      }
+      return transport(route, outgoing);
+    } });
+    await settle();
+    page.element('lead-phone').value = phone;
+    page.element('lead-notes').value = 'Keep rejected phone draft';
+    await page.element('lead-form').emit('submit');
+    observations.push({ phone, apiStatus: rejected.status, fieldsLocked: page.element('lead-fields').disabled,
+      version: page.element('lead-version').textContent, status: page.element('lead-status').textContent,
+      phoneRetained: page.element('lead-phone').value === phone, note: page.element('lead-notes').value });
+  }
+  const valid = client('app.js', { lead: initial.id, respond: transport });
+  await settle();
+  valid.element('lead-phone').value = '\t248\t555-0123\r';
+  valid.element('lead-notes').value = '  Permitted whitespace control  ';
+  await valid.element('lead-form').emit('submit');
+  assert.match(valid.element('lead-status').textContent, /Changes saved/);
+  assert.equal(valid.element('lead-phone').value, '+12485550123');
+  assert.equal(valid.element('lead-notes').value, 'Permitted whitespace control');
+  assert.equal(valid.element('lead-version').textContent, 'Revision 2');
+  assert.equal(f.store.getLead(f.user, initial.id).audit.filter(entry => entry.action === 'lead.updated').length, 1);
+  assert.equal(observations.every(result => result.apiStatus === 400 && result.fieldsLocked
+    && result.version === 'Revision 1' && result.status === '' && result.phoneRetained && result.note === 'Keep rejected phone draft'), true,
+  JSON.stringify(observations));
 });
 
 test('valid Unicode at every supported lead limit fits the bounded JSON body', async t => {

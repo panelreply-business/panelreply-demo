@@ -4,12 +4,13 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { test } = require('node:test');
+const { test, after } = require('node:test');
 const { fork } = require('node:child_process');
 const { Worker } = require('node:worker_threads');
 const { loadCandidate } = require('../workspace/native/windows-storage/load.cjs');
 const { CASES } = require('./windows-storage-cases.cjs');
 const { fixture, startFixture, stopChild } = require('./windows-storage-support.cjs');
+const { CHANNEL_ENV, createObservationPublisher } = require('./windows-storage-observation-protocol.cjs');
 
 const candidate = loadCandidate(process.env.PANELREPLY_WINDOWS_COMPONENT_BUILD, {
   sourceCommit: process.env.PANELREPLY_WINDOWS_COMPONENT_COMMIT,
@@ -17,8 +18,9 @@ const candidate = loadCandidate(process.env.PANELREPLY_WINDOWS_COMPONENT_BUILD, 
 });
 const { addon, fixtureExecutable } = candidate;
 const ROOT = process.env.PANELREPLY_WINDOWS_TEST_ROOT;
-const OBSERVATIONS = process.env.PANELREPLY_WINDOWS_COMPONENT_OBSERVATIONS;
-if (!ROOT || !path.isAbsolute(ROOT) || !OBSERVATIONS || !path.isAbsolute(OBSERVATIONS)) throw new Error('The component runner must provide a disposable root and observation path.');
+if (!ROOT || !path.isAbsolute(ROOT)) throw new Error('The component runner must provide a disposable root.');
+const observations = createObservationPublisher(process.env[CHANNEL_ENV]);
+after(() => observations.finish(), { timeout: 5000 });
 const fixtureBytes = Buffer.from('Synthetic private storage fixture. No customer data.\n');
 const bytes = Buffer.concat([Buffer.from('Electrical label Ω / 🔌\n'), Buffer.from(Array.from({ length: 256 }, (_, index) => index))]);
 const MAX_BYTES = 1024 * 1024;
@@ -36,9 +38,7 @@ function caseDirectory(id) {
   return directory;
 }
 function observe(id, event, details) {
-  const value = JSON.stringify({ case: id, event, at: new Date().toISOString(), details });
-  assert.ok(Buffer.byteLength(value) <= 256 * 1024, 'A component observation exceeded its bound.');
-  fs.appendFileSync(OBSERVATIONS, value + '\n');
+  observations.record(id, event, details);
 }
 function componentCase(id, body) {
   assert.ok(CASES.some(item => item.id === id), 'A case is missing from the fixed component catalog.');
@@ -47,7 +47,15 @@ function componentCase(id, body) {
     const record = (event, details) => observe(id, event, details);
     record('started', { testInstrumented: CASES.find(item => item.id === id).testInstrumented });
     try { await body(t, base, record); record('body-completed', {}); }
-    catch (error) { record('body-failed', { code: error.code || null, message: error.message, win32Code: error.win32Code ?? null }); throw error; }
+    catch (error) {
+      try { record('body-failed', { code: error.code || null, message: error.message, win32Code: error.win32Code ?? null }); }
+      catch (observationError) {
+        // Preserve the native assertion when its diagnostic transport fails.
+        // The missing terminal protocol frame independently fails evidence.
+        if (error && typeof error === 'object') error.componentObservationError = String(observationError.message).slice(0, 1000);
+      }
+      throw error;
+    }
   });
 }
 function privateDirectory(t, base, name = 'private') {
@@ -188,8 +196,14 @@ componentCase('WNS.root_security_rejection', (t, base, record) => {
     if (remember) remember(created.metadata);
     const before = raw(directory);
     if (policy === 'empty') { assertEmptyDacl(before, 'directory'); assert.deepEqual(before, created.metadata); }
+    // Preserve the independent descriptor before a rejection can fail. The
+    // fixture name alone does not establish its actual inheritance flags.
+    record('unsafe-root-before-open', { policy, created: created.metadata, before });
+    if (policy === 'unprotected') assert.equal(before.protectedDacl, false, 'The unprotected root fixture must have inheritance enabled before testing rejection.');
     const parentEntries = fs.readdirSync(base).sort();
-    rejectDacl(() => addon.openPrivateDirectory(directory));
+    let unexpectedLease;
+    try { rejectDacl(() => { unexpectedLease = addon.openPrivateDirectory(directory); }); }
+    finally { if (unexpectedLease) unexpectedLease.close(); }
     const after = raw(directory);
     assert.deepEqual(after, before);
     assert.deepEqual(fs.readdirSync(base).sort(), parentEntries);
@@ -229,17 +243,31 @@ componentCase('WNS.child_security_and_hardlink_rejection', (t, base, record) => 
     record('unchanged-rejected-child', { policy, metadata: before, after });
   }
   const saved = lease.createFile('original.bin', bytes);
+  // Build the adversarial link fixture outside the exclusive directory lease.
+  // Keep the rejection assertions on a reopened lease over that same identity.
+  const directoryIdentity = lease.inspect();
+  lease.close();
   fs.linkSync(path.join(directory, 'original.bin'), path.join(directory, 'alias.bin'));
   const first = raw(path.join(directory, 'original.bin')), alias = raw(path.join(directory, 'alias.bin'));
   assert.equal(first.fileId, saved.fileId); assert.equal(alias.fileId, saved.fileId);
   assert.equal(first.links, 2); assert.equal(alias.links, 2);
+  record('hardlink-fixture-before-open', { directory: directoryIdentity, first, alias });
+  const linkedLease = reopen(t, directory);
+  assert.equal(linkedLease.inspect().fileId, directoryIdentity.fileId);
+  assert.equal(linkedLease.inspect().volumeSerial, directoryIdentity.volumeSerial);
   for (const name of ['original.bin', 'alias.bin']) {
-    code(() => lease.readFile(name, MAX_BYTES), ['INVALID_OBJECT']);
-    code(() => lease.inspectFile(name), ['INVALID_OBJECT']);
+    code(() => linkedLease.readFile(name, MAX_BYTES), ['INVALID_OBJECT']);
+    code(() => linkedLease.inspectFile(name), ['INVALID_OBJECT']);
   }
+  linkedLease.close();
   fs.unlinkSync(path.join(directory, 'alias.bin'));
-  assert.deepEqual(lease.readFile('original.bin', MAX_BYTES), bytes);
-  record('hardlink-identity-and-last-link-read', { first, alias, remaining: lease.inspectFile('original.bin') });
+  const singleLinkLease = reopen(t, directory);
+  assert.equal(singleLinkLease.inspect().fileId, directoryIdentity.fileId);
+  assert.equal(singleLinkLease.inspect().volumeSerial, directoryIdentity.volumeSerial);
+  assert.deepEqual(singleLinkLease.readFile('original.bin', MAX_BYTES), bytes);
+  const remaining = singleLinkLease.inspectFile('original.bin');
+  assert.equal(remaining.fileId, saved.fileId); assert.equal(remaining.links, 1);
+  record('hardlink-identity-and-last-link-read', { first, alias, remaining });
 });
 
 componentCase('WNS.path_and_argument_boundaries', (t, base, record) => {

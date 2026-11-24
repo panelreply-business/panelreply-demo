@@ -1,0 +1,165 @@
+{
+  "format": "panelreply-native-fixture-followup-independent-source-review-v1",
+  "reviewedAt": "2026-11-24T01:46:17.547318+00:00",
+  "reviewer": "safari_recovery",
+  "result": "PASS_SOURCE_REVIEW",
+  "findings": [],
+  "patch": {
+    "path": "/tmp/panelreply-native-fixture-followup-20261124.patch",
+    "sha256": "2a83c0a345dfa6751c4a261e2a7b5874434eec2e8ddc951a6e1662b101551865"
+  },
+  "before": {
+    "path": "/tmp/panelreply-windows-cases-before-diagnostics-20261124.cjs",
+    "sha256": "e52f152f21fc9269cbe094437f08f738d81700506e71582a5b1ad82b068a9a5b"
+  },
+  "files": [
+    {
+      "path": "tests/windows-storage.windows.cjs",
+      "bytes": 35084,
+      "sha256": "264e3c3908d9462d66fa6a6b80b3faa716531f72b0f1aa8c782ad85d06e864fc"
+    },
+    {
+      "path": "tests/windows-storage-cases.cjs",
+      "bytes": 2338,
+      "sha256": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4"
+    },
+    {
+      "path": "workspace/native/windows-storage/storage.cc",
+      "bytes": 34898,
+      "sha256": "63fce31b69e259603aeb08f016254b3a56cd62e89133c4b35861ef2d7edd84f8"
+    },
+    {
+      "path": "workspace/native/windows-storage/fixture.cc",
+      "bytes": 40694,
+      "sha256": "fed3df76677eb0dbd432d88adf967f352527741f29129fcd6594fbd64a5469d6"
+    },
+    {
+      "path": "docs/evidence/windows-native-fixture-follow-up-2026-11-24.json",
+      "bytes": 2645,
+      "sha256": "fcf73969c92772bf0848048d4816efe2254b27df86234ee2429f5c54e93ad1de"
+    }
+  ],
+  "casePreservation": {
+    "caseIdsUnchanged": true,
+    "changedCases": [
+      "WNS.root_security_rejection",
+      "WNS.child_security_and_hardlink_rejection"
+    ],
+    "unchangedCaseBodies": 13,
+    "cases": [
+      {
+        "id": "WNS.private_create_roundtrip",
+        "beforeSha256": "01ba56f5e0ba9fbe20f69f97fce13943211728d68d7d93145f491aa1ae5d2b74",
+        "afterSha256": "01ba56f5e0ba9fbe20f69f97fce13943211728d68d7d93145f491aa1ae5d2b74",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.exclusive_create_preserves_existing",
+        "beforeSha256": "c10362c527d3dcc49db981e5e5e77eea15fb56c738f4d35262a230d1cdb7877d",
+        "afterSha256": "c10362c527d3dcc49db981e5e5e77eea15fb56c738f4d35262a230d1cdb7877d",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.root_security_rejection",
+        "beforeSha256": "8a481017906186cba0502e731d80880f92b1c25003226a81763f42b2d2542199",
+        "afterSha256": "f127051ca88b7f819558b931a244d0bcd8c9065f35dcf55d20e07b8b9577b9a8",
+        "bytePreserved": false
+      },
+      {
+        "id": "WNS.different_owner_rejection",
+        "beforeSha256": "108c77f942f6599a090fecee52ef7114a9b24fb5d839c637137632812f75b435",
+        "afterSha256": "108c77f942f6599a090fecee52ef7114a9b24fb5d839c637137632812f75b435",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.child_security_and_hardlink_rejection",
+        "beforeSha256": "80b0cd11c749cd178d161f4dadf37362db1ad2a73f38eeeaa8070845ddbddc49",
+        "afterSha256": "e3d8c5bd97a1faf2a5c8a1337e3be75830f94e1f7b21b58927904badb1a391e5",
+        "bytePreserved": false
+      },
+      {
+        "id": "WNS.path_and_argument_boundaries",
+        "beforeSha256": "4a15b0bf0ebeb1ecd44930b2c56a2ef07ddcc566b3949f160c665877ae3591b4",
+        "afterSha256": "4a15b0bf0ebeb1ecd44930b2c56a2ef07ddcc566b3949f160c665877ae3591b4",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.held_parent_rename_barriers",
+        "beforeSha256": "4f6b6b2514e8fa09360637709aac6ac0218bf9d5d61a337a118b767795912652",
+        "afterSha256": "4f6b6b2514e8fa09360637709aac6ac0218bf9d5d61a337a118b767795912652",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.attribute_only_reparse_countertest",
+        "beforeSha256": "3a0319a3c8a4f84be97a2b9356f36ded8b6e1fc9b5f70ed74ec699f8912baf8a",
+        "afterSha256": "3a0319a3c8a4f84be97a2b9356f36ded8b6e1fc9b5f70ed74ec699f8912baf8a",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.existing_reparse_paths_rejected",
+        "beforeSha256": "518459b75f63e1cc755f0874699e1c86e89a42767a67d88049bdc6dd12f572bb",
+        "afterSha256": "518459b75f63e1cc755f0874699e1c86e89a42767a67d88049bdc6dd12f572bb",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.concurrent_exclusive_publication",
+        "beforeSha256": "dc7a648e72a337fe8ab42b355f5ed6fd27bc7c8b9c7e812c070fb0a5df8a8930",
+        "afterSha256": "dc7a648e72a337fe8ab42b355f5ed6fd27bc7c8b9c7e812c070fb0a5df8a8930",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.anonymous_io_denial",
+        "beforeSha256": "55eaef75c81bbde7aadf6b71e20dfd5c17a849a8ba1fbd2a098a8ad3ec217f1e",
+        "afterSha256": "55eaef75c81bbde7aadf6b71e20dfd5c17a849a8ba1fbd2a098a8ad3ec217f1e",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.concurrent_writer_read_refusal",
+        "beforeSha256": "43041d69afb53ca8510c59257e60fb5b4d0ff956b8e74474d5adf9564d4ada10",
+        "afterSha256": "43041d69afb53ca8510c59257e60fb5b4d0ff956b8e74474d5adf9564d4ada10",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.lease_receiver_close_and_worker_cleanup",
+        "beforeSha256": "77f252e3f269922d87f05110403c29282eb193c1b4ae33a61b716da9b2317f81",
+        "afterSha256": "77f252e3f269922d87f05110403c29282eb193c1b4ae33a61b716da9b2317f81",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.instrumented_relative_create_race",
+        "beforeSha256": "da25b8898ec8910215aba7f3558ec2a1baac1df4b4a9718bb7e157d408eb6f19",
+        "afterSha256": "da25b8898ec8910215aba7f3558ec2a1baac1df4b4a9718bb7e157d408eb6f19",
+        "bytePreserved": true
+      },
+      {
+        "id": "WNS.instrumented_probe_cleanup_and_isolation",
+        "beforeSha256": "6153bb2fccc9d6bc2b9c577c3631b0ab5f52ad40420312e983169cf84ec11e69",
+        "afterSha256": "6153bb2fccc9d6bc2b9c577c3631b0ab5f52ad40420312e983169cf84ec11e69",
+        "bytePreserved": true
+      }
+    ]
+  },
+  "checks": [
+    "Only the two assigned native case bodies differ. The other13 case bodies and the entire shared helper prefix remain byte-identical to the frozen component-output candidate.",
+    "The root-security case still requires creation success and rejection for null, empty, unprotected and broad policies. It records the independently observed descriptors before rejection, and now requires actual protectedDacl=false for the unprotected fixture.",
+    "The root rejection still calls the same rejectDacl predicate. An unexpectedly returned lease is closed in finally without changing the rejection expectation. The subsequent unchanged-metadata and unchanged-parent-entry assertions remain.",
+    "The child case keeps the original DACL-fixture loop byte-identical before the hardlink section. Both read and inspect rejection checks remain for every unsafe child policy.",
+    "The original file is created through the component, its directory identity is captured, and the creation lease closes before the external hardlink setup. Both linked names still require the original file identity and exactly2 links.",
+    "The hardlink rejection uses a reopened lease whose file ID and volume serial must match the same directory. Both names still require INVALID_OBJECT from both readFile and inspectFile, preserving all4 rejection checks.",
+    "The linked lease closes before removing the owned alias. A final reopened lease must match that directory identity, return the exact original bytes and inspect the original file ID with exactly1 remaining link.",
+    "Each reopened lease uses the existing reopen helper, which registers t.after closure. Manual closure of the earlier leases is compatible with native Lease::close noexcept and the existing idempotent-close contract.",
+    "No production storage implementation, fixture binary source, case catalog, ownership/DACL mutation rule, sharing policy, privilege or product acceptance changed in this two-case follow-up.",
+    "The evidence retains run93 at13PASS2FAIL, zero local native executions and the need to observe the actual unprotected descriptor and hardlink rejection/readback path in CI."
+  ],
+  "executionsByReviewer": {
+    "tests": 0,
+    "nativeAttempts": 0,
+    "browserExecutions": 0,
+    "productPassing": 0,
+    "releaseCredit": false
+  },
+  "limits": [
+    "Read-only source review. Actual Windows fixture and cleanup behavior remains pending the next immutable native CI run.",
+    "This review does not establish the run93 unprotected-DACL cause or turn its two failed cases into passes."
+  ]
+}

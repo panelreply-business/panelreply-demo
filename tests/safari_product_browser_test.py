@@ -26,6 +26,8 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 import uuid
 
+from safari_fixture_observer import observe_fixture
+
 
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURE_PASSWORD = "Synthetic native Safari password 2026!"
@@ -37,6 +39,55 @@ LEAD = {
     "callbackWindow": "After 4 pm", "requestedWorkDate": "Friday",
     "contactPermission": "requested_callback", "conversation": [],
 }
+
+
+UPLOAD_EVENT_DIAGNOSTIC_BEGIN = """
+    const events = [], policyEvents = [], probe = {events, overflow: false, policyEvents, policyOverflow: false};
+    probe.listener = event => {
+        if (events.length >= 48) { probe.overflow = true; return; }
+        events.push({type: event.type, targetId: event.target?.id || null,
+            trusted: event.isTrusted,
+            message: String(event.message || event.reason || '').slice(0, 1000)});
+    };
+    const resourceKind = value => {
+        if (typeof value !== 'string' || !value) return 'empty';
+        if (['inline', 'eval', 'wasm-eval', 'data', 'blob'].includes(value)) return value;
+        return /^([a-z][a-z0-9+.-]{0,31}):/i.exec(value)?.[1]?.toLowerCase() || 'relative-or-other';
+    };
+    const number = value => Number.isSafeInteger(value) && value >= 0 && value <= 2147483647 ? value : null;
+    const directive = value => typeof value === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(value) ? value : 'UNKNOWN';
+    probe.policyListener = event => {
+        if (policyEvents.length >= 16) { probe.policyOverflow = true; return; }
+        // Never record a full URI, policy text or sample, which could contain
+        // file content. This listener does not cancel or synthesize any event.
+        policyEvents.push({type: 'securitypolicyviolation', trusted: event.isTrusted === true,
+            effectiveDirective: directive(event.effectiveDirective),
+            violatedDirective: directive(event.violatedDirective),
+            disposition: ['enforce', 'report'].includes(event.disposition) ? event.disposition : 'UNKNOWN',
+            blockedResourceKind: resourceKind(event.blockedURI), sourceResourceKind: resourceKind(event.sourceFile),
+            statusCode: number(event.statusCode), lineNumber: number(event.lineNumber), columnNumber: number(event.columnNumber)});
+    };
+    probe.file = arguments[0]; probe.button = document.querySelector('#upload-source');
+    for (const type of ['input', 'change']) probe.file.addEventListener(type, probe.listener, true);
+    probe.button.addEventListener('click', probe.listener, true);
+    for (const type of ['error', 'unhandledrejection']) window.addEventListener(type, probe.listener, true);
+    window.addEventListener('securitypolicyviolation', probe.policyListener, {capture: true, passive: true});
+    window.__panelreplyNativeUploadProbe = probe;
+"""
+
+
+UPLOAD_EVENT_DIAGNOSTIC_END = """
+    const probe = window.__panelreplyNativeUploadProbe;
+    for (const type of ['input', 'change']) probe.file.removeEventListener(type, probe.listener, true);
+    probe.button.removeEventListener('click', probe.listener, true);
+    for (const type of ['error', 'unhandledrejection']) window.removeEventListener(type, probe.listener, true);
+    window.removeEventListener('securitypolicyviolation', probe.policyListener, true);
+    delete window.__panelreplyNativeUploadProbe;
+    return {events: probe.events, overflow: probe.overflow, policyEvents: probe.policyEvents, policyOverflow: probe.policyOverflow,
+        policyObservation: {scope: 'window events during original upload actions', maximumEvents: 16,
+            fullUrisRecorded: false, policyTextRecorded: false, samplesRecorded: false,
+            originalBrowserExceptionCaptured: false}};
+"""
 
 
 UPLOAD_READ_DIAGNOSTIC = """
@@ -689,20 +740,11 @@ class SafariProductHarness(unittest.TestCase):
                        "expectedBytes": IMAGE.stat().st_size,
                        "expectedSha256": hashlib.sha256(IMAGE.read_bytes()).hexdigest()}
         self.input_evidence.append(observation)
-        self.driver.execute_script("""
-            const events = [], probe = {events, overflow: false};
-            probe.listener = event => {
-                if (events.length >= 48) { probe.overflow = true; return; }
-                events.push({type: event.type, targetId: event.target?.id || null,
-                    trusted: event.isTrusted,
-                    message: String(event.message || event.reason || '').slice(0, 1000)});
-            };
-            probe.file = arguments[0]; probe.button = document.querySelector('#upload-source');
-            for (const type of ['input', 'change']) probe.file.addEventListener(type, probe.listener, true);
-            probe.button.addEventListener('click', probe.listener, true);
-            for (const type of ['error', 'unhandledrejection']) window.addEventListener(type, probe.listener, true);
-            window.__panelreplyNativeUploadProbe = probe;
-        """, file_input)
+        try:
+            observation["hostFixtureBefore"] = observe_fixture(IMAGE)
+        except Exception as error:
+            observation["hostFixtureBeforeError"] = type(error).__name__[:100]
+        self.driver.execute_script(UPLOAD_EVENT_DIAGNOSTIC_BEGIN, file_input)
         try:
             file_input.send_keys(str(IMAGE))
             self.text_contains("#source-selection-text", "complete.png")
@@ -715,17 +757,14 @@ class SafariProductHarness(unittest.TestCase):
             return saved["sources"][0]
         finally:
             try:
-                observation.update(self.driver.execute_script("""
-                    const probe = window.__panelreplyNativeUploadProbe;
-                    for (const type of ['input', 'change']) probe.file.removeEventListener(type, probe.listener, true);
-                    probe.button.removeEventListener('click', probe.listener, true);
-                    for (const type of ['error', 'unhandledrejection']) window.removeEventListener(type, probe.listener, true);
-                    delete window.__panelreplyNativeUploadProbe;
-                    return {events: probe.events, overflow: probe.overflow};
-                """))
+                observation.update(self.driver.execute_script(UPLOAD_EVENT_DIAGNOSTIC_END))
                 observation["finalState"] = self.page_state()
             except Exception as error:
                 observation["observationError"] = str(error)[:1000]
+            try:
+                observation["hostFixtureAfter"] = observe_fixture(IMAGE)
+            except Exception as error:
+                observation["hostFixtureAfterError"] = type(error).__name__[:100]
             if observation["status"] != "OBSERVED":
                 # A diagnostic read cannot establish the original exception or
                 # substitute for the selected file's successful UI upload.

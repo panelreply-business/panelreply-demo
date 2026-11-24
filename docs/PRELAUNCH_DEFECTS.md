@@ -1,5 +1,19 @@
 # Pre-launch defect register
 
+## November 23 — request recovery and run 93 follow-up
+
+| ID | Observed defect | Current state | Evidence |
+| --- | --- | --- | --- |
+| QA-26-19 | Component report/log/journal output accepted ambiguous repository aliases and pathname writes. | Held exclusive outputs and bounded child framing pass 28 root harness checks. Native verification remains required. | [Repair](WINDOWS_COMPONENT_OUTPUT_2026_11_24.md). |
+| QA-26-20 | Wrong or incomplete request save receipts could replace a draft and report success. Raw phone controls exposed a client/API normalization mismatch. | Original runtime fails eight of nine methods. Phone mismatch separately fails before correction. Full receipt/normalization guard passes locally and awaits committed browser CI. | [Repair](REQUEST_SAVE_RECEIPTS_2026_11_24.md). |
+| QA-26-21 | An uncertain request followed by a permanent refusal had no reachable validated reload path. | New regression fails before the repair. Explicit choice and validated reload now retain drafts through bad reads and avoid false save claims. | [Repair](REQUEST_SAVE_RELOAD_2026_11_24.md). |
+| QA-26-22 | Windows SQLite harness fault hooks compared raw TEMP aliases with canonical paths, and parent replacement required renaming an open directory. | Three alias failures reproduced locally. Canonical fixtures and alias retargeting pass all 25 local checks. Windows selection remains pending. | [Evidence](evidence/windows-sqlite-fixture-portability-2026-11-23.json). |
+| QA-26-10 follow-up | Run 93 unprotected-root rejection fails without prerejection descriptor evidence; hardlink setup returns EBUSY before its checks. | Metadata/precondition diagnostics and closed-lease fixture setup retain the original rejections and readback. Native cause/results remain pending. | [Scope](evidence/windows-native-fixture-follow-up-2026-11-24.json). |
+| Native OCR follow-up | Run 93 OCR 26 reaches readiness and executes six cases, but one complete case fails a process-existence assertion. | Bounded PID/state/timing diagnostics preserve original signal-zero behavior and six native case bodies. | [Scope](ocr-process-diagnostics.md). |
+| Safari follow-up | Run 93 native selection/manual corrections pass; both uploads still return unreadable-file errors. | Fixed-fixture host observations and passive policy metadata retain the original actions and failures. Cause remains unestablished. | [Scope](NATIVE_SAFARI_FIXTURE_OBSERVATION_2026_11_24.md). |
+
+The integrated candidate passes 9,311 local checks, including 9,120 product checks and 191 excluded harness cases. This does not transfer to other platforms or close the native failures. Run 93's complete ledger remains 24,893 PASS/twoERROR with missing platform/manual gates. Both products remain NO-GO. [Milestone](REQUEST_RECOVERY_NATIVE_DIAGNOSTICS_2026_11_23.md).
+
 ## November 23 compatibility and evidence-output follow-up
 
 | ID | Observed defect | Current scope | Evidence |

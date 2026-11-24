@@ -674,3 +674,179 @@ test('relative release-prefixed and repository-ancestor output destinations are 
     assert.deepEqual(outputFs.readdirSync(fixture.outside), []);
   } finally { fixture.cleanup(); }
 });
+
+// These process-observer cases stay in the existing harness classification.
+// Every PID, signal probe, proc read and lifecycle event below is synthetic.
+const processObserver = require('../scripts/ocr-process-diagnostics.cjs');
+function syntheticProcStat({ pid = 321, state = 'S', ticks = '123456', comm = 'synthetic worker' } = {}) {
+  const fields = [state, '12', '34', '56', '-1', '-1', ...Array(13).fill('0'), ticks, ...Array(30).fill('0')];
+  return `${pid} (${comm}) ${fields.join(' ')}\n`;
+}
+function syntheticProcIo(options = {}) {
+  const calls = { opens: [], reads: [], closes: [], stats: 0 }, held = new Map();
+  const io = {
+    openSync(filename, flags) {
+      calls.opens.push({ filename, flags });
+      if (options.openError) throw options.openError;
+      const fd = 100 + calls.opens.length;
+      const text = typeof options.data === 'function' ? options.data(filename, calls.opens.length) : options.data ?? syntheticProcStat();
+      held.set(fd, { bytes: Buffer.isBuffer(text) ? text : Buffer.from(text), offset: 0 }); return fd;
+    },
+    fstatSync() {
+      calls.stats++;
+      return { isFile: () => !options.notFile, dev: 1n, ino: BigInt(options.changedIdentity && calls.stats % 2 === 0 ? 3 : 2),
+        size: options.advertisedSize ?? 0n };
+    },
+    readSync(fd, buffer, offset, length, position) {
+      calls.reads.push({ length, position });
+      if (options.readError) throw options.readError;
+      if (options.invalidCount) return length + 1;
+      const file = held.get(fd), count = Math.min(length, options.chunkSize ?? Infinity, file.bytes.length - file.offset);
+      file.bytes.copy(buffer, offset, file.offset, file.offset + count); file.offset += count; return count;
+    },
+    closeSync(fd) { calls.closes.push(fd); held.delete(fd); if (options.closeError) throw options.closeError; },
+  };
+  return { io, calls, held };
+}
+
+test('process diagnostics parse fixed proc fields without retaining names or other fields', () => {
+  const value = processObserver.parseProcessStat(syntheticProcStat({ state: 'Z', ticks: '18446744073709551615', comm: 'PRIVATE ) (name\nwith spaces' }), 321);
+  assert.deepEqual(value, { pid: 321, processState: 'Z', parentPid: 12, processGroup: 34, session: 56, startTimeTicks: '18446744073709551615' });
+  assert.equal(JSON.stringify(value).includes('PRIVATE'), false);
+  for (const bad of [syntheticProcStat({ pid: 322 }), syntheticProcStat({ state: '?' }), syntheticProcStat({ ticks: '-1' }),
+    syntheticProcStat({ ticks: '18446744073709551616' }), '321 (PRIVATE) S 1 2', 'PRIVATE', Buffer.alloc(10)]) {
+    assert.throws(() => processObserver.parseProcessStat(bad, 321), error => error.code === 'PROC_STAT_MALFORMED' && !error.message.includes('PRIVATE'));
+  }
+});
+
+test('process diagnostics use one fixed read-only proc path and actual bounded reads despite zero stat size', () => {
+  const fixture = syntheticProcIo();
+  const result = processObserver.readProcessStat(321, { fsImpl: fixture.io, platform: 'linux' });
+  assert.equal(result.state, 'OBSERVED'); assert.equal(result.startTimeTicks, '123456'); assert.equal(result.descriptorClosed, true);
+  assert.equal(result.readCalls, 2); assert.equal(result.closeAttempts, 1);
+  assert.equal(fixture.calls.opens.length, 1); assert.equal(fixture.calls.opens[0].filename, '/proc/321/stat');
+  const flags = fixture.calls.opens[0].flags;
+  assert.equal(flags & outputFs.constants.O_WRONLY, 0); assert.equal(flags & outputFs.constants.O_RDWR, 0);
+  if (outputFs.constants.O_NOFOLLOW) assert.ok(flags & outputFs.constants.O_NOFOLLOW);
+  if (outputFs.constants.O_NONBLOCK) assert.ok(flags & outputFs.constants.O_NONBLOCK);
+  assert.ok(fixture.calls.reads.every(call => call.length <= processObserver.LIMITS.statBytes + 1 && call.position === null));
+  assert.equal(fixture.held.size, 0);
+});
+
+test('process diagnostics bound bytes and read attempts and close on nonregular or changed identity', () => {
+  for (const [options, reason, expectedReads] of [
+    [{ data: Buffer.alloc(processObserver.LIMITS.statBytes + 500, 65) }, 'BYTE_LIMIT', 1],
+    [{ chunkSize: 1 }, 'READ_CALL_LIMIT', 4],
+    [{ notFile: true }, 'PROC_TYPE', 0],
+    [{ changedIdentity: true }, 'IDENTITY_CHANGED', 2],
+    [{ invalidCount: true }, 'PROC_READ', 1],
+  ]) {
+    const fixture = syntheticProcIo(options), result = processObserver.readProcessStat(321, { fsImpl: fixture.io, platform: 'linux' });
+    assert.equal(result.state, 'UNAVAILABLE'); assert.equal(result.reason, reason);
+    assert.equal(fixture.calls.reads.length, expectedReads); assert.equal(result.readCalls, expectedReads);
+    assert.ok(result.observedBytes <= processObserver.LIMITS.statBytes + 1);
+    assert.equal(fixture.calls.closes.length, 1); assert.equal(result.descriptorClosed, true);
+  }
+});
+
+test('process diagnostics reject invalid PID paths without opening and keep missing or inaccessible proc data unavailable', () => {
+  const fixture = syntheticProcIo();
+  for (const pid of [0, -1, 1.5, Infinity, 0x80000000, '321', '../321']) {
+    const result = processObserver.readProcessStat(pid, { fsImpl: fixture.io, platform: 'linux' });
+    assert.equal(result.state, 'UNAVAILABLE'); assert.equal(result.reason, 'INVALID_PID'); assert.equal(result.openAttempts, 0);
+  }
+  assert.equal(processObserver.readProcessStat(321, { fsImpl: fixture.io, platform: 'win32' }).reason, 'UNSUPPORTED_PLATFORM');
+  assert.equal(fixture.calls.opens.length, 0);
+  for (const code of ['ENOENT', 'EACCES', 'PRIVATE_CODE']) {
+    const io = syntheticProcIo({ openError: Object.assign(new Error('PRIVATE path detail'), { code }) });
+    const result = processObserver.readProcessStat(321, { fsImpl: io.io, platform: 'linux' });
+    assert.equal(result.state, 'UNAVAILABLE'); assert.equal(result.reason, code === 'PRIVATE_CODE' ? 'OTHER' : code);
+    assert.equal(result.closeAttempts, 0); assert.equal(JSON.stringify(result).includes('PRIVATE'), false);
+  }
+});
+
+test('process diagnostics preserve read errors when close also fails and redact malformed bytes', () => {
+  const io = syntheticProcIo({ readError: Object.assign(new Error('PRIVATE read'), { code: 'EACCES' }),
+    closeError: Object.assign(new Error('PRIVATE close'), { code: 'PRIVATE_CODE' }) });
+  const result = processObserver.readProcessStat(321, { fsImpl: io.io, platform: 'linux' });
+  assert.equal(result.reason, 'EACCES'); assert.equal(result.closeError, 'OTHER'); assert.equal(result.descriptorClosed, false);
+  assert.equal(result.readCalls, 1); assert.equal(io.calls.closes.length, 1); assert.equal(JSON.stringify(result).includes('PRIVATE'), false);
+  const closeOnly = syntheticProcIo({ closeError: Object.assign(new Error('PRIVATE close'), { code: 'EIO' }) });
+  assert.equal(processObserver.readProcessStat(321, { fsImpl: closeOnly.io, platform: 'linux' }).reason, 'CLOSE_FAILED');
+  for (const data of [Buffer.from([255, 254]), '321 (PRIVATE) S malformed']) {
+    const malformedIo = syntheticProcIo({ data });
+    const observation = processObserver.readProcessStat(321, { fsImpl: malformedIo.io, platform: 'linux' });
+    assert.equal(observation.reason, 'PROC_STAT_MALFORMED'); assert.equal(observation.descriptorClosed, true);
+    assert.equal(JSON.stringify(observation).includes('PRIVATE'), false);
+  }
+});
+
+test('process diagnostics retain per-PID identity differences and bounded lifecycle timing', () => {
+  let time = 10;
+  const fixture = syntheticProcIo({ data: (filename, open) => syntheticProcStat({ pid: Number(filename.split('/')[2]), ticks: open <= 2 ? '100' : '101', state: open <= 2 ? 'S' : 'Z' }) });
+  const observer = processObserver.createProcessDiagnostics({ fsImpl: fixture.io, platform: 'linux', now: () => time++ });
+  observer.register('wrapper', 321); observer.register('native', 322);
+  observer.event('spawn'); observer.event('exit', 0, null); observer.event('close', 0, null);
+  observer.recordProbe(321, { state: 'PRESENT' }); observer.recordProbe(322, { state: 'PRESENT' });
+  const report = observer.snapshot();
+  assert.equal(report.records.length, 2); assert.equal(report.lifecycle.length, 3); assert.equal(report.issues.length, 0);
+  for (const record of report.records) {
+    assert.equal(record.probes.length, 1); assert.equal(record.probes[0].result, 'PRESENT');
+    assert.equal(record.probes[0].current.processState, 'Z'); assert.equal(record.probes[0].identityComparison, 'DIFFERENT_OBSERVED_FIELDS');
+    assert.ok(record.probes[0].atMs >= record.registeredAtMs);
+  }
+  assert.equal(report.probesAddedByObserver, 0); assert.equal(report.waitsAddedByObserver, 0); assert.equal(report.retriesAddedByObserver, 0);
+  assert.ok(Buffer.byteLength(JSON.stringify(report)) < 6000);
+});
+
+test('process diagnostics cannot inspect an unregistered PID or exceed role probe and lifecycle bounds', () => {
+  const fixture = syntheticProcIo(), observer = processObserver.createProcessDiagnostics({ fsImpl: fixture.io, platform: 'linux' });
+  observer.register('wrapper', 321); observer.register('wrapper', 321); observer.register('wrapper', 999);
+  observer.register('PRIVATE_ROLE', 321); observer.recordProbe(999, { state: 'PRESENT' });
+  observer.recordProbe(321, { state: 'PRESENT' }); observer.recordProbe(321, { state: 'PRESENT' });
+  observer.event('PRIVATE_EVENT', 3, 'PRIVATE_SIGNAL'); observer.event('exit', 300, 'PRIVATE_SIGNAL'); observer.event('exit', 0, null);
+  const report = observer.snapshot();
+  assert.equal(fixture.calls.opens.length, 2); assert.equal(report.records.length, 1); assert.equal(report.records[0].probes.length, 1);
+  assert.equal(report.lifecycle.length, 1); assert.equal(report.lifecycle[0].exitCode, null); assert.equal(report.lifecycle[0].signal, 'OTHER');
+  assert.ok(report.issues.includes('PROBE_LIMIT')); assert.ok(report.issues.includes('ROLE_PID_CHANGED'));
+  assert.equal(JSON.stringify(report).includes('PRIVATE'), false);
+});
+
+test('process diagnostics keep the original signal-zero result and permission error without retries', () => {
+  for (const mode of ['present', 'absent', 'permission']) {
+    const fixture = syntheticProcIo({ data: syntheticProcStat({ state: 'Z' }) });
+    const observer = processObserver.createProcessDiagnostics({ fsImpl: fixture.io, platform: 'linux' }); observer.register('native', 321);
+    const calls = [], error = Object.assign(new Error('PRIVATE permission detail'), { code: mode === 'absent' ? 'ESRCH' : 'EPERM' });
+    const killProcess = (pid, signal) => { calls.push([pid, signal]); if (mode !== 'present') throw error; };
+    if (mode === 'permission') assert.throws(() => processObserver.probeAlive(321, observer, { killProcess }), actual => actual === error);
+    else assert.equal(processObserver.probeAlive(321, observer, { killProcess }), mode === 'present');
+    assert.deepEqual(calls, [[321, 0]]);
+    const probe = observer.snapshot().records[0].probes[0];
+    assert.equal(probe.result, { present: 'PRESENT', absent: 'ABSENT', permission: 'ERROR' }[mode]);
+    assert.equal(probe.current.processState, 'Z'); assert.equal(JSON.stringify(observer.snapshot()).includes('PRIVATE'), false);
+  }
+});
+
+test('process diagnostics cannot change a liveness assertion through missing proc data or observer failure', () => {
+  const fixture = syntheticProcIo({ openError: Object.assign(new Error('PRIVATE unavailable'), { code: 'ENOENT' }) });
+  const observer = processObserver.createProcessDiagnostics({ fsImpl: fixture.io, platform: 'linux' }); observer.register('native', 321);
+  let calls = 0;
+  assert.equal(processObserver.probeAlive(321, observer, { killProcess: () => { calls++; } }), true);
+  assert.equal(observer.snapshot().records[0].probes[0].current.state, 'UNAVAILABLE');
+  const brokenObserver = { recordProbe() { throw new Error('PRIVATE observer failure'); } };
+  assert.equal(processObserver.probeAlive(321, brokenObserver, { killProcess: () => { calls++; } }), true);
+  assert.equal(processObserver.probeAlive(321, brokenObserver, { killProcess: () => { calls++; throw Object.assign(new Error('absent'), { code: 'ESRCH' }); } }), false);
+  assert.equal(calls, 3);
+  assert.equal(processObserver.probeAlive(0, brokenObserver, { killProcess: () => { throw new Error('Unexpected probe'); } }), false);
+});
+
+test('process diagnostics preserve native case success and failure without launching the verifier on import', async () => {
+  const { checkCase } = require('../scripts/test-ocr-isolation.cjs');
+  let taskCalls = 0;
+  const success = await checkCase('synthetic-observer-success', async () => { taskCalls++; return { marker: 7 }; });
+  const failure = await checkCase('synthetic-observer-failure', async () => { taskCalls++; assert.equal(true, false); });
+  assert.equal(taskCalls, 2); assert.equal(success.status, 'PASS'); assert.equal(success.marker, 7);
+  assert.equal(failure.status, 'FAIL'); assert.equal(failure.code, 'ERR_ASSERTION'); assert.match(failure.detail, /true !== false/);
+  assert.deepEqual(success.processDiagnostics.records, []); assert.deepEqual(failure.processDiagnostics.records, []);
+  assert.equal(success.processDiagnostics.probesAddedByObserver, 0); assert.equal(failure.processDiagnostics.retriesAddedByObserver, 0);
+});
