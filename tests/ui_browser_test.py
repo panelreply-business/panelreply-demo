@@ -18,7 +18,7 @@ import shutil
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
-from browser_engine import launch_browser
+from browser_engine import launch_browser, preview_available
 
 
 BUNDLED_MESSAGE = (
@@ -115,6 +115,8 @@ class WorkspaceBrowserTests(unittest.TestCase):
         directory = os.environ.get("PANELREPLY_CAPTURE_DIR")
         emit_preview = os.environ.get("PANELREPLY_EMIT_PREVIEWS") == "1"
         if not directory and not emit_preview:
+            return
+        if not preview_available(self.browser, self.id(), filename):
             return
         self.page.evaluate("() => window.scrollTo({top: 0, left: 0, behavior: 'instant'})")
         options = {"type": "jpeg", "quality": 70, "full_page": True, "animations": "disabled"}

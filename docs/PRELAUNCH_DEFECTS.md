@@ -1,5 +1,10 @@
 # Pre-launch defect register
 
+## November 23 — run 94 browser regressions
+
+- Callback request save. The first PATCH timed out on WebKit desktop and emulated touch profiles. A focused regression reproduces the save label being detached during input/change. Preserving the label passes locally. Confirmation requires the affected browser workflows. [Linux WebKit job](https://github.com/panelreply-business/panelreply-demo/actions/runs/45308071247/job/138156671285).
+- Static WebKit previews. Two Apple Silicon tests logged a blocked stylesheet while capturing optional screenshots. Static captures now report the same preview limitation as private captures. The console and layout checks remain enabled. [Apple Silicon job](https://github.com/panelreply-business/panelreply-demo/actions/runs/45308071247/job/138156670885).
+
 ## November 23 — request recovery and run 93 follow-up
 
 | ID | Observed defect | Current state | Evidence |

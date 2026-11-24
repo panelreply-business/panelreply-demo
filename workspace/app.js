@@ -143,8 +143,11 @@
     $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests || requestPending || taskLocked || schedule.isDirty();
     $('lead-dirty').hidden = !leadDirty();
     $('profile-dirty').hidden = !profileDirty();
-    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting || taskLocked || schedule.isDirty();
-    $('save-lead').textContent = requestPending ? 'Retry save' : 'Save changes';
+    const saveButton = $('save-lead');
+    saveButton.disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting || taskLocked || schedule.isDirty();
+    const saveLabel = requestPending ? 'Retry save' : 'Save changes';
+    // A field can dispatch change between pointer-down and click on Save.
+    if (saveButton.textContent !== saveLabel) saveButton.textContent = saveLabel;
     $('lead-uncertain').hidden = expired || !pendingLeadSave?.uncertain || leadConflict;
     $('reload-uncertain-lead').disabled = expired || !pendingLeadSave?.uncertain || leadSaving || leadLoading || refreshingRequests;
     $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting || requestPending;

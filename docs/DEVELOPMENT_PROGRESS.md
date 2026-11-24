@@ -1,5 +1,13 @@
 # PanelReply development progress
 
+## November 23 — callback save activation on WebKit
+
+[Run 94](https://github.com/panelreply-business/panelreply-demo/actions/runs/45308071247) tested PR head `f8bd497`. Three callback workflows timed out waiting for the first request PATCH in WebKit on Linux, Intel macOS and Apple Silicon. All four WebKit mobile profiles timed out saving notes. Chromium and Firefox passed the selected desktop callback suite. Apple Silicon also produced two static-page console failures during optional screenshot capture.
+
+The request form now changes the save button label only when its text changes. A regression demonstrates that the old input/change handler detached the label and that the revised handler preserves it. All 120 checks in the client-state, callback scheduling and product UI test files passed on Windows with Node 24.22.3. Three Python capture modules compiled, and focused helper checks exercised all three engines. The static and private suites now use the same optional-preview handling for WebKit. Their workflow and console assertions still run.
+
+The CI job's aggregate for run 94 records 32,088 product passes, two failures and 15 errors across 9,404 distinct cases. Three WebKit jobs timed out during dependency installation. The new change needs a fresh run to verify pointer and touch activation on the affected engines. Installed Safari's two spreadsheet upload errors, the Windows storage checks, OCR quality and native OCR isolation remain open. Both products remain in draft.
+
 ## November 23 — request-save recovery and native diagnostics
 
 The next 207-file candidate has manifest `ed53015aaf8936613d1f32c1542c5820544b83f9d8b9eaeedf206cab9a59425c`, based on published `6b4964f`. Callback request receipts now bind identity, revision and normalized fields. Uncertain retries retain their command, and explicit validated reload resolves a permanent-refusal dead end without claiming the earlier write succeeded. The integrated 58-file Node/API/HTTP run passes 9,311 checks: 9,120 product and 191 excluded harness, with no failures/skips or source changes. Eleven new product IDs are added and all prior 9,109 remain. The full raw report is preserved. The two new callback browser journeys await source-bound CI. [Milestone](REQUEST_RECOVERY_NATIVE_DIAGNOSTICS_2026_11_23.md), [root evidence](evidence/request-recovery-root-integration-2026-11-24.json).

@@ -878,6 +878,21 @@ function assertRequestSavePending(page, { conflict = false } = {}) {
   assert.equal(page.element('lead-status').textContent, '');
 }
 
+test('intake keeps the request save button label attached while the edited field commits its change', async () => {
+  const page = client('app.js', { productId: 'callback', lead: true });
+  await settle();
+  const button = page.element('save-lead');
+  button.replaceChildren('Save changes');
+  const label = button.children[0];
+  const form = page.element('lead-form');
+  const notes = page.element('lead-notes');
+  notes.value = 'Call Thursday afternoon';
+  await form.emit('input', { target: notes });
+  await form.emit('change', { target: notes });
+  assert.equal(button.children[0] === label, true, 'Editing must preserve the pointer target until click');
+  assert.equal(button.disabled, false);
+});
+
 test('intake request save rejects wrong identities revisions fields and malformed history before replacing its draft', async () => {
   const changes = [
     lead => { lead.id = PROJECT_ID; },

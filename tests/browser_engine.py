@@ -1,9 +1,21 @@
 """Explicit browser selection for isolated CI checks. No silent fallback."""
 
+import json
 import os
 
 
 _launched_browsers = []
+
+
+def preview_available(browser, case, filename):
+    """WebKit's Playwright screenshot preparation inserts a CSP-blocked stylesheet."""
+    if browser.browser_type.name != "webkit":
+        return True
+    print("PANELREPLY_PREVIEW_UNAVAILABLE=" + json.dumps({
+        "case": case, "filename": filename, "engine": "webkit",
+        "reason": "WebKit screenshot preparation inserts an inline stylesheet blocked by the page policy.",
+    }), flush=True)
+    return False
 
 
 def browser_evidence():
