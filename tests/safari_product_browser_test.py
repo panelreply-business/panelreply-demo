@@ -44,6 +44,8 @@ LEAD = {
 UPLOAD_EVENT_DIAGNOSTIC_BEGIN = """
     const events = [], policyEvents = [], probe = {events, overflow: false, policyEvents, policyOverflow: false};
     probe.listener = event => {
+        if (event.type === 'change' && event.target === probe.file && probe.file.files?.length === 1)
+            probe.selectedFile = probe.file.files[0];
         if (events.length >= 48) { probe.overflow = true; return; }
         events.push({type: event.type, targetId: event.target?.id || null,
             trusted: event.isTrusted,
@@ -82,6 +84,7 @@ UPLOAD_EVENT_DIAGNOSTIC_END = """
     probe.button.removeEventListener('click', probe.listener, true);
     for (const type of ['error', 'unhandledrejection']) window.removeEventListener(type, probe.listener, true);
     window.removeEventListener('securitypolicyviolation', probe.policyListener, true);
+    if (arguments[0] && probe.selectedFile) globalThis.__panelreplyFailedFixture = probe.selectedFile;
     delete window.__panelreplyNativeUploadProbe;
     return {events: probe.events, overflow: probe.overflow, policyEvents: probe.policyEvents, policyOverflow: probe.policyOverflow,
         policyObservation: {scope: 'window events during original upload actions', maximumEvents: 16,
@@ -99,7 +102,10 @@ UPLOAD_READ_DIAGNOSTIC = """
         randomUUIDType: typeof globalThis.crypto?.randomUUID,
         fileReaderType: typeof globalThis.FileReader,
         btoaType: typeof globalThis.btoa};
-    const files = document.querySelector('#panel-image')?.files;
+    // The product clears an unreadable selection so the same file can be picked again.
+    const retained = globalThis.__panelreplyFailedFixture;
+    delete globalThis.__panelreplyFailedFixture;
+    const files = retained ? [retained] : document.querySelector('#panel-image')?.files;
     const file = files?.[0];
     const result = {format: 'panelreply-after-failure-file-read-v1',
         originalExceptionCaptured: false, originalActionsRepeated: false,
@@ -757,7 +763,7 @@ class SafariProductHarness(unittest.TestCase):
             return saved["sources"][0]
         finally:
             try:
-                observation.update(self.driver.execute_script(UPLOAD_EVENT_DIAGNOSTIC_END))
+                observation.update(self.driver.execute_script(UPLOAD_EVENT_DIAGNOSTIC_END, observation["status"] != "OBSERVED"))
                 observation["finalState"] = self.page_state()
             except Exception as error:
                 observation["observationError"] = str(error)[:1000]

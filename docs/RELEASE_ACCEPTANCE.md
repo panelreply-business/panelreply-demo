@@ -1,5 +1,14 @@
 # Release acceptance
 
+## November 23 — callback and image-upload follow-up
+
+| Product | Verified on the callback commit `831fef3` | Open requirement |
+| --- | --- | --- |
+| Callback | All 18 selected Intel macOS WebKit journeys passed. All four emulated WebKit request-save and reopen cases also passed. | Reconcile the remaining platforms and outstanding operations gates. |
+| Spreadsheet | Native Safari's manual workflow passed on run 95. Both journeys requiring image upload still errored. | Verify image upload and recovery on the following source revision. The synthetic OCR benchmark and representative-photo gates also remain open. |
+
+Both products remain NO-GO for a public release or customer pilot. [Run 95](https://github.com/panelreply-business/panelreply-demo/actions/runs/45312762218).
+
 ## November 23 — request-save recovery and native diagnostics
 
 The next 207-file candidate has manifest `ed53015aaf8936613d1f32c1542c5820544b83f9d8b9eaeedf206cab9a59425c`, based on published `6b4964f`. Callback request receipts now bind identity, revision and normalized fields. Uncertain retries retain their command, and explicit validated reload resolves a permanent-refusal dead end without claiming the earlier write succeeded. The integrated 58-file Node/API/HTTP run passes 9,311 checks: 9,120 product and 191 excluded harness, with no failures/skips or source changes. Eleven new product IDs are added and all prior 9,109 remain. The full raw report is preserved. The two new callback browser journeys await source-bound CI. [Milestone](REQUEST_RECOVERY_NATIVE_DIAGNOSTICS_2026_11_23.md), [root evidence](evidence/request-recovery-root-integration-2026-11-24.json).

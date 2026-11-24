@@ -799,6 +799,31 @@ class SpreadsheetProductBrowserTests(SelectedProductHarness, PanelWorkspaceBrows
         self.assert_product_navigation()
         self.assert_routes_denied(["/api/profile"])
 
+    def test_spreadsheet_reselects_same_label_after_unreadable_file(self):
+        self.login()
+        saved = self.create_panel(rows=[])
+        self.open_panels(saved["id"])
+        picker = self.page.locator("#panel-image")
+        picker.set_input_files(str(FIXTURES / "complete.png"))
+        # Only the first selected File simulates an OS read failure.
+        picker.evaluate("""input => {
+            Object.defineProperty(input.files[0], 'arrayBuffer', {
+                value: async () => { throw new DOMException('Synthetic unreadable image', 'NotReadableError'); }
+            });
+        }""")
+        self.page.locator("#upload-source").click()
+        expect(self.page.locator("#source-error")).to_contain_text("Choose the file again")
+        expect(picker).to_have_value("")
+        expect(self.page.locator("#upload-source")).to_be_disabled()
+        self.assertEqual(self.saved_panel(saved["id"])["sources"], [])
+
+        source = self.upload_ui()["source"]
+        self.page.reload()
+        expect(self.page.locator("#source-list li")).to_have_count(1)
+        response = self.context.request.get(f"{self.origin}/api/panel-projects/{saved['id']}/sources/{source['id']}")
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.body(), (FIXTURES / "complete.png").read_bytes())
+
     def test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once(self):
         PanelWorkspaceBrowserTests.behavior_malformed_project_success_preserves_draft_and_reconciles_without_duplicate_writes(self)
         self.assert_product_navigation()

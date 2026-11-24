@@ -10,7 +10,11 @@ Purchases, customer contact, production customer data, public deployment, produc
 
 The products have separate entrypoints, data binding, sessions, recovery and release decisions. December 31, 2026 remains the first-release target. Product order and the second release date remain undecided. The existing daily task runs at 10 AM America/Detroit through December 20 inclusive. Do not duplicate it. Its ID is `Automation_54cd897881e881918a23443ca2ccd8ce`. It begins with this checkpoint and repeats the authorized development cycle. [Verified task](evidence/autonomous-daily-task-update-2026-11-23.json). Real-world testing needs its applicable technical gates and owner approval.
 
-## Current development source
+## Current resumption checkpoint
+
+Resume from the actual head of PR 8. The old request-save candidate below was published as `f8bd497` and tested by run 94. Commit `831fef3` preserves the callback save button during input changes. Run 95 confirms the previously failing Intel macOS and emulated WebKit save paths. The next commit after `831fef3` covers spreadsheet image reads, same-file retry, session expiry and the Linux WebKit package mirror. Read the newest entries in [development progress](DEVELOPMENT_PROGRESS.md) and [release acceptance](RELEASE_ACCEPTANCE.md), then fetch CI for the actual branch head. Run 93 below remains a historical independently reconciled ledger. Keep each later run's evidence tied to its own source.
+
+## Historical development source before run 94
 
 Published head is `6b4964ff65c2cd8b904d5974382cb6c241e2c378`, tree `3c4bd1f5ba7002a3ec15ad322145e50dba29b7bd`, manifest `13df01f3f697ec9f586a62de9e8ca3203d4692c9f877a9c924f629f4c2195603` with 202 source/test/workflow/policy files. It publishes the callback task-receipt predecessor plus native fixture, evidence-output, seccomp-denial errno and Safari Actions compatibility work. [Scope](NATIVE_COMPATIBILITY_2026_11_23.md).
 
@@ -43,7 +47,7 @@ Windows compiles the exact native artifacts and executes all fifteen component c
 
 Ubuntu 26 reaches actual OCR/normalizer readiness and executes six native denial/lifecycle cases: five PASS/one FAIL. The failing complete case includes a process-existence assertion after the network checks. Its existing report cannot identify which PID or state remains. Ubuntu 24 remains blocked at loopback RTM_NEWADDR with zero native cases. No new native execution, retry, cancellation, host-control change or unconfined fallback was performed to reconcile these records.
 
-## Next integrated milestone
+## Historical candidate published before run 94
 
 - Request-save receipts now validate full parent shape, target identity, original creation time, fresh revision and submitted normalized fields before clearing the draft. Unknown outcomes retain the original payload/revision across later refusals. A validated later read can confirm current values, not identify which writer executed the command. The frozen candidate passes 152 affected Node checks. The original runtime fails eight of nine new methods. The raw-phone control gap was separately reproduced as API 400 versus false client confirmation and repaired. [Candidate and preserved evidence](REQUEST_SAVE_RECEIPTS_2026_11_24.md).
 - Root review reproduced a further recovery dead end after an uncertain save and a permanent later refusal. The separate follow-up in `/workspace/scratch/8f544d546bb7/panelreply-request-save-reload` adds an explicit validated reload path. It now passes the 153-check affected suite. Root includes the repair in the 9,311-check integrated pass. The explicit confirmation retains the draft until a valid current record arrives, and its message leaves the previous command outcome unestablished. [Repair](REQUEST_SAVE_RELOAD_2026_11_24.md).

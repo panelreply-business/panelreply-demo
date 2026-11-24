@@ -1,5 +1,11 @@
 # Pre-launch defect register
 
+## November 23 — spreadsheet image ingestion
+
+- A partial local image read or a read finishing after session expiry could start a source POST. The client now checks both conditions first. Local regression checks pass.
+- A failed file read left the picker pointing at the unreadable file. The picker now clears so the same path can be selected again. A regression confirms one successful upload after an initial read failure. The native Safari runner retains its synthetic fixture reference for its separate after-failure diagnostic.
+- Linux WebKit package setup. Three run 94 jobs reached their deadline while downloading from the US East 2 Ubuntu mirror. A targeted runner-only mirror change preserves the package selection and test suites. [Example job](https://github.com/panelreply-business/panelreply-demo/actions/runs/45308071247/job/138156671446).
+
 ## November 23 — run 94 browser regressions
 
 - Callback request save. The first PATCH timed out on WebKit desktop and emulated touch profiles. A focused regression reproduces the save label being detached during input/change. Preserving the label passes locally. Confirmation requires the affected browser workflows. [Linux WebKit job](https://github.com/panelreply-business/panelreply-demo/actions/runs/45308071247/job/138156671285).

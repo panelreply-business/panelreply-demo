@@ -48,6 +48,8 @@
     pendingUpload = null;
     savingSource = false;
     clearSourceSelection();
+    $('source-status').textContent = '';
+    error('source-error', '');
     $('source-progress').hidden = true;
     baseline = '';
     revoke(downloadUrls);
@@ -434,6 +436,7 @@
   }
   async function fileBase64(file) {
     const buffer = new Uint8Array(await file.arrayBuffer());
+    if (buffer.byteLength !== file.size) throw new Error('Incomplete image read');
     let value = '';
     for (let i = 0; i < buffer.length; i += 8192) value += String.fromCharCode(...buffer.subarray(i, i + 8192));
     return btoa(value);
@@ -470,9 +473,30 @@
       if (!file) { error('source-error', 'Choose a PNG or JPEG image.'); return; }
       if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 2 * 1024 * 1024 || !file.size) { error('source-error', 'Choose a PNG or JPEG image no larger than 2 MB.'); return; }
       if (dirty() || conflict) { error('source-error', 'Save your changes before uploading an image.'); return; }
-      busy = true; savingSource = true; updateControls(); $('source-status').textContent = 'Reading selected image…';
-      try { pendingUpload = { projectId: project.id, sourceIds: project.sources.map(source => source.id), body: { version: project.version, name: file.name, mime: file.type, dataBase64: await fileBase64(file) }, key: crypto.randomUUID(), method: 'POST', uncertain: false }; }
-      catch (_) { busy = false; savingSource = false; $('source-status').textContent = ''; error('source-error', 'The image could not be read. Choose the file again.'); updateControls(); return; }
+      busy = true;
+      savingSource = true;
+      let key;
+      try {
+        key = crypto.randomUUID();
+        // Start reading while the selected file input is still enabled.
+        const reading = fileBase64(file);
+        updateControls();
+        $('source-status').textContent = 'Reading selected image…';
+        const dataBase64 = await reading;
+        if (expired) return;
+        pendingUpload = { projectId: project.id, sourceIds: project.sources.map(source => source.id),
+          body: { version: project.version, name: file.name, mime: file.type, dataBase64 },
+          key, method: 'POST', uncertain: false };
+      } catch (_) {
+        if (expired) return;
+        busy = false;
+        savingSource = false;
+        $('source-status').textContent = '';
+        if (key) clearSourceSelection();
+        error('source-error', key ? 'The image could not be read. Choose the file again.' : 'The image save could not be prepared. Try Save image again.');
+        updateControls();
+        return;
+      }
     }
     const operation = pendingUpload;
     busy = true; savingSource = true; updateControls(); $('source-status').textContent = 'Saving source image…';

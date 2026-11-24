@@ -67,7 +67,7 @@ def observe_fixture(filename):
             result["reason"] = "FILE_SIZE_OUTSIDE_BOUND"
             return result
         stage = "open"
-        flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+        flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
         result["openFlags"] = {"readOnly": True, "noFollowSupported": bool(getattr(os, "O_NOFOLLOW", 0)),
                                "nonblockingSupported": bool(getattr(os, "O_NONBLOCK", 0))}
         descriptor = os.open(filename, flags)

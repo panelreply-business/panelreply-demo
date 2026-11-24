@@ -1,5 +1,15 @@
 # PanelReply development progress
 
+## November 23 — spreadsheet image read and retry
+
+The spreadsheet now starts reading a selected image before disabling the file picker, checks the byte count before sending it, and clears an unreadable selection so the owner can choose the same file again. A file read that finishes after session expiry is discarded. Three client regression cases cover these paths, including a successful retry. A new browser journey checks that the server stores the exact fixture bytes after reselection. Native Safari's original upload journeys and success assertions remain in place.
+
+On Windows, 5,382 application checks across eight portable files passed with zero skips. All 25 native Safari runner harness checks passed locally. The observer now reads binary files in binary mode on Windows. An earlier mixed-platform command also ran 72 private callback storage cases, which all failed the POSIX owner-only directory precondition on Windows. Those cases require the Linux integration run. Harness checks and repeated executions are excluded from the product target.
+
+[Run 95](https://github.com/panelreply-business/panelreply-demo/actions/runs/45312762218) tests the preceding callback commit `831fef3`. The [Intel macOS WebKit suite](https://github.com/panelreply-business/panelreply-demo/actions/runs/45312762218/job/138172289550) passed all 18 callback journeys. The [WebKit emulation job](https://github.com/panelreply-business/panelreply-demo/actions/runs/45312762218/job/138172289724) passed all 40 workspace and 12 callback tests, including each of the four request-save profiles that previously timed out.
+
+Three run 94 WebKit jobs timed out during package downloads from the same Ubuntu mirror. The Linux WebKit jobs now replace that mirror with the official Ubuntu archive when it occurs in the runner's mirror list. The workflow parses with all four intended jobs referencing the step. Successful package installation and the new spreadsheet browser journey require CI on the publishing commit.
+
 ## November 23 — callback save activation on WebKit
 
 [Run 94](https://github.com/panelreply-business/panelreply-demo/actions/runs/45308071247) tested PR head `f8bd497`. Three callback workflows timed out waiting for the first request PATCH in WebKit on Linux, Intel macOS and Apple Silicon. All four WebKit mobile profiles timed out saving notes. Chromium and Firefox passed the selected desktop callback suite. Apple Silicon also produced two static-page console failures during optional screenshot capture.

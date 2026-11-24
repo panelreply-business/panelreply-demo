@@ -151,6 +151,74 @@ async function selectSyntheticSource(page, name = 'synthetic.png') {
   return bytes;
 }
 
+test('panel source opens the selected file before locking its picker and rejects an incomplete read', async () => {
+  const page = client('panels.js', { project: true, productId: 'spreadsheet' });
+  await settle();
+  const picker = page.element('panel-image');
+  const file = { name: 'label.png', type: 'image/png', size: 4 };
+  let pickerWasEnabled;
+  file.arrayBuffer = async () => {
+    pickerWasEnabled = !picker.disabled;
+    return new Uint8Array([1, 2]).buffer;
+  };
+  picker.files = [file];
+  await picker.emit('change');
+  await page.element('upload-source').emit('click');
+  assert.equal(page.calls.some(call => call.method === 'POST'), false, 'An incomplete file must stay local');
+  assert.equal(pickerWasEnabled, true);
+  assert.equal(picker.disabled, false);
+  assert.equal(page.element('source-selection').hidden, true);
+  assert.match(page.element('source-error').textContent, /could not be read/i);
+});
+
+test('panel source allows the same image to be selected again after a local read error', async () => {
+  const page = client('panels.js', { project: true, productId: 'spreadsheet' });
+  await settle();
+  const picker = page.element('panel-image');
+  picker.files = [{ name: 'label.png', type: 'image/png', size: 4,
+    async arrayBuffer() { throw new Error('NotReadableError'); } }];
+  picker.value = 'label.png';
+  await picker.emit('change');
+  await page.element('upload-source').emit('click');
+  assert.equal(picker.value, '');
+  assert.equal(page.element('upload-source').disabled, true);
+  assert.equal(page.calls.some(call => call.method === 'POST'), false);
+
+  const bytes = await selectSyntheticSource(page, 'label.png');
+  const source = { id: '33333333-3333-4333-8333-333333333333', name: 'label.png',
+    mime: 'image/png', bytes: bytes.length, width: 20, height: 20, createdAt: TIME };
+  page.state.respond = (url, request) => request.method === 'POST'
+    ? panelReply(200, { source, project: { ...savedProject, sources: [source], version: 2 } }) : undefined;
+  await page.element('upload-source').emit('click');
+  assert.match(page.element('source-status').textContent, /Source image saved/);
+  assert.equal(page.calls.filter(call => call.method === 'POST').length, 1);
+});
+
+test('panel source discards a file read that finishes after the workspace session expires', async () => {
+  for (const readFailed of [false, true]) {
+    const page = client('panels.js', { project: true, productId: 'spreadsheet' });
+    await settle();
+    let resolveRead, rejectRead;
+    const picker = page.element('panel-image');
+    picker.files = [{ name: 'pending.png', type: 'image/png', size: 2,
+      arrayBuffer: () => new Promise((resolve, reject) => { resolveRead = resolve; rejectRead = reject; }) }];
+    await picker.emit('change');
+    const upload = page.element('upload-source').emit('click');
+    await settle();
+    page.state.respond = url => url === '/api/session' ? panelReply(401, {}) : undefined;
+    for (const handler of page.events.get('focus')) handler();
+    await settle();
+    assert.deepEqual(page.redirects, ['/login']);
+    if (readFailed) rejectRead(new Error('Synthetic read failure'));
+    else resolveRead(new Uint8Array([1, 2]).buffer);
+    await upload;
+    assert.equal(page.calls.some(call => call.method === 'POST'), false);
+    assert.equal(page.element('source-status').textContent, '');
+    assert.equal(page.element('source-error').textContent, '');
+    assert.equal(page.element('source-selection').hidden, true);
+  }
+});
+
 test('panel source keeps its original bytes and retry key after an uncertain write and later conflict', async () => {
   const page = client('panels.js', { project: true, productId: 'spreadsheet' });
   await settle();

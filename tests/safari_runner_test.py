@@ -195,7 +195,7 @@ class SafariRunnerHarnessTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "Synthetic upload did not save"):
             case.upload_source({"id": "synthetic-project"})
         element.send_keys.assert_called_once()
-        self.assertTrue(element.send_keys.call_args.args[0].endswith("/tests/fixtures/panels/complete.png"))
+        self.assertEqual(Path(element.send_keys.call_args.args[0]), runner.ROOT / "tests/fixtures/panels/complete.png")
         case.click.assert_called_once_with("#upload-source")
         self.assertEqual(case.text_contains.call_args_list[-1].args, ("#source-status", "Source image saved"))
         case.api.assert_not_called()
@@ -261,21 +261,23 @@ class SafariRunnerHarnessTests(unittest.TestCase):
             }
             const context = {document: {querySelector: selector => {
                 if (selector !== '#panel-image') throw new Error('Unexpected DOM query');
-                return {files: [file]};
+                return {files: input.mode === 'cleared' ? [] : [file]};
             }}, isSecureContext: true, crypto: {randomUUID: () => { ++uuidCalls; throw new Error('Must not call UUID'); }},
                 FileReader: Reader, btoa: value => Buffer.from(value, 'binary').toString('base64'),
                 setTimeout: (fn, ms) => { timerMs = ms; return setTimeout(fn, input.mode === 'timeout' ? 0 : ms); },
                 clearTimeout, arguments: [2097152, result => {
                     setImmediate(() => process.stdout.write(JSON.stringify({result, fileReads, readerReads, uuidCalls, aborts, timerMs})));
                 }]};
+            if (input.mode === 'cleared') context.__panelreplyFailedFixture = file;
             vm.runInNewContext('(function(){' + input.script + '\n}).apply(null, arguments)', context, {timeout: 1000});
+            if (context.__panelreplyFailedFixture) throw new Error('Diagnostic retained the fixture');
         """
         result = subprocess.run(["node", "-e", script], input=json.dumps({"script": UPLOAD_READ_DIAGNOSTIC, "mode": mode}),
                                 text=True, capture_output=True, timeout=10, check=True)
         return json.loads(result.stdout)
 
     def test_after_failure_read_probe_records_only_counts_and_exact_native_error_fields(self):
-        for mode in ("read", "error"):
+        for mode in ("read", "error", "cleared"):
             result = self.file_read_probe(mode)
             report = result["result"]
             self.assertEqual((result["fileReads"], result["readerReads"], result["uuidCalls"]), (1, 1, 0))
@@ -284,7 +286,7 @@ class SafariRunnerHarnessTests(unittest.TestCase):
             self.assertEqual(report["file"]["size"], 4)
             for method in ("arrayBufferAndBase64", "fileReader"):
                 observed = report["reads"][method]
-                self.assertEqual(observed["status"], "READ" if mode == "read" else "ERROR")
+                self.assertEqual(observed["status"], "ERROR" if mode == "error" else "READ")
                 if mode == "error":
                     self.assertEqual(observed["error"], {"name": "NotReadableError", "code": 0,
                                                        "message": "Synthetic unreadable file"})
@@ -293,7 +295,7 @@ class SafariRunnerHarnessTests(unittest.TestCase):
                     self.assertTrue(observed["matchesFileSize"])
                 self.assertNotIn("data", observed)
                 self.assertNotIn("content", observed)
-            if mode == "read":
+            if mode != "error":
                 self.assertEqual(report["reads"]["arrayBufferAndBase64"]["encodedLength"], 8)
             else:
                 self.assertEqual(report["reads"]["arrayBufferAndBase64"]["stage"], "arrayBuffer")
