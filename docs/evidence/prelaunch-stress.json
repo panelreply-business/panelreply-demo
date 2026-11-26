@@ -1,0 +1,220 @@
+{
+  "status": "PASS",
+  "date": "2026-11-19T22:33:35.632Z",
+  "scope": "One local synthetic storage/recovery drill. Not HTTP load, user concurrency, hardware sizing or production capacity.",
+  "sourceSha256": {
+    "harness": "5c1e44bfd7cae592d497ea1f5bbb8355c9a196c8318295b5af2bc2203ca583b7",
+    "store": "0b1f3a493564a2a7ed1e2d21afed11f41ce3285f0444b736f332acab488ad262",
+    "backup": "5252b67201aa6e3a4e4e94250424fe691399691068d86375e44c63d0c87f4e2c"
+  },
+  "workload": {
+    "businesses": 2,
+    "projects": 204,
+    "requests": 301,
+    "maximumRowsInProject": 200,
+    "sourceImages": 5,
+    "repeatedSaves": 100,
+    "repeatedCsvExports": 100,
+    "listPasses": 20,
+    "reopenCycles": 5,
+    "sessionsBeforeBackup": 5
+  },
+  "unexpectedErrors": 0,
+  "expectedRejections": [
+    "project_limit",
+    "source_limit",
+    "invalid_input"
+  ],
+  "checks": [
+    {
+      "check": "project/row/image capacity boundaries",
+      "status": "PASS"
+    },
+    {
+      "check": "repeated saves, exports, listing and reopen preserve saved values",
+      "status": "PASS"
+    },
+    {
+      "check": "encrypted restore retains canonical records, private image bytes, flags and exports",
+      "status": "PASS"
+    },
+    {
+      "check": "restored sessions removed, old credentials rejected and operator reset restores one owner",
+      "status": "PASS"
+    },
+    {
+      "check": "tenant boundaries remain after recovery",
+      "status": "PASS"
+    }
+  ],
+  "latency": {
+    "createProject": {
+      "operations": 204,
+      "p50Ms": 0.228,
+      "p95Ms": 0.76,
+      "maxMs": 5.408
+    },
+    "createRequest": {
+      "operations": 300,
+      "p50Ms": 0.179,
+      "p95Ms": 0.436,
+      "maxMs": 6.198
+    },
+    "attachImage": {
+      "operations": 5,
+      "p50Ms": 3.043,
+      "p95Ms": 7.099,
+      "maxMs": 7.099
+    },
+    "save200RowProject": {
+      "operations": 100,
+      "p50Ms": 1.342,
+      "p95Ms": 2.235,
+      "maxMs": 4.017
+    },
+    "export200RowsCsv": {
+      "operations": 100,
+      "p50Ms": 0.547,
+      "p95Ms": 1.177,
+      "maxMs": 2.092
+    },
+    "list240Requests": {
+      "operations": 20,
+      "p50Ms": 13.752,
+      "p95Ms": 28.407,
+      "maxMs": 29.01
+    },
+    "list200Projects": {
+      "operations": 20,
+      "p50Ms": 1.443,
+      "p95Ms": 1.954,
+      "maxMs": 1.983
+    },
+    "reopenDatabase": {
+      "operations": 5,
+      "p50Ms": 1.597,
+      "p95Ms": 2.028,
+      "maxMs": 2.028
+    },
+    "encryptedBackup": {
+      "operations": 1,
+      "p50Ms": 312.757,
+      "p95Ms": 312.757,
+      "maxMs": 312.757
+    },
+    "authenticatedRestore": {
+      "operations": 1,
+      "p50Ms": 347.268,
+      "p95Ms": 347.268,
+      "maxMs": 347.268
+    }
+  },
+  "elapsedMs": 2615,
+  "process": {
+    "node": "v24.22.3",
+    "platform": "linux",
+    "cpuUserMs": 2543,
+    "cpuSystemMs": 214,
+    "rssBeforeBytes": 39251968,
+    "rssAfterBytes": 89870336,
+    "peakRssKiB": 120672
+  },
+  "storage": {
+    "initialDirectoryBytes": 168736,
+    "populatedDirectoryBytes": 1242224,
+    "restoredDirectoryBytes": 995328,
+    "encryptedArchiveBytes": 995408,
+    "counts": {
+      "businesses": 2,
+      "users": 2,
+      "leads": 301,
+      "messages": 301,
+      "audit": 615,
+      "optOuts": 1,
+      "panelProjects": 204,
+      "panelSources": 5
+    }
+  },
+  "integrity": {
+    "sourceUnchanged": true,
+    "businessA": {
+      "before": "c70f688f0f80ef501bd0ed17e770901d3d7fd27468268a80298da4a70f4317d7",
+      "after": "c70f688f0f80ef501bd0ed17e770901d3d7fd27468268a80298da4a70f4317d7",
+      "tables": {
+        "businesses": {
+          "rows": 1,
+          "sha256": "588d237bc82b06fedaff70e936462cab79fa0acb8ac9800291d87e69f34b549e"
+        },
+        "users": {
+          "rows": 1,
+          "sha256": "61b0ad65aa8a9c2b5bd032f7db9faa43810b8924c29b74fe11671bb0581f57da"
+        },
+        "leads": {
+          "rows": 241,
+          "sha256": "9ed1e5d28a5adc73758767225f1c12746f98f2d67a3198f7def01b802e5df678"
+        },
+        "messages": {
+          "rows": 241,
+          "sha256": "a48a85aca30aff9fa383c68dbdd815a074ad3744fc67db5538c733d2b33c20bd"
+        },
+        "audit": {
+          "rows": 551,
+          "sha256": "5cfb6b659436782d22bcac6d08c7e96169f6e5551df8336668ae7a97e21c5fbb"
+        },
+        "suppression": {
+          "rows": 1,
+          "sha256": "c81b3d7db89d612a9028b9239405dfcc0b302a17f3668160eb4e99511ab543e6"
+        },
+        "panel_projects": {
+          "rows": 200,
+          "sha256": "af5878cd5e62a9bc1bf4fb2493ec7168f50a205e246e34a1a5e0d73943209384"
+        },
+        "panel_sources": {
+          "rows": 5,
+          "sha256": "d8bc68ecb4521cb55fc469963ec477f4811311488f69be8d5692b07a867c480c"
+        }
+      }
+    },
+    "businessB": {
+      "before": "8a044714c8bba5fae7e6f83daedc98731d505bb1d25dc50e2b11f0233aa9b5f4",
+      "after": "8a044714c8bba5fae7e6f83daedc98731d505bb1d25dc50e2b11f0233aa9b5f4",
+      "tables": {
+        "businesses": {
+          "rows": 1,
+          "sha256": "dc77386a14fd36e679c8743b20da2047c9a8c1397312ff32597192e09e4e2a4c"
+        },
+        "users": {
+          "rows": 1,
+          "sha256": "490cc1c0aa80961789f42e89af4b18380fb332df7c142979c1cac59c5605165e"
+        },
+        "leads": {
+          "rows": 60,
+          "sha256": "264989b84425fd4844323efa5eb5e2dfa10268e830d0ccc70b0f502a2e1444b3"
+        },
+        "messages": {
+          "rows": 60,
+          "sha256": "59f7ff4f564a782052b613ad40762df92b84467e2e114d8c3f3525a0b1b6ba7b"
+        },
+        "audit": {
+          "rows": 64,
+          "sha256": "981b43bf364099b77d82efb77e6fa72e40585a7975d22773ac7ca747526c4703"
+        },
+        "suppression": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "panel_projects": {
+          "rows": 4,
+          "sha256": "4af07bb096bfc271376b7f5c55fbf6f511f095778e1350080886f06cfaf8fce2"
+        },
+        "panel_sources": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    "csvSha256": "123b75618bee66555cbc1288a1e3fcdb67ea69b03f0e3b1ebfe4faf260450207",
+    "restoredSessions": 0,
+    "passwordsDisabledBeforeReset": 2
+  }
+}

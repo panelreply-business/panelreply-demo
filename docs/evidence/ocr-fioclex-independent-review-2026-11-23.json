@@ -1,0 +1,80 @@
+{
+  "format": "panelreply-independent-source-review-v1",
+  "reviewer": "ocr_quality",
+  "recordedAt": "2026-11-23T19:51:04.449405+00:00",
+  "worktree": "/workspace/scratch/8f544d546bb7/panelreply-ocr26-normalizer",
+  "baseCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "status": "PASS_SOURCE_REVIEW",
+  "findings": [],
+  "files": [
+    {
+      "path": "workspace/ocr-isolation.cjs",
+      "sha256": "fd9419af6688cafb7946075c8ce22166d60f241542682000123515f5b90f5186",
+      "bytes": 6655
+    },
+    {
+      "path": "tests/ocr-isolation.test.cjs",
+      "sha256": "3abdd534115a2cb8c1c875581bfd4d16069f8c408d3476961910ace96d3ddc7b",
+      "bytes": 8263
+    },
+    {
+      "path": "tests/fixtures/ocr-seccomp-baseline.json",
+      "sha256": "db07081a9d16a073379bae0df4e083d923ca530c11ce9c5b40505c93d8055bae",
+      "bytes": 2077
+    }
+  ],
+  "unchanged": [
+    {
+      "path": "scripts/test-ocr-isolation.cjs",
+      "sha256": "0a3dbb02b641ded1d068785eed745eb26bac67481d29ee4b2508cd10062031b1",
+      "byteIdenticalToBase": true
+    },
+    {
+      "path": "workspace/ocr-preprocess.py",
+      "sha256": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014",
+      "byteIdenticalToBase": true
+    },
+    {
+      "path": ".github/workflows/demo-tests.yml",
+      "sha256": "b8cb15567180bd73794bcd23df3b115fb47d03bac3f02fc62bbab4de2b87aee9",
+      "byteIdenticalToBase": true
+    }
+  ],
+  "frozenPolicyMatchesBase": true,
+  "frozenPolicySha256": "7760783e3ecbc4fde6c8ff7953dfac5a9a6490c0a9c60e81bb6bcd601925cb19",
+  "reviewedBoundaries": [
+    "Architecture and x32 rejection execute before the new ioctl branch.",
+    "Only native syscall 16 with a zero high request word and low word 0x5451 returns EACCES. Every ioctl remains denied, and all other requests return EPERM.",
+    "The non-ioctl jump skips six instructions without replacing the loaded syscall number, preserving the deny list and every other decision.",
+    "The primary CPython v3.14.4 source copies show Py_fopen invoking set_inheritable with raise=1. EACCES reaches its existing fcntl fallback while EPERM returns an error.",
+    "The descriptor-flag test models one state. It does not establish the runner syscall path, Python binary identity, namespace enforcement or startup."
+  ],
+  "primarySourceCopiesRead": [
+    {
+      "path": "/tmp/panelreply-ocr26-primary/python-3.14.4-fileutils.c",
+      "url": "https://github.com/python/cpython/blob/v3.14.4/Python/fileutils.c",
+      "sha256": "7141679d2d4d1ac7faa9f17b4fa3596e042bbd4d32bbab659bb5336c24b79d95"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/python-3.14.4-main.c",
+      "url": "https://github.com/python/cpython/blob/v3.14.4/Modules/main.c",
+      "sha256": "4bd276c8b0607ea94b43ebff78b9e8cd2b384442a23989c3f19ed7c87fae0c63"
+    }
+  ],
+  "verification": {
+    "command": "node --test --test-name-pattern='FIOCLEX|compatibility branch|tagged CPython' tests/ocr-isolation.test.cjs",
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 209.013752,
+    "sourceUnchanged": true,
+    "nativeAttempts": 0,
+    "additionalGoalCredit": 0
+  },
+  "recordGeneration": "An initial record script referred to a nonexistent verify-ocr-isolation filename and stopped before writing. The path was corrected to the existing test-ocr-isolation.cjs. No test or source changed.",
+  "limitations": [
+    "Run91 remains BLOCKED with zero native cases. Exact-source native verification is required.",
+    "This source review makes no host-policy or release-acceptance claim."
+  ]
+}

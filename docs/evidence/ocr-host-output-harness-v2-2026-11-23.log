@@ -1,0 +1,48 @@
+✔ readiness diagnostics observe exactly the existing invocation and bound split stderr chunks (2.852126ms)
+✔ only explicit namespace errors establish a confirmed host blocker (0.883013ms)
+✔ missing launcher, invalid worker configuration and SIGSYS fail without claiming a host restriction (0.208735ms)
+✔ synchronous and asynchronous launch errors retain safe codes without error messages or retries (0.715611ms)
+✔ stage names are fixed and unexpected arguments or terminal controls cannot leak into the report (0.577992ms)
+✔ successful process exits or missing exit evidence never prove readiness or OS isolation (1.237548ms)
+✔ a rejected dependency version is a prerequisite failure even when the version command exits zero (0.19872ms)
+✔ trusted path rejection is a configuration failure with no native denial or host blocker claimed (0.177488ms)
+✔ the observer retains all four fixed readiness stages after adding the version gate (0.505232ms)
+✔ host context rejects arbitrary paths and caps short reads without retaining truncated values (2.236836ms)
+✔ host context retains only named OS and security fields and two bounded runner labels (1.737644ms)
+✔ missing and denied host controls remain unavailable while an observed zero remains explicit (0.587507ms)
+✔ profile observations retain only bwrap names and never equate file presence with attachment (0.687708ms)
+✔ malformed or duplicated host fields and terminal controls cannot become observed values (0.644803ms)
+✔ fixed executable hashing uses one bounded held handle and rejects changing identity (0.8085ms)
+✔ host read failures close handles and redact unknown native error codes (0.19175ms)
+✔ source binding validates the manifest digest and redacts snapshot errors (0.569089ms)
+✔ changed or dirty source cannot receive native PASS evidence (1.765134ms)
+✔ host context cannot promote BLOCKED or FAIL and unavailable context cannot erase a native result (0.516279ms)
+✔ native acceptance requires all six distinct cases and the matching child exit result (0.219642ms)
+✔ changed or unreadable dependency identity cannot receive native PASS evidence (0.422949ms)
+✔ the host wrapper executes exactly one fixed verifier and excludes raw child stderr (1.443429ms)
+✔ verifier output limits retain bounded bytes and kill only the one owned child once (13.631168ms)
+✔ malformed output and launch errors fail without leaking diagnostics or retrying (0.379072ms)
+✔ verifier deadline terminates its owned process once and never retries (5.923342ms)
+✔ dirty preflight performs no native attempt and observer read errors remain redacted (0.486455ms)
+✔ the wrapper brackets one native attempt with source dependency and context observations (0.354536ms)
+✔ one LSM label terminator is supported while embedded or repeated NUL bytes stay invalid (0.454787ms)
+✔ failed cancelled skipped or unknown dependency builds never execute an existing system binary (0.679075ms)
+✔ output repository aliases are rejected before any source observation or verifier callback (1.218199ms)
+✔ raw alias followed by parent traversal resolves before lexical normalization (0.92712ms)
+✔ missing or unresolvable output parents fail closed before observing the source (0.457571ms)
+✔ existing files and dangling output leaves remain untouched and never start observation (0.613396ms)
+✔ ordinary outside output uses an exclusive held descriptor and closes before returning evidence (0.933249ms)
+✔ parent replacement after exclusive creation closes the placeholder before any observation (0.531553ms)
+✔ leaf replacement cannot redirect a report write or trigger deletion of replacement data (0.797845ms)
+✔ a replacement outside parent with the same spelling cannot receive the held report (0.63621ms)
+✔ an observation error remains primary when descriptor cleanup also reports an error (0.55653ms)
+✔ write and close failures cannot return completed evidence and never delete the output (0.805777ms)
+✔ relative release-prefixed and repository-ancestor output destinations are rejected (0.399643ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 183.420548

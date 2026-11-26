@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-11-24 01:46:05 UTC",
+  "expectedDevelopmentHead": "6b4964ff65c2cd8b904d5974382cb6c241e2c378",
+  "main": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+  "pr": {
+    "head": "6b4964ff65c2cd8b904d5974382cb6c241e2c378",
+    "draft": true,
+    "state": "open"
+  },
+  "services": [
+    {
+      "id": "srv-dbv6do6tlv9c73fuvar0",
+      "name": "panelreply-ai",
+      "branch": "main",
+      "suspended": "suspended",
+      "suspenders": [
+        "user"
+      ],
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "previews": {
+        "generation": "off"
+      },
+      "pullRequestPreviewsEnabled": "no"
+    },
+    {
+      "id": "srv-dbu5o8tckfvc73b6fb4g",
+      "name": "panelreply-demo",
+      "branch": "main",
+      "suspended": "suspended",
+      "suspenders": [
+        "user"
+      ],
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "previews": {
+        "generation": "off"
+      },
+      "pullRequestPreviewsEnabled": "no"
+    }
+  ],
+  "scope": "Read-only configuration and ref verification. No deploy, unsuspend, main merge, preview activation, purchase or customer contact.",
+  "mutations": 0
+}

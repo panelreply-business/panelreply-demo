@@ -1,0 +1,76 @@
+{
+  "format": "panelreply-native-safari-preparation-v1",
+  "date": "2026-11-23",
+  "purpose": "Evidence-harness preparation only. No Safari product execution or release acceptance.",
+  "baseCommit": "1b35490335203348572e938bcc30dfc0f05d93e1",
+  "integrationBase": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
+  "sourceTreeSha256": "6c6a1dd27d4f330fc58165bc2d5ac7bce8d3eec54435e858f2b6afd6778f1b03",
+  "dirty": true,
+  "policySha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216",
+  "localChecks": [
+    {
+      "command": "node --test tests/release-evidence.test.cjs",
+      "passed": 112,
+      "failed": 0,
+      "skipped": 0,
+      "classification": "harness, excluded from product goal"
+    },
+    {
+      "command": "python -m unittest discover -s tests -p safari_runner_test.py -v",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "classification": "harness, not collected as product executions"
+    },
+    {
+      "command": "python -m py_compile tests/safari_product_browser_test.py tests/release_safari_runner.py tests/safari_runner_test.py",
+      "status": "PASS",
+      "classification": "syntax only"
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS",
+      "classification": "patch integrity"
+    },
+    {
+      "check": "workflow YAML, step-scoped runner.temp, unchanged existing requirements and milestone values",
+      "status": "PASS"
+    }
+  ],
+  "nativeProductExecutionStatus": "NOT_RUN",
+  "nativeProductPassingExecutions": 0,
+  "plannedNativeJourneys": {
+    "callback-safari": [
+      "safari_product_browser_test.SafariCallbackBrowserTests.test_contact_hold_and_keyboard_dirty_edit_guard",
+      "safari_product_browser_test.SafariCallbackBrowserTests.test_intake_status_persistence_and_sign_out",
+      "safari_product_browser_test.SafariCallbackBrowserTests.test_schedule_reschedule_outcome_follow_up_and_cancel"
+    ],
+    "spreadsheet-manual-safari": [
+      "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_bound_recovery_revokes_archived_sessions_and_credentials",
+      "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_file_upload_source_links_and_unavailable_ocr",
+      "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_manual_corrections_persist_and_native_downloads_match"
+    ]
+  },
+  "manualGatesPreserved": 7,
+  "automatedSafariScopesAdded": 2,
+  "independentReview": {
+    "callbackJourneys": "callback_schedule reviewed selectors, task lifecycle, state and readback ordering. No concrete defect. Completed-count wait tightened from review.",
+    "spreadsheetJourneys": "ocr_quality reviewed selectors, downloads, source links, manual OCR boundary and encrypted recovery. No concrete defect.",
+    "nativeRunnerAndCollector": "Root reviewed accounting and cleanup. Requested lowercase pinned capability recording and native OS consistency checks were implemented, with complete driver version/build matching and passing rejection regressions. Integration review remains with root."
+  },
+  "logs": [
+    {
+      "name": "panelreply-native-safari-node-harness.tap",
+      "sha256": "2076a5f2209bc8712069ee18eca105cfec73d9e85152db0de250e4a94c933bfa"
+    },
+    {
+      "name": "panelreply-native-safari-python-harness.log",
+      "sha256": "6bb6c296c34e0567dd3b5904733f3a8cb6a940e6c0e9bb80afc7a105fbcb0183"
+    }
+  ],
+  "remaining": [
+    "Committed CI execution on standard macos-15-intel with ordinary installed Safari.",
+    "Observe actual native date entry, file input and both Downloads files without permission changes.",
+    "Preserve failed, blocked or missing outcomes. All manual and remaining platform/product gates stay open."
+  ]
+}

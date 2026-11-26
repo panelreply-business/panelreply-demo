@@ -1,0 +1,4906 @@
+{
+  "format": "panelreply-final-ci-evidence-v1",
+  "recordedAt": "2026-11-23T17:58:16.440555+00:00",
+  "metadataCapturedAt": "2026-11-23T17:55:51.280Z",
+  "repository": "panelreply-business/panelreply-demo",
+  "run": {
+    "id": 45228816564,
+    "number": 85,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "headSha": "76db2d67702c2eee57185e06221257e1083e522e",
+    "event": "pull_request",
+    "createdAt": "2026-11-23T17:32:43Z",
+    "updatedAt": "2026-11-23T17:47:58Z",
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45228816564"
+  },
+  "status": "COMPLETED_FAILURE_WITH_UNEXECUTED_ARM",
+  "source": {
+    "head": "76db2d67702c2eee57185e06221257e1083e522e",
+    "testedMerge": "f1947a5abbd16ade36295661e0e6ef60e7928a41",
+    "gitTree": "5757371c9502fa7005f5bb1a652a819ac9991d3b",
+    "sourceManifestSha256": "208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd",
+    "manifestEntriesVerifiedAgainstCommittedHead": 177,
+    "cleanCommittedEvidence": true,
+    "policy": {
+      "path": "docs/test-milestones.json",
+      "sha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216"
+    }
+  },
+  "scope": {
+    "releaseArtifacts": 35,
+    "sourceReports": 37,
+    "workflowJobsObserved": 39,
+    "jobStates": {
+      "success": 29,
+      "cancelled": 1,
+      "failure": 9
+    },
+    "missingEmittedReleaseReportsAtSnapshot": 0,
+    "unknownOrIgnoredReportFiles": [],
+    "previewArtifactsNotCounted": 8,
+    "aggregateArtifactsVerified": 1
+  },
+  "aggregation": {
+    "generatedAt": "2026-11-23T17:57:27.277Z",
+    "valid": true,
+    "observations": 32276,
+    "duplicateObservationsExcluded": 7102,
+    "product": {
+      "total": 24804,
+      "PASS": 24791,
+      "SKIP": 0,
+      "TODO": 0,
+      "EXPECTED_FAILURE": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 6,
+      "RUNNING": 0,
+      "CANCELLED": 0,
+      "UNEXPECTED_SUCCESS": 0,
+      "FAIL": 7,
+      "ERROR": 0
+    },
+    "harness": {
+      "total": 370,
+      "PASS": 370,
+      "SKIP": 0,
+      "TODO": 0,
+      "EXPECTED_FAILURE": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0,
+      "RUNNING": 0,
+      "CANCELLED": 0,
+      "UNEXPECTED_SUCCESS": 0,
+      "FAIL": 0,
+      "ERROR": 0
+    },
+    "distinctCases": {
+      "total": 9337,
+      "generated": 7467,
+      "notMarkedGenerated": 1870,
+      "passingOnEveryObservedPlatform": 9329,
+      "withAnyPass": 9330,
+      "withUnresolvedOutcome": 8
+    },
+    "productScopes": {
+      "callback": {
+        "executions": {
+          "total": 10639,
+          "PASS": 10629,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 3,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 7,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 3474,
+          "generated": 2389,
+          "passingOnEveryObservedPlatform": 3469,
+          "withUnresolvedOutcome": 5
+        }
+      },
+      "spreadsheet": {
+        "executions": {
+          "total": 11956,
+          "PASS": 11953,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 3,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 0,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 4164,
+          "generated": 3782,
+          "passingOnEveryObservedPlatform": 4161,
+          "withUnresolvedOutcome": 3
+        }
+      },
+      "shared": {
+        "executions": {
+          "total": 2209,
+          "PASS": 2209,
+          "SKIP": 0,
+          "TODO": 0,
+          "EXPECTED_FAILURE": 0,
+          "BLOCKED": 0,
+          "NOT_RUN": 0,
+          "RUNNING": 0,
+          "CANCELLED": 0,
+          "UNEXPECTED_SUCCESS": 0,
+          "FAIL": 0,
+          "ERROR": 0
+        },
+        "distinctCases": {
+          "total": 1699,
+          "generated": 1296,
+          "passingOnEveryObservedPlatform": 1699,
+          "withUnresolvedOutcome": 0
+        },
+        "availableTo": [
+          "callback",
+          "spreadsheet"
+        ],
+        "counting": "Counted once in portfolio totals, not added to either app-specific bucket."
+      }
+    },
+    "milestones": {
+      "scope": "portfolio",
+      "initialTarget": 10000,
+      "earlyTarget": 20000,
+      "activeTarget": 10000,
+      "deadline": "2026-12-31T00:00:00-05:00",
+      "releaseDate": "2026-12-31",
+      "timezone": "America/Detroit",
+      "recordedFirstGoalAchievedAt": null,
+      "numericTargetReached": true,
+      "initialNumericTargetReached": true,
+      "earlyNumericTargetReached": true,
+      "platformCoverageComplete": false,
+      "cleanCommittedEvidence": true,
+      "allObservedChecksPassed": false,
+      "initialGoalAchieved": false,
+      "fullGoalAchieved": false,
+      "earlyTargetEligible": false,
+      "suggestedTarget": 10000,
+      "policyChanged": false
+    },
+    "releaseDecision": "NOT_DETERMINED_BY_TEST_COUNT",
+    "productReleaseDecisions": {
+      "callback": "NOT_DETERMINED_BY_TEST_COUNT",
+      "spreadsheet": "NOT_DETERMINED_BY_TEST_COUNT"
+    }
+  },
+  "verification": {
+    "allArtifactZipDigestsMatchedGitHub": true,
+    "allArtifactZipSizesMatchedGitHub": true,
+    "safePathsAndNoSymlinkEntriesVerified": true,
+    "implementationAndPolicyMatchedTestedManifest": true,
+    "policyBindingEnforcedForEveryReport": true,
+    "sourceManifestMatchedEveryCommittedFile": true,
+    "localAggregateJsonSha256": "82d334fad5b54d32b167b082ea2dd9858cf8f5b77a1083a3967b9551d833e57a",
+    "ciAggregateArtifact": {
+      "id": 14848120459,
+      "name": "verified-release-test-summary-attempt-1",
+      "jobId": 137891891772,
+      "zipSha256": "fff77f1fd80c11429da2e3a07edbeffe84f64d0ba8afc34203549c21c97fe16d",
+      "zipBytes": 1035013,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "reportSha256": "22002cbe54f9c689b54a36a93419ef7b7a222707072df547c03d73f159cc658c",
+      "sourceCommit": "f1947a5abbd16ade36295661e0e6ef60e7928a41",
+      "sourceManifestSha256": "208410e4ed9dde46a4e72ec4b163a5c4dfe0c45ff45e214dd1e65f9029ead6cd",
+      "policySha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216",
+      "generatedAt": "2026-11-23T17:47:53.348Z"
+    },
+    "command": "node /tmp/panelreply-run85-immutable-tools/scripts/aggregate-test-evidence.cjs --input /tmp/panelreply-run85-evidence/final-ci-input --output /tmp/panelreply-run85-final-aggregate.json --source f1947a5abbd16ade36295661e0e6ef60e7928a41",
+    "cliExitCode": 0,
+    "interpretation": "A valid strict aggregation validates evidence integrity. It does not turn recorded failures or missing required coverage into PASS.",
+    "ciAggregateMatchesLocalExceptGeneratedAt": true,
+    "aggregateComparisonIgnoredFields": [
+      "generatedAt"
+    ],
+    "newReleaseArtifactsVerifiedOnRefresh": [
+      14847063591,
+      14846828495
+    ],
+    "previousArtifactsReusedWithMatchingGitHubMetadataAndRawReportHashes": true
+  },
+  "failedExecutions": [
+    {
+      "artifactId": 14847426456,
+      "jobId": 137882485850,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "darwin/x86_64/webkit/bundled/desktop",
+      "status": "FAIL",
+      "classification": "CALLBACK_FOCUS_ASSERTION_ON_DISABLED_FIELD",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 426, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    expect(self.page.get_by_label(\"Internal notes\", exact=True)).to_be_focused()\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 23391, in to_be_focused\n    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 873, in to_be_focused\n    await self._expect_impl(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 128, in _expect_impl\n    _record_soft_or_raise(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 60, in _record_soft_or_raise\n    raise error\nAssertionError: Locator expected to be focused\nActual value: inactive \nCall log:\n  - Expect \"to_be_focused\" with timeout 5000ms\n  - waiting for get_by_label(\"Internal notes\", exact=True)\n    14 \u00d7 locator resolved to <textarea rows=\"4\" name=\"notes\" id=\"lead-notes\" maxlength=\"2000\" placeholder=\"Add context for the next person who reviews this request.\"></textarea>\n       - unexpected value \"inactive\"\n\nAria snapshot:\n- textbox \"Internal notes\" [disabled]:\n  - /placeholder: Add context for the next person who reviews this request.",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "39271119f25971a32eaf8ba03ceff52611befb8707c19c6914a0e103f989c001"
+    },
+    {
+      "artifactId": 14847212385,
+      "jobId": 137882485717,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "linux/x86_64/webkit/bundled/desktop",
+      "status": "FAIL",
+      "classification": "CALLBACK_REFLOW_OVERFLOW",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 95, in assert_no_overflow\n    super().assert_no_overflow()\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/workspace_browser_test.py\", line 309, in assert_no_overflow\n    self.assertLessEqual(dimensions[\"document\"], dimensions[\"viewport\"] + 1,\nAssertionError: 521 not less than or equal to 321 : {\"viewport\": 320, \"document\": 521, \"body\": 521}\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 415, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    self.assert_no_overflow()\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 122, in assert_no_overflow\n    self.fail(str(error) + \"\\nOverflow geometry: \" + json.dumps(geometry))\nAssertionError: 521 not less than or equal to 321 : {\"viewport\": 320, \"document\": 521, \"body\": 521}\nOverflow geometry preserved in the SHA256-identified source report.",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "21d5c98dedcc7ecd653da5353e600533fc3d605d9dba22460435d08599d81cf2",
+      "geometry": {
+        "viewport": 320,
+        "document": 521,
+        "body": 521,
+        "rootAndBodyFontPx": 30
+      }
+    },
+    {
+      "artifactId": 14845429272,
+      "jobId": 137882486133,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "linux/x86_64/firefox/bundled/desktop",
+      "status": "FAIL",
+      "classification": "CALLBACK_FOCUS_ASSERTION_ON_DISABLED_FIELD",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 426, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    expect(self.page.get_by_label(\"Internal notes\", exact=True)).to_be_focused()\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 23391, in to_be_focused\n    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 873, in to_be_focused\n    await self._expect_impl(\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 128, in _expect_impl\n    _record_soft_or_raise(\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 60, in _record_soft_or_raise\n    raise error\nAssertionError: Locator expected to be focused\nActual value: inactive \nCall log:\n  - Expect \"to_be_focused\" with timeout 5000ms\n  - waiting for get_by_label(\"Internal notes\", exact=True)\n    14 \u00d7 locator resolved to <textarea rows=\"4\" name=\"notes\" id=\"lead-notes\" maxlength=\"2000\" placeholder=\"Add context for the next person who reviews this request.\"></textarea>\n       - unexpected value \"inactive\"\n\nAria snapshot:\n- textbox \"Internal notes\" [disabled]:\n  - /placeholder: Add context for the next person who reviews this request.",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "ffb1838d2803237974b317eb490e9da2778dc714f76a10210e14cb4d64c2000e"
+    },
+    {
+      "artifactId": 14845268180,
+      "jobId": 137882485786,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "darwin/x86_64/chromium/bundled/desktop",
+      "status": "FAIL",
+      "classification": "CALLBACK_FOCUS_ASSERTION_ON_DISABLED_FIELD",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 426, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    expect(self.page.get_by_label(\"Internal notes\", exact=True)).to_be_focused()\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 23391, in to_be_focused\n    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 873, in to_be_focused\n    await self._expect_impl(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 128, in _expect_impl\n    _record_soft_or_raise(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 60, in _record_soft_or_raise\n    raise error\nAssertionError: Locator expected to be focused\nActual value: inactive \nCall log:\n  - Expect \"to_be_focused\" with timeout 5000ms\n  - waiting for get_by_label(\"Internal notes\", exact=True)\n    14 \u00d7 locator resolved to <textarea rows=\"4\" name=\"notes\" id=\"lead-notes\" maxlength=\"2000\" placeholder=\"Add context for the next person who reviews this request.\"></textarea>\n       - unexpected value \"inactive\"\n\nAria snapshot:\n- textbox \"Internal notes\" [disabled]:\n  - /placeholder: Add context for the next person who reviews this request.",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "1e37a48bf6a29f20868ca4bbb1e158012b1e8b453fbb8eca8a00c6a2cf054ef7"
+    },
+    {
+      "artifactId": 14845123862,
+      "jobId": 137882485974,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "linux/x86_64/chromium/bundled/desktop",
+      "status": "FAIL",
+      "classification": "CALLBACK_FOCUS_ASSERTION_ON_DISABLED_FIELD",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 426, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    expect(self.page.get_by_label(\"Internal notes\", exact=True)).to_be_focused()\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 23391, in to_be_focused\n    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 873, in to_be_focused\n    await self._expect_impl(\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 128, in _expect_impl\n    _record_soft_or_raise(\n  File \"/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 60, in _record_soft_or_raise\n    raise error\nAssertionError: Locator expected to be focused\nActual value: inactive \nCall log:\n  - Expect \"to_be_focused\" with timeout 5000ms\n  - waiting for get_by_label(\"Internal notes\", exact=True)\n    14 \u00d7 locator resolved to <textarea rows=\"4\" name=\"notes\" id=\"lead-notes\" maxlength=\"2000\" placeholder=\"Add context for the next person who reviews this request.\"></textarea>\n       - unexpected value \"inactive\"\n\nAria snapshot:\n- textbox \"Internal notes\" [disabled]:\n  - /placeholder: Add context for the next person who reviews this request.",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "3821362e95b265794e2f9c53a9356808c1c8c340109ea2d02ff7f47eb31b595e"
+    },
+    {
+      "artifactId": 14844899110,
+      "jobId": 137882485756,
+      "suite": "callback",
+      "id": "product_browser_test.CallbackProductBrowserTests.test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels",
+      "platformKey": "darwin/x86_64/firefox/bundled/desktop",
+      "status": "FAIL",
+      "classification": "CALLBACK_FOCUS_ASSERTION_ON_DISABLED_FIELD",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/product_browser_test.py\", line 426, in test_callback_task_form_preserves_unsaved_edits_and_keyboard_labels\n    expect(self.page.get_by_label(\"Internal notes\", exact=True)).to_be_focused()\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 23391, in to_be_focused\n    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 873, in to_be_focused\n    await self._expect_impl(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 128, in _expect_impl\n    _record_soft_or_raise(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 60, in _record_soft_or_raise\n    raise error\nAssertionError: Locator expected to be focused\nActual value: inactive \nCall log:\n  - Expect \"to_be_focused\" with timeout 5000ms\n  - waiting for get_by_label(\"Internal notes\", exact=True)\n    14 \u00d7 locator resolved to <textarea rows=\"4\" name=\"notes\" id=\"lead-notes\" maxlength=\"2000\" placeholder=\"Add context for the next person who reviews this request.\"></textarea>\n       - unexpected value \"inactive\"\n\nAria snapshot:\n- textbox \"Internal notes\" [disabled]:\n  - /placeholder: Add context for the next person who reviews this request.",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "5fcbbe71d0295665a9ce91a1b049b744057e2905a807df14b8b798097408a32c"
+    },
+    {
+      "artifactId": 14844754940,
+      "jobId": 137882485455,
+      "suite": "mobile",
+      "id": "release_mobile_browser_test.MobileWorkspaceTests.test_tablet_portrait_request_save_and_reopen",
+      "platformKey": "linux/x86_64/webkit/bundled/tablet_portrait",
+      "status": "FAIL",
+      "classification": "MOBILE_WEBKIT_TASK_FETCH_PAGE_ERROR",
+      "tracebackSummary": "Traceback (most recent call last):\n  File \"/home/runner/work/panelreply-demo/panelreply-demo/tests/workspace_browser_test.py\", line 168, in tearDown\n    self.assertEqual(self.page_errors, [], \"Uncaught browser script error\")\nAssertionError: Lists differ: ['/127.0.0.1:49067/api/callback-tasks?stat[95 chars]ks.'] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n'/127.0.0.1:49067/api/callback-tasks?state=all&leadId=bb5cd249-f2fc-47fb-baec-2ac9efb2cc0b&limit=100&offset=0 due to access control checks.'\n\n+ []\n- ['/127.0.0.1:49067/api/callback-tasks?state=all&leadId=bb5cd249-f2fc-47fb-baec-2ac9efb2cc0b&limit=100&offset=0 '\n-  'due to access control checks.'] : Uncaught browser script error",
+      "completeDiagnosticsPreservedInSourceReport": true,
+      "rawReportSha256": "100a81d9cbf66557d96b8776ca4e2d71fe2dea72c3d3b83288cc7a69f59bc712",
+      "causeAssessment": {
+        "status": "INFERENCE_PENDING_NEW_SOURCE_VERIFICATION",
+        "description": "Reload/context close may interrupt the background task GET because this persistence helper did not await completed save/task-list UI states. No console or page-error suppression and no proven application exception cause."
+      }
+    }
+  ],
+  "unexecutedExecutions": [
+    {
+      "artifactId": 14845866939,
+      "jobId": 137882485557,
+      "suite": "callback-safari",
+      "id": "safari_product_browser_test.SafariCallbackBrowserTests.test_contact_hold_and_keyboard_dirty_edit_guard",
+      "platformKey": "darwin/x86_64/webkit/safari/desktop",
+      "status": "NOT_RUN",
+      "reason": "Native Safari session creation failed before product methods."
+    },
+    {
+      "artifactId": 14845866939,
+      "jobId": 137882485557,
+      "suite": "callback-safari",
+      "id": "safari_product_browser_test.SafariCallbackBrowserTests.test_intake_status_persistence_and_sign_out",
+      "platformKey": "darwin/x86_64/webkit/safari/desktop",
+      "status": "NOT_RUN",
+      "reason": "Native Safari session creation failed before product methods."
+    },
+    {
+      "artifactId": 14845866939,
+      "jobId": 137882485557,
+      "suite": "callback-safari",
+      "id": "safari_product_browser_test.SafariCallbackBrowserTests.test_schedule_reschedule_outcome_follow_up_and_cancel",
+      "platformKey": "darwin/x86_64/webkit/safari/desktop",
+      "status": "NOT_RUN",
+      "reason": "Native Safari session creation failed before product methods."
+    },
+    {
+      "artifactId": 14845866939,
+      "jobId": 137882485557,
+      "suite": "spreadsheet-manual-safari",
+      "id": "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_bound_recovery_revokes_archived_sessions_and_credentials",
+      "platformKey": "darwin/x86_64/webkit/safari/desktop",
+      "status": "NOT_RUN",
+      "reason": "Native Safari session creation failed before product methods."
+    },
+    {
+      "artifactId": 14845866939,
+      "jobId": 137882485557,
+      "suite": "spreadsheet-manual-safari",
+      "id": "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_file_upload_source_links_and_unavailable_ocr",
+      "platformKey": "darwin/x86_64/webkit/safari/desktop",
+      "status": "NOT_RUN",
+      "reason": "Native Safari session creation failed before product methods."
+    },
+    {
+      "artifactId": 14845866939,
+      "jobId": 137882485557,
+      "suite": "spreadsheet-manual-safari",
+      "id": "safari_product_browser_test.SafariSpreadsheetBrowserTests.test_manual_corrections_persist_and_native_downloads_match",
+      "platformKey": "darwin/x86_64/webkit/safari/desktop",
+      "status": "NOT_RUN",
+      "reason": "Native Safari session creation failed before product methods."
+    }
+  ],
+  "pendingJobsAtMetadataCapture": [],
+  "nativeSafariStartup": {
+    "artifactId": 14845866939,
+    "jobId": 137882485557,
+    "installedBrowserVersion": "26.6",
+    "installedBrowserBuild": "20624.4.5.18.1",
+    "installedHostVersion": "15.7.9",
+    "installedHostBuild": "24G830",
+    "nativeInstallationStable": true,
+    "nativeSessionObserved": false,
+    "productMethodsExecuted": 0,
+    "productMethodsNotRun": 6,
+    "requestedCapabilities": {
+      "browserName": "safari",
+      "platformName": "mac",
+      "pageLoadStrategy": "normal",
+      "safari:useSimulator": false,
+      "browserVersion": "26.6"
+    },
+    "cause": "Installed macOS Safari rejected safari:useSimulator even when false. This is a request-configuration failure before product execution.",
+    "privilegedSetupOrFallback": false
+  },
+  "aggregateGate": {
+    "status": "FAIL",
+    "jobId": 137891891772,
+    "conclusion": "failure",
+    "reason": "The evidence aggregation succeeded, but the automated platform acceptance step rejected unresolved requirements.",
+    "unresolvedAutomatedRequirements": [
+      "client-linux-chromium",
+      "client-linux-firefox",
+      "client-linux-webkit",
+      "client-darwin-chromium",
+      "client-darwin-firefox",
+      "client-darwin-webkit",
+      "emulated-iphone-13-portrait",
+      "emulated-iphone-13-landscape",
+      "emulated-ipad-pro-11-portrait",
+      "emulated-ipad-pro-11-landscape",
+      "callback-program-linux-chromium",
+      "callback-program-linux-firefox",
+      "callback-program-linux-webkit",
+      "callback-program-darwin-intel-chromium",
+      "callback-program-darwin-intel-firefox",
+      "callback-program-darwin-intel-webkit",
+      "callback-program-darwin-arm64-chromium",
+      "spreadsheet-manual-program-darwin-arm64-chromium",
+      "callback-program-darwin-arm64-firefox",
+      "spreadsheet-manual-program-darwin-arm64-firefox",
+      "callback-program-darwin-arm64-webkit",
+      "spreadsheet-manual-program-darwin-arm64-webkit",
+      "node-darwin-arm64",
+      "client-darwin-arm64-chromium",
+      "client-darwin-arm64-firefox",
+      "client-darwin-arm64-webkit",
+      "callback-program-darwin-x86_64-safari",
+      "spreadsheet-program-darwin-x86_64-safari"
+    ],
+    "logSha256": "dec7b854d1dcaf18813f4a703530fd5a09dfd66205cc26feb189c659fe5d7a12"
+  },
+  "coverage": {
+    "automated": {
+      "requirements": 56,
+      "counts": {
+        "PASS": 28,
+        "FAIL": 13,
+        "BLOCKED": 5,
+        "NOT_TESTED": 10
+      },
+      "idsByStatus": {
+        "BLOCKED": [
+          "emulated-iphone-13-portrait",
+          "emulated-iphone-13-landscape",
+          "emulated-ipad-pro-11-landscape",
+          "callback-program-darwin-x86_64-safari",
+          "spreadsheet-program-darwin-x86_64-safari"
+        ],
+        "FAIL": [
+          "client-linux-chromium",
+          "client-linux-firefox",
+          "client-linux-webkit",
+          "client-darwin-chromium",
+          "client-darwin-firefox",
+          "client-darwin-webkit",
+          "emulated-ipad-pro-11-portrait",
+          "callback-program-linux-chromium",
+          "callback-program-linux-firefox",
+          "callback-program-linux-webkit",
+          "callback-program-darwin-intel-chromium",
+          "callback-program-darwin-intel-firefox",
+          "callback-program-darwin-intel-webkit"
+        ],
+        "NOT_TESTED": [
+          "callback-program-darwin-arm64-chromium",
+          "spreadsheet-manual-program-darwin-arm64-chromium",
+          "callback-program-darwin-arm64-firefox",
+          "spreadsheet-manual-program-darwin-arm64-firefox",
+          "callback-program-darwin-arm64-webkit",
+          "spreadsheet-manual-program-darwin-arm64-webkit",
+          "node-darwin-arm64",
+          "client-darwin-arm64-chromium",
+          "client-darwin-arm64-firefox",
+          "client-darwin-arm64-webkit"
+        ],
+        "PASS": [
+          "node-linux",
+          "node-windows",
+          "node-darwin",
+          "client-windows-chromium",
+          "client-windows-firefox",
+          "client-windows-webkit",
+          "client-linux-chrome",
+          "client-linux-msedge",
+          "client-windows-chrome",
+          "client-windows-msedge",
+          "emulated-pixel-7-portrait",
+          "emulated-pixel-7-landscape",
+          "emulated-galaxy-tab-s4-portrait",
+          "emulated-galaxy-tab-s4-landscape",
+          "callback-mobile-linux-chromium-phone-portrait",
+          "callback-mobile-linux-chromium-phone-landscape",
+          "callback-mobile-linux-chromium-tablet-portrait",
+          "callback-mobile-linux-chromium-tablet-landscape",
+          "callback-mobile-linux-webkit-phone-portrait",
+          "callback-mobile-linux-webkit-phone-landscape",
+          "callback-mobile-linux-webkit-tablet-portrait",
+          "callback-mobile-linux-webkit-tablet-landscape",
+          "spreadsheet-program-linux-chromium",
+          "spreadsheet-program-linux-firefox",
+          "spreadsheet-program-linux-webkit",
+          "spreadsheet-manual-program-darwin-intel-chromium",
+          "spreadsheet-manual-program-darwin-intel-firefox",
+          "spreadsheet-manual-program-darwin-intel-webkit"
+        ]
+      }
+    },
+    "manual": {
+      "requirements": 7,
+      "counts": {
+        "NOT_TESTED": 7
+      },
+      "idsByStatus": {
+        "NOT_TESTED": [
+          "actual-macos-safari",
+          "physical-iphone-safari",
+          "physical-ipad-safari",
+          "physical-android-chrome",
+          "windows-private-product-workflows",
+          "macos-private-product-workflows",
+          "apple-silicon-macos"
+        ]
+      }
+    }
+  },
+  "unexecutedAppleSilicon": {
+    "jobId": 137882485411,
+    "status": "completed",
+    "conclusion": "cancelled",
+    "runnerId": 0,
+    "runnerName": "",
+    "labels": [
+      "macos-15"
+    ],
+    "stepCount": 0,
+    "productCasesExecuted": 0,
+    "startedAt": "2026-11-23T17:32:44Z",
+    "completedAt": "2026-11-23T17:47:45Z",
+    "cause": "GitHub reports cancellation without runner assignment or any steps. Allocation and cancellation causes are unconfirmed. This refresh made no cancellation, retry, label or privilege change.",
+    "acceptance": "NOT_TESTED"
+  },
+  "verifiedBehaviors": [
+    {
+      "artifactId": 14847426456,
+      "jobId": 137882485850,
+      "suite": "callback",
+      "os": "Darwin",
+      "browser": "webkit",
+      "status": "PASS",
+      "methods": [
+        "test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "test_callback_sign_out_revokes_its_named_program_session"
+      ]
+    },
+    {
+      "artifactId": 14847212385,
+      "jobId": 137882485717,
+      "suite": "callback",
+      "os": "Linux",
+      "browser": "webkit",
+      "status": "PASS",
+      "methods": [
+        "test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "test_callback_sign_out_revokes_its_named_program_session"
+      ]
+    },
+    {
+      "artifactId": 14846786692,
+      "jobId": 137882486156,
+      "suite": "spreadsheet",
+      "os": "Linux",
+      "browser": "firefox",
+      "status": "PASS",
+      "methods": [
+        "test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once"
+      ]
+    },
+    {
+      "artifactId": 14846221944,
+      "jobId": 137882486249,
+      "suite": "spreadsheet-manual",
+      "os": "Darwin",
+      "browser": "webkit",
+      "status": "PASS",
+      "methods": [
+        "test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once",
+        "test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source"
+      ]
+    },
+    {
+      "artifactId": 14846017471,
+      "jobId": 137882485237,
+      "suite": "callback-mobile",
+      "os": "Linux",
+      "browser": "chromium",
+      "status": "PASS",
+      "methods": [
+        "test_phone_landscape_blocked_contact",
+        "test_phone_landscape_scheduling_lifecycle",
+        "test_phone_landscape_unsaved_edits",
+        "test_phone_portrait_blocked_contact",
+        "test_phone_portrait_scheduling_lifecycle",
+        "test_phone_portrait_unsaved_edits",
+        "test_tablet_landscape_blocked_contact",
+        "test_tablet_landscape_scheduling_lifecycle",
+        "test_tablet_landscape_unsaved_edits",
+        "test_tablet_portrait_blocked_contact",
+        "test_tablet_portrait_scheduling_lifecycle",
+        "test_tablet_portrait_unsaved_edits"
+      ]
+    },
+    {
+      "artifactId": 14846013308,
+      "jobId": 137882485205,
+      "suite": "private",
+      "os": "Linux",
+      "browser": "webkit",
+      "status": "PASS",
+      "methods": [
+        "test_encrypted_restore_preserves_requests_and_restrictions_but_rejects_old_sessions"
+      ]
+    },
+    {
+      "artifactId": 14845731507,
+      "jobId": 137882485524,
+      "suite": "spreadsheet-manual",
+      "os": "Darwin",
+      "browser": "firefox",
+      "status": "PASS",
+      "methods": [
+        "test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once",
+        "test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source"
+      ]
+    },
+    {
+      "artifactId": 14845458654,
+      "jobId": 137882485455,
+      "suite": "callback-mobile",
+      "os": "Linux",
+      "browser": "webkit",
+      "status": "PASS",
+      "methods": [
+        "test_phone_landscape_blocked_contact",
+        "test_phone_landscape_scheduling_lifecycle",
+        "test_phone_landscape_unsaved_edits",
+        "test_phone_portrait_blocked_contact",
+        "test_phone_portrait_scheduling_lifecycle",
+        "test_phone_portrait_unsaved_edits",
+        "test_tablet_landscape_blocked_contact",
+        "test_tablet_landscape_scheduling_lifecycle",
+        "test_tablet_landscape_unsaved_edits",
+        "test_tablet_portrait_blocked_contact",
+        "test_tablet_portrait_scheduling_lifecycle",
+        "test_tablet_portrait_unsaved_edits"
+      ]
+    },
+    {
+      "artifactId": 14845429272,
+      "jobId": 137882486133,
+      "suite": "callback",
+      "os": "Linux",
+      "browser": "firefox",
+      "status": "PASS",
+      "methods": [
+        "test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "test_callback_sign_out_revokes_its_named_program_session"
+      ]
+    },
+    {
+      "artifactId": 14845284009,
+      "jobId": 137882486198,
+      "suite": "spreadsheet-manual",
+      "os": "Darwin",
+      "browser": "chromium",
+      "status": "PASS",
+      "methods": [
+        "test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once",
+        "test_spreadsheet_bound_restore_rejects_old_session_and_preserves_private_source"
+      ]
+    },
+    {
+      "artifactId": 14845268180,
+      "jobId": 137882485786,
+      "suite": "callback",
+      "os": "Darwin",
+      "browser": "chromium",
+      "status": "PASS",
+      "methods": [
+        "test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "test_callback_sign_out_revokes_its_named_program_session"
+      ]
+    },
+    {
+      "artifactId": 14845257944,
+      "jobId": 137882485340,
+      "suite": "spreadsheet",
+      "os": "Linux",
+      "browser": "chromium",
+      "status": "PASS",
+      "methods": [
+        "test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once"
+      ]
+    },
+    {
+      "artifactId": 14845123862,
+      "jobId": 137882485974,
+      "suite": "callback",
+      "os": "Linux",
+      "browser": "chromium",
+      "status": "PASS",
+      "methods": [
+        "test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "test_callback_sign_out_revokes_its_named_program_session"
+      ]
+    },
+    {
+      "artifactId": 14844899110,
+      "jobId": 137882485756,
+      "suite": "callback",
+      "os": "Darwin",
+      "browser": "firefox",
+      "status": "PASS",
+      "methods": [
+        "test_callback_layout_and_navigation_at_phone_tablet_desktop_widths",
+        "test_callback_sign_out_revokes_its_named_program_session"
+      ]
+    },
+    {
+      "artifactId": 14847063591,
+      "jobId": 137882485897,
+      "suite": "spreadsheet",
+      "os": "Linux",
+      "browser": "webkit",
+      "status": "PASS",
+      "methods": [
+        "test_spreadsheet_inconsistent_source_receipt_retries_original_image_once",
+        "test_spreadsheet_malformed_project_receipts_preserve_drafts_and_reconcile_once"
+      ]
+    }
+  ],
+  "auxiliaryMeasurements": {
+    "excludedFromProductGoal": true,
+    "ocrAccuracy": {
+      "jobId": 137882485352,
+      "jobConclusion": "success",
+      "accuracyGate": "FAIL",
+      "identityGate": "PASS",
+      "engine": {
+        "available": true,
+        "engine": "tesseract",
+        "version": "5.3.4",
+        "language": "eng",
+        "normalizer": {
+          "method": "median3-deskew-small-text-v3",
+          "pillowVersion": "10.2.0"
+        },
+        "orientationAvailable": true
+      },
+      "pipelineSha256": "65b6a4d7bce19baabc5ea5480c19bbb159dd1fe9f9551b6691c28dcf923836b4",
+      "dependencyEvidence": {
+        "format": "panelreply-ocr-dependency-evidence",
+        "version": 1,
+        "identityGate": "PASS",
+        "status": "STABLE_SNAPSHOTS",
+        "scope": "Observed fixed resource-limited commands and engine language-directory output. SHA256 file snapshots before and after measurement, not continuous file-open attestation. Does not identify every shared library or Python package.",
+        "fileSizeLimitBytes": 67108864,
+        "discovery": "Successful fixed-engine --list-langs stdout, never an engine-version lookup.",
+        "capturedEnvironmentKeys": [
+          "PATH",
+          "LANG",
+          "LC_ALL",
+          "OMP_THREAD_LIMIT",
+          "OMP_NUM_THREADS",
+          "TESSDATA_PREFIX"
+        ],
+        "probes": [
+          {
+            "status": "OBSERVED",
+            "path": "/usr/share/tesseract-ocr/5/tessdata/",
+            "languages": [
+              "eng",
+              "osd"
+            ]
+          },
+          {
+            "status": "OBSERVED",
+            "path": "/usr/share/tesseract-ocr/5/tessdata/",
+            "languages": [
+              "eng",
+              "osd"
+            ]
+          }
+        ],
+        "invocationProfiles": [
+          {
+            "binary": "/usr/bin/python3",
+            "args": [
+              "-I",
+              "-B",
+              "/home/runner/work/panelreply-demo/panelreply-demo/workspace/ocr-preprocess.py",
+              "--probe"
+            ],
+            "resourceLimits": [
+              "--as=1073741824:1073741824",
+              "--cpu=10:10",
+              "--core=0:0",
+              "--fsize=0:0",
+              "--nofile=64:64"
+            ],
+            "cwd": "/",
+            "shell": false,
+            "environment": {
+              "PATH": "/usr/bin:/bin",
+              "LANG": "C.UTF-8",
+              "LC_ALL": "C.UTF-8",
+              "OMP_THREAD_LIMIT": "1",
+              "OMP_NUM_THREADS": "1",
+              "TESSDATA_PREFIX": null
+            },
+            "count": 2
+          },
+          {
+            "binary": "/usr/bin/python3",
+            "args": [
+              "-I",
+              "-B",
+              "/home/runner/work/panelreply-demo/panelreply-demo/workspace/ocr-preprocess.py"
+            ],
+            "resourceLimits": [
+              "--as=1073741824:1073741824",
+              "--cpu=10:10",
+              "--core=0:0",
+              "--fsize=0:0",
+              "--nofile=64:64"
+            ],
+            "cwd": "/",
+            "shell": false,
+            "environment": {
+              "PATH": "/usr/bin:/bin",
+              "LANG": "C.UTF-8",
+              "LC_ALL": "C.UTF-8",
+              "OMP_THREAD_LIMIT": "1",
+              "OMP_NUM_THREADS": "1",
+              "TESSDATA_PREFIX": null
+            },
+            "count": 310
+          },
+          {
+            "binary": "/usr/bin/tesseract",
+            "args": [
+              "--list-langs"
+            ],
+            "resourceLimits": [
+              "--as=1073741824:1073741824",
+              "--cpu=10:10",
+              "--core=0:0",
+              "--fsize=0:0",
+              "--nofile=64:64"
+            ],
+            "cwd": "/",
+            "shell": false,
+            "environment": {
+              "PATH": "/usr/bin:/bin",
+              "LANG": "C.UTF-8",
+              "LC_ALL": "C.UTF-8",
+              "OMP_THREAD_LIMIT": "1",
+              "OMP_NUM_THREADS": "1",
+              "TESSDATA_PREFIX": null
+            },
+            "count": 2
+          },
+          {
+            "binary": "/usr/bin/tesseract",
+            "args": [
+              "--version"
+            ],
+            "resourceLimits": [
+              "--as=1073741824:1073741824",
+              "--cpu=10:10",
+              "--core=0:0",
+              "--fsize=0:0",
+              "--nofile=64:64"
+            ],
+            "cwd": "/",
+            "shell": false,
+            "environment": {
+              "PATH": "/usr/bin:/bin",
+              "LANG": "C.UTF-8",
+              "LC_ALL": "C.UTF-8",
+              "OMP_THREAD_LIMIT": "1",
+              "OMP_NUM_THREADS": "1",
+              "TESSDATA_PREFIX": null
+            },
+            "count": 2
+          },
+          {
+            "binary": "/usr/bin/tesseract",
+            "args": [
+              "stdin",
+              "stdout",
+              "-l",
+              "eng",
+              "--oem",
+              "1",
+              "--psm",
+              "1",
+              "tsv"
+            ],
+            "resourceLimits": [
+              "--as=1073741824:1073741824",
+              "--cpu=10:10",
+              "--core=0:0",
+              "--fsize=0:0",
+              "--nofile=64:64"
+            ],
+            "cwd": "/",
+            "shell": false,
+            "environment": {
+              "PATH": "/usr/bin:/bin",
+              "LANG": "C.UTF-8",
+              "LC_ALL": "C.UTF-8",
+              "OMP_THREAD_LIMIT": "1",
+              "OMP_NUM_THREADS": "1",
+              "TESSDATA_PREFIX": null
+            },
+            "count": 34
+          },
+          {
+            "binary": "/usr/bin/tesseract",
+            "args": [
+              "stdin",
+              "stdout",
+              "-l",
+              "eng",
+              "--oem",
+              "1",
+              "--psm",
+              "6",
+              "tsv"
+            ],
+            "resourceLimits": [
+              "--as=1073741824:1073741824",
+              "--cpu=10:10",
+              "--core=0:0",
+              "--fsize=0:0",
+              "--nofile=64:64"
+            ],
+            "cwd": "/",
+            "shell": false,
+            "environment": {
+              "PATH": "/usr/bin:/bin",
+              "LANG": "C.UTF-8",
+              "LC_ALL": "C.UTF-8",
+              "OMP_THREAD_LIMIT": "1",
+              "OMP_NUM_THREADS": "1",
+              "TESSDATA_PREFIX": null
+            },
+            "count": 310
+          }
+        ],
+        "configurationSha256": "ebd5682adf981b110a3eb48cdf100c51eb9fc6c760ccda94791e877f8b2145bc",
+        "unsupportedInvocations": 0,
+        "observationLimit": false,
+        "before": {
+          "dataDirectory": {
+            "status": "OBSERVED",
+            "path": "/usr/share/tesseract-ocr/5/tessdata/",
+            "languages": [
+              "eng",
+              "osd"
+            ]
+          },
+          "binaries": {
+            "resourceLimiter": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/bin/prlimit",
+              "resolvedPath": "/usr/bin/prlimit",
+              "bytes": 27536,
+              "sha256": "17064f67e650d6152a6902b013aab496b54c87587c8eea6f5023aafee6154069"
+            },
+            "engine": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/bin/tesseract",
+              "resolvedPath": "/usr/bin/tesseract",
+              "bytes": 39320,
+              "sha256": "9f831cab7525c3dab04af41bda35182af7ea1df9dceeaaa2f3bf207ac45c06a5"
+            },
+            "normalizer": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/bin/python3",
+              "resolvedPath": "/usr/bin/python3.12",
+              "bytes": 8020928,
+              "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f"
+            }
+          },
+          "models": {
+            "eng": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/share/tesseract-ocr/5/tessdata/eng.traineddata",
+              "resolvedPath": "/usr/share/tesseract-ocr/5/tessdata/eng.traineddata",
+              "bytes": 4113088,
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "osd": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/share/tesseract-ocr/5/tessdata/osd.traineddata",
+              "resolvedPath": "/usr/share/tesseract-ocr/5/tessdata/osd.traineddata",
+              "bytes": 10562727,
+              "sha256": "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff"
+            }
+          },
+          "configuration": {
+            "tsv": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/share/tesseract-ocr/5/tessdata/configs/tsv",
+              "resolvedPath": "/usr/share/tesseract-ocr/5/tessdata/configs/tsv",
+              "bytes": 22,
+              "sha256": "59d079bb75d8b3d7c839a3564580cb559e362c93a9d70f234e421c0c3e767e04"
+            }
+          }
+        },
+        "after": {
+          "dataDirectory": {
+            "status": "OBSERVED",
+            "path": "/usr/share/tesseract-ocr/5/tessdata/",
+            "languages": [
+              "eng",
+              "osd"
+            ]
+          },
+          "binaries": {
+            "resourceLimiter": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/bin/prlimit",
+              "resolvedPath": "/usr/bin/prlimit",
+              "bytes": 27536,
+              "sha256": "17064f67e650d6152a6902b013aab496b54c87587c8eea6f5023aafee6154069"
+            },
+            "engine": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/bin/tesseract",
+              "resolvedPath": "/usr/bin/tesseract",
+              "bytes": 39320,
+              "sha256": "9f831cab7525c3dab04af41bda35182af7ea1df9dceeaaa2f3bf207ac45c06a5"
+            },
+            "normalizer": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/bin/python3",
+              "resolvedPath": "/usr/bin/python3.12",
+              "bytes": 8020928,
+              "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f"
+            }
+          },
+          "models": {
+            "eng": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/share/tesseract-ocr/5/tessdata/eng.traineddata",
+              "resolvedPath": "/usr/share/tesseract-ocr/5/tessdata/eng.traineddata",
+              "bytes": 4113088,
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "osd": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/share/tesseract-ocr/5/tessdata/osd.traineddata",
+              "resolvedPath": "/usr/share/tesseract-ocr/5/tessdata/osd.traineddata",
+              "bytes": 10562727,
+              "sha256": "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff"
+            }
+          },
+          "configuration": {
+            "tsv": {
+              "status": "AVAILABLE",
+              "requestedPath": "/usr/share/tesseract-ocr/5/tessdata/configs/tsv",
+              "resolvedPath": "/usr/share/tesseract-ocr/5/tessdata/configs/tsv",
+              "bytes": 22,
+              "sha256": "59d079bb75d8b3d7c839a3564580cb559e362c93a9d70f234e421c0c3e767e04"
+            }
+          }
+        },
+        "changes": [],
+        "unavailableFields": [],
+        "collectionMs": 36
+      },
+      "overall": {
+        "cases": 310,
+        "exactCases": 289,
+        "errors": 0,
+        "reviewViolations": 0,
+        "fields": {
+          "partNumber": {
+            "known": 219,
+            "exact": 199,
+            "missed": 1,
+            "wrong": 19,
+            "expectedBlank": 91,
+            "preservedBlank": 91,
+            "falsePositive": 0
+          },
+          "manufacturer": {
+            "known": 219,
+            "exact": 217,
+            "missed": 2,
+            "wrong": 0,
+            "expectedBlank": 91,
+            "preservedBlank": 91,
+            "falsePositive": 0
+          },
+          "description": {
+            "known": 229,
+            "exact": 229,
+            "missed": 0,
+            "wrong": 0,
+            "expectedBlank": 81,
+            "preservedBlank": 81,
+            "falsePositive": 0
+          }
+        },
+        "latencyMs": {
+          "median": 271,
+          "p95": 510,
+          "max": 950
+        }
+      },
+      "scope": "Synthetic stress conditions only. Not a real-world accuracy estimate. Measurement completion is not a passing accuracy claim.",
+      "interpretation": "Measurement job completion is not accuracy acceptance."
+    },
+    "nativeIsolation": {
+      "jobId": 137882485603,
+      "jobConclusion": "success",
+      "status": "BLOCKED",
+      "reason": "isolation_unavailable",
+      "cases": 0,
+      "engine": {
+        "available": false,
+        "engine": "tesseract",
+        "version": null,
+        "language": "eng",
+        "reason": "isolation_unavailable"
+      },
+      "diagnostic": {
+        "observedInvocations": 2,
+        "maxRecords": 4,
+        "stderrLimitPerStageBytes": 4096,
+        "records": [
+          {
+            "stage": "isolation_version",
+            "exitCode": 0,
+            "signal": null,
+            "spawnErrorCode": null,
+            "closed": true,
+            "stderrBytesObserved": 0,
+            "stderr": "",
+            "stderrBytesRetained": 0,
+            "stderrTruncated": false
+          },
+          {
+            "stage": "engine_version",
+            "exitCode": 1,
+            "signal": null,
+            "spawnErrorCode": null,
+            "closed": true,
+            "stderrBytesObserved": 61,
+            "stderr": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n",
+            "stderrBytesRetained": 61,
+            "stderrTruncated": false
+          }
+        ],
+        "classification": {
+          "kind": "worker_startup_cause_unconfirmed",
+          "confirmedExternalBlocker": false,
+          "status": "BLOCKED"
+        },
+        "scope": "Bounded stderr and exit metadata observed from the same required-mode readiness invocation. No extra command, customer input, environment dump, privileged retry or policy change."
+      },
+      "nativeDenyBehavior": "NOT TESTED",
+      "privilegedRetry": false,
+      "scope": "Required readiness failed. Only an explicit namespace-denial diagnostic establishes an external host blocker. No policy change or unconfined fallback ran."
+    },
+    "httpWorkload": {
+      "jobId": 137882486259,
+      "jobConclusion": "success",
+      "status": "PASS",
+      "scope": "Synthetic CI loopback only. Same Node process runs HTTP server and clients. Native OCR child CPU/RSS excluded from these process totals. Not hosted capacity or an SLA.",
+      "node": "v24.22.3",
+      "platform": "linux",
+      "clients": 12,
+      "businesses": 2,
+      "seededProjects": 220,
+      "seededRequests": 300,
+      "checks": [
+        {
+          "check": "12 authenticated HTTP clients in two isolated businesses",
+          "status": "PASS"
+        },
+        {
+          "check": "480 concurrent list/save/export operations preserve each saved version",
+          "status": "PASS"
+        },
+        {
+          "check": "optimistic write conflicts and OCR backpressure preserve records",
+          "status": "PASS"
+        },
+        {
+          "check": "foreign-tenant HTTP export denied",
+          "status": "PASS"
+        },
+        {
+          "check": "HTTP save completes after separate SQLite write-lock contention",
+          "status": "PASS"
+        },
+        {
+          "check": "interrupted HTTP body is inert and same-key retry creates one request",
+          "status": "PASS"
+        },
+        {
+          "check": "expired HTTP session denied and fresh authentication succeeds",
+          "status": "PASS"
+        },
+        {
+          "check": "in-process HTTP/store restart and encrypted restore preserve all logical tables and source images",
+          "status": "PASS"
+        },
+        {
+          "check": "restored sessions denied until explicit owner password recovery",
+          "status": "PASS"
+        }
+      ],
+      "controlledRejections": [
+        {
+          "operation": "8 simultaneous writers at one saved version",
+          "outcomes": {
+            "saved": 1,
+            "stale": 7
+          }
+        },
+        {
+          "operation": "4 simultaneous native OCR requests",
+          "outcomes": {
+            "processed": 1,
+            "busy": 3
+          }
+        }
+      ],
+      "http": {
+        "completed": 516,
+        "statuses": {
+          "200": 502,
+          "201": 1,
+          "401": 2,
+          "404": 1,
+          "409": 7,
+          "429": 3
+        },
+        "unexpectedErrors": 0,
+        "unexpectedErrorRate": 0,
+        "timings": {
+          "authentication": {
+            "count": 14,
+            "p50Ms": 242.333,
+            "p95Ms": 418.72,
+            "p99Ms": 418.72,
+            "maxMs": 418.72
+          },
+          "projectList": {
+            "count": 96,
+            "p50Ms": 51.334,
+            "p95Ms": 88.391,
+            "p99Ms": 93.205,
+            "maxMs": 93.205
+          },
+          "requestList": {
+            "count": 96,
+            "p50Ms": 107.075,
+            "p95Ms": 164.313,
+            "p99Ms": 172.811,
+            "maxMs": 172.811
+          },
+          "save": {
+            "count": 96,
+            "p50Ms": 86.11,
+            "p95Ms": 145.653,
+            "p99Ms": 157.107,
+            "maxMs": 157.107
+          },
+          "csv200Rows": {
+            "count": 96,
+            "p50Ms": 24.504,
+            "p95Ms": 36.593,
+            "p99Ms": 37.354,
+            "maxMs": 37.354
+          },
+          "xlsx200Rows": {
+            "count": 96,
+            "p50Ms": 60.693,
+            "p95Ms": 92.455,
+            "p99Ms": 97.575,
+            "maxMs": 97.575
+          },
+          "versionRace": {
+            "count": 8,
+            "p50Ms": 14.318,
+            "p95Ms": 19.923,
+            "p99Ms": 19.923,
+            "maxMs": 19.923
+          },
+          "ocrStatus": {
+            "count": 1,
+            "p50Ms": 146.799,
+            "p95Ms": 146.799,
+            "p99Ms": 146.799,
+            "maxMs": 146.799
+          },
+          "concurrentOcr": {
+            "count": 4,
+            "p50Ms": 15.394,
+            "p95Ms": 340.46,
+            "p99Ms": 340.46,
+            "maxMs": 340.46
+          },
+          "tenantBoundary": {
+            "count": 1,
+            "p50Ms": 2.273,
+            "p95Ms": 2.273,
+            "p99Ms": 2.273,
+            "maxMs": 2.273
+          },
+          "databaseContention": {
+            "count": 1,
+            "p50Ms": 437.999,
+            "p95Ms": 437.999,
+            "p99Ms": 437.999,
+            "maxMs": 437.999
+          },
+          "interruptedRetry": {
+            "count": 2,
+            "p50Ms": 2.324,
+            "p95Ms": 7.108,
+            "p99Ms": 7.108,
+            "maxMs": 7.108
+          },
+          "expiredSession": {
+            "count": 1,
+            "p50Ms": 3.976,
+            "p95Ms": 3.976,
+            "p99Ms": 3.976,
+            "maxMs": 3.976
+          },
+          "freshSession": {
+            "count": 1,
+            "p50Ms": 19.949,
+            "p95Ms": 19.949,
+            "p99Ms": 19.949,
+            "maxMs": 19.949
+          },
+          "afterRestart": {
+            "count": 1,
+            "p50Ms": 20.034,
+            "p95Ms": 20.034,
+            "p99Ms": 20.034,
+            "maxMs": 20.034
+          },
+          "restoredOldSession": {
+            "count": 1,
+            "p50Ms": 8.715,
+            "p95Ms": 8.715,
+            "p99Ms": 8.715,
+            "maxMs": 8.715
+          },
+          "recoveredHttpRead": {
+            "count": 1,
+            "p50Ms": 22.373,
+            "p95Ms": 22.373,
+            "p99Ms": 22.373,
+            "maxMs": 22.373
+          }
+        }
+      },
+      "durationMs": 7418.411,
+      "processCpuMicros": {
+        "user": 7445517,
+        "system": 720206
+      },
+      "sampledPeakRssBytes": 291778560,
+      "sampleIntervalMs": 20,
+      "processHighWaterRssBytes": 291778560,
+      "databaseBytes": {
+        "empty": 292336,
+        "seeded": 5086904,
+        "beforeRestart": 4039584,
+        "restored": 1007616
+      },
+      "recovery": {
+        "restartScope": "HTTP server and database reopened in the same Node process; not an OS process or hosted restart",
+        "inProcessServiceRestartMs": 38.013,
+        "backupMs": 326.193,
+        "restoreMs": 288.921
+      },
+      "seededRowsAndRepeatedRequestsCountAsTests": false
+    },
+    "baselineMeasurements": [
+      {
+        "status": "PASS",
+        "engine": "tesseract",
+        "version": "5.3.4",
+        "language": "eng",
+        "cases": 9,
+        "fixtureCases": 6,
+        "nativeFailureCases": 3,
+        "failures": 0,
+        "knownFields": 10,
+        "matchedFields": 10,
+        "emptyFields": 2,
+        "preservedEmptyFields": 2,
+        "scope": "Synthetic printed text only. These measurements do not establish accuracy on real panel photographs or electrical specifications."
+      },
+      {
+        "status": "PASS",
+        "cases": 16,
+        "failures": 0,
+        "blocked": 0,
+        "engine": {
+          "available": true,
+          "engine": "tesseract",
+          "version": "5.3.4",
+          "language": "eng",
+          "normalizer": {
+            "method": "median3-deskew-small-text-v3",
+            "pillowVersion": "10.2.0"
+          },
+          "orientationAvailable": true
+        },
+        "scope": "Local Linux process limits and lifecycle. Resource ceilings are not an OS security sandbox or a production hosting approval."
+      },
+      {
+        "status": "PASS",
+        "date": "2026-11-23T17:36:48.755Z",
+        "scope": "One local synthetic storage/recovery drill. Not HTTP load, user concurrency, hardware sizing or production capacity.",
+        "sourceSha256": {
+          "harness": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c",
+          "store": "11fe460d5356fa9a305c16cbc5cd9a0b40b434c0860c8d2bc98cc59407fadd9e",
+          "backup": "4a691dc0467c8e7919e4e8bd53b2984b1f492454c822209fee370eb6cdd6b6b1"
+        },
+        "workload": {
+          "businesses": 2,
+          "projects": 204,
+          "requests": 301,
+          "maximumRowsInProject": 200,
+          "sourceImages": 5,
+          "repeatedSaves": 100,
+          "repeatedCsvExports": 100,
+          "listPasses": 20,
+          "reopenCycles": 5,
+          "sessionsBeforeBackup": 5
+        },
+        "unexpectedErrors": 0,
+        "expectedRejections": [
+          "project_limit",
+          "source_limit",
+          "invalid_input"
+        ],
+        "checks": [
+          {
+            "check": "project/row/image capacity boundaries",
+            "status": "PASS"
+          },
+          {
+            "check": "repeated saves, exports, listing and reopen preserve saved values",
+            "status": "PASS"
+          },
+          {
+            "check": "encrypted restore retains canonical records, private image bytes, flags and exports",
+            "status": "PASS"
+          },
+          {
+            "check": "restored sessions removed, old credentials rejected and operator reset restores one owner",
+            "status": "PASS"
+          },
+          {
+            "check": "tenant boundaries remain after recovery",
+            "status": "PASS"
+          }
+        ],
+        "latency": {
+          "createProject": {
+            "operations": 204,
+            "p50Ms": 0.324,
+            "p95Ms": 0.522,
+            "maxMs": 2.981
+          },
+          "createRequest": {
+            "operations": 300,
+            "p50Ms": 0.257,
+            "p95Ms": 0.69,
+            "maxMs": 5.89
+          },
+          "attachImage": {
+            "operations": 5,
+            "p50Ms": 2.035,
+            "p95Ms": 6.396,
+            "maxMs": 6.396
+          },
+          "save200RowProject": {
+            "operations": 100,
+            "p50Ms": 1.213,
+            "p95Ms": 1.805,
+            "maxMs": 2.24
+          },
+          "export200RowsCsv": {
+            "operations": 100,
+            "p50Ms": 0.372,
+            "p95Ms": 0.611,
+            "maxMs": 0.847
+          },
+          "list240Requests": {
+            "operations": 20,
+            "p50Ms": 8.618,
+            "p95Ms": 13.736,
+            "maxMs": 14.122
+          },
+          "list200Projects": {
+            "operations": 20,
+            "p50Ms": 0.951,
+            "p95Ms": 1.201,
+            "maxMs": 1.371
+          },
+          "reopenDatabase": {
+            "operations": 5,
+            "p50Ms": 1.398,
+            "p95Ms": 2.033,
+            "maxMs": 2.033
+          },
+          "encryptedBackup": {
+            "operations": 1,
+            "p50Ms": 231.776,
+            "p95Ms": 231.776,
+            "maxMs": 231.776
+          },
+          "authenticatedRestore": {
+            "operations": 1,
+            "p50Ms": 205.657,
+            "p95Ms": 205.657,
+            "maxMs": 205.657
+          }
+        },
+        "elapsedMs": 1795,
+        "process": {
+          "node": "v24.22.3",
+          "platform": "linux",
+          "cpuUserMs": 1676,
+          "cpuSystemMs": 148,
+          "rssBeforeBytes": 54124544,
+          "rssAfterBytes": 123006976,
+          "peakRssKiB": 157220
+        },
+        "storage": {
+          "initialDirectoryBytes": 251136,
+          "populatedDirectoryBytes": 1398136,
+          "restoredDirectoryBytes": 1105920,
+          "encryptedArchiveBytes": 1101904,
+          "counts": {
+            "businesses": 2,
+            "users": 2,
+            "leads": 301,
+            "messages": 301,
+            "audit": 618,
+            "optOuts": 1,
+            "panelProjects": 204,
+            "panelSources": 5,
+            "deletedRecords": 0,
+            "deletionOperations": 0,
+            "safetyHolds": 1,
+            "assistantUsage": 0,
+            "callbackTasks": 0,
+            "callbackOperations": 0
+          }
+        }
+      }
+    ],
+    "publicSuspension": {
+      "jobId": 137882485429,
+      "jobConclusion": "success",
+      "pass": 2,
+      "skip": 3,
+      "fail": 0,
+      "scope": "Existing owner-suspended public endpoints checked with GET only. No deployment or activation."
+    },
+    "rawAuxiliaryEvidenceSha256": "8565ad3f980bd62ae19f4bf66a2f9c5f46f63d1fdb5de0af8c9fd279278fb0c2"
+  },
+  "jobs": [
+    {
+      "id": 137882484855,
+      "name": "Portable release contracts (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000420,
+      "runnerName": "GitHub Actions 1000000420",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:33:01Z",
+      "stepCount": 10,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845407485,
+          "suite": "node-portable",
+          "caseCount": 7102,
+          "nonzeroTotals": {
+            "passed": 7102,
+            "harnessPassed": 112
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485121,
+      "name": "Static client (ubuntu-24.04, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000419,
+      "runnerName": "GitHub Actions 1000000419",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:47Z",
+      "completedAt": "2026-11-23T17:34:48Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845821313,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485169,
+      "name": "Static client (windows-2022, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000418,
+      "runnerName": "GitHub Actions 1000000418",
+      "labels": [
+        "windows-2022"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:36:29Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846716748,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485205,
+      "name": "Private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000421,
+      "runnerName": "GitHub Actions 1000000421",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:45:08Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846013308,
+          "suite": "private",
+          "caseCount": 132,
+          "nonzeroTotals": {
+            "passed": 132
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485206,
+      "name": "Portable release contracts (macos-15-intel)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000422,
+      "runnerName": "GitHub Actions 1000000422",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:32:48Z",
+      "completedAt": "2026-11-23T17:33:47Z",
+      "stepCount": 10,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14844903501,
+          "suite": "node-portable",
+          "caseCount": 7102,
+          "nonzeroTotals": {
+            "passed": 7102,
+            "harnessPassed": 112
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485237,
+      "name": "Emulated private workflows (chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000427,
+      "runnerName": "GitHub Actions 1000000427",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:47Z",
+      "completedAt": "2026-11-23T17:40:10Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846017471,
+          "suite": "callback-mobile",
+          "caseCount": 12,
+          "nonzeroTotals": {
+            "passed": 12
+          }
+        },
+        {
+          "artifactId": 14845801959,
+          "suite": "mobile",
+          "caseCount": 40,
+          "nonzeroTotals": {
+            "passed": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485298,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000428,
+      "runnerName": "GitHub Actions 1000000428",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:46:56Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846828495,
+          "suite": "portable-extra",
+          "caseCount": 65,
+          "nonzeroTotals": {
+            "passed": 65
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485338,
+      "name": "Static client (ubuntu-24.04, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000430,
+      "runnerName": "GitHub Actions 1000000430",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:35:18Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846001393,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485340,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000431,
+      "runnerName": "GitHub Actions 1000000431",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:47Z",
+      "completedAt": "2026-11-23T17:33:47Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845257944,
+          "suite": "spreadsheet",
+          "caseCount": 9,
+          "nonzeroTotals": {
+            "passed": 9
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485349,
+      "name": "Static client (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000423,
+      "runnerName": "GitHub Actions 1000000423",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:32:48Z",
+      "completedAt": "2026-11-23T17:37:16Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845696652,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485352,
+      "name": "Synthetic OCR measurements",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000429,
+      "runnerName": "GitHub Actions 1000000429",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:34:49Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": []
+    },
+    {
+      "id": 137882485411,
+      "name": "Apple Silicon contracts and selected products",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runnerId": 0,
+      "runnerName": "",
+      "labels": [
+        "macos-15"
+      ],
+      "startedAt": "2026-11-23T17:32:44Z",
+      "completedAt": "2026-11-23T17:47:45Z",
+      "stepCount": 0,
+      "failedSteps": [],
+      "releaseReports": []
+    },
+    {
+      "id": 137882485429,
+      "name": "Required public suspension",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000433,
+      "runnerName": "GitHub Actions 1000000433",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:33:03Z",
+      "stepCount": 7,
+      "failedSteps": [],
+      "releaseReports": []
+    },
+    {
+      "id": 137882485455,
+      "name": "Emulated private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000441,
+      "runnerName": "GitHub Actions 1000000441",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:33:49Z",
+      "completedAt": "2026-11-23T17:41:01Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Exercise touch, saved data, failures, exports and private source images"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14845458654,
+          "suite": "callback-mobile",
+          "caseCount": 12,
+          "nonzeroTotals": {
+            "passed": 12
+          }
+        },
+        {
+          "artifactId": 14844754940,
+          "suite": "mobile",
+          "caseCount": 40,
+          "nonzeroTotals": {
+            "passed": 39,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485458,
+      "name": "Portable release contracts (windows-2022)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000436,
+      "runnerName": "GitHub Actions 1000000436",
+      "labels": [
+        "windows-2022"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:33:15Z",
+      "stepCount": 10,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14844898506,
+          "suite": "node-portable",
+          "caseCount": 7102,
+          "nonzeroTotals": {
+            "passed": 7102,
+            "harnessPassed": 112
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485524,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000443,
+      "runnerName": "GitHub Actions 1000000443",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:33:56Z",
+      "completedAt": "2026-11-23T17:36:17Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845731507,
+          "suite": "spreadsheet-manual",
+          "caseCount": 10,
+          "nonzeroTotals": {
+            "passed": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485557,
+      "name": "Installed Safari fixed product workflows",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000452,
+      "runnerName": "GitHub Actions 1000000452",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:36:20Z",
+      "completedAt": "2026-11-23T17:36:45Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Exercise the installed Safari with six product journeys"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14845866939,
+          "suite": "callback-safari",
+          "caseCount": 3,
+          "nonzeroTotals": {
+            "NOT_RUN": 3
+          }
+        },
+        {
+          "artifactId": 14845866939,
+          "suite": "spreadsheet-manual-safari",
+          "caseCount": 3,
+          "nonzeroTotals": {
+            "NOT_RUN": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485559,
+      "name": "Static client (windows-2022, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000437,
+      "runnerName": "GitHub Actions 1000000437",
+      "labels": [
+        "windows-2022"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:35:14Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846061288,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485570,
+      "name": "Static client (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000425,
+      "runnerName": "GitHub Actions 1000000425",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:32:47Z",
+      "completedAt": "2026-11-23T17:35:45Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845083865,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485603,
+      "name": "Restricted OCR worker verification",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000435,
+      "runnerName": "GitHub Actions 1000000435",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:33:52Z",
+      "stepCount": 9,
+      "failedSteps": [],
+      "releaseReports": []
+    },
+    {
+      "id": 137882485609,
+      "name": "demo-tests",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000439,
+      "runnerName": "GitHub Actions 1000000439",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:33:05Z",
+      "completedAt": "2026-11-23T17:40:06Z",
+      "stepCount": 18,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846042550,
+          "suite": "node-all",
+          "caseCount": 9202,
+          "nonzeroTotals": {
+            "passed": 9202,
+            "harnessPassed": 146
+          }
+        },
+        {
+          "artifactId": 14846042550,
+          "suite": "baseline",
+          "caseCount": 197,
+          "nonzeroTotals": {
+            "passed": 197
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485614,
+      "name": "Static client (windows-2022, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000438,
+      "runnerName": "GitHub Actions 1000000438",
+      "labels": [
+        "windows-2022"
+      ],
+      "startedAt": "2026-11-23T17:33:03Z",
+      "completedAt": "2026-11-23T17:35:31Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14844913806,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485673,
+      "name": "Private workflows (firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000434,
+      "runnerName": "GitHub Actions 1000000434",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:37:45Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846971886,
+          "suite": "private",
+          "caseCount": 132,
+          "nonzeroTotals": {
+            "passed": 132
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485717,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000448,
+      "runnerName": "GitHub Actions 1000000448",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:35:17Z",
+      "completedAt": "2026-11-23T17:43:42Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Verify this fixed product entrypoint and its own browser workflows"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14847212385,
+          "suite": "callback",
+          "caseCount": 15,
+          "nonzeroTotals": {
+            "passed": 14,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485719,
+      "name": "Static client (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000432,
+      "runnerName": "GitHub Actions 1000000432",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:32:46Z",
+      "completedAt": "2026-11-23T17:34:02Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14844878666,
+          "suite": "portable-extra",
+          "caseCount": 65,
+          "nonzeroTotals": {
+            "passed": 65
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485756,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000445,
+      "runnerName": "GitHub Actions 1000000445",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:34:36Z",
+      "completedAt": "2026-11-23T17:36:35Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Verify this fixed product entrypoint and its own browser workflows"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14844899110,
+          "suite": "callback",
+          "caseCount": 15,
+          "nonzeroTotals": {
+            "passed": 14,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485786,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000424,
+      "runnerName": "GitHub Actions 1000000424",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:32:47Z",
+      "completedAt": "2026-11-23T17:34:34Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Verify this fixed product entrypoint and its own browser workflows"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14845268180,
+          "suite": "callback",
+          "caseCount": 15,
+          "nonzeroTotals": {
+            "passed": 14,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485850,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000453,
+      "runnerName": "GitHub Actions 1000000453",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:36:37Z",
+      "completedAt": "2026-11-23T17:37:57Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Verify this fixed product entrypoint and its own browser workflows"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14847426456,
+          "suite": "callback",
+          "caseCount": 15,
+          "nonzeroTotals": {
+            "passed": 14,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485886,
+      "name": "Static client (windows-2022, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000444,
+      "runnerName": "GitHub Actions 1000000444",
+      "labels": [
+        "windows-2022"
+      ],
+      "startedAt": "2026-11-23T17:34:04Z",
+      "completedAt": "2026-11-23T17:36:20Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845691612,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485897,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000447,
+      "runnerName": "GitHub Actions 1000000447",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:34:51Z",
+      "completedAt": "2026-11-23T17:47:41Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14847063591,
+          "suite": "spreadsheet",
+          "caseCount": 9,
+          "nonzeroTotals": {
+            "passed": 9
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485957,
+      "name": "Static client (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000451,
+      "runnerName": "GitHub Actions 1000000451",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:35:48Z",
+      "completedAt": "2026-11-23T17:40:18Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845722184,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882485974,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000440,
+      "runnerName": "GitHub Actions 1000000440",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:33:17Z",
+      "completedAt": "2026-11-23T17:36:51Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Verify this fixed product entrypoint and its own browser workflows"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14845123862,
+          "suite": "callback",
+          "caseCount": 15,
+          "nonzeroTotals": {
+            "passed": 14,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882486110,
+      "name": "Static client (windows-2022, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000442,
+      "runnerName": "GitHub Actions 1000000442",
+      "labels": [
+        "windows-2022"
+      ],
+      "startedAt": "2026-11-23T17:33:48Z",
+      "completedAt": "2026-11-23T17:35:57Z",
+      "stepCount": 11,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14847406140,
+          "suite": "portable",
+          "caseCount": 92,
+          "nonzeroTotals": {
+            "passed": 92
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882486133,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000446,
+      "runnerName": "GitHub Actions 1000000446",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:34:50Z",
+      "completedAt": "2026-11-23T17:44:16Z",
+      "stepCount": 13,
+      "failedSteps": [
+        "Verify this fixed product entrypoint and its own browser workflows"
+      ],
+      "releaseReports": [
+        {
+          "artifactId": 14845429272,
+          "suite": "callback",
+          "caseCount": 15,
+          "nonzeroTotals": {
+            "passed": 14,
+            "failed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882486156,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000449,
+      "runnerName": "GitHub Actions 1000000449",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:35:20Z",
+      "completedAt": "2026-11-23T17:36:14Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846786692,
+          "suite": "spreadsheet",
+          "caseCount": 9,
+          "nonzeroTotals": {
+            "passed": 9
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882486198,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000455,
+      "runnerName": "GitHub Actions 1000000455",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:37:20Z",
+      "completedAt": "2026-11-23T17:39:07Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14845284009,
+          "suite": "spreadsheet-manual",
+          "caseCount": 10,
+          "nonzeroTotals": {
+            "passed": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882486249,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000454,
+      "runnerName": "GitHub Actions 1000000454",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "startedAt": "2026-11-23T17:36:49Z",
+      "completedAt": "2026-11-23T17:39:02Z",
+      "stepCount": 13,
+      "failedSteps": [],
+      "releaseReports": [
+        {
+          "artifactId": 14846221944,
+          "suite": "spreadsheet-manual",
+          "caseCount": 10,
+          "nonzeroTotals": {
+            "passed": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": 137882486259,
+      "name": "Synthetic concurrent HTTP workload",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000450,
+      "runnerName": "GitHub Actions 1000000450",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:35:33Z",
+      "completedAt": "2026-11-23T17:36:02Z",
+      "stepCount": 8,
+      "failedSteps": [],
+      "releaseReports": []
+    },
+    {
+      "id": 137891891772,
+      "name": "Account for distinct product and platform tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000458,
+      "runnerName": "GitHub Actions 1000000458",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "startedAt": "2026-11-23T17:47:47Z",
+      "completedAt": "2026-11-23T17:47:58Z",
+      "stepCount": 10,
+      "failedSteps": [
+        "Report the measured totals and separate release decisions"
+      ],
+      "releaseReports": []
+    }
+  ],
+  "reports": [
+    {
+      "artifactId": 14847426456,
+      "file": "panelreply-selected-product.json",
+      "sha256": "39271119f25971a32eaf8ba03ceff52611befb8707c19c6914a0e103f989c001",
+      "jobId": 137882485850,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 15,
+      "totals": {
+        "passed": 14,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14847406140,
+      "file": "panelreply-release-platform.json",
+      "sha256": "c21584f0f2681c485f1ca5d1f6d29ac563cc70be4851229076859905d8218637",
+      "jobId": 137882486110,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "release": "2022Server",
+        "architecture": "AMD64",
+        "python": "3.12.10",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14847212385,
+      "file": "panelreply-selected-product.json",
+      "sha256": "21d5c98dedcc7ecd653da5353e600533fc3d605d9dba22460435d08599d81cf2",
+      "jobId": 137882485717,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 15,
+      "totals": {
+        "passed": 14,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846971886,
+      "file": "panelreply-release-platform.json",
+      "sha256": "cf7db2983270e72888180cd212f783a5184836168f5ea0998e89207287a773b1",
+      "jobId": 137882485673,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "private",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1017-azure",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 132,
+      "totals": {
+        "passed": 132,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846786692,
+      "file": "panelreply-selected-product.json",
+      "sha256": "7ca059f21c591d4258b9faf58c79d376e01213b6d716619a804bbedee62d71d3",
+      "jobId": 137882486156,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1017-azure",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 9,
+      "totals": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846716748,
+      "file": "panelreply-release-platform.json",
+      "sha256": "079131f2e0de29ad6e4fe63edfe71497a00a947200a44378acdc8059716d20d8",
+      "jobId": 137882485169,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "release": "2022Server",
+        "architecture": "AMD64",
+        "python": "3.12.10",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "msedge",
+            "version": "158.0.4370.33",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846221944,
+      "file": "panelreply-selected-product.json",
+      "sha256": "006d855cd5868adb6aefcd70de6f48ea219d9ceaa9d0b310ea98f0f96964eb02",
+      "jobId": 137882486249,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet-manual",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 10,
+      "totals": {
+        "passed": 10,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846061288,
+      "file": "panelreply-release-platform.json",
+      "sha256": "282181c54a639a515c886f0a618351f39d1faa34a6a55a9acf6f3c757ad479de",
+      "jobId": 137882485559,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "release": "2022Server",
+        "architecture": "AMD64",
+        "python": "3.12.10",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "chrome",
+            "version": "158.0.8127.37",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846042550,
+      "file": "panelreply-release-node.json",
+      "sha256": "37ca831eac06b1b47e672e2b837a018dc98a3a1a2e613c24cede173985783bf2",
+      "jobId": 137882485609,
+      "format": "panelreply-node-evidence-v1",
+      "suite": "node-all",
+      "deploymentMode": null,
+      "platform": {
+        "os": "linux",
+        "osRelease": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "node": "v24.22.3",
+        "platformKey": "linux/x86_64/node24",
+        "observedBrowsers": []
+      },
+      "caseCount": 9202,
+      "totals": {
+        "passed": 9202,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 146
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846042550,
+      "file": "panelreply-release-platform.json",
+      "sha256": "b3af9fb422c10e27953b3eea9fe7ff24af959b2d1bea706a6b72a09eadf676a1",
+      "jobId": 137882485609,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "baseline",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 197,
+      "totals": {
+        "passed": 197,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846017471,
+      "file": "panelreply-release-callback-mobile.json",
+      "sha256": "a9e6293e9c52b7a5473f1e9bf4e9250d8d6ee96d3f12d71458969a5176629ba9",
+      "jobId": 137882485237,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback-mobile",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": true,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 12,
+      "totals": {
+        "passed": 12,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846013308,
+      "file": "panelreply-release-platform.json",
+      "sha256": "8a40be3dbd335eed47259685ce7ac11c22e4f8ea4b4f788175f3df3e1517f6ab",
+      "jobId": 137882485205,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "private",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 132,
+      "totals": {
+        "passed": 132,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846001393,
+      "file": "panelreply-release-platform.json",
+      "sha256": "92f6cf95c83523501f0a15c4cfd67f49ba099b4c4e6578b4d7cd85751e039a16",
+      "jobId": 137882485338,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "msedge",
+            "version": "158.0.4370.33",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845866939,
+      "file": "callback-safari.json",
+      "sha256": "5f9a135596ec0d2d1ffeb779956e7a9d7b052e317b11864f62c7ddcabfcb85bb",
+      "jobId": 137882485557,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback-safari",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "selenium": "4.54.0",
+        "browserEngine": "webkit",
+        "browserChannel": "safari",
+        "emulated": false,
+        "nativeSafari": {
+          "format": "apple-safaridriver-v1",
+          "state": "UNAVAILABLE",
+          "before": {
+            "driver": {
+              "path": "/usr/bin/safaridriver",
+              "version": "Included with Safari 26.6 (20624.4.5.18.1)",
+              "sha256": "837a52713607bebe5bfefdddc6f0914e5a84a3ddadbd78dac5a9b97fa440f50c"
+            },
+            "browser": {
+              "path": "/Applications/Safari.app",
+              "bundleIdentifier": "com.apple.Safari",
+              "version": "26.6",
+              "build": "20624.4.5.18.1",
+              "infoPlistSha256": "52a4854edcf022d0c49dbd39ffd10d71384c4d64abc4b64647329f2d20ec942c",
+              "executablePath": "/Applications/Safari.app/Contents/MacOS/Safari",
+              "executableSha256": "9fa8856a7436c96f23ae1d053077c168e16ba0c82ec446a899ef502d1db6e688"
+            },
+            "host": {
+              "osVersion": "15.7.9",
+              "osBuild": "24G830",
+              "architecture": "x86_64"
+            }
+          },
+          "after": {
+            "driver": {
+              "path": "/usr/bin/safaridriver",
+              "version": "Included with Safari 26.6 (20624.4.5.18.1)",
+              "sha256": "837a52713607bebe5bfefdddc6f0914e5a84a3ddadbd78dac5a9b97fa440f50c"
+            },
+            "browser": {
+              "path": "/Applications/Safari.app",
+              "bundleIdentifier": "com.apple.Safari",
+              "version": "26.6",
+              "build": "20624.4.5.18.1",
+              "infoPlistSha256": "52a4854edcf022d0c49dbd39ffd10d71384c4d64abc4b64647329f2d20ec942c",
+              "executablePath": "/Applications/Safari.app/Contents/MacOS/Safari",
+              "executableSha256": "9fa8856a7436c96f23ae1d053077c168e16ba0c82ec446a899ef502d1db6e688"
+            },
+            "host": {
+              "osVersion": "15.7.9",
+              "osBuild": "24G830",
+              "architecture": "x86_64"
+            }
+          },
+          "stable": true,
+          "session": null,
+          "sessionSha256": null,
+          "requestedCapabilities": {
+            "browserName": "safari",
+            "platformName": "mac",
+            "pageLoadStrategy": "normal",
+            "safari:useSimulator": false,
+            "browserVersion": "26.6"
+          },
+          "unavailableSessionCapabilities": null
+        },
+        "observedBrowsers": []
+      },
+      "caseCount": 3,
+      "totals": {
+        "PASS": 0,
+        "FAIL": 0,
+        "ERROR": 0,
+        "NOT_RUN": 3,
+        "SKIP": 0,
+        "RUNNING": 0
+      },
+      "infrastructureErrors": [
+        {
+          "id": "native-safari-session",
+          "status": "ERROR",
+          "classification": "NATIVE_SAFARI_UNAVAILABLE",
+          "diagnostic": "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/release_safari_runner.py\", line 152, in start\n    self.driver = webdriver.Remote(command_executor=connection, options=options,\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py\", line 358, in __init__\n    self.start_session(capabilities)\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py\", line 464, in start_session\n    response = self.execute(Command.NEW_SESSION, caps)[\"value\"]\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py\", line 569, in execute\n    self.error_handler.check_response(response)\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py\", line 234, in check_response\n    raise exception_class(message, screen, stacktrace)\nselenium.common.exceptions.SessionNotCreatedException: Message: Could not create a session: The 'macOS' platform is incompatible with requested capability: safari:useSimulator.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception\n\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/release_safari_runner.py\", line 242, in main\n    native.start()\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/release_safari_runner.py\", line 155, in start\n    raise SafariUnavailable(\"Native Safari session could not start: \" + str(error)[:2000]) from error\nSafariUnavailable: Native Safari session could not start: Message: Could not create a session: The 'macOS' platform is incompatible with requested capability: safari:useSimulator.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception\n\n"
+        }
+      ],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845866939,
+      "file": "spreadsheet-manual-safari.json",
+      "sha256": "c02325626963e2a684f3d6bf21faa92f1af1a51ead402f277f6b251fee7b2eca",
+      "jobId": 137882485557,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet-manual-safari",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "selenium": "4.54.0",
+        "browserEngine": "webkit",
+        "browserChannel": "safari",
+        "emulated": false,
+        "nativeSafari": {
+          "format": "apple-safaridriver-v1",
+          "state": "UNAVAILABLE",
+          "before": {
+            "driver": {
+              "path": "/usr/bin/safaridriver",
+              "version": "Included with Safari 26.6 (20624.4.5.18.1)",
+              "sha256": "837a52713607bebe5bfefdddc6f0914e5a84a3ddadbd78dac5a9b97fa440f50c"
+            },
+            "browser": {
+              "path": "/Applications/Safari.app",
+              "bundleIdentifier": "com.apple.Safari",
+              "version": "26.6",
+              "build": "20624.4.5.18.1",
+              "infoPlistSha256": "52a4854edcf022d0c49dbd39ffd10d71384c4d64abc4b64647329f2d20ec942c",
+              "executablePath": "/Applications/Safari.app/Contents/MacOS/Safari",
+              "executableSha256": "9fa8856a7436c96f23ae1d053077c168e16ba0c82ec446a899ef502d1db6e688"
+            },
+            "host": {
+              "osVersion": "15.7.9",
+              "osBuild": "24G830",
+              "architecture": "x86_64"
+            }
+          },
+          "after": {
+            "driver": {
+              "path": "/usr/bin/safaridriver",
+              "version": "Included with Safari 26.6 (20624.4.5.18.1)",
+              "sha256": "837a52713607bebe5bfefdddc6f0914e5a84a3ddadbd78dac5a9b97fa440f50c"
+            },
+            "browser": {
+              "path": "/Applications/Safari.app",
+              "bundleIdentifier": "com.apple.Safari",
+              "version": "26.6",
+              "build": "20624.4.5.18.1",
+              "infoPlistSha256": "52a4854edcf022d0c49dbd39ffd10d71384c4d64abc4b64647329f2d20ec942c",
+              "executablePath": "/Applications/Safari.app/Contents/MacOS/Safari",
+              "executableSha256": "9fa8856a7436c96f23ae1d053077c168e16ba0c82ec446a899ef502d1db6e688"
+            },
+            "host": {
+              "osVersion": "15.7.9",
+              "osBuild": "24G830",
+              "architecture": "x86_64"
+            }
+          },
+          "stable": true,
+          "session": null,
+          "sessionSha256": null,
+          "requestedCapabilities": {
+            "browserName": "safari",
+            "platformName": "mac",
+            "pageLoadStrategy": "normal",
+            "safari:useSimulator": false,
+            "browserVersion": "26.6"
+          },
+          "unavailableSessionCapabilities": null
+        },
+        "observedBrowsers": []
+      },
+      "caseCount": 3,
+      "totals": {
+        "PASS": 0,
+        "FAIL": 0,
+        "ERROR": 0,
+        "NOT_RUN": 3,
+        "SKIP": 0,
+        "RUNNING": 0
+      },
+      "infrastructureErrors": [
+        {
+          "id": "native-safari-session",
+          "status": "ERROR",
+          "classification": "NATIVE_SAFARI_UNAVAILABLE",
+          "diagnostic": "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/release_safari_runner.py\", line 152, in start\n    self.driver = webdriver.Remote(command_executor=connection, options=options,\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py\", line 358, in __init__\n    self.start_session(capabilities)\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py\", line 464, in start_session\n    response = self.execute(Command.NEW_SESSION, caps)[\"value\"]\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py\", line 569, in execute\n    self.error_handler.check_response(response)\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py\", line 234, in check_response\n    raise exception_class(message, screen, stacktrace)\nselenium.common.exceptions.SessionNotCreatedException: Message: Could not create a session: The 'macOS' platform is incompatible with requested capability: safari:useSimulator.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception\n\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/release_safari_runner.py\", line 242, in main\n    native.start()\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/release_safari_runner.py\", line 155, in start\n    raise SafariUnavailable(\"Native Safari session could not start: \" + str(error)[:2000]) from error\nSafariUnavailable: Native Safari session could not start: Message: Could not create a session: The 'macOS' platform is incompatible with requested capability: safari:useSimulator.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception\n\n"
+        }
+      ],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845821313,
+      "file": "panelreply-release-platform.json",
+      "sha256": "77b7a5e4d604b67d3d5be34a9323c4d74148430f48336042fbc0f19e72140d30",
+      "jobId": 137882485121,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1017-azure",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "chrome",
+            "version": "158.0.8127.36",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845801959,
+      "file": "panelreply-release-mobile.json",
+      "sha256": "85e6000d8bd894982e5cdfbb92287d9c94737152d6aaf5fcbba9f19e7b4ca87b",
+      "jobId": 137882485237,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "mobile",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": true,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 40,
+      "totals": {
+        "passed": 40,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845731507,
+      "file": "panelreply-selected-product.json",
+      "sha256": "dd7c0ae3c9cca5577a4853056a5541d9ae03044eccf257f5064b23b38dc991b3",
+      "jobId": 137882485524,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet-manual",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 10,
+      "totals": {
+        "passed": 10,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845722184,
+      "file": "panelreply-release-platform.json",
+      "sha256": "f0aac70471bc4d22738d8035dc4f2c7187486290aa3c06288e9770ac985899f0",
+      "jobId": 137882485957,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845696652,
+      "file": "panelreply-release-platform.json",
+      "sha256": "db5e25cc9573f7b57da878f215d3c5a16f4453d44528846580ce0303f586cbaa",
+      "jobId": 137882485349,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845691612,
+      "file": "panelreply-release-platform.json",
+      "sha256": "dc30c13790cf78cff104dc4292a1f19adf3fd8fc5a84b0f4b5ef6202a7009a82",
+      "jobId": 137882485886,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "release": "2022Server",
+        "architecture": "AMD64",
+        "python": "3.12.10",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845458654,
+      "file": "panelreply-release-callback-mobile.json",
+      "sha256": "d18904a0da2b6a88240ac5e4adcd374e011b2dfec4f23e17b9cd0dcb68ae2b68",
+      "jobId": 137882485455,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback-mobile",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": true,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 12,
+      "totals": {
+        "passed": 12,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845429272,
+      "file": "panelreply-selected-product.json",
+      "sha256": "ffb1838d2803237974b317eb490e9da2778dc714f76a10210e14cb4d64c2000e",
+      "jobId": 137882486133,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 15,
+      "totals": {
+        "passed": 14,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845407485,
+      "file": "panelreply-release-node.json",
+      "sha256": "d663e57d281de8c045697e9342b2a53568ff3b8e258293b83f77fa54e9ec6a82",
+      "jobId": 137882484855,
+      "format": "panelreply-node-evidence-v1",
+      "suite": "node-portable",
+      "deploymentMode": null,
+      "platform": {
+        "os": "linux",
+        "osRelease": "7.0.0-1017-azure",
+        "architecture": "x86_64",
+        "node": "v24.22.3",
+        "platformKey": "linux/x86_64/node24",
+        "observedBrowsers": []
+      },
+      "caseCount": 7102,
+      "totals": {
+        "passed": 7102,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 112
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845284009,
+      "file": "panelreply-selected-product.json",
+      "sha256": "fbd50dc4303bcc7794c81383a126e7c394d5c17ebf29f48d3b4317358f10a6d7",
+      "jobId": 137882486198,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet-manual",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 10,
+      "totals": {
+        "passed": 10,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845268180,
+      "file": "panelreply-selected-product.json",
+      "sha256": "1e37a48bf6a29f20868ca4bbb1e158012b1e8b453fbb8eca8a00c6a2cf054ef7",
+      "jobId": 137882485786,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 15,
+      "totals": {
+        "passed": 14,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845257944,
+      "file": "panelreply-selected-product.json",
+      "sha256": "b6ec79beb538150ae3ada93ebd28c25aee57f94e43910a18dc5a766ef1f81e67",
+      "jobId": 137882485340,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1017-azure",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 9,
+      "totals": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845123862,
+      "file": "panelreply-selected-product.json",
+      "sha256": "3821362e95b265794e2f9c53a9356808c1c8c340109ea2d02ff7f47eb31b595e",
+      "jobId": 137882485974,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 15,
+      "totals": {
+        "passed": 14,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14845083865,
+      "file": "panelreply-release-platform.json",
+      "sha256": "2922224ec229c48c5c9f05005c78dea8291d9477e110dc49fd3ba7ed3f7e0697",
+      "jobId": 137882485570,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "chromium",
+            "channel": "bundled",
+            "version": "151.0.7922.34",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14844913806,
+      "file": "panelreply-release-platform.json",
+      "sha256": "19caf45dd5cac2dcdb4e1f6f5ae09b4e855c0513bacb0d3586c95ba458f3c0e6",
+      "jobId": 137882485614,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Windows",
+        "release": "2022Server",
+        "architecture": "AMD64",
+        "python": "3.12.10",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 92,
+      "totals": {
+        "passed": 92,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14844903501,
+      "file": "panelreply-release-node.json",
+      "sha256": "8d9ba49314a721ca8e9876eadb6622831ee71995172096825fba1eaeb6cdf75c",
+      "jobId": 137882485206,
+      "format": "panelreply-node-evidence-v1",
+      "suite": "node-portable",
+      "deploymentMode": null,
+      "platform": {
+        "os": "darwin",
+        "osRelease": "24.6.0",
+        "architecture": "x86_64",
+        "node": "v24.19.0",
+        "platformKey": "darwin/x86_64/node24",
+        "observedBrowsers": []
+      },
+      "caseCount": 7102,
+      "totals": {
+        "passed": 7102,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 112
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14844899110,
+      "file": "panelreply-selected-product.json",
+      "sha256": "5fcbbe71d0295665a9ce91a1b049b744057e2905a807df14b8b798097408a32c",
+      "jobId": 137882485756,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "callback",
+      "deploymentMode": "callback",
+      "platform": {
+        "os": "Darwin",
+        "release": "24.6.0",
+        "architecture": "x86_64",
+        "python": "3.12.10",
+        "node": "v24.19.0",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 15,
+      "totals": {
+        "passed": 14,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14844898506,
+      "file": "panelreply-release-node.json",
+      "sha256": "d9244541d2bdd54e4a34f93462a8462e5dd9c05d8430eca1449805481e8faae3",
+      "jobId": 137882485458,
+      "format": "panelreply-node-evidence-v1",
+      "suite": "node-portable",
+      "deploymentMode": null,
+      "platform": {
+        "os": "windows",
+        "osRelease": "10.0.20348",
+        "architecture": "x86_64",
+        "node": "v24.22.3",
+        "platformKey": "windows/x86_64/node24",
+        "observedBrowsers": []
+      },
+      "caseCount": 7102,
+      "totals": {
+        "passed": 7102,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0,
+        "cancelled": 0,
+        "harnessPassed": 112
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14844878666,
+      "file": "panelreply-release-platform.json",
+      "sha256": "ab68d8dd31ae9690b9249084d3b56be42214098f09457120a98b095395845843",
+      "jobId": 137882485719,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable-extra",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1017-azure",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "firefox",
+            "channel": "bundled",
+            "version": "153.0",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 65,
+      "totals": {
+        "passed": 65,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14844754940,
+      "file": "panelreply-release-mobile.json",
+      "sha256": "100a81d9cbf66557d96b8776ca4e2d71fe2dea72c3d3b83288cc7a69f59bc712",
+      "jobId": 137882485455,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "mobile",
+      "deploymentMode": "combined",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": true,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 40,
+      "totals": {
+        "passed": 39,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14847063591,
+      "file": "panelreply-selected-product.json",
+      "sha256": "7db4822fc73954cf4bacbf1c8bab934ca71e6ad6757ecd95680669cf6a632b3c",
+      "jobId": 137882485897,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "spreadsheet",
+      "deploymentMode": "spreadsheet",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 9,
+      "totals": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    },
+    {
+      "artifactId": 14846828495,
+      "file": "panelreply-release-platform.json",
+      "sha256": "668e3f772c8cdfffc64320affcb9dccd37e4bdc286baa3e54d7074229bedf567",
+      "jobId": 137882485298,
+      "format": "panelreply-platform-evidence-v1",
+      "suite": "portable-extra",
+      "deploymentMode": "static-demo",
+      "platform": {
+        "os": "Linux",
+        "release": "7.0.0-1014-aws",
+        "architecture": "x86_64",
+        "python": "3.12.16",
+        "node": "v24.22.3",
+        "playwright": "1.62.0",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "emulated": false,
+        "observedBrowsers": [
+          {
+            "engine": "webkit",
+            "channel": "bundled",
+            "version": "26.5",
+            "executableOverride": false,
+            "executablePath": null
+          }
+        ]
+      },
+      "caseCount": 65,
+      "totals": {
+        "passed": 65,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "expectedFailures": 0,
+        "unexpectedSuccesses": 0,
+        "notRun": 0,
+        "incomplete": 0
+      },
+      "infrastructureErrors": [],
+      "sourceChanged": false
+    }
+  ],
+  "verifiedArtifacts": [
+    {
+      "id": 14847426456,
+      "name": "release-selected-macos-15-intel-callback-webkit-attempt-1",
+      "digest": "sha256:5a6aae04740af8adf023c118abd59773b7854ff5d4c1f60cdcecf4a08689d5a3",
+      "zipSha256": "5a6aae04740af8adf023c118abd59773b7854ff5d4c1f60cdcecf4a08689d5a3",
+      "zipBytes": 10877,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 34328,
+          "sha256": "39271119f25971a32eaf8ba03ceff52611befb8707c19c6914a0e103f989c001"
+        }
+      ],
+      "jobId": 137882485850
+    },
+    {
+      "id": 14847406140,
+      "name": "release-platform-windows-2022-webkit-attempt-1",
+      "digest": "sha256:65b24f58ad2516a3d2d20736fdcc207c8d5b1694cbe9e69290fef5c73457c685",
+      "zipSha256": "65b24f58ad2516a3d2d20736fdcc207c8d5b1694cbe9e69290fef5c73457c685",
+      "zipBytes": 12667,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 61260,
+          "sha256": "c21584f0f2681c485f1ca5d1f6d29ac563cc70be4851229076859905d8218637"
+        }
+      ],
+      "jobId": 137882486110
+    },
+    {
+      "id": 14847212385,
+      "name": "release-selected-ubuntu-24.04-callback-webkit-attempt-1",
+      "digest": "sha256:f124626319f88e10687d4b487f36036e3c58e3385138af7e057ee1841a224ed3",
+      "zipSha256": "f124626319f88e10687d4b487f36036e3c58e3385138af7e057ee1841a224ed3",
+      "zipBytes": 11172,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 39093,
+          "sha256": "21d5c98dedcc7ecd653da5353e600533fc3d605d9dba22460435d08599d81cf2"
+        }
+      ],
+      "jobId": 137882485717
+    },
+    {
+      "id": 14846971886,
+      "name": "release-private-linux-firefox-attempt-1",
+      "digest": "sha256:df03d3ff8ab416087accbd8d0bd1bd89ccbe6454f71d504c6947dfdf029bd6db",
+      "zipSha256": "df03d3ff8ab416087accbd8d0bd1bd89ccbe6454f71d504c6947dfdf029bd6db",
+      "zipBytes": 14326,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 76136,
+          "sha256": "cf7db2983270e72888180cd212f783a5184836168f5ea0998e89207287a773b1"
+        }
+      ],
+      "jobId": 137882485673
+    },
+    {
+      "id": 14846786692,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-firefox-attempt-1",
+      "digest": "sha256:08cdb82c1029552cadf09e145e2df4dafdd7b94047c40dd5c9898adf36d29251",
+      "zipSha256": "08cdb82c1029552cadf09e145e2df4dafdd7b94047c40dd5c9898adf36d29251",
+      "zipBytes": 9930,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 30305,
+          "sha256": "7ca059f21c591d4258b9faf58c79d376e01213b6d716619a804bbedee62d71d3"
+        }
+      ],
+      "jobId": 137882486156
+    },
+    {
+      "id": 14846716748,
+      "name": "release-platform-windows-2022-msedge-attempt-1",
+      "digest": "sha256:87e9d53833bad8cd11f8386557ea2d79807cb244607428390cdfbd3e6570a471",
+      "zipSha256": "87e9d53833bad8cd11f8386557ea2d79807cb244607428390cdfbd3e6570a471",
+      "zipBytes": 12662,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 61382,
+          "sha256": "079131f2e0de29ad6e4fe63edfe71497a00a947200a44378acdc8059716d20d8"
+        }
+      ],
+      "jobId": 137882485169
+    },
+    {
+      "id": 14846221944,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-webkit-attempt-1",
+      "digest": "sha256:7c6bfb72265caade91406911709fee5c7d5e38148d16bc4310930f86f900a85a",
+      "zipSha256": "7c6bfb72265caade91406911709fee5c7d5e38148d16bc4310930f86f900a85a",
+      "zipBytes": 10059,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 30999,
+          "sha256": "006d855cd5868adb6aefcd70de6f48ea219d9ceaa9d0b310ea98f0f96964eb02"
+        }
+      ],
+      "jobId": 137882486249
+    },
+    {
+      "id": 14846061288,
+      "name": "release-platform-windows-2022-chrome-attempt-1",
+      "digest": "sha256:19b24a9b35942643b96cdcbb9ed525e0ea9b02f8fa622ec780b3c7a446b87827",
+      "zipSha256": "19b24a9b35942643b96cdcbb9ed525e0ea9b02f8fa622ec780b3c7a446b87827",
+      "zipBytes": 12644,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 61381,
+          "sha256": "282181c54a639a515c886f0a618351f39d1faa34a6a55a9acf6f3c757ad479de"
+        }
+      ],
+      "jobId": 137882485559
+    },
+    {
+      "id": 14846042550,
+      "name": "release-baseline-linux-attempt-1",
+      "digest": "sha256:8ca8fb6f3d6a704cc9cecfa6e3c3563d8930e8a8c2168c2418a55487d0249f62",
+      "zipSha256": "8ca8fb6f3d6a704cc9cecfa6e3c3563d8930e8a8c2168c2418a55487d0249f62",
+      "zipBytes": 419914,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-node.json",
+          "bytes": 5535181,
+          "sha256": "37ca831eac06b1b47e672e2b837a018dc98a3a1a2e613c24cede173985783bf2"
+        },
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 99750,
+          "sha256": "b3af9fb422c10e27953b3eea9fe7ff24af959b2d1bea706a6b72a09eadf676a1"
+        }
+      ],
+      "jobId": 137882485609
+    },
+    {
+      "id": 14846017471,
+      "name": "release-callback-mobile-linux-chromium-attempt-1",
+      "digest": "sha256:15b763b4332eb641650350b2b13cf914a92408471138513449c3e2eff5248686",
+      "zipSha256": "15b763b4332eb641650350b2b13cf914a92408471138513449c3e2eff5248686",
+      "zipBytes": 11885,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-callback-mobile.json",
+          "bytes": 100832,
+          "sha256": "a9e6293e9c52b7a5473f1e9bf4e9250d8d6ee96d3f12d71458969a5176629ba9"
+        }
+      ],
+      "jobId": 137882485237
+    },
+    {
+      "id": 14846013308,
+      "name": "release-private-linux-webkit-attempt-1",
+      "digest": "sha256:9291a62c8f23082696e972d7d2eeaebb3afff8f9cb09e0cc61d35a39e0cd6584",
+      "zipSha256": "9291a62c8f23082696e972d7d2eeaebb3afff8f9cb09e0cc61d35a39e0cd6584",
+      "zipBytes": 14290,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 75991,
+          "sha256": "8a40be3dbd335eed47259685ce7ac11c22e4f8ea4b4f788175f3df3e1517f6ab"
+        }
+      ],
+      "jobId": 137882485205
+    },
+    {
+      "id": 14846001393,
+      "name": "release-platform-ubuntu-24.04-msedge-attempt-1",
+      "digest": "sha256:f37b2d21341231c06e50e66e1af8486926cc1662780e29e291cfccde08f8430e",
+      "zipSha256": "f37b2d21341231c06e50e66e1af8486926cc1662780e29e291cfccde08f8430e",
+      "zipBytes": 12936,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 59756,
+          "sha256": "92f6cf95c83523501f0a15c4cfd67f49ba099b4c4e6578b4d7cd85751e039a16"
+        }
+      ],
+      "jobId": 137882485338
+    },
+    {
+      "id": 14845866939,
+      "name": "release-native-safari-macos-15-intel-attempt-1",
+      "digest": "sha256:252da4913d361805e0baa0da14068fe72ca9981c0eec65bc61e4b45a8442a564",
+      "zipSha256": "252da4913d361805e0baa0da14068fe72ca9981c0eec65bc61e4b45a8442a564",
+      "zipBytes": 22271,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "callback-safari.json",
+          "bytes": 32919,
+          "sha256": "5f9a135596ec0d2d1ffeb779956e7a9d7b052e317b11864f62c7ddcabfcb85bb"
+        },
+        {
+          "path": "spreadsheet-manual-safari.json",
+          "bytes": 32978,
+          "sha256": "c02325626963e2a684f3d6bf21faa92f1af1a51ead402f277f6b251fee7b2eca"
+        }
+      ],
+      "jobId": 137882485557
+    },
+    {
+      "id": 14845821313,
+      "name": "release-platform-ubuntu-24.04-chrome-attempt-1",
+      "digest": "sha256:972905b2bcb2ab7c7130e39f5f208daa7b31d3bff15beda57e4a7ac83bf6aed4",
+      "zipSha256": "972905b2bcb2ab7c7130e39f5f208daa7b31d3bff15beda57e4a7ac83bf6aed4",
+      "zipBytes": 12912,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 59765,
+          "sha256": "77b7a5e4d604b67d3d5be34a9323c4d74148430f48336042fbc0f19e72140d30"
+        }
+      ],
+      "jobId": 137882485121
+    },
+    {
+      "id": 14845801959,
+      "name": "release-mobile-linux-chromium-attempt-1",
+      "digest": "sha256:fa4db75290d9845450fa47364bd3604c0d7185b849bc3dc78bb983587f05bb9a",
+      "zipSha256": "fa4db75290d9845450fa47364bd3604c0d7185b849bc3dc78bb983587f05bb9a",
+      "zipBytes": 11285,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-mobile.json",
+          "bytes": 82046,
+          "sha256": "85e6000d8bd894982e5cdfbb92287d9c94737152d6aaf5fcbba9f19e7b4ca87b"
+        }
+      ],
+      "jobId": 137882485237
+    },
+    {
+      "id": 14845731507,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-firefox-attempt-1",
+      "digest": "sha256:b9744c410bb325324ab555e1c21948d389b6ffa4632c81a1efb8dcdef7abdabb",
+      "zipSha256": "b9744c410bb325324ab555e1c21948d389b6ffa4632c81a1efb8dcdef7abdabb",
+      "zipBytes": 10066,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 31017,
+          "sha256": "dd7c0ae3c9cca5577a4853056a5541d9ae03044eccf257f5064b23b38dc991b3"
+        }
+      ],
+      "jobId": 137882485524
+    },
+    {
+      "id": 14845722184,
+      "name": "release-platform-macos-15-intel-firefox-attempt-1",
+      "digest": "sha256:e8aa57ca13695759e57ac9351b8d69a2aa4e1078e2b88f0ff667ec30cab196bb",
+      "zipSha256": "e8aa57ca13695759e57ac9351b8d69a2aa4e1078e2b88f0ff667ec30cab196bb",
+      "zipBytes": 12931,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 59882,
+          "sha256": "f0aac70471bc4d22738d8035dc4f2c7187486290aa3c06288e9770ac985899f0"
+        }
+      ],
+      "jobId": 137882485957
+    },
+    {
+      "id": 14845696652,
+      "name": "release-platform-macos-15-intel-webkit-attempt-1",
+      "digest": "sha256:d9413160f90befecb7f6b2479a87aa0ee4d9ca398354e965a37aa1e0c6d99471",
+      "zipSha256": "d9413160f90befecb7f6b2479a87aa0ee4d9ca398354e965a37aa1e0c6d99471",
+      "zipBytes": 12923,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 59791,
+          "sha256": "db5e25cc9573f7b57da878f215d3c5a16f4453d44528846580ce0303f586cbaa"
+        }
+      ],
+      "jobId": 137882485349
+    },
+    {
+      "id": 14845691612,
+      "name": "release-platform-windows-2022-chromium-attempt-1",
+      "digest": "sha256:67f180a587d49def663b960026fbe4598749870fee621b0dae42b47dcbfdde48",
+      "zipSha256": "67f180a587d49def663b960026fbe4598749870fee621b0dae42b47dcbfdde48",
+      "zipBytes": 12630,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 61475,
+          "sha256": "dc30c13790cf78cff104dc4292a1f19adf3fd8fc5a84b0f4b5ef6202a7009a82"
+        }
+      ],
+      "jobId": 137882485886
+    },
+    {
+      "id": 14845458654,
+      "name": "release-callback-mobile-linux-webkit-attempt-1",
+      "digest": "sha256:a902d77e161c5edd6d7819122e8f4f4f8433aff4faf51553f721057c69ab687c",
+      "zipSha256": "a902d77e161c5edd6d7819122e8f4f4f8433aff4faf51553f721057c69ab687c",
+      "zipBytes": 11887,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-callback-mobile.json",
+          "bytes": 100977,
+          "sha256": "d18904a0da2b6a88240ac5e4adcd374e011b2dfec4f23e17b9cd0dcb68ae2b68"
+        }
+      ],
+      "jobId": 137882485455
+    },
+    {
+      "id": 14845429272,
+      "name": "release-selected-ubuntu-24.04-callback-firefox-attempt-1",
+      "digest": "sha256:0220d35b7a5660b605f35fbf5ec960ffde300a15dbb5ed2d6afc8f794e49679a",
+      "zipSha256": "0220d35b7a5660b605f35fbf5ec960ffde300a15dbb5ed2d6afc8f794e49679a",
+      "zipBytes": 10876,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 34282,
+          "sha256": "ffb1838d2803237974b317eb490e9da2778dc714f76a10210e14cb4d64c2000e"
+        }
+      ],
+      "jobId": 137882486133
+    },
+    {
+      "id": 14845407485,
+      "name": "release-node-ubuntu-24.04-attempt-1",
+      "digest": "sha256:d0e8069b012d76e232490e77e2b8d30b11cd59934f41ced023f8ec8f9bbd9d8e",
+      "zipSha256": "d0e8069b012d76e232490e77e2b8d30b11cd59934f41ced023f8ec8f9bbd9d8e",
+      "zipBytes": 347643,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-node.json",
+          "bytes": 4399813,
+          "sha256": "d663e57d281de8c045697e9342b2a53568ff3b8e258293b83f77fa54e9ec6a82"
+        }
+      ],
+      "jobId": 137882484855
+    },
+    {
+      "id": 14845284009,
+      "name": "release-selected-macos-15-intel-spreadsheet-manual-chromium-attempt-1",
+      "digest": "sha256:d067af08ff874a5fdeea401d47ce47fc82f6fb3f92d3df224ee12bbc19d58095",
+      "zipSha256": "d067af08ff874a5fdeea401d47ce47fc82f6fb3f92d3df224ee12bbc19d58095",
+      "zipBytes": 10064,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 31040,
+          "sha256": "fbd50dc4303bcc7794c81383a126e7c394d5c17ebf29f48d3b4317358f10a6d7"
+        }
+      ],
+      "jobId": 137882486198
+    },
+    {
+      "id": 14845268180,
+      "name": "release-selected-macos-15-intel-callback-chromium-attempt-1",
+      "digest": "sha256:5806e8fadc4233ab149d63195f119255d4dc020de3c1d8f937079fd6022651ae",
+      "zipSha256": "5806e8fadc4233ab149d63195f119255d4dc020de3c1d8f937079fd6022651ae",
+      "zipBytes": 10886,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 34373,
+          "sha256": "1e37a48bf6a29f20868ca4bbb1e158012b1e8b453fbb8eca8a00c6a2cf054ef7"
+        }
+      ],
+      "jobId": 137882485786
+    },
+    {
+      "id": 14845257944,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-chromium-attempt-1",
+      "digest": "sha256:cfa2816f2575a415258b7014d0883cc4a3dd59140d80fe39b5b5c7b30a0c2ea0",
+      "zipSha256": "cfa2816f2575a415258b7014d0883cc4a3dd59140d80fe39b5b5c7b30a0c2ea0",
+      "zipBytes": 9937,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 30324,
+          "sha256": "b6ec79beb538150ae3ada93ebd28c25aee57f94e43910a18dc5a766ef1f81e67"
+        }
+      ],
+      "jobId": 137882485340
+    },
+    {
+      "id": 14845123862,
+      "name": "release-selected-ubuntu-24.04-callback-chromium-attempt-1",
+      "digest": "sha256:8be58107ed2556d9702c73d3d7b9652ea9fea64b280dd165271aba1a23b9ae3e",
+      "zipSha256": "8be58107ed2556d9702c73d3d7b9652ea9fea64b280dd165271aba1a23b9ae3e",
+      "zipBytes": 10878,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 34296,
+          "sha256": "3821362e95b265794e2f9c53a9356808c1c8c340109ea2d02ff7f47eb31b595e"
+        }
+      ],
+      "jobId": 137882485974
+    },
+    {
+      "id": 14845083865,
+      "name": "release-platform-macos-15-intel-chromium-attempt-1",
+      "digest": "sha256:160c582d94d2be103354d0bc4012b55599566be39b241171781c9da66fafe7e0",
+      "zipSha256": "160c582d94d2be103354d0bc4012b55599566be39b241171781c9da66fafe7e0",
+      "zipBytes": 12926,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 59957,
+          "sha256": "2922224ec229c48c5c9f05005c78dea8291d9477e110dc49fd3ba7ed3f7e0697"
+        }
+      ],
+      "jobId": 137882485570
+    },
+    {
+      "id": 14844913806,
+      "name": "release-platform-windows-2022-firefox-attempt-1",
+      "digest": "sha256:1a8b7b2b499571f5e447c59e70621171b5d460d1dfc9d5738f77d7b661ece2fd",
+      "zipSha256": "1a8b7b2b499571f5e447c59e70621171b5d460d1dfc9d5738f77d7b661ece2fd",
+      "zipBytes": 12669,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 61365,
+          "sha256": "19caf45dd5cac2dcdb4e1f6f5ae09b4e855c0513bacb0d3586c95ba458f3c0e6"
+        }
+      ],
+      "jobId": 137882485614
+    },
+    {
+      "id": 14844903501,
+      "name": "release-node-macos-15-intel-attempt-1",
+      "digest": "sha256:bfd391ba67363c3826de91977cfd6980bd300980c318f215f238c7509c21c6d0",
+      "zipSha256": "bfd391ba67363c3826de91977cfd6980bd300980c318f215f238c7509c21c6d0",
+      "zipBytes": 353201,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-node.json",
+          "bytes": 4407543,
+          "sha256": "8d9ba49314a721ca8e9876eadb6622831ee71995172096825fba1eaeb6cdf75c"
+        }
+      ],
+      "jobId": 137882485206
+    },
+    {
+      "id": 14844899110,
+      "name": "release-selected-macos-15-intel-callback-firefox-attempt-1",
+      "digest": "sha256:906696daead5ea5cc6ee4c0fed0892f4aba7f835547c04d68aeaf6593b515b0f",
+      "zipSha256": "906696daead5ea5cc6ee4c0fed0892f4aba7f835547c04d68aeaf6593b515b0f",
+      "zipBytes": 10883,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 34349,
+          "sha256": "5fcbbe71d0295665a9ce91a1b049b744057e2905a807df14b8b798097408a32c"
+        }
+      ],
+      "jobId": 137882485756
+    },
+    {
+      "id": 14844898506,
+      "name": "release-node-windows-2022-attempt-1",
+      "digest": "sha256:467b434c900182812b80e94035b795cd846c5a515dd55a3c16665a9ba8eeb2f2",
+      "zipSha256": "467b434c900182812b80e94035b795cd846c5a515dd55a3c16665a9ba8eeb2f2",
+      "zipBytes": 339627,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-node.json",
+          "bytes": 4399802,
+          "sha256": "d9244541d2bdd54e4a34f93462a8462e5dd9c05d8430eca1449805481e8faae3"
+        }
+      ],
+      "jobId": 137882485458
+    },
+    {
+      "id": 14844878666,
+      "name": "release-platform-ubuntu-24.04-firefox-attempt-1",
+      "digest": "sha256:8f995987ae2cbe8be859bd94163b92227bcc46d5b1235f51ae436d753e2ed9d3",
+      "zipSha256": "8f995987ae2cbe8be859bd94163b92227bcc46d5b1235f51ae436d753e2ed9d3",
+      "zipBytes": 11959,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 50127,
+          "sha256": "ab68d8dd31ae9690b9249084d3b56be42214098f09457120a98b095395845843"
+        }
+      ],
+      "jobId": 137882485719
+    },
+    {
+      "id": 14844754940,
+      "name": "release-mobile-linux-webkit-attempt-1",
+      "digest": "sha256:9ef26a3adaa43b3ee6ce1dc9389622c607008f19fba69ca5f555c8e1bba3e169",
+      "zipSha256": "9ef26a3adaa43b3ee6ce1dc9389622c607008f19fba69ca5f555c8e1bba3e169",
+      "zipBytes": 11827,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-mobile.json",
+          "bytes": 83352,
+          "sha256": "100a81d9cbf66557d96b8776ca4e2d71fe2dea72c3d3b83288cc7a69f59bc712"
+        }
+      ],
+      "jobId": 137882485455
+    },
+    {
+      "id": 14847063591,
+      "name": "release-selected-ubuntu-24.04-spreadsheet-webkit-attempt-1",
+      "digest": "sha256:298482536e5547554c8b82cd5b6fc2eead29ba5aa49ef45bc0d13e5edd8f2a97",
+      "zipSha256": "298482536e5547554c8b82cd5b6fc2eead29ba5aa49ef45bc0d13e5edd8f2a97",
+      "zipBytes": 9923,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-selected-product.json",
+          "bytes": 30293,
+          "sha256": "7db4822fc73954cf4bacbf1c8bab934ca71e6ad6757ecd95680669cf6a632b3c"
+        }
+      ],
+      "jobId": 137882485897
+    },
+    {
+      "id": 14846828495,
+      "name": "release-platform-ubuntu-24.04-webkit-attempt-1",
+      "digest": "sha256:f5f870562c2200da1c1d86199bbb210aeccd5d2ca55ea6da98284d9e73f5c26d",
+      "zipSha256": "f5f870562c2200da1c1d86199bbb210aeccd5d2ca55ea6da98284d9e73f5c26d",
+      "zipBytes": 11934,
+      "zipDigestVerified": true,
+      "safePathsVerified": true,
+      "files": [
+        {
+          "path": "panelreply-release-platform.json",
+          "bytes": 50058,
+          "sha256": "668e3f772c8cdfffc64320affcb9dccd37e4bdc286baa3e54d7074229bedf567"
+        }
+      ],
+      "jobId": 137882485298
+    }
+  ],
+  "remainingActions": [
+    "Preserve all failures and unexecuted methods from this immutable source. Verify corrections only on subsequent committed source.",
+    "Keep the unexecuted Apple Silicon requirements open. No runner assignment or method execution was observed.",
+    "Keep OCR accuracy, native isolation, actual Safari, physical devices and the other unresolved release requirements open. Measurement completion and numeric counts do not close these gates."
+  ],
+  "noNewTestExecution": true,
+  "noCiRerun": true,
+  "noCancellation": true,
+  "noPolicyChange": true,
+  "snapshotHistory": [
+    {
+      "record": "panelreply-run85-partial-evidence.json",
+      "localPath": "/tmp/panelreply-run85-partial-evidence.json",
+      "sha256": "1afdd0b44c95292861f75639db6c323b2d077c073f053386aad7672b2df7a7e6",
+      "recordedAt": "2026-11-23T17:47:55.413195+00:00",
+      "metadataCapturedAt": "2026-11-23T17:45:43.830Z",
+      "status": "PARTIAL_TWO_LINUX_JOBS_RUNNING_AND_ARM_UNASSIGNED",
+      "runStatus": "queued",
+      "runConclusion": null,
+      "jobStates": {
+        "success": 27,
+        "in_progress": 2,
+        "queued": 1,
+        "failure": 8
+      },
+      "releaseArtifacts": 33,
+      "sourceReports": 35,
+      "product": {
+        "total": 24730,
+        "PASS": 24717,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 6,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 7,
+        "ERROR": 0
+      },
+      "pendingJobs": [
+        {
+          "jobId": 137882485298,
+          "name": "Static client (ubuntu-24.04, webkit)",
+          "status": "in_progress",
+          "runnerId": 1000000428,
+          "runnerName": "GitHub Actions 1000000428",
+          "labels": [
+            "ubuntu-24.04"
+          ],
+          "stepCount": 10,
+          "activeStep": "Install the selected browser and Python test tools"
+        },
+        {
+          "jobId": 137882485411,
+          "name": "Apple Silicon contracts and selected products",
+          "status": "queued",
+          "runnerId": null,
+          "runnerName": null,
+          "labels": [
+            "macos-15"
+          ],
+          "stepCount": 0,
+          "activeStep": null
+        },
+        {
+          "jobId": 137882485897,
+          "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+          "status": "in_progress",
+          "runnerId": 1000000447,
+          "runnerName": "GitHub Actions 1000000447",
+          "labels": [
+            "ubuntu-24.04"
+          ],
+          "stepCount": 12,
+          "activeStep": "Install selected-product test dependencies"
+        }
+      ],
+      "appleSilicon": {
+        "jobId": 137882485411,
+        "status": "queued",
+        "runnerId": null,
+        "runnerName": null,
+        "labels": [
+          "macos-15"
+        ],
+        "stepCount": 0,
+        "productCasesExecuted": 0,
+        "cause": "Runner allocation cause unconfirmed. The API returned null runner metadata at this capture. No paid label, privilege change, retry or cancellation was used.",
+        "acceptance": "NOT_TESTED"
+      },
+      "preservedUnchanged": true
+    }
+  ],
+  "newlyCompletedReleaseJobs": [
+    {
+      "jobId": 137882485897,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "conclusion": "success",
+      "completedAt": "2026-11-23T17:47:41Z",
+      "artifactId": 14847063591,
+      "methods": 9
+    },
+    {
+      "jobId": 137882485298,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "conclusion": "success",
+      "completedAt": "2026-11-23T17:46:56Z",
+      "artifactId": 14846828495,
+      "methods": 65
+    }
+  ]
+}

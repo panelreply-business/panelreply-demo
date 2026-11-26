@@ -2,6 +2,8 @@
 
 Recorded November 18, 2026, America/New_York.
 
+This is historical November 18 suspension evidence. The November 19 pre-launch audit later found both services active. After new explicit owner approval, both were suspended again on November 19: AI at 7:28:44 PM EST and static at 7:29:45 PM EST. Fresh Render reads and the isolated run66 attempt 2 suspension job verified the state at 7:30 PM EST, with two guards PASS and three public application checks policy-BLOCKED. [Follow-up evidence](evidence/public-suspension-2026-11-19.json). Current state and remaining gates are recorded in [development progress](DEVELOPMENT_PROGRESS.md). Further service-state changes require separate owner approval.
+
 The owner explicitly approved taking both public PanelReply demos offline while development continues. Both services were suspended through their Render Dashboard controls. No service, code, environment variable, deploy history or repository was deleted.
 
 ## Verified service state

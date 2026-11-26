@@ -1,0 +1,80 @@
+{
+  "format": "panelreply-ocr-process-diagnostics-local-verification-v1",
+  "recordedAt": "2026-11-24T01:37:51.477206+00:00",
+  "baseCommit": "6b4964ff65c2cd8b904d5974382cb6c241e2c378",
+  "candidateManifest": "d8030dbf65455029860ef70a1cbe225c54925c4a02bee95ae3ea6612cd1ebd18",
+  "candidateSourceFiles": 203,
+  "sourceState": "UNCOMMITTED_CANDIDATE",
+  "files": {
+    "scripts/ocr-process-diagnostics.cjs": {
+      "bytes": 8894,
+      "sha256": "0abaec7891c30cd4092bc088145471fafbec159fb9bf2c42d15361e54f322593"
+    },
+    "scripts/test-ocr-isolation.cjs": {
+      "bytes": 11084,
+      "sha256": "f709a0b11a201578a22e61f7256e519b715ffb1b0c72b84e5e36bf820be36a0e"
+    },
+    "tests/ocr-isolation-diagnostics.test.cjs": {
+      "bytes": 55742,
+      "sha256": "1a70e4c1340e37c5fbc94610958effebf259157422a3edd4d49438e2c1296807"
+    }
+  },
+  "node": "v24.22.3",
+  "platform": "linux",
+  "architecture": "x64",
+  "focusedNewCases": {
+    "command": "node --test --test-name-pattern=process\\ diagnostics tests/ocr-isolation-diagnostics.test.cjs",
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skip": 0,
+    "source": "Observed tool return before the complete affected-file run",
+    "overlap": "These ten cases are included in the 53-case affected-file run."
+  },
+  "affectedFileRun": {
+    "command": "node --test tests/ocr-isolation-diagnostics.test.cjs",
+    "exitCode": 0,
+    "totals": {
+      "tests": 53,
+      "pass": 53,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": {
+      "path": "docs/evidence/ocr-process-diagnostics-harness-2026-11-24.log",
+      "bytes": 5635,
+      "sha256": "7b7ffc9a0a056ef8955728b83468f1fc21773f82322609d9cd8ac754716ae7cc"
+    }
+  },
+  "nativeCases": {
+    "count": 6,
+    "allBodyBytesAndAssertionsMatchBase": true,
+    "bodyBlockSha256": "a26a2bac960d7cbc2c0213a814f20d8430a73aa72f329a9cbd9210a97c2ce5e0",
+    "executionStatus": "NOT_RUN_BY_THIS_CANDIDATE",
+    "coverage": "Four fixed checks plus cancellation and timeout loop cases"
+  },
+  "existingHarnessPrefixBytePreserved": true,
+  "unchanged": {
+    "workspace/ocr.cjs": "978cba95cf353d7416fab70dc00cf2113a499c27feee9ec5c2ff500929a4b2d9",
+    "workspace/ocr-isolation.cjs": "fd9419af6688cafb7946075c8ce22166d60f241542682000123515f5b90f5186",
+    "scripts/observe-ocr-isolation.cjs": "55034c8fee4dff8e6f8d66f250fdd392fb061a413960699c10696d277be6a2e0",
+    "scripts/ocr-isolation-host-context.cjs": "a74cfe2a47abce4ff02cb4e87ea7c70d8301572268fae24e65c0edc7fa4129b0",
+    ".github/workflows/demo-tests.yml": "1398ff488b4ff922a6ae73efdc9f2e578f38780171fc52a2759f2ff0516d6198",
+    "docs/test-milestones.json": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216",
+    "scripts/aggregate-test-evidence.cjs": "68434c118d7381304fe91a26d39f29acba257bbe64d0dae8409a0e62dba93992",
+    "scripts/test-evidence.cjs": "760e48c53578bb028a3b0909b6b50931ac3b0a05590d3bf3dd044437ec3ff387"
+  },
+  "nativeExecutions": 0,
+  "extraSignalProbes": 0,
+  "addedWaitsOrRetries": 0,
+  "releaseCredit": false,
+  "productPassing": 0,
+  "limitations": [
+    "All new process observations use synthetic data in this local harness.",
+    "Proc reads can affect scheduling. A future passing native run alone does not prove a cleanup repair.",
+    "Observed PID/start-tick/inode fields cannot establish atomic process identity across every reuse race.",
+    "Missing or inaccessible proc fields remain unavailable and do not change signal-zero outcomes."
+  ]
+}

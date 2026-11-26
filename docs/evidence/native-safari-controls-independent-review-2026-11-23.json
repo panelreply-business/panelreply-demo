@@ -1,0 +1,60 @@
+{
+  "format": "panelreply-native-safari-controls-independent-source-review-v1",
+  "recordedAt": "2026-11-23T19:02:38.788349+00:00",
+  "baseCommit": "2882d4f836d4694c8b445f91f52d64df943cf213",
+  "files": [
+    {
+      "path": "tests/safari_product_browser_test.py",
+      "sha256": "73f37cb55a1ac52fa82881b0a5bf5b2242e12b3ae7c1b75a3cdc320d74374f7a"
+    },
+    {
+      "path": "tests/release_safari_runner.py",
+      "sha256": "badc8ef077a604ff3f782d29658f829c61c78aa1667cebfffd1b0b7e6d19a6d5"
+    },
+    {
+      "path": "tests/safari_runner_test.py",
+      "sha256": "25874e9c7768a3087dd268ce6933995d7115644c0a248bd1cc6d5e391f0dbc45"
+    }
+  ],
+  "nativeMethodIds": [
+    "SafariCallbackBrowserTests.test_intake_status_persistence_and_sign_out",
+    "SafariCallbackBrowserTests.test_schedule_reschedule_outcome_follow_up_and_cancel",
+    "SafariCallbackBrowserTests.test_contact_hold_and_keyboard_dirty_edit_guard",
+    "SafariSpreadsheetBrowserTests.test_manual_corrections_persist_and_native_downloads_match",
+    "SafariSpreadsheetBrowserTests.test_file_upload_source_links_and_unavailable_ocr",
+    "SafariSpreadsheetBrowserTests.test_bound_recovery_revokes_archived_sessions_and_credentials"
+  ],
+  "nativeMethodBodiesBytePreserved": true,
+  "findings": [],
+  "reviewedBoundaries": [
+    "Exactly six native method bodies remain byte-for-byte unchanged, including actual saved state, export bytes, upload/source readback and recovery assertions.",
+    "Selection reads a bounded single-select inventory then uses WebDriver character keys and Tab. No value setters, synthetic events, Selenium option-click fallback or retries are introduced.",
+    "Changed selections require exact final value, bounded nonoverflowing trusted key/input/change observations, requested-value input and change evidence, and exact planned character event counts.",
+    "An incomplete-row review attempt must emit the requested reviewed value while the actual final state remains unreviewed. Later persistence assertions remain in the original method.",
+    "Upload retains native file-input send_keys, pointer button click, visible save confirmation, saved source count and subsequent original-byte and recovery checks.",
+    "Failure capture occurs before teardown for ordinary method failures/errors and cannot replace the original outcome when diagnostics fail. It collects only the synthetic test page and read-only saved project.",
+    "Capture listeners observe without setting values, cancelling events, intercepting requests or replacing file reading. Diagnostic timing may still change race observations.",
+    "Result collection preserves errors and all missing-method outcomes. The added portable harness cases receive zero product credit."
+  ],
+  "upstreamSupport": {
+    "repository": "WebKit/WebKit",
+    "commit": "cacd76e68f391f29279023c0fbe7d35395b68db3",
+    "path": "Source/WebCore/html/TypeAhead.cpp",
+    "gitBlobSha": "1a438029b97844fafda6d941c0204bf44bfaa05b",
+    "url": "https://github.com/WebKit/WebKit/blob/cacd76e68f391f29279023c0fbe7d35395b68db3/Source/WebCore/html/TypeAhead.cpp",
+    "finding": "Repeated matching initial characters use the next-option search with wraparound in CycleFirstChar mode.",
+    "installedSafariSourceIdentityEstablished": false
+  },
+  "result": "No concrete interaction or assertion-integrity defect found in this source review.",
+  "nativeExecutions": 0,
+  "testReruns": 0,
+  "filesEdited": 0,
+  "productPassing": 0,
+  "limits": [
+    "Native Safari driver behavior and the complete journeys still require CI execution.",
+    "Run88 remains one PASS and five ERROR outcomes. Source review cannot turn those outcomes into passes.",
+    "Native option-popup pointer behavior is not established by the keyboard selection path.",
+    "The original upload failure cause remains unconfirmed. A later pass with added observations alone does not establish a repair.",
+    "Existing selected-value no-op behavior is recorded without claiming a new keyboard interaction."
+  ]
+}

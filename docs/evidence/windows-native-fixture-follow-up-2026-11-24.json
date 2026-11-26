@@ -1,0 +1,61 @@
+{
+  "format": "panelreply-native-fixture-follow-up-v1",
+  "recordedAt": "2026-11-24T01:36:32.318184+00:00",
+  "observedRunId": 45255176264,
+  "observedHead": "6b4964ff65c2cd8b904d5974382cb6c241e2c378",
+  "observedNativeTotals": {
+    "passed": 13,
+    "failed": 2
+  },
+  "sourceBefore": {
+    "path": "tests/windows-storage.windows.cjs",
+    "bytes": 33684,
+    "sha256": "e52f152f21fc9269cbe094437f08f738d81700506e71582a5b1ad82b068a9a5b",
+    "scope": "Frozen component-output candidate, whose 15 native case bodies equal published 6b."
+  },
+  "sourceAfter": {
+    "path": "tests/windows-storage.windows.cjs",
+    "bytes": 35084,
+    "sha256": "264e3c3908d9462d66fa6a6b80b3faa716531f72b0f1aa8c782ad85d06e864fc"
+  },
+  "changedCases": [
+    "WNS.root_security_rejection",
+    "WNS.child_security_and_hardlink_rejection"
+  ],
+  "unchangedCaseBodies": 13,
+  "caseIdsUnchanged": true,
+  "unchangedSource": [
+    {
+      "path": "workspace/native/windows-storage/storage.cc",
+      "sha256": "63fce31b69e259603aeb08f016254b3a56cd62e89133c4b35861ef2d7edd84f8"
+    },
+    {
+      "path": "workspace/native/windows-storage/fixture.cc",
+      "sha256": "fed3df76677eb0dbd432d88adf967f352527741f29129fcd6594fbd64a5469d6"
+    },
+    {
+      "path": "tests/windows-storage-cases.cjs",
+      "sha256": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4"
+    }
+  ],
+  "changes": [
+    "Record independent created/before root descriptors before the product rejection and assert the unprotected fixture actually has inheritance enabled. This diagnoses a precondition failure without accepting the fixture name as evidence.",
+    "Close any unexpectedly accepted root lease while preserving the original missing-rejection failure.",
+    "Create and remove the owned hardlink fixture while the exclusive directory lease is closed. Reopen the same directory identity for both original hardlink rejection checks and the final single-link byte readback. Retain original file identities and link-count assertions."
+  ],
+  "validation": {
+    "nodeSyntaxCheckExitCode": 0,
+    "nativeExecutions": 0,
+    "productPassing": 0,
+    "releaseCredit": false
+  },
+  "limits": [
+    "No diagnosis of the unprotected-root cause before actual descriptor evidence.",
+    "No native hardlink pass until the next source-bound Windows run.",
+    "No production runtime, ownership, DACL, privilege, sharing or rejection policy change."
+  ],
+  "nextSteps": [
+    "Review this two-case fixture diff independently.",
+    "Verify actual descriptor precondition, four hardlink rejection checks, same-identity single-link readback and fixture cleanup in Windows CI."
+  ]
+}

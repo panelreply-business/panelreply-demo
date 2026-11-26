@@ -1,0 +1,109 @@
+{
+  "format": "panelreply-ocr-process-diagnostics-independent-source-review-v1",
+  "reviewedAt": "2026-11-24T01:45:26.993579+00:00",
+  "reviewer": "safari_recovery",
+  "result": "PASS_SOURCE_REVIEW",
+  "findings": [],
+  "handoff": {
+    "path": "/tmp/panelreply-ocr-process-diagnostics-handoff-20261124.json",
+    "sha256": "ace7ac51e12b4b557da44d4d9fbdf434c962c50b3e638acebcbea1aa36c65635"
+  },
+  "candidateSourceTreeSha256": "d8030dbf65455029860ef70a1cbe225c54925c4a02bee95ae3ea6612cd1ebd18",
+  "sourceFiles": [
+    {
+      "path": "docs/evidence/ocr-process-diagnostics-harness-2026-11-24.log",
+      "bytes": 5635,
+      "sha256": "7b7ffc9a0a056ef8955728b83468f1fc21773f82322609d9cd8ac754716ae7cc"
+    },
+    {
+      "path": "docs/evidence/ocr-process-diagnostics-local-2026-11-24.json",
+      "bytes": 3486,
+      "sha256": "eee53ac728806baf111b24e359dcca634d1c80a0141e0b3edc1e07d0cac7029a"
+    },
+    {
+      "path": "docs/ocr-process-diagnostics.md",
+      "bytes": 5424,
+      "sha256": "d055c857e0b4835d27faa807068d9ac81fd57f066bf6b88c58e68198163ac411"
+    },
+    {
+      "path": "scripts/ocr-process-diagnostics.cjs",
+      "bytes": 8894,
+      "sha256": "0abaec7891c30cd4092bc088145471fafbec159fb9bf2c42d15361e54f322593"
+    },
+    {
+      "path": "scripts/test-ocr-isolation.cjs",
+      "bytes": 11084,
+      "sha256": "f709a0b11a201578a22e61f7256e519b715ffb1b0c72b84e5e36bf820be36a0e"
+    },
+    {
+      "path": "tests/ocr-isolation-diagnostics.test.cjs",
+      "bytes": 55742,
+      "sha256": "1a70e4c1340e37c5fbc94610958effebf259157422a3edd4d49438e2c1296807"
+    }
+  ],
+  "preservation": {
+    "sixNativeCaseBodies": {
+      "bytePreserved": true,
+      "bytes": 4393,
+      "sha256": "a26a2bac960d7cbc2c0213a814f20d8430a73aa72f329a9cbd9210a97c2ce5e0",
+      "catalog": "Four fixed check calls plus the unchanged cancel/timeout loop."
+    },
+    "workerAssertions": {
+      "bytePreserved": true,
+      "sha256": "291556dc230dc943d0e766a01f9f9c05f2a60d080420e9f127088b5ed86ee396"
+    },
+    "originalDiagnosticsHarnessPrefix": {
+      "bytePreserved": true,
+      "bytes": 42613,
+      "sha256": "ee3fbe4f60cf1e3d69932a43e6ca6b885d34f75a47fffb3224a3aa58391fdc59"
+    },
+    "unchangedRuntimeAndPolicyFiles": [
+      {
+        "path": "workspace/ocr.cjs",
+        "sha256": "978cba95cf353d7416fab70dc00cf2113a499c27feee9ec5c2ff500929a4b2d9"
+      },
+      {
+        "path": "workspace/ocr-isolation.cjs",
+        "sha256": "fd9419af6688cafb7946075c8ce22166d60f241542682000123515f5b90f5186"
+      },
+      {
+        "path": "scripts/ocr-isolation-host-context.cjs",
+        "sha256": "a74cfe2a47abce4ff02cb4e87ea7c70d8301572268fae24e65c0edc7fa4129b0"
+      },
+      {
+        "path": "scripts/ocr-isolation-diagnostics.cjs",
+        "sha256": "08c9c9d454ef1c19b80639cb35a3f09a8d23f43f2b2f5382e5d194fea9480e00"
+      },
+      {
+        "path": ".github/workflows/demo-tests.yml",
+        "sha256": "1398ff488b4ff922a6ae73efdc9f2e578f38780171fc52a2759f2ff0516d6198"
+      },
+      {
+        "path": "docs/test-milestones.json",
+        "sha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216"
+      }
+    ]
+  },
+  "checks": [
+    "probeAlive retains the original falsey-PID early return, exactly one signal-zero probe for a supplied PID, false only for ESRCH, true for presence, and rethrows the original permission/error object. Proc observations do not determine this result.",
+    "Registered roles are limited to wrapper/native PIDs from the injected test worker. An unknown or ambiguous PID cannot initiate a probe observation. Each role has one initial proc read and at most one current probe observation.",
+    "Each proc read uses only /proc/<validated positive signed-32-bit PID>/stat, one readonly no-follow/nonblocking open, a buffer of8193 bytes, at most4 reads, before/after held identity checks on a successful bounded read, and one close attempt.",
+    "A zero advertised proc size does not bypass or replace the observed byte bound. Invalid types, changed identity, malformed UTF-8, missing/inaccessible files and close errors remain UNAVAILABLE.",
+    "The parser retains only PID, process state, parent/group/session IDs and bounded decimal start ticks. It drops comm, raw fields, arguments and environment. Diagnostic errors use fixed codes.",
+    "Identity comparison requires both initial/current observations and compares start ticks plus proc device/inode. It reports observed fields, not an atomic PID identity guarantee. Zombie state and changed identity do not convert PRESENT into ABSENT.",
+    "Lifecycle fields are limited to spawn, exit and close, one each, with bounded exit/signal metadata and relative timing. No extra wait, retry or terminating signal was added.",
+    "The native check task bodies and liveness assertions remain byte-preserved. The reporter adds diagnostic snapshots around their original success/failure result. CLI execution remains behind require.main, so the new harness can import the reporter without starting native checks.",
+    "The documentation retains run93 network-case failure, keeps all native cases outside release credit, and states that extra proc reads can affect scheduling without proving a process cleanup fix."
+  ],
+  "executionByReviewer": {
+    "tests": 0,
+    "nativeAttempts": 0,
+    "browserExecutions": 0,
+    "providerCalls": 0,
+    "productPassing": 0
+  },
+  "limits": [
+    "Source-only independent review. Parent owns reproduction of the reported53 synthetic harness passes.",
+    "No current native liveness observation was collected. Native cleanup behavior and the run93 failure cause remain pending CI."
+  ]
+}

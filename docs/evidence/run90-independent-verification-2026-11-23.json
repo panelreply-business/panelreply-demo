@@ -1,0 +1,209 @@
+{
+  "format": "panelreply-independent-ci-verification-v1",
+  "recordedAt": "2026-11-23T19:11:38.615787+00:00",
+  "run": {
+    "id": 45241670227,
+    "number": 90,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "headSha": "2882d4f836d4694c8b445f91f52d64df943cf213",
+    "event": "pull_request",
+    "createdAt": "2026-11-23T18:45:02Z",
+    "updatedAt": "2026-11-23T19:07:03Z",
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45241670227"
+  },
+  "source": {
+    "head": "2882d4f836d4694c8b445f91f52d64df943cf213",
+    "testedMerge": "f08bd8782d1997ba548ae7aad606cbcf8d1a9f04",
+    "gitTree": "96877604cacc257be59c87434f584f4488b557b0",
+    "sourceManifestSha256": "e359d184cae83587b5a98e5362ac52b0ce2b72332c8b68fc7dcf54878c544cc4",
+    "mergeParents": [
+      "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+      "2882d4f836d4694c8b445f91f52d64df943cf213"
+    ],
+    "manifestEntriesVerifiedAgainstCommittedHead": 193,
+    "cleanCommittedEvidence": true,
+    "policy": {
+      "path": "docs/test-milestones.json",
+      "sha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216"
+    }
+  },
+  "releaseZipsVerified": 35,
+  "reportsVerified": 37,
+  "sourceFilesVerifiedAgainstGit": 193,
+  "immutableCollectorAndPolicyVerifiedAgainstGit": true,
+  "artifactSizesDigestsAndPathsVerified": true,
+  "allReportBytesSourceAndCleanlinessVerified": true,
+  "allFinalJobStatesComparedWithFreshMetadata": true,
+  "ciAggregateMatchesEveryFieldExceptGeneratedAt": true,
+  "rootAggregate": {
+    "filename": "panelreply-run90-root-reproduced-aggregate.json",
+    "bytes": 29629523,
+    "sha256": "8c823eb049757207b27017be2ae8e38a3ca8612e85d14af800c51328678a50ff"
+  },
+  "ciAggregate": {
+    "id": 14854231550,
+    "name": "verified-release-test-summary-attempt-1",
+    "zipBytes": 1036592,
+    "zipSha256": "b8a983ab8807475ed8a716ed39be252fe95c039a2200b99d8347fdcef798665d",
+    "zipDigestAndSizeVerified": true,
+    "safePathsVerified": true,
+    "jsonSha256": "34e67687126ef8171b48e3e30f25f68b4011071762f682b89776e12795f3ae76",
+    "matchesIndependentAggregateExceptGeneratedAt": true,
+    "matchedFields": "Every top-level and nested field except generatedAt.",
+    "inputPathAlignment": "All 37 byte-verified JSON reports were copied under their GitHub artifact names. No report content was altered."
+  },
+  "preservedFinalRecord": {
+    "path": "docs/evidence/callback-scheduling-run90.json",
+    "bytes": 281922,
+    "sha256": "15d04483e62d5372ce5d3b738734442d5c5a4c70ca7d0cc7122a2a93023af95a"
+  },
+  "product": {
+    "total": 24858,
+    "PASS": 24852,
+    "SKIP": 0,
+    "TODO": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "RUNNING": 0,
+    "CANCELLED": 0,
+    "UNEXPECTED_SUCCESS": 0,
+    "FAIL": 0,
+    "ERROR": 6
+  },
+  "distinctCases": {
+    "total": 9375,
+    "generated": 7467,
+    "notMarkedGenerated": 1908,
+    "passingOnEveryObservedPlatform": 9369,
+    "withAnyPass": 9370,
+    "withUnresolvedOutcome": 6
+  },
+  "harness": {
+    "total": 371,
+    "PASS": 371,
+    "SKIP": 0,
+    "TODO": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "RUNNING": 0,
+    "CANCELLED": 0,
+    "UNEXPECTED_SUCCESS": 0,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "duplicateObservationsExcluded": 7110,
+  "coverage": {
+    "automated": {
+      "requirements": 56,
+      "counts": {
+        "PASS": 43,
+        "FAIL": 3,
+        "NOT_TESTED": 10
+      },
+      "idsByStatus": {
+        "FAIL": [
+          "client-windows-firefox",
+          "callback-program-darwin-x86_64-safari",
+          "spreadsheet-program-darwin-x86_64-safari"
+        ],
+        "NOT_TESTED": [
+          "callback-program-darwin-arm64-chromium",
+          "spreadsheet-manual-program-darwin-arm64-chromium",
+          "callback-program-darwin-arm64-firefox",
+          "spreadsheet-manual-program-darwin-arm64-firefox",
+          "callback-program-darwin-arm64-webkit",
+          "spreadsheet-manual-program-darwin-arm64-webkit",
+          "node-darwin-arm64",
+          "client-darwin-arm64-chromium",
+          "client-darwin-arm64-firefox",
+          "client-darwin-arm64-webkit"
+        ],
+        "PASS": [
+          "node-linux",
+          "node-windows",
+          "node-darwin",
+          "client-linux-chromium",
+          "client-linux-firefox",
+          "client-linux-webkit",
+          "client-windows-chromium",
+          "client-windows-webkit",
+          "client-darwin-chromium",
+          "client-darwin-firefox",
+          "client-darwin-webkit",
+          "client-linux-chrome",
+          "client-linux-msedge",
+          "client-windows-chrome",
+          "client-windows-msedge",
+          "emulated-pixel-7-portrait",
+          "emulated-pixel-7-landscape",
+          "emulated-galaxy-tab-s4-portrait",
+          "emulated-galaxy-tab-s4-landscape",
+          "emulated-iphone-13-portrait",
+          "emulated-iphone-13-landscape",
+          "emulated-ipad-pro-11-portrait",
+          "emulated-ipad-pro-11-landscape",
+          "callback-mobile-linux-chromium-phone-portrait",
+          "callback-mobile-linux-chromium-phone-landscape",
+          "callback-mobile-linux-chromium-tablet-portrait",
+          "callback-mobile-linux-chromium-tablet-landscape",
+          "callback-mobile-linux-webkit-phone-portrait",
+          "callback-mobile-linux-webkit-phone-landscape",
+          "callback-mobile-linux-webkit-tablet-portrait",
+          "callback-mobile-linux-webkit-tablet-landscape",
+          "callback-program-linux-chromium",
+          "callback-program-linux-firefox",
+          "callback-program-linux-webkit",
+          "spreadsheet-program-linux-chromium",
+          "spreadsheet-program-linux-firefox",
+          "spreadsheet-program-linux-webkit",
+          "callback-program-darwin-intel-chromium",
+          "spreadsheet-manual-program-darwin-intel-chromium",
+          "callback-program-darwin-intel-firefox",
+          "spreadsheet-manual-program-darwin-intel-firefox",
+          "callback-program-darwin-intel-webkit",
+          "spreadsheet-manual-program-darwin-intel-webkit"
+        ]
+      }
+    },
+    "manual": {
+      "requirements": 7,
+      "counts": {
+        "NOT_TESTED": 7
+      },
+      "idsByStatus": {
+        "NOT_TESTED": [
+          "actual-macos-safari",
+          "physical-iphone-safari",
+          "physical-ipad-safari",
+          "physical-android-chrome",
+          "windows-private-product-workflows",
+          "macos-private-product-workflows",
+          "apple-silicon-macos"
+        ]
+      }
+    }
+  },
+  "unexecutedAppleSilicon": {
+    "jobId": 137927657938,
+    "status": "completed",
+    "conclusion": "cancelled",
+    "runnerId": 0,
+    "stepCount": 0,
+    "requiredPolicyEntries": 10,
+    "releaseReports": 0,
+    "credit": 0,
+    "cause": "GitHub reports cancellation with runnerId 0 and zero steps. Allocation and cancellation causes are unconfirmed. The collector requested no retry, cancellation, paid label or privilege change."
+  },
+  "noNewTestExecutions": true,
+  "noRetryOrCancellation": true,
+  "releaseReadiness": {
+    "callback": "NO_GO",
+    "spreadsheet": "NO_GO",
+    "reason": "Observed product errors, unexecuted required platforms, manual requirements and independent OCR/native storage/provider/hosting/owner gates remain open."
+  },
+  "scope": "Root independently reproduced release accounting and source/artifact identities. Auxiliary native component and OCR observations are retained in the final collector record, excluded from product credit. This does not verify later uncommitted source."
+}

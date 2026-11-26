@@ -23,6 +23,7 @@ import unittest
 import uuid
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser, preview_available
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -78,20 +79,17 @@ class PrivateWorkspaceBrowserTests(unittest.TestCase):
             "WORKSPACE_ORIGIN": cls.origin,
             "PORT": str(cls.port),
         })
+        cls.node_env.update(getattr(cls, "fixture_env", {}))
         cls.addClassCleanup(cls.cleanup)
         cls.start_server()
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"PRIVATE_WORKSPACE_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def start_server(cls):
         cls.log_handle = cls.server_log.open("ab")
         cls.process = subprocess.Popen(
-            ["node", "workspace-server.cjs"], cwd=ROOT, env=cls.node_env,
+            ["node", getattr(cls, "server_entry", "workspace-server.cjs")], cwd=ROOT, env=cls.node_env,
             stdin=subprocess.DEVNULL, stdout=cls.log_handle,
             stderr=subprocess.STDOUT,
         )
@@ -318,9 +316,12 @@ class PrivateWorkspaceBrowserTests(unittest.TestCase):
         emit = os.environ.get("PANELREPLY_EMIT_WORKSPACE_PREVIEWS") == "1"
         if not directory and not emit:
             return
+        if not preview_available(self.browser, self.id(), filename):
+            return
         self.page.evaluate("() => scrollTo({top: 0, left: 0, behavior: 'instant'})")
+        # Keep the page's animation and caret state unchanged during capture.
         options = {"type": "jpeg", "quality": 65, "full_page": True,
-                   "animations": "disabled"}
+                   "animations": "allow", "caret": "initial"}
         if directory:
             target = Path(directory).resolve()
             target.mkdir(parents=True, exist_ok=True)

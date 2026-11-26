@@ -1,0 +1,2713 @@
+{
+  "format": "panelreply-independent-products-checkpoint-v1",
+  "status": "FAILED_AUTOMATED_PLATFORM_GATE",
+  "branchHead": "3bbb0528ba4487e0aa9b3298ad1b5d475939fe70",
+  "workflow": {
+    "run": 75,
+    "id": 44786004194,
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194",
+    "status": "completed",
+    "conclusion": "failure",
+    "completedAt": "2026-11-20T17:51:56Z"
+  },
+  "source": {
+    "sourceCommit": "f314429a7470f17b69f841c3f41e490ba9d16806",
+    "gitTreeHash": "0013020a84072e7b65d877cf5aa0847b82278450",
+    "sourceTreeSha256": "fbffb29fd99a316d26ab8247df3c2162ee6d84fe6c048e95c5dcb2b5c4f9db74",
+    "dirty": false,
+    "cleanCommittedEvidence": true
+  },
+  "policyGitBlob": "9711783041c2976c4fbf1a2be05f1d664faa4fa2",
+  "independentAggregateSha256": "0cc420fb4d3732413a63312f8fee6bb4c7a20c1f4d8b42b46d4bc998c728cc8c",
+  "ciAgreement": {
+    "verified": true,
+    "fields": [
+      "source",
+      "reports",
+      "observations",
+      "duplicateObservationsExcluded",
+      "product",
+      "productScopes",
+      "harness",
+      "distinctCases",
+      "matrix",
+      "requiredPlatforms",
+      "milestones",
+      "numericTargetReached",
+      "platformCoverageComplete",
+      "fullGoalAchieved",
+      "executions"
+    ],
+    "runId": 44786004194
+  },
+  "generatedAt": "2026-11-20T17:52:32.018Z",
+  "product": {
+    "total": 24372,
+    "PASS": 24370,
+    "SKIP": 0,
+    "TODO": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "RUNNING": 0,
+    "CANCELLED": 0,
+    "UNEXPECTED_SUCCESS": 0,
+    "FAIL": 2,
+    "ERROR": 0
+  },
+  "productScopes": {
+    "callback": {
+      "executions": {
+        "total": 10351,
+        "PASS": 10350,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 1,
+        "ERROR": 0
+      },
+      "distinctCases": {
+        "total": 3321,
+        "generated": 2389,
+        "passingOnEveryObservedPlatform": 3320,
+        "withUnresolvedOutcome": 1
+      }
+    },
+    "spreadsheet": {
+      "executions": {
+        "total": 11836,
+        "PASS": 11836,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "distinctCases": {
+        "total": 4118,
+        "generated": 3782,
+        "passingOnEveryObservedPlatform": 4118,
+        "withUnresolvedOutcome": 0
+      }
+    },
+    "shared": {
+      "executions": {
+        "total": 2185,
+        "PASS": 2184,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 1,
+        "ERROR": 0
+      },
+      "distinctCases": {
+        "total": 1675,
+        "generated": 1296,
+        "passingOnEveryObservedPlatform": 1674,
+        "withUnresolvedOutcome": 1
+      },
+      "availableTo": [
+        "callback",
+        "spreadsheet"
+      ],
+      "counting": "Counted once in portfolio totals, not added to either app-specific bucket."
+    }
+  },
+  "harness": {
+    "total": 237,
+    "PASS": 237,
+    "SKIP": 0,
+    "TODO": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "RUNNING": 0,
+    "CANCELLED": 0,
+    "UNEXPECTED_SUCCESS": 0,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "distinctCases": {
+    "total": 9114,
+    "generated": 7467,
+    "notMarkedGenerated": 1647,
+    "passingOnEveryObservedPlatform": 9112,
+    "withAnyPass": 9114,
+    "withUnresolvedOutcome": 2
+  },
+  "duplicateObservationsExcluded": 7017,
+  "matrix": [
+    {
+      "platformKey": "browser/darwin/x86_64/chromium/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/darwin/x86_64/chromium/bundled/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.19.0"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/darwin/x86_64/firefox/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/darwin/x86_64/firefox/bundled/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.19.0"
+      ],
+      "browserVersions": [
+        "153.0"
+      ]
+    },
+    {
+      "platformKey": "browser/darwin/x86_64/webkit/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/darwin/x86_64/webkit/bundled/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 90,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 2,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.19.0"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/linux/x86_64/chromium/bundled/desktop"
+      },
+      "product": {
+        "total": 211,
+        "PASS": 211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "baseline",
+        "callback",
+        "spreadsheet"
+      ],
+      "deploymentModes": [
+        "callback",
+        "combined",
+        "spreadsheet"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/bundled/phone_landscape",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "phone_landscape",
+        "emulated": true,
+        "key": "browser/linux/x86_64/chromium/bundled/phone_landscape"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/bundled/phone_portrait",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "phone_portrait",
+        "emulated": true,
+        "key": "browser/linux/x86_64/chromium/bundled/phone_portrait"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/bundled/tablet_landscape",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "tablet_landscape",
+        "emulated": true,
+        "key": "browser/linux/x86_64/chromium/bundled/tablet_landscape"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/bundled/tablet_portrait",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "tablet_portrait",
+        "emulated": true,
+        "key": "browser/linux/x86_64/chromium/bundled/tablet_portrait"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/chrome/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/linux/x86_64/chromium/chrome/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "158.0.8127.36"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/chromium/msedge/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/linux/x86_64/chromium/msedge/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "158.0.4370.33"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/firefox/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/linux/x86_64/firefox/bundled/desktop"
+      },
+      "product": {
+        "total": 211,
+        "PASS": 211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "callback",
+        "portable-extra",
+        "private",
+        "spreadsheet"
+      ],
+      "deploymentModes": [
+        "callback",
+        "combined",
+        "spreadsheet",
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "153.0"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/webkit/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/linux/x86_64/webkit/bundled/desktop"
+      },
+      "product": {
+        "total": 211,
+        "PASS": 211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "callback",
+        "portable-extra",
+        "private",
+        "spreadsheet"
+      ],
+      "deploymentModes": [
+        "callback",
+        "combined",
+        "spreadsheet",
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/webkit/bundled/phone_landscape",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "phone_landscape",
+        "emulated": true,
+        "key": "browser/linux/x86_64/webkit/bundled/phone_landscape"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/webkit/bundled/phone_portrait",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "phone_portrait",
+        "emulated": true,
+        "key": "browser/linux/x86_64/webkit/bundled/phone_portrait"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/webkit/bundled/tablet_landscape",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "tablet_landscape",
+        "emulated": true,
+        "key": "browser/linux/x86_64/webkit/bundled/tablet_landscape"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "browser/linux/x86_64/webkit/bundled/tablet_portrait",
+      "platform": {
+        "kind": "browser",
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "tablet_portrait",
+        "emulated": true,
+        "key": "browser/linux/x86_64/webkit/bundled/tablet_portrait"
+      },
+      "product": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "mobile"
+      ],
+      "deploymentModes": [
+        "combined"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "browser/windows/x86_64/chromium/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "windows",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/windows/x86_64/chromium/bundled/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "151.0.7922.34"
+      ]
+    },
+    {
+      "platformKey": "browser/windows/x86_64/chromium/chrome/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "windows",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/windows/x86_64/chromium/chrome/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "158.0.8127.37"
+      ]
+    },
+    {
+      "platformKey": "browser/windows/x86_64/chromium/msedge/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "windows",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/windows/x86_64/chromium/msedge/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "158.0.4370.33"
+      ]
+    },
+    {
+      "platformKey": "browser/windows/x86_64/firefox/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "windows",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/windows/x86_64/firefox/bundled/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "153.0"
+      ]
+    },
+    {
+      "platformKey": "browser/windows/x86_64/webkit/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "windows",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/windows/x86_64/webkit/bundled/desktop"
+      },
+      "product": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 0,
+        "PASS": 0,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": [
+        "26.5"
+      ]
+    },
+    {
+      "platformKey": "node/darwin/x86_64/node24",
+      "platform": {
+        "kind": "node",
+        "os": "darwin",
+        "architecture": "x86_64",
+        "nodeMajor": 24,
+        "profile": "desktop",
+        "emulated": false,
+        "key": "node/darwin/x86_64/node24"
+      },
+      "product": {
+        "total": 6938,
+        "PASS": 6938,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 79,
+        "PASS": 79,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "node-portable"
+      ],
+      "deploymentModes": [
+        "unspecified"
+      ],
+      "nodeVersions": [
+        "v24.19.0"
+      ],
+      "browserVersions": []
+    },
+    {
+      "platformKey": "node/linux/x86_64/node24",
+      "platform": {
+        "kind": "node",
+        "os": "linux",
+        "architecture": "x86_64",
+        "nodeMajor": 24,
+        "profile": "desktop",
+        "emulated": false,
+        "key": "node/linux/x86_64/node24"
+      },
+      "product": {
+        "total": 8863,
+        "PASS": 8863,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 79,
+        "PASS": 79,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "node-all",
+        "node-portable"
+      ],
+      "deploymentModes": [
+        "unspecified"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": []
+    },
+    {
+      "platformKey": "node/windows/x86_64/node24",
+      "platform": {
+        "kind": "node",
+        "os": "windows",
+        "architecture": "x86_64",
+        "nodeMajor": 24,
+        "profile": "desktop",
+        "emulated": false,
+        "key": "node/windows/x86_64/node24"
+      },
+      "product": {
+        "total": 6938,
+        "PASS": 6938,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "harness": {
+        "total": 79,
+        "PASS": 79,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "suites": [
+        "node-portable"
+      ],
+      "deploymentModes": [
+        "unspecified"
+      ],
+      "nodeVersions": [
+        "v24.22.3"
+      ],
+      "browserVersions": []
+    }
+  ],
+  "requiredPlatforms": [
+    {
+      "id": "node-linux",
+      "kind": "node",
+      "match": {
+        "os": "linux",
+        "suite": "node-all"
+      },
+      "minimumCases": 8863,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 8863,
+        "PASS": 8863,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 8863,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "node-windows",
+      "kind": "node",
+      "match": {
+        "os": "windows",
+        "suite": "node-portable"
+      },
+      "minimumCases": 6938,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 6938,
+        "PASS": 6938,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 6938,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "node-darwin",
+      "kind": "node",
+      "match": {
+        "os": "darwin",
+        "suite": "node-portable",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 6938,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 6938,
+        "PASS": 6938,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 6938,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-linux-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 197,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 211,
+        "PASS": 211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 211,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-linux-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 197,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 211,
+        "PASS": 211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 211,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-linux-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 197,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 211,
+        "PASS": 211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 211,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-windows-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-windows-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-windows-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-darwin-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-darwin-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-darwin-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 92,
+      "status": "FAIL",
+      "complete": false,
+      "counts": {
+        "total": 92,
+        "PASS": 90,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 2,
+        "ERROR": 0
+      },
+      "passingExecutions": 90,
+      "reason": "Coverage, cleanliness, skipped work, infrastructure or other outcomes remain unresolved."
+    },
+    {
+      "id": "client-linux-chrome",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-linux-msedge",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-windows-chrome",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "client-windows-msedge",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "profile": "desktop"
+      },
+      "minimumCases": 92,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 92,
+        "PASS": 92,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 92,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-pixel-7-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "phone_portrait"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-pixel-7-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "phone_landscape"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-galaxy-tab-s4-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "tablet_portrait"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-galaxy-tab-s4-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "tablet_landscape"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-iphone-13-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "phone_portrait"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-iphone-13-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "phone_landscape"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-ipad-pro-11-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "tablet_portrait"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "emulated-ipad-pro-11-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "tablet_landscape"
+      },
+      "minimumCases": 10,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 10,
+        "PASS": 10,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 10,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "actual-macos-safari",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    },
+    {
+      "id": "physical-iphone-safari",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    },
+    {
+      "id": "physical-ipad-safari",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    },
+    {
+      "id": "physical-android-chrome",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    },
+    {
+      "id": "windows-private-product-workflows",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    },
+    {
+      "id": "macos-private-product-workflows",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    },
+    {
+      "id": "callback-program-linux-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 7,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 7,
+        "PASS": 7,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 7,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "callback-program-linux-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 7,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 7,
+        "PASS": 7,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 7,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "callback-program-linux-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 7,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 7,
+        "PASS": 7,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 7,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "spreadsheet-program-linux-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet"
+      },
+      "minimumCases": 7,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 7,
+        "PASS": 7,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 7,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "spreadsheet-program-linux-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet"
+      },
+      "minimumCases": 7,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 7,
+        "PASS": 7,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 7,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "spreadsheet-program-linux-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet"
+      },
+      "minimumCases": 7,
+      "status": "PASS",
+      "complete": true,
+      "counts": {
+        "total": 7,
+        "PASS": 7,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "passingExecutions": 7,
+      "reason": "Matching committed runs have no unresolved recorded outcomes."
+    },
+    {
+      "id": "apple-silicon-macos",
+      "kind": "manual",
+      "status": "NOT_TESTED",
+      "complete": false,
+      "passingExecutions": 0,
+      "reason": "Physical-device and actual Safari evidence is not ingested by this automated counter. A document status is not verification."
+    }
+  ],
+  "milestones": {
+    "scope": "portfolio",
+    "initialTarget": 10000,
+    "earlyTarget": 20000,
+    "activeTarget": 10000,
+    "deadline": "2026-12-31T00:00:00-05:00",
+    "releaseDate": "2026-12-31",
+    "timezone": "America/Detroit",
+    "recordedFirstGoalAchievedAt": null,
+    "numericTargetReached": true,
+    "initialNumericTargetReached": true,
+    "earlyNumericTargetReached": true,
+    "platformCoverageComplete": false,
+    "cleanCommittedEvidence": true,
+    "allObservedChecksPassed": false,
+    "initialGoalAchieved": false,
+    "fullGoalAchieved": false,
+    "earlyTargetEligible": false,
+    "suggestedTarget": 10000,
+    "policyChanged": false
+  },
+  "failures": [
+    {
+      "id": "browser_test.DemoBrowserTests.test_keyboard_access_to_every_control",
+      "platformKey": "browser/darwin/x86_64/webkit/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/darwin/x86_64/webkit/bundled/desktop"
+      },
+      "kind": "product",
+      "productScope": "callback",
+      "generated": false,
+      "caseFamily": null,
+      "status": "FAIL",
+      "observedStatuses": [
+        "FAIL"
+      ],
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "reports": [
+        "release-platform-macos-15-intel-webkit-attempt-1/panelreply-release-platform.json"
+      ],
+      "nodeVersions": [
+        "v24.19.0"
+      ],
+      "browserVersions": [
+        "26.5"
+      ],
+      "observations": 1
+    },
+    {
+      "id": "design_browser_test.DesignBrowserTests.test_mobile_controls_have_touch_targets_and_no_clipped_buttons",
+      "platformKey": "browser/darwin/x86_64/webkit/bundled/desktop",
+      "platform": {
+        "kind": "browser",
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "emulated": false,
+        "key": "browser/darwin/x86_64/webkit/bundled/desktop"
+      },
+      "kind": "product",
+      "productScope": "shared",
+      "generated": false,
+      "caseFamily": null,
+      "status": "FAIL",
+      "observedStatuses": [
+        "FAIL"
+      ],
+      "suites": [
+        "portable"
+      ],
+      "deploymentModes": [
+        "static-demo"
+      ],
+      "reports": [
+        "release-platform-macos-15-intel-webkit-attempt-1/panelreply-release-platform.json"
+      ],
+      "nodeVersions": [
+        "v24.19.0"
+      ],
+      "browserVersions": [
+        "26.5"
+      ],
+      "observations": 1
+    }
+  ],
+  "failureDetails": [
+    {
+      "case": "browser_test.DemoBrowserTests.test_keyboard_access_to_every_control",
+      "observation": "Ordinary Tab skips root index.html #call button on Intel macOS WebKit. The prior skip-link correction passes."
+    },
+    {
+      "case": "design_browser_test.DesignBrowserTests.test_mobile_controls_have_touch_targets_and_no_clipped_buttons",
+      "observation": "design-preview native selects request-filter/detail-status/callback render at 21/23/23 px on Intel macOS WebKit, below the 44 px target."
+    }
+  ],
+  "operationalGates": {
+    "nodeLinux": {
+      "status": "PASS",
+      "total": 8942,
+      "product": 8863,
+      "harnessExcluded": 79
+    },
+    "nativeOcrFixtures": {
+      "status": "PASS",
+      "cases": 9
+    },
+    "nativeResourceLifecycle": {
+      "status": "PASS",
+      "cases": 8
+    },
+    "independentWorkbookReader": {
+      "status": "PASS",
+      "cases": 9
+    },
+    "storageRecovery": {
+      "status": "PASS",
+      "workflowGroups": 5,
+      "unexpectedErrors": 0,
+      "scope": "Synthetic local database and encrypted archive recovery. Not selected-host restart or offsite recovery."
+    },
+    "httpWorkload": {
+      "status": "PASS",
+      "clients": 12,
+      "businesses": 2,
+      "responses": 516,
+      "workflowGroups": 9,
+      "unexpectedErrors": 0,
+      "scope": "Same-process loopback/reopen plus encrypted restore, not a hosted-capacity or process-restart claim."
+    },
+    "syntheticAssistant": {
+      "status": "PASS",
+      "scenarios": 334,
+      "turns": 374,
+      "realProviderCalls": 0,
+      "counting": "Overlaps Node cases, not added again."
+    },
+    "ocrQuality": {
+      "status": "FAIL",
+      "exact": 277,
+      "total": 310,
+      "nonexact": 33,
+      "nativeErrors": 0,
+      "reviewViolations": 0,
+      "pipelineSha256": "6ea83a79dde4d68f4edb26717bedfb0aa1261684f848e6dd29ceddf4550e6fdd",
+      "datasetSha256": "7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e",
+      "comparison": "All 310 case outcomes equal run74."
+    },
+    "requiredOcrIsolation": {
+      "status": "BLOCKED",
+      "nativeDenyCasesExecuted": 0,
+      "diagnostic": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+      "classification": "worker_startup_cause_unconfirmed",
+      "confirmedExternalBlocker": false
+    },
+    "publicSuspension": {
+      "status": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "publicApplicationChecksBlocked": 3
+    },
+    "realModelQuality": {
+      "status": "BLOCKED",
+      "realProviderCalls": 0
+    },
+    "representativePhotos": {
+      "status": "NOT_TESTED"
+    },
+    "actualMicrosoftExcel": {
+      "status": "NOT_TESTED"
+    },
+    "selectedHostAndOffsiteRecovery": {
+      "status": "BLOCKED"
+    }
+  },
+  "nextAction": "Correct native keyboard order and select sizing, then verify the changed source in a new complete CI run. Preserve these two failures.",
+  "artifacts": [
+    {
+      "id": 14655565062,
+      "name": "release-platform-macos-15-intel-chromium-attempt-1",
+      "digest": "sha256:c1d95d6391346ae26cc536da2334298964db38697f6b93b32c49c218bb1d8ad3",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14655565062"
+    },
+    {
+      "id": 14655400535,
+      "name": "release-platform-windows-2022-msedge-attempt-1",
+      "digest": "sha256:9df2f10bdc6195c51553bc26b93fce29cd181407b8a0cf491908f0105bc96a44",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14655400535"
+    },
+    {
+      "id": 14655380492,
+      "name": "release-platform-windows-2022-webkit-attempt-1",
+      "digest": "sha256:9d75b16d51be293101e59a22c9eabd191b6311b40ff50653b512e2abf6dfb23d",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14655380492"
+    },
+    {
+      "id": 14655306571,
+      "name": "verified-release-test-summary-attempt-1",
+      "digest": "sha256:e9a32f817959b353b86993559a4a7669e4b3fba3ef0681bc2e279f8015cd161a",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14655306571"
+    },
+    {
+      "id": 14655171053,
+      "name": "release-selected-spreadsheet-firefox-attempt-1",
+      "digest": "sha256:3f32d48733621196dd2089a7fc5376534e5558542035f2276473183e634c20ed",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14655171053"
+    },
+    {
+      "id": 14655140773,
+      "name": "release-node-macos-15-intel-attempt-1",
+      "digest": "sha256:ec7db5791f06504eacfad3fe162284fb23f27ca7952e4dff8080c2566387ac5f",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14655140773"
+    },
+    {
+      "id": 14654980890,
+      "name": "release-platform-ubuntu-24.04-chrome-attempt-1",
+      "digest": "sha256:5f3d152bcf27dc0bcfbb97c76417dbf353b4afdf8bd3b30a19563b9e1996b81b",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654980890"
+    },
+    {
+      "id": 14654641305,
+      "name": "release-selected-spreadsheet-webkit-attempt-1",
+      "digest": "sha256:2d815feab678c83ccc9971103662bb3932429462f92bc4c59bac1a6e0cd2f5c2",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654641305"
+    },
+    {
+      "id": 14654522234,
+      "name": "release-selected-callback-firefox-attempt-1",
+      "digest": "sha256:0ef92db2488f19b83b798d410d68c462ea382dc673146a373c14677f2df5633d",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654522234"
+    },
+    {
+      "id": 14654467513,
+      "name": "release-selected-callback-webkit-attempt-1",
+      "digest": "sha256:94a2ac161adb620bab6b36d736d73a609b7f1e5ee5dd713b6d94497e14033b91",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654467513"
+    },
+    {
+      "id": 14654357385,
+      "name": "release-selected-callback-chromium-attempt-1",
+      "digest": "sha256:ff5fd9fbe9bfeca3b70cfe2da1046ecf826166071da0a93b5fce26063d456338",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654357385"
+    },
+    {
+      "id": 14654287637,
+      "name": "release-private-linux-firefox-attempt-1",
+      "digest": "sha256:2766de08e5d9f554dc66166d29c4eda2e3764c5a5ddf4ec11ff27ed1e3a6b779",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654287637"
+    },
+    {
+      "id": 14654212915,
+      "name": "release-mobile-linux-webkit-attempt-1",
+      "digest": "sha256:c2a99927edd53fdff4c43ef4cb3d921c418f56f905262d791a3b6fa8987b83a3",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654212915"
+    },
+    {
+      "id": 14654133148,
+      "name": "release-platform-macos-15-intel-webkit-attempt-1",
+      "digest": "sha256:cc8fcae2303cad8da767936ab896f05b4b68b089cc5b72dd5f2cdc754d65aebc",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654133148"
+    },
+    {
+      "id": 14654068013,
+      "name": "release-baseline-linux-attempt-1",
+      "digest": "sha256:27d8e53ce85f06b5ec9eb033f31e145622323e0afbc1c3ebcdd29116165cba29",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654068013"
+    },
+    {
+      "id": 14654062645,
+      "name": "release-platform-windows-2022-chrome-attempt-1",
+      "digest": "sha256:00142cd6a368146eb0c7b0053e38252ac7b5d8ae1428e73eea5cd0a00dace1e4",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654062645"
+    },
+    {
+      "id": 14654043468,
+      "name": "release-platform-macos-15-intel-firefox-attempt-1",
+      "digest": "sha256:5f67ea5d863be0009c378c1e1043e592975fd0803b3bcb46942a2a6908fa0532",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654043468"
+    },
+    {
+      "id": 14654033457,
+      "name": "release-private-linux-webkit-attempt-1",
+      "digest": "sha256:89df8d4d930539254990130df4f87492256cbc8fcc224ff5ba69ff7ddb5fc4d4",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654033457"
+    },
+    {
+      "id": 14654032595,
+      "name": "release-platform-windows-2022-chromium-attempt-1",
+      "digest": "sha256:5e24018b10527f2c29a22f8af478c2706ff74d7fd44aacba6bfa6e6e78c90f3a",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14654032595"
+    },
+    {
+      "id": 14653812923,
+      "name": "release-platform-ubuntu-24.04-webkit-attempt-1",
+      "digest": "sha256:9f390efa70b012fce0c7e546e70ade970e9c29bdd313613339572a5f5aa274d2",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653812923"
+    },
+    {
+      "id": 14653643166,
+      "name": "release-platform-windows-2022-firefox-attempt-1",
+      "digest": "sha256:4b271465f4df16e4a31e972e32053f89e50753740cff628658728d3a95bb5b14",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653643166"
+    },
+    {
+      "id": 14653637766,
+      "name": "release-node-windows-2022-attempt-1",
+      "digest": "sha256:9b84c192910cd885e78c0ceb895837c6a9dd9ce00e998babedac57d0800cdd37",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653637766"
+    },
+    {
+      "id": 14653588416,
+      "name": "release-mobile-linux-chromium-attempt-1",
+      "digest": "sha256:e90818b76c30e6faba3e9d69f92e490e52ce7d44c8dc28d0ff57f98b377f4216",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653588416"
+    },
+    {
+      "id": 14653553570,
+      "name": "release-platform-ubuntu-24.04-firefox-attempt-1",
+      "digest": "sha256:7abadf4289fadaac54297b14d8e44c18c188d361f06a0c93dd0b5f31c1eda6fd",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653553570"
+    },
+    {
+      "id": 14653289137,
+      "name": "release-selected-spreadsheet-chromium-attempt-1",
+      "digest": "sha256:3c259a74dba25b083b21cc8b983c494b01e8d2a853a7f66ef9983fda189ebedf",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653289137"
+    },
+    {
+      "id": 14653274281,
+      "name": "release-platform-ubuntu-24.04-msedge-attempt-1",
+      "digest": "sha256:56860543258608ed8999cff845ef08d0fd24870d5ab16be89ae9c4f1dffe1915",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653274281"
+    },
+    {
+      "id": 14653213993,
+      "name": "release-node-ubuntu-24.04-attempt-1",
+      "digest": "sha256:3c2b4e8ceb84b107571b4c6444d929a5e0af472bf75a48eaff3b02fb51863a93",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44786004194/artifacts/14653213993"
+    }
+  ]
+}

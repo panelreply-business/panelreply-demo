@@ -1,0 +1,17 @@
+✔ native fixture failures preserve their Windows reason without converting required success to a pass (361.839463ms)
+✔ component accounting retains every known method and marks only missing methods NOT_RUN (1.231488ms)
+✔ an unexpected method cannot erase an observed failure or pass (0.17245ms)
+✔ duplicate methods retain their observations and cannot erase another executed failure (0.175635ms)
+✔ strict parser failure fallback preserves explicit native failure and unavailable capability statuses (0.275225ms)
+✔ native manifest requires observed SDK, compiler, dependencies and separate probe attribution (1.565ms)
+✔ component output paths cannot enter source manifests or masquerade as release evidence (0.426353ms)
+✔ failed native build still writes all known NOT_RUN outcomes (108.965528ms)
+✔ unavailable native build cannot silently omit component outcomes (110.64741ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 696.909131

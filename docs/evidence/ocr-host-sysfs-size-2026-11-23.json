@@ -1,0 +1,56 @@
+{
+  "format": "panelreply-host-observer-correction-v1",
+  "recordedAt": "2026-11-23T19:41:15.392734+00:00",
+  "baseCommit": "7fec73b7ca7fe323accaf22eb99e11d905f698b3",
+  "sourceTreeSha256": "38bb24bf82c39b6389b287095aa451fed649518c782e1569a4c57ca7becfca20",
+  "sourceFiles": 200,
+  "files": {
+    "scripts/ocr-isolation-host-context.cjs": "a74cfe2a47abce4ff02cb4e87ea7c70d8301572268fae24e65c0edc7fa4129b0",
+    "tests/ocr-isolation-diagnostics.test.cjs": "ee3fbe4f60cf1e3d69932a43e6ca6b885d34f75a47fffb3224a3aa58391fdc59"
+  },
+  "baseline": {
+    "hostContextSourceSha256": "1e11b567e40b9b8c21c67da1cb731f17574db44592202a780b2918ccc523eec7",
+    "selectedCases": 3,
+    "passed": 1,
+    "failed": 2,
+    "logSha256": "15f03c07d80a24aa6cda86310bb9aa503333fb7a8ccbeb33c6fd8a257b0ade76",
+    "log": "\u2716 sysfs attribute metadata size does not conceal a bounded observed control value (4.252075ms)\n\u2716 sysfs control reads retain their byte cap when metadata reports a page size (3.835812ms)\n\u2714 sysfs size handling preserves ordinary executable size rejection before any read (0.362517ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 2\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 130.996101\n\n\u2716 failing tests:\n\ntest at tests/ocr-isolation-diagnostics.test.cjs:224:1\n\u2716 sysfs attribute metadata size does not conceal a bounded observed control value (4.252075ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n  +   reason: 'SIZE_LIMIT',\n  +   state: 'UNAVAILABLE'\n  -   bytes: 2,\n  -   state: 'OBSERVED',\n  -   value: 'Y'\n    }\n  \n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-demo/tests/ocr-isolation-diagnostics.test.cjs:228:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: { state: 'UNAVAILABLE', reason: 'SIZE_LIMIT' },\n    expected: { state: 'OBSERVED', value: 'Y', bytes: 2 },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/ocr-isolation-diagnostics.test.cjs:236:1\n\u2716 sysfs control reads retain their byte cap when metadata reports a page size (3.835812ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  0 !== 17\n  \n      at TestContext.<anonymous> (/workspace/scratch/8f544d546bb7/panelreply-demo/tests/ocr-isolation-diagnostics.test.cjs:240:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 0,\n    expected: 17,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+  },
+  "corrected": {
+    "command": [
+      "node",
+      "--test",
+      "tests/ocr-isolation-diagnostics.test.cjs"
+    ],
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "73fa8e540343b72c311e40f5682f1629d89300c37a49ab5e1195076395fbf4bd",
+    "log": "\u2714 readiness diagnostics observe exactly the existing invocation and bound split stderr chunks (5.566828ms)\n\u2714 only explicit namespace errors establish a confirmed host blocker (0.871755ms)\n\u2714 missing launcher, invalid worker configuration and SIGSYS fail without claiming a host restriction (0.160582ms)\n\u2714 synchronous and asynchronous launch errors retain safe codes without error messages or retries (0.625964ms)\n\u2714 stage names are fixed and unexpected arguments or terminal controls cannot leak into the report (0.438321ms)\n\u2714 successful process exits or missing exit evidence never prove readiness or OS isolation (0.350078ms)\n\u2714 a rejected dependency version is a prerequisite failure even when the version command exits zero (0.194954ms)\n\u2714 trusted path rejection is a configuration failure with no native denial or host blocker claimed (0.193081ms)\n\u2714 the observer retains all four fixed readiness stages after adding the version gate (0.428606ms)\n\u2714 host context rejects arbitrary paths and caps short reads without retaining truncated values (1.531571ms)\n\u2714 host context retains only named OS and security fields and two bounded runner labels (1.344939ms)\n\u2714 sysfs attribute metadata size does not conceal a bounded observed control value (0.446383ms)\n\u2714 sysfs control reads retain their byte cap when metadata reports a page size (0.168775ms)\n\u2714 sysfs size handling preserves ordinary executable size rejection before any read (0.130206ms)\n\u2714 missing and denied host controls remain unavailable while an observed zero remains explicit (0.35768ms)\n\u2714 profile observations retain only bwrap names and never equate file presence with attachment (0.4971ms)\n\u2714 malformed or duplicated host fields and terminal controls cannot become observed values (0.439703ms)\n\u2714 fixed executable hashing uses one bounded held handle and rejects changing identity (0.664293ms)\n\u2714 host read failures close handles and redact unknown native error codes (0.137978ms)\n\u2714 source binding validates the manifest digest and redacts snapshot errors (0.404621ms)\n\u2714 changed or dirty source cannot receive native PASS evidence (1.030044ms)\n\u2714 host context cannot promote BLOCKED or FAIL and unavailable context cannot erase a native result (0.366082ms)\n\u2714 native acceptance requires all six distinct cases and the matching child exit result (0.15934ms)\n\u2714 changed or unreadable dependency identity cannot receive native PASS evidence (0.274234ms)\n\u2714 the host wrapper executes exactly one fixed verifier and excludes raw child stderr (1.140841ms)\n\u2714 verifier output limits retain bounded bytes and kill only the one owned child once (9.487614ms)\n\u2714 malformed output and launch errors fail without leaking diagnostics or retrying (0.500224ms)\n\u2714 verifier deadline terminates its owned process once and never retries (5.823886ms)\n\u2714 dirty preflight performs no native attempt and observer read errors remain redacted (0.554727ms)\n\u2714 the wrapper brackets one native attempt with source dependency and context observations (0.292221ms)\n\u2714 one LSM label terminator is supported while embedded or repeated NUL bytes stay invalid (0.389147ms)\n\u2714 failed cancelled skipped or unknown dependency builds never execute an existing system binary (0.603049ms)\n\u2714 output repository aliases are rejected before any source observation or verifier callback (0.969492ms)\n\u2714 raw alias followed by parent traversal resolves before lexical normalization (0.916663ms)\n\u2714 missing or unresolvable output parents fail closed before observing the source (0.64921ms)\n\u2714 existing files and dangling output leaves remain untouched and never start observation (0.789481ms)\n\u2714 ordinary outside output uses an exclusive held descriptor and closes before returning evidence (0.96751ms)\n\u2714 parent replacement after exclusive creation closes the placeholder before any observation (0.633246ms)\n\u2714 leaf replacement cannot redirect a report write or trigger deletion of replacement data (0.739405ms)\n\u2714 a replacement outside parent with the same spelling cannot receive the held report (0.581337ms)\n\u2714 an observation error remains primary when descriptor cleanup also reports an error (0.525193ms)\n\u2714 write and close failures cannot return completed evidence and never delete the output (0.914981ms)\n\u2714 relative release-prefixed and repository-ancestor output destinations are rejected (0.402748ms)\n\u2139 tests 43\n\u2139 suites 0\n\u2139 pass 43\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 134.301983\n"
+  },
+  "localFixedFieldProbe": {
+    "path": "/sys/module/apparmor/parameters/enabled",
+    "existingWrapper": {
+      "state": "UNAVAILABLE",
+      "reason": "ENOENT"
+    },
+    "independentBoundedRead": {
+      "code": "ENOENT"
+    },
+    "nativeFieldValueObserved": false
+  },
+  "nativeRun91": {
+    "ubuntu24": "BLOCKED",
+    "ubuntu26": "BLOCKED",
+    "apparmorEnabledObservation": "UNAVAILABLE/SIZE_LIMIT",
+    "actualFieldBytesRetained": false,
+    "exactCauseOfThatFieldUnavailability": "Not established from the previous artifact."
+  },
+  "change": "Only the fixed AppArmor sysfs attribute treats st_size as a hint. Actual reads remain capped at17 bytes for a16-byte field. Ordinary executable and os-release metadata checks remain. Held descriptor identity and close checks remain.",
+  "primarySource": "https://docs.kernel.org/filesystems/sysfs.html#reading-writing-attribute-data",
+  "scope": "The regression reproduces false unavailability for page-sized metadata and a short generated value. It does not establish a host control value, profile attachment, native isolation behavior, or either OCR readiness failure cause.",
+  "nativeAttempts": 0,
+  "productPassing": 0,
+  "releaseCredit": false,
+  "patchSha256": "9bada1be6542816b3488dd3e247cbe78bee353ddd06d304c8a58a6563ac395b9"
+}

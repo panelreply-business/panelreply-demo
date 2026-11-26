@@ -1,0 +1,43 @@
+{
+  "format": "panelreply-release-control-observation-v1",
+  "recordedAt": "2026-11-23 19:15:22 UTC",
+  "developmentHead": "2882d4f836d4694c8b445f91f52d64df943cf213",
+  "access": "Read-only service details with the existing documented request-scoped workspace. No session workspace switch or resource mutation.",
+  "services": [
+    {
+      "id": "srv-dbv6do6tlv9c73fuvar0",
+      "name": "panelreply-ai",
+      "workspaceId": "tea-dbu4qmrm8hqs73e4facg",
+      "branch": "main",
+      "repository": "https://github.com/panelreply-business/panelreply-demo",
+      "suspended": "suspended",
+      "suspenders": [
+        "user"
+      ],
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "previews": {
+        "generation": "off"
+      },
+      "updatedAt": "2026-11-20T00:28:44.514773Z"
+    },
+    {
+      "id": "srv-dbu5o8tckfvc73b6fb4g",
+      "name": "panelreply-demo",
+      "workspaceId": "tea-dbu4qmrm8hqs73e4facg",
+      "branch": "main",
+      "repository": "https://github.com/panelreply-business/panelreply-demo",
+      "suspended": "suspended",
+      "suspenders": [
+        "user"
+      ],
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "previews": {
+        "generation": "off"
+      },
+      "updatedAt": "2026-11-20T00:29:45.304967Z"
+    }
+  ],
+  "scope": "Observed service suspension, automatic-deploy and preview settings only. No deployment, resume, purchase, customer contact or production data access."
+}

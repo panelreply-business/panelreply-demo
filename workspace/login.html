@@ -4,25 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Sign in · PanelReply</title>
+  <!-- product:title --><title>Sign in · PanelReply</title><!-- /product:title --><link rel="icon" type="image/svg+xml" href="/assets/brand-mark.svg">
   <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/platform.css">
   <script src="/assets/login.js" defer></script>
 </head>
-<body class="login-body">
+<body data-workspace-page="login" class="login-body">
   <main class="login-shell">
     <section class="login-story" aria-labelledby="welcome-title">
-      <a class="brand brand-light" href="/login" aria-label="PanelReply sign in"><span class="brand-mark" aria-hidden="true">P</span><span>PanelReply<span class="brand-caption">FOR THE WORK AHEAD</span></span></a>
+      <a class="brand brand-light" href="/login" aria-label="PanelReply sign in"><span class="brand-mark" aria-hidden="true"><img src="/assets/brand-mark.svg" width="40" height="40" alt=""></span><span><!-- product:brand-name -->PanelReply<!-- /product:brand-name --><span class="brand-caption"><!-- product:caption -->CONTRACTOR WORKSPACE<!-- /product:caption --></span></span></a>
       <div class="login-story-copy">
         <span class="eyebrow light-eyebrow">YOUR BUSINESS. IN VIEW.</span>
-        <h1 id="welcome-title">A place for every request.</h1>
-        <p>Review customer details, keep track of follow-up, and give your team a record they can work from.</p>
+        <!-- product:welcome-title --><h1 id="welcome-title">Your work. In one place.</h1><!-- /product:welcome-title -->
+        <!-- product:login-story --><p>Review customer requests, organize panel components and keep the details together.</p><!-- /product:login-story -->
       </div>
       <div class="login-story-footer"><span class="status-dot" aria-hidden="true"></span> Private contractor workspace</div>
     </section>
     <section class="login-card" aria-labelledby="sign-in-title">
       <span class="eyebrow">OWNER ACCESS</span>
       <h2 id="sign-in-title">Welcome back</h2>
-      <p class="muted">Sign in to review requests and manage your business answers.</p>
+      <!-- product:login-intro --><p class="muted">Sign in to review requests, panel projects and your business answers.</p><!-- /product:login-intro -->
       <form id="login-form" action="/api/login" method="post">
         <div class="form-field"><label for="username">Username</label><input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="120"></div>
         <div class="form-field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required maxlength="128"></div>
@@ -31,7 +32,7 @@
         <button id="sign-in" class="button button-primary full-width" type="submit">Sign in<span aria-hidden="true">→</span></button>
       </form>
       <p class="login-footnote">This workspace is for authorized owners. Contact the workspace administrator if you need access.</p>
-      <div class="environment-note"><span class="status-dot neutral-dot" aria-hidden="true"></span> Private preview · No outbound calls or messages</div>
+      <div class="environment-note"><span class="status-dot neutral-dot" aria-hidden="true"></span> <!-- product:login-environment -->Private preview · No outbound calls or messages<!-- /product:login-environment --></div>
     </section>
   </main>
 </body>

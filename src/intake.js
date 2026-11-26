@@ -16,7 +16,7 @@
   function isOptOut(text) {
     if (typeof text !== 'string') return false;
     const prepare = value => normalize(value).replace(/^please\s*,\s*/i, 'please ').replace(/,\s*please[.!?]*$/i, '');
-    const command = /^(?:(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:[.!?]*|\s+please[.!?]*)|(?:please\s+)?stop\s+(?:texting|messaging|sending\s+(?:me\s+)?(?:texts?|messages?)|all\s+(?:texts?|messages?))(?:\s+me)?(?:\s+(?:now|again|please))?[.!?]*|(?:please\s+)?(?:do\s+not|don't|dont)\s+(?:text|message|contact)\s+me(?:\s+again)?[.!?]*|(?:please\s+)?remove\s+me(?:\s+from\s+(?:your\s+)?(?:list|messages?))?[.!?]*|(?:please\s+)?no\s+more\s+(?:texts?|messages?)[.!?]*|(?:please\s+)?unsubscribe\s+me(?:\s+please)?[.!?]*|(?:please\s+)?opt\s*out(?:\s+please)?[.!?]*)$/i;
+    const command = /^(?:(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:[.!?]*|\s+please[.!?]*)|(?:please\s+)?stop\s+(?:texting|messaging|calling|sending\s+(?:me\s+)?(?:texts?|messages?)|all\s+(?:texts?|messages?))(?:\s+me)?(?:\s+(?:now|again|please))?[.!?]*|(?:please\s+)?(?:do\s+not|don't|dont)\s+(?:text|message|contact|call)\s+me(?:\s+again)?[.!?]*|(?:please\s+)?remove\s+me(?:\s+from\s+(?:your\s+)?(?:list|messages?))?[.!?]*|(?:please\s+)?no\s+more\s+(?:texts?|messages?|calls?)[.!?]*|(?:please\s+)?unsubscribe\s+me(?:\s+please)?[.!?]*|(?:please\s+)?opt\s*out(?:\s+please)?[.!?]*)$/i;
     const bareCommand = /^(?:please\s+)?(?:stop|unsubscribe|cancel|end|quit)(?:\s+please)?[.!?]*$/i;
     const explicitNoMessages = /^(?:please\s+)?(?:(?:do\s+not|don't|dont)\s+send(?:\s+me)?\s+(?:any\s+)?(?:more\s+)?(?:texts?|text\s+messages?|messages?)|(?:i\s+)?(?:do\s+not|don't|dont)\s+want(?:\s+to\s+(?:get|receive))?\s+(?:any\s+)?(?:more\s+)?(?:texts?|text\s+messages?|messages?)|stop\s+sending\s+(?:me\s+)?(?:any\s+)?more\s+(?:texts?|text\s+messages?|messages?))(?:\s+again)?[.!?]*$/i;
     const matches = value => command.test(value) || explicitNoMessages.test(value);
@@ -39,7 +39,20 @@
   }
 
   function isUrgent(text) {
-    return /\b(?:sparks?|sparking|arcing|arc flash|electrical fire|on fire|smoke\b(?!\s+(?:detector|alarm)s?\b)|smoking|burning (?:smell|odor|wire|outlet|panel)|smell (?:something |of )?burning|downed (?:wire|power ?line)|power lines? (?:(?:is|are|has|have) )?(?:fell|fallen|down|collapsed|hanging)|live (?:exposed )?wire|exposed (?:live|energized) wire|electric(?:al)? shock|shocked|electrocuted|zapped|hot (?:outlet|panel)|(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug).{0,35}?(?:melting\b(?!\s+(?:pot|point|wax)\b)|overheating|sizzling|smoldering|smouldering|caught fire|in flames|smells? (?:like )?(?:it'?s )?burning)|(?:flames?|melting|overheating|sizzling|smoldering|smouldering).{0,40}?(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug))\b/i.test(normalize(text));
+    const value = normalize(text);
+    // Recognize explicit heat/fire/water descriptions around electrical parts.
+    // Routine fire-alarm, smoke-detector, hot-tub and water-heater work remains
+    // outside these patterns. This is a conservative hold, not a diagnosis.
+    const component = '(?:electrical\\s+)?(?:panel|breaker\\s+box|fuse\\s+box|outlet|socket|breaker|wires?|wiring|cord|plug|cable|terminal|busbar)';
+    const fireAtComponent = new RegExp('\\bfire\\s+(?:in|inside|at|around|coming\\s+from)\\s+(?:(?:my|the|our|an?|this|that)\\s+)*' + component + '\\b', 'i').test(value);
+    const hotComponent = new RegExp('\\b' + component + '.{0,24}?\\b(?:is|are|feels?|gets?|getting|becomes?|becoming)\\s+(?:(?:too|very|extremely|really)\\s+)?hot\\b(?!\\s+(?:tub|water)\\b)', 'i').test(value);
+    const glowingComponent = new RegExp('\\b' + component + '.{0,24}?\\bglow(?:ing|s)?(?:\\s+(?:red|orange|white))?\\b', 'i').test(value);
+    const burntOdor = new RegExp('\\b' + component + '.{0,35}?\\bsmells?\\s+(?:(?:like|of)\\s+)?burnt(?:\\s+(?:plastic|rubber|wiring))?\\b', 'i').test(value);
+    const burntOdorAtComponent = new RegExp('\\bsmell(?:s|ing)?\\s+(?:(?:like|of)\\s+)?burnt\\s+(?:plastic|rubber|wiring)\\s+(?:at|in|inside|around|from|near)\\s+(?:(?:my|the|our|an?|this|that)\\s+)*' + component + '\\b', 'i').test(value);
+    const waterInComponent = new RegExp('\\b(?:water|floodwater)\\b.{0,35}?\\b(?:into|inside|entering|filling|pouring|dripping|leaking)\\b.{0,30}?\\b(?:(?:live|energized|electrical)\\s+)?' + component + '\\b', 'i').test(value);
+    const componentInWater = new RegExp('\\b' + component + '.{0,35}?\\b(?:touching|in|under|submerged|sitting)\\b.{0,15}?\\b(?:(?:standing|flood)\\s+)?water\\b', 'i').test(value);
+    const previouslyRecognized = /\b(?:sparks?|sparking|arcing|arc flash|electrical fire|on fire|smoke\b(?!\s+(?:detector|alarm)s?\b)|smoking|burning (?:smell|odor|wire|outlet|panel)|smell (?:something |of )?burning|downed (?:wire|power ?line)|power lines? (?:(?:is|are|has|have) )?(?:fell|fallen|down|collapsed|hanging)|live (?:exposed )?wire|exposed (?:live|energized) wire|electric(?:al)? shock|shocked|electrocuted|zapped|hot (?:outlet|panel)|(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug).{0,35}?(?:melting\b(?!\s+(?:pot|point|wax)\b)|overheating|sizzling|smoldering|smouldering|caught fire|in flames|smells? (?:like )?(?:it'?s )?burning)|(?:flames?|melting|overheating|sizzling|smoldering|smouldering).{0,40}?(?:outlet|socket|breaker|breaker box|fuse box|panel|wires?|cord|plug))\b/i.test(value);
+    return previouslyRecognized || fireAtComponent || hotComponent || glowingComponent || burntOdor || burntOdorAtComponent || waterInComponent || componentInWater;
   }
 
   function cleanPhrase(text) {
@@ -81,6 +94,7 @@
       const after = text.slice(end, end + 90);
       if (/[\d-]/.test(text[start - 1] || '') || /[\d-]/.test(text[end] || '')) continue;
       if (/(?:\$\s*|\b(?:budget|cost|price|quote|usd|phone|telephone|mobile|tel|address)(?:\s+(?:is|number|of))*\s*[:=]?\s*|\b(?:call|text|reach|contact)\s+(?:me|us)\s+(?:at|on)\s*)$/i.test(before)) continue;
+      if (/\b(?:equipment|part|model|serial|catalog|circuit|label|reference|order|invoice|customer|account)(?:\s+(?:number|no|id|code|label|is|of))*\s*[:=#]?\s*$/i.test(before)) continue;
       if (/^\s*(?:watts?|kw|volts?|amps?|btu|dollars?|usd)\b/i.test(after)) continue;
       if (STREET_TAIL.test(after)) continue;
       if (extended) {

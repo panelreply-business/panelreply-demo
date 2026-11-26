@@ -1,0 +1,453 @@
+{
+  "format": "panelreply-ci-regression-checkpoint-v1",
+  "observedAt": "2026-11-23T16:04:56Z",
+  "workflowUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769",
+  "runId": 45210035769,
+  "runNumber": 81,
+  "developmentHead": "1f7b6dc766d8d59b351c09d44d2a138a24583ccb",
+  "sourceTreeSha256": "005a0d18362af7423760159a7d827383d06ea4b8f3e7e564adf349896d9e36de",
+  "status": "FAIL_AND_INCOMPLETE",
+  "scope": "Observed completed jobs and diagnosed failures. Remaining jobs were still active or unassigned at the snapshot. This is not an aggregate passing ledger and contributes no new claimed milestone total.",
+  "jobs": [
+    {
+      "id": 137816050573,
+      "name": "Emulated private workflows (chromium)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000258,
+      "startedAt": "2026-11-23T15:52:14Z",
+      "completedAt": "2026-11-23T15:54:36Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816050573"
+    },
+    {
+      "id": 137816051043,
+      "name": "Portable release contracts (macos-15-intel)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000261,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:52:43Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051043"
+    },
+    {
+      "id": 137816051081,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000260,
+      "startedAt": "2026-11-23T15:52:16Z",
+      "completedAt": "2026-11-23T15:54:23Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051081"
+    },
+    {
+      "id": 137816051100,
+      "name": "Portable release contracts (windows-2022)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000259,
+      "startedAt": "2026-11-23T15:52:16Z",
+      "completedAt": "2026-11-23T15:52:38Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051100"
+    },
+    {
+      "id": 137816051156,
+      "name": "Synthetic concurrent HTTP workload",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000265,
+      "startedAt": "2026-11-23T15:52:14Z",
+      "completedAt": "2026-11-23T15:55:15Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051156"
+    },
+    {
+      "id": 137816051197,
+      "name": "Synthetic OCR measurements",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000264,
+      "startedAt": "2026-11-23T15:52:14Z",
+      "completedAt": "2026-11-23T15:54:35Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051197"
+    },
+    {
+      "id": 137816051203,
+      "name": "Apple Silicon contracts and selected products",
+      "status": "queued",
+      "conclusion": null,
+      "runnerId": 0,
+      "startedAt": "2026-11-23T15:52:12Z",
+      "completedAt": null,
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051203"
+    },
+    {
+      "id": 137816051249,
+      "name": "Static client (ubuntu-24.04, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000266,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:54:22Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051249"
+    },
+    {
+      "id": 137816051284,
+      "name": "Static client (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000269,
+      "startedAt": "2026-11-23T15:52:19Z",
+      "completedAt": "2026-11-23T15:57:56Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051284"
+    },
+    {
+      "id": 137816051293,
+      "name": "Portable release contracts (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000278,
+      "startedAt": "2026-11-23T15:52:40Z",
+      "completedAt": "2026-11-23T15:53:00Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051293"
+    },
+    {
+      "id": 137816051294,
+      "name": "Static client (windows-2022, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000270,
+      "startedAt": "2026-11-23T15:52:14Z",
+      "completedAt": "2026-11-23T15:54:26Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051294"
+    },
+    {
+      "id": 137816051303,
+      "name": "Required public suspension",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000284,
+      "startedAt": "2026-11-23T15:54:21Z",
+      "completedAt": "2026-11-23T15:54:27Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051303"
+    },
+    {
+      "id": 137816051310,
+      "name": "Restricted OCR worker verification",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000267,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:54:26Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051310"
+    },
+    {
+      "id": 137816051319,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000276,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:55:27Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051319"
+    },
+    {
+      "id": 137816051372,
+      "name": "Private workflows (firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000282,
+      "startedAt": "2026-11-23T15:53:59Z",
+      "completedAt": "2026-11-23T16:03:59Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051372"
+    },
+    {
+      "id": 137816051373,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000292,
+      "startedAt": "2026-11-23T15:54:46Z",
+      "completedAt": "2026-11-23T15:56:22Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051373"
+    },
+    {
+      "id": 137816051389,
+      "name": "Static client (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000263,
+      "startedAt": "2026-11-23T15:52:17Z",
+      "completedAt": "2026-11-23T15:56:11Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051389"
+    },
+    {
+      "id": 137816051397,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000281,
+      "startedAt": "2026-11-23T15:53:28Z",
+      "completedAt": "2026-11-23T15:54:43Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051397"
+    },
+    {
+      "id": 137816051404,
+      "name": "Static client (ubuntu-24.04, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000288,
+      "startedAt": "2026-11-23T15:54:28Z",
+      "completedAt": "2026-11-23T15:56:21Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051404"
+    },
+    {
+      "id": 137816051406,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000277,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:53:56Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051406"
+    },
+    {
+      "id": 137816051408,
+      "name": "Private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000283,
+      "startedAt": "2026-11-23T15:54:18Z",
+      "completedAt": "2026-11-23T16:00:57Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051408"
+    },
+    {
+      "id": 137816051417,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000262,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:53:25Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051417"
+    },
+    {
+      "id": 137816051421,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000286,
+      "startedAt": "2026-11-23T15:54:29Z",
+      "completedAt": "2026-11-23T15:56:35Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051421"
+    },
+    {
+      "id": 137816051430,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000274,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:54:16Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051430"
+    },
+    {
+      "id": 137816051442,
+      "name": "Static client (windows-2022, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000272,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:54:30Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051442"
+    },
+    {
+      "id": 137816051449,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000275,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:58:27Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051449"
+    },
+    {
+      "id": 137816051452,
+      "name": "Static client (macos-15-intel, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000293,
+      "startedAt": "2026-11-23T15:56:14Z",
+      "completedAt": "2026-11-23T16:02:09Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051452"
+    },
+    {
+      "id": 137816051470,
+      "name": "Emulated private workflows (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000268,
+      "startedAt": "2026-11-23T15:52:14Z",
+      "completedAt": "2026-11-23T16:01:54Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051470"
+    },
+    {
+      "id": 137816051491,
+      "name": "Static client (windows-2022, msedge)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000273,
+      "startedAt": "2026-11-23T15:52:14Z",
+      "completedAt": "2026-11-23T15:55:36Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051491"
+    },
+    {
+      "id": 137816051496,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000285,
+      "startedAt": "2026-11-23T15:54:24Z",
+      "completedAt": "2026-11-23T15:57:20Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051496"
+    },
+    {
+      "id": 137816051568,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000287,
+      "startedAt": "2026-11-23T15:54:28Z",
+      "completedAt": "2026-11-23T15:58:26Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051568"
+    },
+    {
+      "id": 137816051569,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000294,
+      "startedAt": "2026-11-23T15:56:25Z",
+      "completedAt": "2026-11-23T15:58:10Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051569"
+    },
+    {
+      "id": 137816051584,
+      "name": "Static client (windows-2022, chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000271,
+      "startedAt": "2026-11-23T15:52:15Z",
+      "completedAt": "2026-11-23T15:54:20Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051584"
+    },
+    {
+      "id": 137816051587,
+      "name": "demo-tests",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000290,
+      "startedAt": "2026-11-23T15:54:32Z",
+      "completedAt": "2026-11-23T16:00:10Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051587"
+    },
+    {
+      "id": 137816051708,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "status": "completed",
+      "conclusion": "failure",
+      "runnerId": 1000000289,
+      "startedAt": "2026-11-23T15:54:29Z",
+      "completedAt": "2026-11-23T15:55:46Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051708"
+    },
+    {
+      "id": 137816051925,
+      "name": "Static client (ubuntu-24.04, firefox)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000291,
+      "startedAt": "2026-11-23T15:54:37Z",
+      "completedAt": "2026-11-23T15:56:25Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051925"
+    },
+    {
+      "id": 137816051940,
+      "name": "Static client (windows-2022, webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "runnerId": 1000000280,
+      "startedAt": "2026-11-23T15:53:03Z",
+      "completedAt": "2026-11-23T15:55:13Z",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45210035769/job/137816051940"
+    }
+  ],
+  "defects": [
+    {
+      "id": "CB-UI-SHORT-SIDEBAR",
+      "kind": "product",
+      "jobId": 137816050573,
+      "case": "test_tablet_landscape_login_logout",
+      "observed": "Touch sign-out timed out because the sticky sidebar's 760px minimum placed the button outside the shorter tablet viewport.",
+      "correction": "Use viewport-height desktop sidebar with vertical scrolling and retain the mobile layout. Exercise selected callback sign-out at1024x480.",
+      "verification": "Candidate Python compile and165 affected Node cases pass. Corrected browser execution pending."
+    },
+    {
+      "id": "CB-A11Y-FONT-CSP",
+      "kind": "test-harness",
+      "observed": "The 200% font probe inserted an inline stylesheet rejected by style-src self. Strict console assertions retained the failure.",
+      "correction": "Use CSSOM to change root font size and assert actual root and body font doubling before checking reflow.",
+      "verification": "Candidate syntax verified. Browser execution pending."
+    },
+    {
+      "id": "PREVIEW-WEBKIT-CSP",
+      "kind": "test-artifact-harness",
+      "observed": "Playwright1.62 WebKit screenshot preparation unconditionally inserts body{} under syncAnimations, triggering strictCSP even when animation and caret changes are disabled.",
+      "correction": "Record optional WebKit preview unavailability. Keep all business, geometry, accessibility and console assertions. Chromium/Firefox capture uses unchanged animation/caret settings.",
+      "verification": "Installed Playwright source and native preparation function inspected. Corrected browser execution pending."
+    }
+  ],
+  "ocr": {
+    "status": "MEASUREMENT_COMPLETE",
+    "accuracyGate": "FAIL",
+    "exact": 285,
+    "cases": 310,
+    "errors": 0,
+    "reviewViolations": 0,
+    "blankFieldsPreserved": 263,
+    "pipelineSha256": "b4d3c0e7e486ec10b15416bccee186adfdf0786a661b2adf6130b34e2500d731",
+    "datasetSha256": "7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e",
+    "artifact": "ocr-small-text-ci-run81.json"
+  },
+  "nativeIsolation": {
+    "status": "BLOCKED",
+    "cases": 0,
+    "reason": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+    "causeConfirmed": false,
+    "noUnconfinedFallback": true
+  },
+  "appleSilicon": {
+    "status": "UNASSIGNED",
+    "jobId": 137816051203,
+    "runnerId": 0,
+    "executedTests": 0,
+    "claim": "No ARM platform pass"
+  },
+  "publicActivation": false,
+  "realProviderCalls": 0,
+  "productionCustomerData": false,
+  "testedMergeCommit": "db4834e6e153aed45770005557144c87e7ae4381",
+  "linuxNode": {
+    "passed": 9072,
+    "harnessPassedExcluded": 83,
+    "productPassing": 8989,
+    "failed": 0,
+    "skipped": 0,
+    "sourceChanged": false,
+    "scope": "Completed full Linux Node/API/HTTP job only. Not an aggregate platform goal."
+  },
+  "completedPrivateBrowserScopes": {
+    "chromiumBaseline": 197,
+    "firefoxPrivate": 132,
+    "webkitPrivate": 132,
+    "webkitEmulatedMobile": 40
+  }
+}

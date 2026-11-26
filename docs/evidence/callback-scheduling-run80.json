@@ -1,0 +1,21 @@
+{
+  "format": "panelreply-workflow-failure-v1",
+  "date": "2026-11-23",
+  "sourceCommit": "86a778903c86e32b3bb8f39700fd0a59ef0cd264",
+  "sourceTreeSha256": "fa274e9210cf963ff2f92b1df0b3d748997f81e852f936646b2ccc160ea5839b",
+  "runId": 45209441494,
+  "runNumber": 80,
+  "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45209441494",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs": 0,
+  "applicationTestsExecuted": 0,
+  "checkRuns": 0,
+  "diagnosis": "Three job-level env values referenced runner.temp, a context permitted at step.env but not job.env. Reproduced from source and documented context table. Exact run annotation is not exposed by the connected read interface.",
+  "repair": "Move temporary-directory and screenshot environment expressions into their test steps. Preserve private storage and actual platform requirements.",
+  "verification": "YAML parses; reproduced invalid context references decrease from3 to0; all three private test steps retain runner-owned TMPDIR. No runtime/test changes in this repair.",
+  "primaryReference": "https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#context-availability",
+  "newApplicationPasses": 0,
+  "releaseApproved": false
+}

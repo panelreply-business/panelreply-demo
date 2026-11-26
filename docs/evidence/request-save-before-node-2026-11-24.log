@@ -1,0 +1,51 @@
+FAIL intake request save rejects wrong identities revisions fields and malformed history before replacing its draft
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+PASS intake request first-attempt refusals retain editable drafts and explicit version conflicts without uncertain retries
+FAIL intake request uncertain saves retain the original payload through later refusals and confirm only current saved values
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+FAIL intake request unchanged drafts cannot be confirmed by a same-revision readback after an uncertain write
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+FAIL intake request readback rejects mismatched identities and incomplete parent fields before confirming an uncertain save
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+FAIL intake request differing readback preserves its draft until an explicit validated current-record reload
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+FAIL intake request save accepts the final writable revision and numeric extended-year chronology without weakening fresh receipt bounds
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+FAIL intake request in-flight receipt cannot restore private values after session expiry clears its pending draft
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
++ actual - expected
+
++ 'Saving changes…'
+- ''
+
+FAIL request editor consumes API normalization and confirms later opt-out state without replaying a committed update
+Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+false !== true
+
+tests 9
+suites 0
+pass 1
+fail 8
+cancelled 0
+skipped 0
+todo 0
+duration_ms 850.891846

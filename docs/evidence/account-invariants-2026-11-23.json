@@ -1,0 +1,185 @@
+{
+  "format": "panelreply-account-invariant-review",
+  "version": 1,
+  "recordedAt": "2026-11-23T16:49:06.534847+00:00",
+  "source": {
+    "sourceCommit": "1b35490335203348572e938bcc30dfc0f05d93e1",
+    "gitTreeHash": "510bc73ebc676725e166ae6b29ba0ac276c3589b",
+    "dirty": true,
+    "workingTreeStatus": [
+      "M workspace/store.cjs",
+      "?? tests/account-invariants.test.cjs"
+    ],
+    "sourceTreeSha256": "bec7d5169841b079b06bcb4bc951f7975b8996b045b3ef9565d9f95419f479cf"
+  },
+  "files": [
+    {
+      "path": "workspace/store.cjs",
+      "sha256": "a80061fc6b022ec6ed4767e7fd3c135d753ba324bc49a9ffc53da0ac5c7be795"
+    },
+    {
+      "path": "tests/account-invariants.test.cjs",
+      "sha256": "d7ade3aca5d02ee2a2a638570efa6dd028b1a5a8fae4910a5c3b97ce7ba11361"
+    }
+  ],
+  "baseRuntimeSha256": "ad432dfdc5597a46c66af180bd8205c15f76d66c595bbd4385268fccfdf5fa0f",
+  "runtime": {
+    "node": "v24.22.3",
+    "platform": "Linux",
+    "architecture": "x86_64"
+  },
+  "scope": [
+    "matched terminal profile revision rejection",
+    "monotonic session activity during wall-clock rollback",
+    "one validated session clock sample"
+  ],
+  "compatibility": {
+    "maximumProfileVersion": 9007199254740991,
+    "finalSafeIncrementPreserved": true,
+    "archiveAcceptanceChanged": false,
+    "absoluteSessionExpiryChanged": false,
+    "idleExpiryBoundaryChanged": false,
+    "invalidClockWrites": false,
+    "realElapsedTimeExpiryDuringArbitraryClockChangesEstablished": false
+  },
+  "runs": {
+    "before": {
+      "counts": {
+        "tests": 10,
+        "pass": 1,
+        "fail": 9,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "d1fdb440885d34a203ea208edddb58a574bda88d44fc3f03489f9940a2dc9bb6",
+      "cases": [
+        {
+          "name": "terminal profile revision returns a controlled error without changing any saved row or the caller draft",
+          "status": "FAIL"
+        },
+        {
+          "name": "the final safe profile increment remains readable and recoverable before later edits are rejected",
+          "status": "FAIL"
+        },
+        {
+          "name": "terminal profile guards preserve stale-version and tenant authorization behavior",
+          "status": "PASS"
+        },
+        {
+          "name": "fixed callback profile API returns the final safe revision and a controlled terminal rejection",
+          "status": "FAIL"
+        },
+        {
+          "name": "session clock rollback before creation preserves authorization and every saved timestamp",
+          "status": "FAIL"
+        },
+        {
+          "name": "session activity remains monotonic across rollback and reopen and expires at the saved idle boundary",
+          "status": "FAIL"
+        },
+        {
+          "name": "rollback does not change the stored absolute expiry of an active session",
+          "status": "FAIL"
+        },
+        {
+          "name": "session checks sample one clock reading and reject invalid readings without a database write",
+          "status": "FAIL"
+        },
+        {
+          "name": "both fixed product APIs preserve valid sessions during rollback and reject unavailable clocks without changing records",
+          "status": "FAIL"
+        },
+        {
+          "name": "terminal profile and rollback-safe source sessions preserve encrypted recovery without reviving authorization",
+          "status": "FAIL"
+        }
+      ],
+      "runtime": "unchanged base commit",
+      "command": "node --test --test-reporter=tap tests/account-invariants.test.cjs"
+    },
+    "after": {
+      "counts": {
+        "tests": 10,
+        "pass": 10,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "8dda5b0a9f3cffec74226b4739f64b918963ceac804cb46901722b092c089095",
+      "cases": [
+        {
+          "name": "terminal profile revision returns a controlled error without changing any saved row or the caller draft",
+          "status": "PASS"
+        },
+        {
+          "name": "the final safe profile increment remains readable and recoverable before later edits are rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "terminal profile guards preserve stale-version and tenant authorization behavior",
+          "status": "PASS"
+        },
+        {
+          "name": "fixed callback profile API returns the final safe revision and a controlled terminal rejection",
+          "status": "PASS"
+        },
+        {
+          "name": "session clock rollback before creation preserves authorization and every saved timestamp",
+          "status": "PASS"
+        },
+        {
+          "name": "session activity remains monotonic across rollback and reopen and expires at the saved idle boundary",
+          "status": "PASS"
+        },
+        {
+          "name": "rollback does not change the stored absolute expiry of an active session",
+          "status": "PASS"
+        },
+        {
+          "name": "session checks sample one clock reading and reject invalid readings without a database write",
+          "status": "PASS"
+        },
+        {
+          "name": "both fixed product APIs preserve valid sessions during rollback and reject unavailable clocks without changing records",
+          "status": "PASS"
+        },
+        {
+          "name": "terminal profile and rollback-safe source sessions preserve encrypted recovery without reviving authorization",
+          "status": "PASS"
+        }
+      ],
+      "runtime": "local candidate",
+      "command": "node --test --test-reporter=tap tests/account-invariants.test.cjs"
+    },
+    "regression": {
+      "counts": {
+        "tests": 145,
+        "pass": 145,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "d5ec6c33304aa3b3829b9e72990b7223eda46f71888abb8c8219d113036e8a6e",
+      "runtime": "local candidate",
+      "command": "WORKSPACE_HTTP_TESTS=1 node --test --test-reporter=tap tests/account-invariants.test.cjs tests/workspace-store.test.cjs tests/workspace-api.test.cjs tests/workspace-revocation.test.cjs tests/workspace-recovery-auth.test.cjs tests/workspace-backup.test.cjs tests/product-backup.test.cjs"
+    }
+  },
+  "peerReview": {
+    "agent": "callback_schedule",
+    "result": "No concrete defect found",
+    "scope": "both runtime hunks and all 10 new cases",
+    "rerun": false
+  },
+  "testGoalCredit": {
+    "additionalCreditFromRepeatedLocalRuns": 0,
+    "cleanCommittedCiStillRequired": true
+  },
+  "remaining": [
+    "Integrate the two scoped store hunks with separately owned request, panel and shared text changes.",
+    "Run clean committed source-bound CI.",
+    "Preserve all remaining platform and release acceptance gates."
+  ]
+}

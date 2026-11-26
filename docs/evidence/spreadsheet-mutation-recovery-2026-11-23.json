@@ -1,0 +1,307 @@
+{
+  "format": "panelreply-spreadsheet-mutation-recovery-verification",
+  "version": 1,
+  "recordedAt": "2026-11-23T16:38:03.278Z",
+  "baseCommit": "e711d15d418406969631202642c9d055b47afca5",
+  "status": "PASS_LOCAL_CI_PENDING",
+  "scope": "Synthetic local stores, fixed spreadsheet API handlers, CSV/XLSX bytes, encrypted product-bound restore, and both actual restored loopback product entrypoints. No customer data, provider calls, public deployment, merge, or release.",
+  "requirements": [
+    "SS-02: project/image corrections, version checks and persistence",
+    "SS-04: recoverable product-bound archives and exact source preservation",
+    "SS-03: saved CSV/XLSX regression preservation"
+  ],
+  "reproducedBefore": [
+    {
+      "scenario": "A one-second clock rollback during a correction",
+      "method": "updatePanelProject",
+      "createdAt": "2026-11-23T12:00:00.000Z",
+      "updatedAt": "2026-11-23T11:59:59.000Z",
+      "returnedSuccess": true,
+      "savedVersion": 2,
+      "backupValidation": "invalid_database"
+    },
+    {
+      "scenario": "Incrementing the last accepted live project revision",
+      "method": "updatePanelProject",
+      "inputVersion": 9007199254740990,
+      "savedVersion": 9007199254740991,
+      "returnedSuccess": true,
+      "backupValidation": "invalid_database"
+    }
+  ],
+  "decisions": {
+    "timeRangeMs": {
+      "minimum": 0,
+      "maximum": 8640000000000000,
+      "integerRequired": true
+    },
+    "clockMayPrecedeLatestUpdate": false,
+    "oneCapturedClockForRecordAndAudit": true,
+    "maximumLiveVersion": 9007199254740990,
+    "lastSupportedLiveIncrement": {
+      "before": 9007199254740989,
+      "after": 9007199254740990
+    },
+    "liveIncrementOperations": [
+      "project correction",
+      "source upload",
+      "source deletion"
+    ],
+    "terminalWholeProjectDeletionAllowed": true,
+    "terminalDeletionReceiptVersion": 9007199254740991,
+    "completedStateRetriesCheckedBeforeNewGuards": [
+      "project create",
+      "source upload",
+      "source deletion",
+      "project deletion"
+    ],
+    "archiveValidationContractChanged": false,
+    "clockFailure": {
+      "httpStatus": 503,
+      "code": "clock_unavailable"
+    },
+    "revisionFailure": {
+      "httpStatus": 409,
+      "code": "version_exhausted"
+    }
+  },
+  "sourceFiles": [
+    {
+      "file": "workspace/panels.cjs",
+      "beforeSha256": "a8d342850cb2b43f206c41d6a8522894da5bb52d3e2a177a4e08bca85cecd637",
+      "afterSha256": "7d42d6b28232e1d636d1b755a5b5d28d15b7086bca5065018fc88f206f91472b"
+    },
+    {
+      "file": "workspace/store.cjs",
+      "beforeSha256": "ad432dfdc5597a46c66af180bd8205c15f76d66c595bbd4385268fccfdf5fa0f",
+      "afterSha256": "fb88d7fd2fe46127af4731be0ce29610bcec77d364ef91cb96360ee22fcfa37b"
+    },
+    {
+      "file": "workspace/lifecycle.cjs",
+      "beforeSha256": "748bd72a24cc23d6cff4c2c3d29e8e1058a5fe3206bb564f3e7bfb3d2ff323ec",
+      "afterSha256": "b709bf5422d1e765fc2cd6dd80a8a6e14a298c5727f9410cc611e2e7e07baf45"
+    },
+    {
+      "file": "tests/panel-mutation-recovery.test.cjs",
+      "afterSha256": "fded811d14bdccc4a81c6c062adf597f0795a0006ed4ff086932fc923983a2f0"
+    }
+  ],
+  "inputFixture": {
+    "file": "tests/fixtures/panels/complete.png",
+    "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18",
+    "originalBytesPreserved": true
+  },
+  "comparison": {
+    "sameTestSourceBeforeAndAfter": true,
+    "testSourceSha256": "fded811d14bdccc4a81c6c062adf597f0795a0006ed4ff086932fc923983a2f0",
+    "before": {
+      "runtimeBaseCommit": "e711d15d418406969631202642c9d055b47afca5",
+      "totals": {
+        "tests": 13,
+        "pass": 3,
+        "fail": 10,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "d35c4ebe461e2c9cb6704b1c7a1464d4a14a1ff23b1f18271c3c0b6bee680fbe",
+      "execution": "The exact final test file ran from a temporary harness whose workspace symlink pointed to unchanged e711d15 runtime files. No baseline repository files were edited."
+    },
+    "after": {
+      "newCases": 13,
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "fromRegressionRun": true
+    },
+    "cases": [
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::panel correction rejects a one-second clock rollback without losing rows or export state",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 298.74963
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 400.954564
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::source upload rejects a backward clock before changing bytes, audit or project version",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 16.537007
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 19.407556
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::panel mutations reject a clock earlier than the latest saved update",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 9.069992
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 25.013593
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::source deletion rejects a backward clock before removing the image or changing review state",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 7.174363
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 12.794901
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::project deletion rejects a backward clock and retains its complete saved state",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 8.127862
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 17.263602
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::invalid clock values cannot create a project or mutate a saved project or source",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 6.384351
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 40.018649
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::terminal live project revision rejects correction, upload and source deletion atomically",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 9.208201
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 27.59006
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::the final supported live revision increment remains valid for each panel mutation",
+        "before": {
+          "status": "PASS",
+          "durationMs": 35.643721
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 35.41891
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::completed create, upload and source-deletion retries survive a later clock or revision block",
+        "before": {
+          "status": "PASS",
+          "durationMs": 12.737175
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 13.964726
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::terminal project deletion still creates a recoverable receipt and supports exact retry",
+        "before": {
+          "status": "PASS",
+          "durationMs": 10.012134
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 10.285315
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::each panel write uses one validated clock reading for record and audit timestamps",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 6.01261
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 16.77859
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::rejected panel mutations preserve a product-bound encrypted restore with exact source bytes and exports",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 8.530709
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 476.335177
+        }
+      },
+      {
+        "id": "tests/panel-mutation-recovery.test.cjs::fixed spreadsheet APIs expose controlled mutation failures while preserving saved rows, sources and exports",
+        "before": {
+          "status": "FAIL",
+          "durationMs": 10.975527
+        },
+        "after": {
+          "status": "PASS",
+          "durationMs": 58.964248
+        }
+      }
+    ]
+  },
+  "regression": {
+    "command": "WORKSPACE_HTTP_TESTS=1 node --test tests/panel-mutation-recovery.test.cjs tests/panel-store.test.cjs tests/panel-api.test.cjs tests/panel-xlsx.test.cjs tests/data-lifecycle.test.cjs tests/lifecycle-api.test.cjs tests/product-backup.test.cjs tests/workspace-backup.test.cjs tests/product-boundaries.test.cjs",
+    "totals": {
+      "tests": 298,
+      "pass": 298,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "durationMs": 25944.360566,
+    "logSha256": "f000ea2056dd86aeeb3c7962a6f707eff2022763a3898812cc0f1824ade27d22",
+    "nativeHttpGateEnabled": true,
+    "restoredProductEntrypoints": [
+      {
+        "product": "callback",
+        "status": "PASS",
+        "durationMs": 646.752118
+      },
+      {
+        "product": "spreadsheet",
+        "status": "PASS",
+        "durationMs": 628.899847
+      }
+    ],
+    "platform": {
+      "os": "linux",
+      "architecture": "x64",
+      "node": "v24.22.3"
+    },
+    "priorNarrowRun": {
+      "passed": 294,
+      "failed": 0,
+      "skipped": 2,
+      "scope": "HTTP-gated entrypoint cases were unexecuted. Superseded by the recorded run with WORKSPACE_HTTP_TESTS=1; no additional goal credit."
+    }
+  },
+  "sourceBoundCi": "REQUIRED_AFTER_INTEGRATION",
+  "goalAccounting": "Thirteen new product cases exist. These local dirty-source outcomes are not clean committed goal evidence. Overlapping regression reruns must not add duplicate execution credit.",
+  "remainingWork": [
+    "Integrate the minimal runtime patch with the separately owned shared-text and UI retry fixes, then run source-bound CI.",
+    "Keep the separately reproduced archive timestamp-acceptance gap in a distinct reviewed validator change.",
+    "Synthetic OCR still has nonexact cases. Required worker isolation, representative photographs, actual Excel and owner-dependent operating gates remain separate."
+  ]
+}

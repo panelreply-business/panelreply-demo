@@ -4,22 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Request inbox · PanelReply</title>
+  <!-- product:title --><title>Request inbox · PanelReply</title><!-- /product:title --><link rel="icon" type="image/svg+xml" href="/assets/brand-mark.svg">
   <link rel="stylesheet" href="/assets/styles.css">
-  <script src="/assets/app.js" defer></script>
+  <link rel="stylesheet" href="/assets/platform.css">
+  <script src="/assets/deletion.js" defer></script><script src="/assets/schedule.js" defer></script><script src="/assets/app.js" defer></script>
 </head>
-<body>
+<body data-workspace-page="inbox">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Workspace navigation">
-      <a href="/" class="brand brand-light" id="home-link" aria-label="PanelReply inbox"><span class="brand-mark" aria-hidden="true">P</span><span>PanelReply<span class="brand-caption">FOR THE WORK AHEAD</span></span></a>
+      <a data-product-home href="/" class="brand brand-light" id="home-link" aria-label="PanelReply inbox"><span class="brand-mark" aria-hidden="true"><img src="/assets/brand-mark.svg" width="40" height="40" alt=""></span><span><!-- product:brand-name -->PanelReply<!-- /product:brand-name --><span class="brand-caption"><!-- product:caption -->CONTRACTOR WORKSPACE<!-- /product:caption --></span></span></a>
       <div class="sidebar-business"><span class="eyebrow">WORKSPACE</span><strong id="sidebar-business-name">Your business</strong><span class="private-label"><span class="status-dot" aria-hidden="true"></span> Owner access</span></div>
       <nav class="main-nav" aria-label="Main navigation">
-        <button id="nav-inbox" class="nav-item active" aria-current="page" type="button"><span aria-hidden="true" class="nav-icon">▤</span>Inbox<span id="nav-new-count" class="nav-count">0</span></button>
-        <button id="nav-profile" class="nav-item" type="button"><span aria-hidden="true" class="nav-icon">▦</span>Business profile</button>
-        <a id="preview-link" href="/preview" class="nav-item"><span aria-hidden="true" class="nav-icon">◇</span>Customer preview<span aria-hidden="true" class="nav-arrow">↗</span></a>
+        <!-- product:combined --><a id="dashboard-link" href="/dashboard" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>Dashboard</a><!-- /product:combined -->
+        <button id="nav-inbox" class="nav-item active" aria-current="page" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3zM3 13h5l2 3h4l2-3h5"/></svg></span>Inbox<span id="nav-new-count" class="nav-count">0</span></button>
+        <button id="nav-schedule" class="nav-item" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18M8 15h3m3 0h2"/></svg></span>Callback queue</button>
+        <!-- product:combined --><a id="panels-link" href="/panels" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M7 8h10M7 12h10M7 16h6"/></svg></span>Panel scanning</a><!-- /product:combined -->
+        <!-- product:combined --><a id="projects-link" href="/panels#projects" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 3h9v11H3z"/></svg></span>Saved projects</a><!-- /product:combined -->
+        <!-- product:combined --><a id="exports-link" href="/panels#export" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg></span>Exports</a><!-- /product:combined -->
+        <button id="nav-profile" class="nav-item" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/></svg></span>Business profile</button>
+        <a id="preview-link" href="/preview" class="nav-item"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h18v13H9l-5 4v-4H3zM7 8h10M7 12h6"/></svg></span>Customer preview<span aria-hidden="true" class="nav-arrow">↗</span></a>
       </nav>
-      <div class="sidebar-bottom"><span class="eyebrow">PRIVATE PREVIEW</span><p>Requests stay here for review. No calls, texts, or appointments are sent.</p><div class="sidebar-rule"></div><span id="signed-in-name" class="signed-in-name">Owner workspace</span><button id="sign-out" class="text-button light-button" type="button">Sign out <span aria-hidden="true">↗</span></button></div>
+      <div class="sidebar-bottom"><span class="eyebrow">PRIVATE PREVIEW</span><!-- product:sidebar-copy --><p>Requests and panel records stay here for review. No calls, texts, or appointments are sent.</p><!-- /product:sidebar-copy --><div class="sidebar-rule"></div><span id="signed-in-name" class="signed-in-name">Owner workspace</span><button id="sign-out" class="text-button light-button" type="button">Sign out <span aria-hidden="true">↗</span></button></div>
     </aside>
     <main id="main-content" class="main-shell">
       <header class="page-header">
@@ -41,7 +47,7 @@
           <section class="panel request-list-panel" aria-labelledby="requests-title">
             <div class="panel-heading"><div><h2 id="requests-title">Requests</h2><p id="list-count" class="muted small-text">Loading requests…</p></div><button id="refresh-requests" class="button button-secondary button-small" type="button">Refresh</button></div>
             <div class="list-toolbar"><div class="form-field"><label for="request-search">Search requests</label><input id="request-search" type="search" placeholder="Name, phone, ZIP or work" maxlength="200" autocomplete="off"></div><div class="form-field"><label for="status-filter">Filter by status</label><select id="status-filter"><option value="all">All requests</option><option value="new">New</option><option value="needs_review">Needs review</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select></div></div>
-            <div class="record-export"><button id="export-records" class="button button-secondary button-small" type="button" aria-describedby="export-description" disabled>Export records</button><p id="export-description">Downloads all saved business details, requests and conversations for this business. Unsaved edits are not included.</p><p id="export-status" role="status" aria-live="polite"></p><p id="export-error" class="notice error" role="alert" hidden></p></div>
+            <div class="record-export"><button id="export-records" class="button button-secondary button-small" type="button" aria-describedby="export-description" disabled>Export records</button><p id="export-description">Downloads saved business details, requests, callback tasks and conversations for this business. Unsaved edits are not included.</p><p id="export-status" role="status" aria-live="polite"></p><p id="export-error" class="notice error" role="alert" hidden></p></div>
             <p id="list-status" class="sr-only" role="status" aria-live="polite"></p>
             <div id="requests-list" class="requests-list" role="list" aria-label="Saved requests"></div>
             <div id="list-empty" class="list-empty" hidden><span class="empty-symbol" aria-hidden="true">▤</span><h3 id="empty-list-title">Your inbox starts here</h3><p id="empty-list-copy">Save a test request from the customer preview to see the full review process.</p><a id="empty-preview-link" href="/preview" class="button button-secondary">Open customer preview <span aria-hidden="true">↗</span></a></div>
@@ -53,6 +59,7 @@
               <div id="lead-badges" class="badge-row" aria-label="Contact status"></div>
               <p id="lead-safety-message" class="notice warning" hidden></p>
               <p id="lead-error" class="notice error" role="alert" hidden></p>
+              <div id="lead-uncertain" class="notice warning" hidden><p role="status">The request save is unconfirmed. Retry the save, or choose to load the current saved version and discard this draft.</p><button id="reload-uncertain-lead" class="button button-secondary button-small" type="button">Reload saved version</button></div>
               <div id="lead-conflict" class="notice warning" hidden><p>This request changed since you opened it. Your edits are still here. Reload the saved version before making another update.</p><button id="reload-lead" class="button button-secondary button-small" type="button">Reload saved version</button></div>
               <form id="lead-form">
                 <fieldset id="lead-fields" class="plain-fieldset">
@@ -65,15 +72,50 @@
                     <div class="form-field"><label for="lead-status-select">Request status</label><select id="lead-status-select" name="status" aria-describedby="lead-status-help"><option value="new">New</option><option value="needs_review">Needs review</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select><span id="lead-status-help" class="field-help"></span></div>
                     <div class="form-field"><label for="lead-callback">Callback window</label><input id="lead-callback" name="callbackWindow" maxlength="200" placeholder="When to get in touch"><span class="field-help">A preference for follow-up.</span></div>
                     <div class="form-field"><label for="lead-work-date">Requested work date</label><input id="lead-work-date" name="requestedWorkDate" maxlength="200" placeholder="When the work is wanted"><span class="field-help">A request, not a confirmed booking.</span></div>
-                    <div class="form-field span-two"><label for="lead-permission">Contact permission</label><select id="lead-permission" name="contactPermission"><option value="not_recorded">Not recorded</option><option value="requested_callback">Customer requested a callback</option><option value="opted_out">Customer opted out</option></select><span id="lead-permission-help" class="field-help">Only record a callback request when the customer has asked for one.</span></div>
+                    <div class="form-field span-two"><label for="lead-permission">Contact permission</label><span class="select-control"><select id="lead-permission" name="contactPermission" aria-describedby="lead-permission-help"><option value="not_recorded">Not recorded</option><option value="requested_callback">Customer requested a callback</option><option value="opted_out">Customer opted out</option></select></span><span id="lead-permission-help" class="field-help">Only record a callback request when the customer has asked for one.</span></div>
                     <div class="form-field span-two"><label for="lead-notes">Internal notes</label><textarea id="lead-notes" name="notes" rows="4" maxlength="2000" placeholder="Add context for the next person who reviews this request."></textarea><span class="field-help">For your workspace. Nothing here sends a message to the customer.</span></div>
                   </div>
                 </fieldset>
                 <div class="form-footer"><p id="lead-status" class="form-status" role="status" aria-live="polite"></p><span id="lead-dirty" class="dirty-label" hidden>Unsaved changes</span><button id="save-lead" type="submit" class="button button-primary">Save changes</button></div>
               </form>
+              <section id="lead-schedule" class="callback-schedule" aria-labelledby="lead-schedule-title">
+                <h3 id="lead-schedule-title">Callbacks and follow-ups</h3>
+                <p class="muted small-text">Plan when to call and record the result. These tasks do not place calls, send messages or book electrical work.</p>
+                <p id="task-restriction" class="notice warning" hidden></p>
+                <p id="task-error" class="notice error" role="alert" hidden></p>
+                <div id="task-conflict" class="notice warning" hidden><p>The request or task changed. Your draft remains here. Reload before making another change.</p><button id="reload-task-request" class="button button-secondary button-small" type="button">Reload request and tasks</button></div>
+                <div id="task-uncertain" class="notice warning" hidden><p>The save result could not be confirmed. Retry this same action before editing or leaving the request.</p><button id="retry-task-save" class="button button-secondary button-small" type="button">Retry task save</button></div>
+                <form id="callback-task-form">
+                  <fieldset id="callback-task-fields" class="plain-fieldset" disabled>
+                    <legend id="callback-task-heading">Schedule a task</legend>
+                    <div class="form-grid">
+                      <div id="task-kind-field" class="form-field"><label for="task-kind">Task type</label><select id="task-kind"><option value="callback">Callback</option><option value="follow_up">Follow-up</option></select></div>
+                      <div id="task-time-field" class="form-field"><label for="task-local-time">Callback date and time</label><input id="task-local-time" type="datetime-local" step="60" required aria-describedby="task-time-help task-time-preview"><span id="task-time-help" class="field-help">Enter the time in the time zone below.</span></div>
+                      <div id="task-zone-field" class="form-field"><label for="task-time-zone">Time zone</label><input id="task-time-zone" maxlength="100" required autocomplete="off" spellcheck="false" aria-describedby="task-zone-help"><span id="task-zone-help" class="field-help">Use a zone such as America/Detroit or UTC.</span></div>
+                      <div id="task-occurrence-field" class="form-field" hidden><label for="task-occurrence">Which occurrence?</label><select id="task-occurrence" aria-describedby="task-time-preview"></select></div>
+                      <p id="task-time-preview" class="field-help span-two" role="status" aria-live="polite"></p>
+                      <div id="task-outcome-field" class="form-field span-two" hidden><label for="task-outcome">Call outcome</label><select id="task-outcome"><option value="">Choose an outcome</option><option value="reached">Reached customer</option><option value="no_answer">No answer</option><option value="voicemail">Left voicemail</option><option value="other">Other</option></select><span class="field-help">Record what happened during a call you made. You can then schedule another follow-up.</span></div>
+                      <div class="form-field span-two"><label for="task-notes">Task notes</label><textarea id="task-notes" maxlength="2000" rows="3"></textarea></div>
+                    </div>
+                  </fieldset>
+                  <div class="form-footer"><p id="task-save-status" class="form-status" role="status" aria-live="polite"></p><span id="task-dirty" class="dirty-label" hidden>Unsaved task</span><div class="button-row"><button id="discard-task-draft" type="button" class="button button-secondary button-small">Clear task form</button><button id="save-callback-task" type="submit" class="button button-primary" disabled>Schedule task</button></div></div>
+                </form>
+                <div class="task-history-heading"><h4>Saved tasks</h4><button id="refresh-lead-tasks" type="button" class="button button-secondary button-small">Refresh tasks</button></div>
+                <p id="lead-task-status" class="field-help" role="status" aria-live="polite"></p>
+                <ol id="lead-task-list" class="callback-task-list"></ol>
+                <button id="more-lead-tasks" class="button button-secondary button-small" type="button" hidden>Load more tasks</button>
+              </section>
+              <section class="record-deletion" aria-labelledby="request-deletion-title"><h3 id="request-deletion-title">Remove saved records</h3><p class="muted small-text">Save or discard edits before deleting. Deletion requires confirmation. Contact restrictions remain.</p><div class="button-row"><button id="delete-conversation" type="button" class="button button-danger button-small" disabled>Delete conversation</button><button id="delete-lead" type="button" class="button button-danger button-small" disabled>Delete request</button></div></section>
               <div class="record-history"><details><summary>Conversation<span id="conversation-count" class="summary-count"></span></summary><ol id="lead-conversation" class="history-list conversation-history"></ol></details><details><summary>Activity<span id="audit-count" class="summary-count"></span></summary><ol id="lead-audit" class="history-list audit-history"></ol></details></div>
             </div>
           </section>
+        </div>
+      </section>
+      <section id="schedule-view" aria-labelledby="schedule-title" hidden>
+        <div class="panel callback-queue-panel"><div class="panel-heading"><div><h2 id="schedule-title">Callback queue</h2><p class="muted small-text">Open a request to review contact permission, record a call outcome or schedule a follow-up.</p></div><button id="refresh-callback-queue" type="button" class="button button-secondary button-small">Refresh queue</button></div>
+          <div class="queue-toolbar"><div class="form-field"><label for="callback-queue-filter">Show tasks</label><select id="callback-queue-filter"><option value="open">Open tasks</option><option value="due">Due and overdue</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="all">All tasks</option></select></div><p id="callback-queue-status" class="field-help" role="status" aria-live="polite"></p></div>
+          <p id="callback-queue-error" class="notice error" role="alert" hidden></p><ol id="callback-queue-list" class="callback-task-list"></ol>
+          <div class="queue-pagination"><button id="callback-queue-previous" type="button" class="button button-secondary button-small" disabled>Previous tasks</button><span id="callback-queue-page" class="small-text"></span><button id="callback-queue-next" type="button" class="button button-secondary button-small" disabled>Next tasks</button></div>
         </div>
       </section>
       <section id="profile-view" aria-labelledby="profile-title" hidden>
@@ -90,7 +132,7 @@
         </form>
         <p class="page-footnote">The private preview uses these saved answers. Live AI, calendar booking, and outbound messaging are not connected.</p>
       </section>
-      <footer class="workspace-footer"><span>PanelReply</span><span>Private preview · Requests require owner review</span></footer>
+      <footer class="workspace-footer"><span><!-- product:brand-name -->PanelReply<!-- /product:brand-name --></span><span>Private preview · Requests require owner review</span></footer>
     </main>
   </div>
 </body>

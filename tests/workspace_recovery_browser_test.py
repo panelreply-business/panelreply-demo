@@ -20,6 +20,7 @@ import unittest
 import uuid
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -52,11 +53,7 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"RECOVERY_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):
@@ -199,9 +196,11 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.assertEqual(response.status, status, response.text())
         return None if response.status == 204 else response.json()
 
-    def assert_login_rejected(self, username=OWNER, password=PASSWORD, origin=None):
+    def assert_login_rejected(self, username=OWNER, password=PASSWORD, origin=None, navigate=True):
         origin = origin or self.origin
-        self.page.goto(origin + "/login")
+        if navigate:
+            self.page.goto(origin + "/login")
+        expect(self.page).to_have_url(origin + "/login")
         self.page.get_by_label("Username", exact=True).fill(username)
         self.page.get_by_label("Password", exact=True).fill(password)
         self.page.get_by_role("button", name="Sign in", exact=True).click()
@@ -253,7 +252,8 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.page.get_by_label("Search requests", exact=True).fill("Jamie")
         content = self.download_export()
         self.assertEqual(content["format"], "panelreply-business-export")
-        self.assertEqual(content["version"], 1)
+        self.assertEqual(content["version"], 2)
+        self.assertIsInstance(content["callbackTasks"], list)
         self.assertEqual(len(content["leads"]), 2, "Export includes all saved records, not the current search")
         saved = next(item for item in content["leads"] if item["id"] == lead["id"])
         self.assertEqual(saved["notes"], "")
@@ -352,7 +352,9 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.assertEqual(content["leads"][0]["customerName"], "Jamie Recovery")
         self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         box = self.page.get_by_role("button", name="Export records", exact=True).bounding_box()
-        self.assertGreaterEqual(box["height"], 44)
+        # Preserve the 44 px target while removing sub-0.001 px coordinate
+        # subtraction noise observed in Firefox (43.99998474121094 px).
+        self.assertGreaterEqual(round(box["height"], 3), 44)
         self.emit_preview("recovery-inbox-mobile.jpg")
 
     def test_encrypted_restore_preserves_requests_and_restrictions_but_rejects_old_sessions(self):
@@ -408,10 +410,20 @@ class WorkspaceRecoveryBrowserTests(unittest.TestCase):
         self.assertEqual(resumed["replies"], [])
         self.page.get_by_role("button", name="Open request from Jamie Recovery", exact=True).click()
         expect(self.page.locator("#lead-notes")).to_have_value("Saved before the recovery drill.")
-        self.api("POST", "/api/logout", status=204, origin=restored_origin)
+        # Opening the request also loads its tasks. Finish that read, then let
+        # the owner's sign-out action clear the page and navigate to login.
+        expect(self.page.locator("#lead-task-status")).to_have_text("0 of 0 saved tasks.")
+        with self.page.expect_response(lambda response: response.url == restored_origin + "/api/logout"
+                                       and response.request.method == "POST") as logged_out:
+            self.page.get_by_role("button", name="Sign out", exact=True).click()
+        self.assertEqual(logged_out.value.status, 204)
+        self.page.wait_for_url(restored_origin + "/login", wait_until="load")
+        expect(self.page.get_by_label("Password", exact=True)).to_be_empty()
+        self.api("GET", "/api/session", status=401, origin=restored_origin)
         # Resetting one restored owner must not reactivate another owner's
-        # archived credentials. Recover each business independently.
-        self.assert_login_rejected(username="other-restore@example.test", origin=restored_origin)
+        # archived credentials. Reuse the completed login navigation instead
+        # of racing the old private page with another forced navigation.
+        self.assert_login_rejected(username="other-restore@example.test", origin=restored_origin, navigate=False)
         self.command([
             "scripts/workspace-reset-password.cjs", "--data-dir", str(restored_dir),
             "--username", "other-restore@example.test",

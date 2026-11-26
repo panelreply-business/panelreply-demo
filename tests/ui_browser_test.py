@@ -18,6 +18,7 @@ import shutil
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
+from browser_engine import launch_browser, preview_available
 
 
 BUNDLED_MESSAGE = (
@@ -61,11 +62,7 @@ class WorkspaceBrowserTests(unittest.TestCase):
         cls.thread.start()
         cls.origin = f"http://127.0.0.1:{cls.server.server_port}"
         cls.playwright = sync_playwright().start()
-        executable = os.environ.get("PANELREPLY_CHROMIUM_EXECUTABLE")
-        cls.browser = cls.playwright.chromium.launch(
-            headless=True, **({"executable_path": executable} if executable else {})
-        )
-        print(f"WORKSPACE_CHROMIUM_VERSION={cls.browser.version}", flush=True)
+        cls.browser = launch_browser(cls.playwright)
 
     @classmethod
     def tearDownClass(cls):
@@ -119,6 +116,8 @@ class WorkspaceBrowserTests(unittest.TestCase):
         emit_preview = os.environ.get("PANELREPLY_EMIT_PREVIEWS") == "1"
         if not directory and not emit_preview:
             return
+        if not preview_available(self.browser, self.id(), filename):
+            return
         self.page.evaluate("() => window.scrollTo({top: 0, left: 0, behavior: 'instant'})")
         options = {"type": "jpeg", "quality": 70, "full_page": True, "animations": "disabled"}
         if directory:
@@ -139,7 +138,17 @@ class WorkspaceBrowserTests(unittest.TestCase):
                 const element = document.getElementById(id);
                 return {id, width: element.clientWidth, scroll: element.scrollWidth};
             });
-            return {viewport: innerWidth, page: document.documentElement.scrollWidth, values};
+            const outside = [...document.querySelectorAll('body *')].filter(element => {
+                if (!element.getClientRects().length || getComputedStyle(element).visibility === 'hidden') return false;
+                const rect = element.getBoundingClientRect();
+                return rect.right > innerWidth + 1 || rect.left < -1;
+            }).map(element => {
+                const rect = element.getBoundingClientRect();
+                return {tag: element.tagName, id: element.id, class: element.className,
+                    left: rect.left, right: rect.right, width: rect.width,
+                    scroll: element.scrollWidth, text: element.textContent.trim().slice(0, 80)};
+            });
+            return {viewport: innerWidth, page: document.documentElement.scrollWidth, values, outside};
         }""")
         self.assertLessEqual(dimensions["page"], dimensions["viewport"] + 1, json.dumps(dimensions))
         for item in dimensions["values"]:
@@ -206,19 +215,84 @@ class WorkspaceBrowserTests(unittest.TestCase):
 
     def test_character_limit_counter_and_accessible_description_stay_in_sync(self):
         reply = self.page.get_by_role("textbox", name="Customer message", exact=True)
-        expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
-        described_by = reply.get_attribute("aria-describedby") or ""
-        self.assertIn("reply-count", described_by.split())
-        expect(reply).to_have_attribute("maxlength", "500")
-        reply.fill("x" * 500)
-        expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
-        reply.press("End")
-        reply.press_sequentially("y")
-        expect(reply).to_have_value("x" * 500)
-        expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
-        self.page.locator("#send").click()
-        expect(reply).to_have_value("")
-        expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
+        observation = {"kind": "character-limit-native-input", "status": "ATTEMPTED",
+                       "phase": "initial", "roleLocator": "textbox:Customer message:exact",
+                       "actionTimeoutMs": 5000}
+        self.interaction_evidence = [observation]
+        try:
+            expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
+            described_by = reply.get_attribute("aria-describedby") or ""
+            self.assertIn("reply-count", described_by.split())
+            expect(reply).to_have_attribute("maxlength", "500")
+            try:
+                self.page.locator("body").evaluate("""() => {
+                    const element = document.getElementById('reply');
+                    const types = ['keydown', 'keyup', 'beforeinput', 'input', 'change', 'focus', 'blur'];
+                    const probe = {element, events: [], overflow: false, started: performance.now()};
+                    probe.listener = event => {
+                        if (event.target !== probe.element) return;
+                        if (probe.events.length >= 16) { probe.overflow = true; return; }
+                        probe.events.push({type: event.type, key: event.key || null,
+                            inputType: event.inputType || null, trusted: event.isTrusted,
+                            elapsedMs: Math.round(performance.now() - probe.started),
+                            length: element.value.length, start: element.selectionStart, end: element.selectionEnd,
+                            activeId: document.activeElement?.id || null});
+                    };
+                    for (const type of types) document.addEventListener(type, probe.listener, true);
+                    window.__panelreplyCharacterLimitProbe = probe;
+                }""", timeout=1000)
+            except Exception as error:
+                observation["installError"] = str(error)[:1000]
+            reply.fill("x" * 500)
+            expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
+            observation["phase"] = "full-value-observed"
+            reply.press("End")
+            observation["phase"] = "end-command-completed"
+            reply.press_sequentially("y")
+            observation["phase"] = "overflow-key-command-completed"
+            expect(reply).to_have_value("x" * 500)
+            expect(self.page.locator("#reply-count")).to_have_text("500 / 500")
+            self.page.locator("#send").click()
+            expect(reply).to_have_value("")
+            expect(self.page.locator("#reply-count")).to_have_text("0 / 500")
+            observation.update({"status": "OBSERVED", "phase": "submitted-and-cleared"})
+        finally:
+            # Read state before teardown. These listeners never change values,
+            # focus, event defaults, requests, timeout or the input sequence.
+            try:
+                observation["state"] = self.page.locator("body").evaluate("""() => {
+                    const probe = window.__panelreplyCharacterLimitProbe;
+                    if (probe) {
+                        for (const type of ['keydown', 'keyup', 'beforeinput', 'input', 'change', 'focus', 'blur'])
+                            document.removeEventListener(type, probe.listener, true);
+                        delete window.__panelreplyCharacterLimitProbe;
+                    }
+                    const element = document.getElementById('reply');
+                    const rect = element?.getBoundingClientRect(), style = element ? getComputedStyle(element) : null;
+                    return {url: location.href, readyState: document.readyState,
+                        activeElement: {id: document.activeElement?.id || null, tag: document.activeElement?.tagName || null},
+                        replyCount: document.querySelectorAll('#reply').length,
+                        referenceConnected: probe?.element?.isConnected ?? null,
+                        sameReference: probe ? probe.element === element : null,
+                        control: element ? {tag: element.tagName, role: element.getAttribute('role'),
+                            labels: [...element.labels].map(label => label.textContent.slice(0, 100)),
+                            describedBy: element.getAttribute('aria-describedby'),
+                            disabled: element.disabled, readOnly: element.readOnly, hidden: element.hidden,
+                            length: element.value.length, maxLength: element.maxLength,
+                            start: element.selectionStart, end: element.selectionEnd,
+                            display: style.display, visibility: style.visibility,
+                            rect: {x: rect.x, y: rect.y, width: rect.width, height: rect.height}} : null,
+                        counter: document.getElementById('reply-count')?.textContent,
+                        events: probe?.events || [], overflow: probe?.overflow ?? null};
+                }""", timeout=1000)
+            except Exception as error:
+                observation["captureError"] = str(error)[:1000]
+            if observation["status"] != "OBSERVED":
+                try:
+                    observation["roleSnapshot"] = reply.aria_snapshot(timeout=1000)[:1500]
+                except Exception as error:
+                    observation["roleSnapshotError"] = str(error)[:1000]
+            observation["pageErrors"] = [str(error)[:1000] for error in self.errors[:5]]
 
     def test_sending_a_message_keeps_the_latest_reply_in_the_conversation_view(self):
         self.send(BUNDLED_MESSAGE)
@@ -293,7 +367,15 @@ class WorkspaceBrowserTests(unittest.TestCase):
     def test_skip_link_and_workspace_navigation_have_real_targets(self):
         self.page.keyboard.press("Tab")
         skip_link = self.page.locator(".skip-link")
-        expect(skip_link).to_be_focused()
+        try:
+            expect(skip_link).to_be_focused()
+        except AssertionError as failure:
+            focus = self.page.evaluate("""() => ({
+                documentFocused: document.hasFocus(),
+                activeElement: document.activeElement?.outerHTML.slice(0, 1000),
+                skipLinkTabIndex: document.querySelector('.skip-link')?.tabIndex
+            })""")
+            raise AssertionError(f"{failure}\nFirst Tab focus: {json.dumps(focus)}") from failure
         expect(skip_link).to_be_visible()
         target = skip_link.get_attribute("href")
         self.assertTrue(target and target.startswith("#"))
@@ -354,6 +436,18 @@ class WorkspaceBrowserTests(unittest.TestCase):
                 self.assert_no_horizontal_overflow()
                 font_size = self.page.locator("body").evaluate("e => parseFloat(getComputedStyle(e).fontSize)")
                 self.assertGreaterEqual(font_size, 30, "Body text must respond to the user's font scale")
+                headings = self.page.locator('h1, h2').evaluate_all("""elements => elements.map(element => {
+                    const rect = element.getBoundingClientRect();
+                    return {text: element.textContent, left: rect.left, right: rect.right,
+                        width: element.clientWidth, scroll: element.scrollWidth,
+                        overflow: getComputedStyle(element).overflowX};
+                })""")
+                for heading in headings:
+                    self.assertGreater(heading["width"], 0, json.dumps(heading))
+                    self.assertLessEqual(heading["scroll"], heading["width"] + 1, json.dumps(heading))
+                    self.assertGreaterEqual(heading["left"], -1, json.dumps(heading))
+                    self.assertLessEqual(heading["right"], width + 1, json.dumps(heading))
+                    self.assertNotIn(heading["overflow"], ["hidden", "clip"], "Text must wrap without clipping")
         self.page.evaluate("() => document.documentElement.style.fontSize = ''")
         self.page.set_viewport_size({"width": 390, "height": 900})
         self.capture("mobile-ready.jpg")

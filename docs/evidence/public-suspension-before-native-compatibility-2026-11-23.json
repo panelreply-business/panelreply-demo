@@ -1,0 +1,42 @@
+{
+  "format": "panelreply-public-suspension-observation-v1",
+  "recordedAt": "2026-11-23T20:01:41.171Z",
+  "purpose": "Read-only verification before native compatibility development-branch publication",
+  "services": [
+    {
+      "id": "srv-dbv6do6tlv9c73fuvar0",
+      "name": "panelreply-ai",
+      "branch": "main",
+      "suspended": "suspended",
+      "suspenders": [
+        "user"
+      ],
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "previews": {
+        "generation": "off"
+      },
+      "pullRequestPreviewsEnabled": "no",
+      "updatedAt": "2026-11-20T00:28:44.514773Z"
+    },
+    {
+      "id": "srv-dbu5o8tckfvc73b6fb4g",
+      "name": "panelreply-demo",
+      "branch": "main",
+      "suspended": "suspended",
+      "suspenders": [
+        "user"
+      ],
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "previews": {
+        "generation": "off"
+      },
+      "pullRequestPreviewsEnabled": "no",
+      "updatedAt": "2026-11-20T00:29:45.304967Z"
+    }
+  ],
+  "developmentRef": "7fec73b7ca7fe323accaf22eb99e11d905f698b3",
+  "mainRef": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+  "mutations": []
+}

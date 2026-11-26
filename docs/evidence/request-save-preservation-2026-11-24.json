@@ -1,0 +1,63 @@
+{
+  "format": "panelreply-request-save-preservation-v1",
+  "recordedAt": "2026-11-24T01:26:08.270938+00:00",
+  "baseCommit": "7fec73b7ca7fe323accaf22eb99e11d905f698b3",
+  "platformOriginalCaseRegionByteIdentical": true,
+  "platformOriginalCaseRegionSha256": "5410e17c44eefd2b935d82e82fe80410697d8b4b588db313c82c9d882bd1cffe",
+  "sharedHelperExtraction": {
+    "existingHelperPreservedApartFrom": [
+      "optional initial transport",
+      "actual Save changes button label",
+      "optional real lead ID",
+      "exposed event listener registry"
+    ],
+    "previousHelperSha256": "c8f321387df4f65853d69121732fb8579553377b50f52d484a602ac4e6ebfb37",
+    "candidateHelperSha256": "53ac6904e658931a3679adf10afec2e24d24e4b5d272157db111b6aed011e874"
+  },
+  "allOriginalWorkspaceApiBytesPreservedAfterRemovingNewImportAndCase": true,
+  "schedulerOnlyExportChanged": true,
+  "originalBrowserMethods": 38,
+  "originalBrowserTestMethods": 25,
+  "originalBrowserMethodsByteIdentical": true,
+  "newBrowserMethods": [
+    "CallbackProductBrowserTests.test_callback_request_receipts_retain_drafts_and_confirm_current_state"
+  ],
+  "publishedBaseCompatibility": [
+    {
+      "path": "workspace/app.js",
+      "baselineSha256": "d3a692c2f292142716ac083db20a05c629b9065130efc73894f19ff94d8a7989",
+      "sameAtPublished6b": true
+    },
+    {
+      "path": "workspace/schedule.js",
+      "baselineSha256": "d7477c86bb6594c3813e457efdc7de07cd02d20c7c8653027b22f57410fa0fa1",
+      "sameAtPublished6b": true
+    }
+  ],
+  "candidateFiles": [
+    {
+      "path": "workspace/app.js",
+      "sha256": "8c6fce3469f57a90572316fcd6f3fb4607da50030085a51e5a4cb6af0d6bf9b6"
+    },
+    {
+      "path": "workspace/schedule.js",
+      "sha256": "3678a15c44102a286b9d35cd5c1e7e758c3c88019eae60f8ba0c0752e270965d"
+    },
+    {
+      "path": "tests/platform-client-fixture.cjs",
+      "sha256": "5e071d452627f3d1a481a0bc0be0afce03821b6918823250340e704a28b62ef4"
+    },
+    {
+      "path": "tests/platform-client-state.test.cjs",
+      "sha256": "99589ac1dd0317808ef695c931b3c1acda6269353e1c0f7c1b33f262d849ea23"
+    },
+    {
+      "path": "tests/workspace-api.test.cjs",
+      "sha256": "bd8582bf0e0b71d392f78abed2edadfeae7811147316088cb45337d7c0eebd9f"
+    },
+    {
+      "path": "tests/product_browser_test.py",
+      "sha256": "9c8c56a8117caaa46126589952838b0e473d8e1e691b95450e90bbfdd5986fe0"
+    }
+  ]
+}

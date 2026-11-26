@@ -1,0 +1,28 @@
+✔ provider-reported timeout is recorded as timeout without refunding its attempt (46.882252ms)
+✔ a concurrent stop in another session controls the pending result and keeps accounting (30.995161ms)
+✔ a concurrent safety in another session controls the pending result and keeps accounting (15.531011ms)
+✔ a full valid transcript cannot discard a stop restriction with phone in the saved draft (8.003715ms)
+✔ a full valid transcript cannot discard a stop restriction with phone in this message (11.700224ms)
+✔ a full valid transcript cannot discard a safety restriction with phone in the saved draft (9.264572ms)
+✔ a full valid transcript cannot discard a safety restriction with phone in this message (6.754478ms)
+✔ transcript-limit handling never writes a restriction for unsupported state field (4.830651ms)
+✔ transcript-limit handling never writes a restriction for malformed transcript entry (5.659306ms)
+✔ transcript-limit handling never writes a restriction for already oversized transcript (6.224182ms)
+✔ transcript-limit handling never writes a restriction for overlong new message (5.601843ms)
+✔ transcript-limit handling never writes a restriction for missing session (6.279412ms)
+✔ transcript-limit handling never writes a restriction for wrong CSRF token (5.33001ms)
+✔ transcript-limit handling never writes a restriction for disconnected response (8.604706ms)
+✔ transcript-limit handling never writes a restriction for aborted request (6.417682ms)
+✔ transcript-limit handling never writes a restriction for ordinary full transcript (6.104332ms)
+✔ a full-transcript STOP cancels earlier same-session assistance before retaining the 413 result (9.656147ms)
+✔ usage completion failure hides the provider proposal and retains its pending reservation (12.565789ms)
+✔ password reset during a deletion body prevents the deletion after the body completes (6.863128ms)
+✔ copied or inherited external configuration cannot initialize a workspace or call a transport (1.512428ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 387.675863

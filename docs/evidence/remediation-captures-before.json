@@ -1,0 +1,22 @@
+{
+  "runId": 44653806457,
+  "jobId": 136014982565,
+  "commit": "4b26aceee1c2ff069ba6f3ce28e539fa492bd343",
+  "ciRef": "35da1355e4f156b2654a6b8f947b73dd758f6d2f",
+  "source": "Actual Chromium CI screenshots, synthetic private workspace, reduced motion, JPEG quality75. No image edits.",
+  "captures": [
+    {
+      "file": "remediation-deletion-before-360.jpg",
+      "width": 360,
+      "height": 800,
+      "sha256": "04577be092f81d7a98d95a95f930ff4082e048215c9b26a3c57b34c0e85a928d"
+    },
+    {
+      "file": "remediation-deletion-before-1440.jpg",
+      "width": 1440,
+      "height": 800,
+      "sha256": "c3643220e314b8df69014843417bf01eeb86314def46159cf181c18f010a4ff4"
+    }
+  ],
+  "scope": "Before contrast correction, retained reproduction evidence. Superseded dialog captures will be recorded separately."
+}

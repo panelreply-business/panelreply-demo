@@ -1,0 +1,57 @@
+{
+  "format": "panelreply-independent-code-review-v1",
+  "reviewer": "/root/safari_recovery",
+  "scope": "Read-only review of the frozen sysfs-size observer correction",
+  "patch": {
+    "path": "/tmp/panelreply-sysfs-size-20261123.patch",
+    "sha256": "9bada1be6542816b3488dd3e247cbe78bee353ddd06d304c8a58a6563ac395b9"
+  },
+  "reviewedFilesBefore": {
+    "scripts/ocr-isolation-host-context.cjs": "a74cfe2a47abce4ff02cb4e87ea7c70d8301572268fae24e65c0edc7fa4129b0",
+    "tests/ocr-isolation-diagnostics.test.cjs": "ee3fbe4f60cf1e3d69932a43e6ca6b885d34f75a47fffb3224a3aa58391fdc59"
+  },
+  "reviewedFilesAfter": {
+    "scripts/ocr-isolation-host-context.cjs": "a74cfe2a47abce4ff02cb4e87ea7c70d8301572268fae24e65c0edc7fa4129b0",
+    "tests/ocr-isolation-diagnostics.test.cjs": "ee3fbe4f60cf1e3d69932a43e6ca6b885d34f75a47fffb3224a3aa58391fdc59"
+  },
+  "sourceUnchangedDuringReview": true,
+  "reviewedEvidence": {
+    "path": "docs/evidence/ocr-host-sysfs-size-2026-11-23.json",
+    "sha256": "da928efe39f193f229cfbb839a24048ca791b39f9bbc3e2da1058db0e9eeb23a"
+  },
+  "findings": [
+    "Only the frozen apparmorEnabled descriptor gains sizeHintOnly. No caller-supplied path or unbounded metadata flag is accepted.",
+    "The held descriptor remains opened read-only with O_NOFOLLOW. Non-regular targets still fail before reading.",
+    "The AppArmor field allocates 17 bytes for its 16-byte limit. Each read requests only the remaining buffer, partial reads advance within that buffer, and 17 observed bytes return SIZE_LIMIT without a truncated value.",
+    "Both fstat observations still bind dev, ino, size, mode, mtimeNs and ctimeNs. A changed held descriptor returns FILE_CHANGED. Finally closes the descriptor, and a close error prevents an observed result.",
+    "All other host fields retain the metadata-size rejection. The fixed bubblewrap binary still rejects a claimed size above 8 MiB before any read.",
+    "Value parsing still accepts only one Y, N, 0 or 1 after trimming, under the existing ASCII check and byte limit.",
+    "No host control, filesystem permission, namespace policy, worker execution or readiness verdict is changed. This patch changes only read-only host observation.",
+    "The actual run 91 SIZE_LIMIT observation does not prove a page-sized st_size cause because actual field bytes were not retained. Local ENOENT provides no native AppArmor value or isolation evidence."
+  ],
+  "verification": {
+    "command": [
+      "node",
+      "--test",
+      "--test-name-pattern=^sysfs (attribute|control|size)",
+      "tests/ocr-isolation-diagnostics.test.cjs"
+    ],
+    "exitCode": 0,
+    "durationMs": 262.386,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "logPath": "/tmp/panelreply-sysfs-size-independent-review-20261123.log",
+    "logSha256": "f22da923537fba7f8da1ed604e386822958fa85d75b30494305b744452e47258",
+    "log": "\u2714 sysfs attribute metadata size does not conceal a bounded observed control value (3.965524ms)\n\u2714 sysfs control reads retain their byte cap when metadata reports a page size (0.476429ms)\n\u2714 sysfs size handling preserves ordinary executable size rejection before any read (0.281195ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 158.082533\n"
+  },
+  "primaryReference": {
+    "url": "https://docs.kernel.org/filesystems/sysfs.html#reading-writing-attribute-data",
+    "supports": "sysfs attribute reads use generated data in a PAGE_SIZE buffer and return their actual emitted byte count. This supports using a read limit without claiming the original CI cause."
+  },
+  "conclusion": "No concrete defect found in the bounded observer correction. The fixed-field exception and ordinary binary limits remain separate.",
+  "sourceEdits": false,
+  "nativeAttempts": 0,
+  "productPassCredit": 0,
+  "releaseCredit": false
+}

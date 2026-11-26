@@ -1,0 +1,92 @@
+✔ provider-reported timeout is recorded as timeout without refunding its attempt (54.129522ms)
+✔ a concurrent stop in another session controls the pending result and keeps accounting (29.101521ms)
+✔ a concurrent safety in another session controls the pending result and keeps accounting (14.012543ms)
+✖ a full valid transcript cannot discard a stop restriction with phone in the saved draft (8.004774ms)
+✖ a full valid transcript cannot discard a stop restriction with phone in this message (8.422603ms)
+✖ a full valid transcript cannot discard a safety restriction with phone in the saved draft (13.849224ms)
+✖ a full valid transcript cannot discard a safety restriction with phone in this message (10.376267ms)
+✔ usage completion failure hides the provider proposal and retains its pending reservation (11.001507ms)
+✔ password reset during a deletion body prevents the deletion after the body completes (8.787392ms)
+✔ copied or inherited external configuration cannot initialize a workspace or call a transport (1.637308ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 6
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 341.903827
+
+✖ failing tests:
+
+test at tests/remediation-adversarial.test.cjs:74:84
+✖ a full valid transcript cannot discard a stop restriction with phone in the saved draft (8.004774ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-adversarial.test.cjs:83:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-adversarial.test.cjs:74:84
+✖ a full valid transcript cannot discard a stop restriction with phone in this message (8.422603ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-adversarial.test.cjs:83:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-adversarial.test.cjs:74:84
+✖ a full valid transcript cannot discard a safety restriction with phone in the saved draft (13.849224ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-adversarial.test.cjs:83:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/remediation-adversarial.test.cjs:74:84
+✖ a full valid transcript cannot discard a safety restriction with phone in this message (10.376267ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/workspace/scratch/ccaa5c344a02/panelreply-platform/tests/remediation-adversarial.test.cjs:83:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

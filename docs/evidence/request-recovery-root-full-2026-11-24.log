@@ -1,0 +1,14 @@
+PanelReply Callback listening at http://127.0.0.1:35277. Assistant mode: deterministic. Booking is disabled.
+
+PanelReply Spreadsheets listening at http://127.0.0.1:42469. Assistant mode: disabled. Booking is disabled.
+
+PanelReply internal integration harness listening at http://127.0.0.1:36465. Assistant mode: synthetic. Booking is disabled.
+
+tests 9311
+suites 0
+pass 9311
+fail 0
+cancelled 0
+skipped 0
+todo 0
+duration_ms 43687.990588

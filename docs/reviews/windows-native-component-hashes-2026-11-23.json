@@ -1,0 +1,49 @@
+{
+  "report": "/tmp/panelreply-windows-native-review-20261123.md",
+  "bytes": 8988,
+  "sha256": "f661e02721992d9687dfb09bd68ad9114ac7da211571afa3202488ace15058ec",
+  "checks": [
+    {
+      "path": "workspace/native/windows-storage/storage.cc",
+      "sha256": "63fce31b69e259603aeb08f016254b3a56cd62e89133c4b35861ef2d7edd84f8",
+      "matched": true
+    },
+    {
+      "path": "workspace/native/windows-storage/fixture.cc",
+      "sha256": "b56123b707ea00bfe7e4546510626905b4e1786726e6dc88aa5a9e4406adcff5",
+      "matched": true
+    },
+    {
+      "path": "tests/windows-storage.windows.cjs",
+      "sha256": "dd3bb0090215e807d4df9ae7ad2d29f57254d9feb23bd3db563f560a69e3836c",
+      "matched": true
+    },
+    {
+      "path": "tests/windows-storage-cases.cjs",
+      "sha256": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4",
+      "matched": true
+    },
+    {
+      "path": "tests/windows-storage-support.cjs",
+      "sha256": "2c6c331978fa761141fb7d29e57f09c3ae0cc72f642d5a6fc5c0eb35ba48a3b9",
+      "matched": true
+    },
+    {
+      "path": "tests/windows-storage-child.cjs",
+      "sha256": "03073e93bfa36113a6af2c566668e1a906fc6a229309ab53e81fb677baecb16e",
+      "matched": true
+    },
+    {
+      "path": "workspace/native/windows-storage/CMakeLists.txt",
+      "sha256": "d7c1fe48c54e79bbc26ffb446da6131116af1910263875ddb94d26d846be564e",
+      "matched": true
+    },
+    {
+      "path": "workspace/native/windows-storage/README.md",
+      "sha256": "378ab9087070c5b5dcaea8df4ec92c4d367475d3ef8f6c510992ff34a80369a8",
+      "matched": true
+    }
+  ],
+  "nativeExecutions": 0,
+  "rootEdits": 0
+}

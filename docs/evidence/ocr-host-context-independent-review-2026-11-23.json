@@ -1,0 +1,139 @@
+{
+  "format": "panelreply-ocr-host-context-independent-review-v1",
+  "recordedAt": "2026-11-23T19:09:46.939888+00:00",
+  "reviewer": "ocr_quality",
+  "baseCommit": "2882d4f836d4694c8b445f91f52d64df943cf213",
+  "status": "PASS",
+  "initialFiles": {
+    ".github/workflows/demo-tests.yml": "b8cb15567180bd73794bcd23df3b115fb47d03bac3f02fc62bbab4de2b87aee9",
+    "scripts/ocr-isolation-host-context.cjs": "1e11b567e40b9b8c21c67da1cb731f17574db44592202a780b2918ccc523eec7",
+    "scripts/observe-ocr-isolation.cjs": "a3d18e1d3191409439e5663b0af6299d67fcba8b50f7843faffc4e56a905e4dc",
+    "tests/ocr-isolation-diagnostics.test.cjs": "f31dd0f9ec603bcce6c0c8a09496a7b747e023447d5d617b28cec93b22d1f7fa"
+  },
+  "initialFocusedVerification": {
+    "command": "node --test tests/ocr-isolation-diagnostics.test.cjs",
+    "total": 29,
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 147.305484,
+    "toolChunk": "d785ab",
+    "nativeAttempts": 0,
+    "harnessOnly": true,
+    "productPassing": 0,
+    "sourceFilesMatchedFreezeBeforeAndAfter": true
+  },
+  "findings": [
+    {
+      "id": "OCR-HOST-OUTPUT-ALIAS",
+      "status": "RESOLVED_ON_REVIEWED_V2_BYTES",
+      "file": "scripts/observe-ocr-isolation.cjs",
+      "function": "main output path preflight",
+      "problem": "The lexical outside-repository guard accepts an output whose existing parent symlink resolves into the repository.",
+      "reproducer": "Create an owned temporary directory outside the repository, add repository-alias pointing at the candidate repository, and evaluate the existing guard on repository-alias/peer-review-not-written.json. Resolve only the parent for comparison. Remove the temporary alias afterward.",
+      "observed": {
+        "acceptedByCurrentGuard": true,
+        "canonicalParentIsRepository": true,
+        "outputWritten": false,
+        "nativeAttempts": 0
+      },
+      "interpretation": "A mismatch with the declared artifact-location contract. This is not a native-isolation leak or an observed failure of the fixed RUNNER_TEMP workflow path.",
+      "requiredRepair": "Resolve the existing raw output parent and repository canonically before any verifier attempt. Reject a parent within the repository, unresolved parents and existing/dangling leaf entries. Keep exclusive creation and state trusted-parent race limits.",
+      "correctedReproduction": {
+        "reason": "OUTPUT_OVERLAP",
+        "outputState": "NOT_CREATED",
+        "outputWriteStarted": false,
+        "openCalls": 0,
+        "observationCalls": 0,
+        "nativeAttempts": 0,
+        "outputWritten": false
+      },
+      "correctionWrapperSha256": "55034c8fee4dff8e6f8d66f250fdd392fb061a413960699c10696d277be6a2e0"
+    }
+  ],
+  "reviewedBoundaries": [
+    "Fixed read-only host paths, per-file byte ceilings, safe field allowlists and path-free error codes.",
+    "Missing, denied or malformed fields remain UNAVAILABLE. Profile-file presence remains distinct from loaded or attached policy and parent state is not worker state.",
+    "The fixed executable is hashed through one read-only O_NOFOLLOW handle with before/after file identity checks. This is not binary authenticity or loaded-memory attestation.",
+    "Build failures, skipped/cancelled/unknown outcomes and dirty/unavailable source suppress the native verifier. Existing preinstalled binary presence cannot override the build gate.",
+    "Successful clean-source operation launches only the unchanged fixed native verifier once. The existing six case identities and PASS exit-code contract remain.",
+    "Context cannot promote a native BLOCKED or FAIL. Source/dependency changes fail evidence separately. All output earns zero product credit.",
+    "Stdout/stderr retained bytes and native-verifier deadline are bounded. Timeout or overflow requests SIGKILL only for the owned verifier, waits for its close event and never becomes PASS.",
+    "Ubuntu24 retains its original display name, pinned dependency build and warning-only BLOCKED job handling. Ubuntu26 is an independent matrix row with fail-fast disabled.",
+    "The uploaded host artifact name remains outside release-* and preserves per-host/per-attempt identity.",
+    "The original nine diagnostic test bodies remain byte-for-byte as the original file prefix.",
+    "The corrected CLI output preparation rejects the reproduced static alias and resolution failures before source collection or any verifier attempt. Exclusive held-file writes preserve identity and expose failure state without unsafe cleanup."
+  ],
+  "unchangedFiles": {
+    "scripts/test-ocr-isolation.cjs": "0a3dbb02b641ded1d068785eed745eb26bac67481d29ee4b2508cd10062031b1",
+    "scripts/ocr-isolation-diagnostics.cjs": "08c9c9d454ef1c19b80639cb35a3f09a8d23f43f2b2f5382e5d194fea9480e00",
+    "workspace/ocr.cjs": "978cba95cf353d7416fab70dc00cf2113a499c27feee9ec5c2ff500929a4b2d9",
+    "workspace/ocr-isolation.cjs": "442ff05030c60292ced4d67389b0b8c11e0590b53553c6e72f72764823d11826",
+    "workspace/ocr-preprocess.py": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014"
+  },
+  "primarySourcesChecked": [
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "finding": "The standard x64 table includes both ubuntu-24.04 and ubuntu-26.04."
+    },
+    {
+      "url": "https://documentation.ubuntu.com/release-notes/25.04/#apparmor-profile-for-bwrap",
+      "finding": "The published bwrap-userns-restrict change supports a host-default comparison hypothesis, not attribution of any captured PanelReply failure."
+    }
+  ],
+  "sourceEdits": 0,
+  "nativeAttempts": 0,
+  "productPassing": 0,
+  "limits": [
+    "No native namespace verification occurred during this review.",
+    "The original Ubuntu24 failure remains unresolved. Later-host documentation or a later pass does not repair or establish its cause.",
+    "The wrapper timer requests termination. Final evidence waits for the owned process close event, within the existing CI job timeout.",
+    "Canonical checks require a trusted parent. They are not an atomic filesystem boundary against concurrent directory renames or replacement.",
+    "The 29-case v1 verification and the 40-case v2 verification apply to their separate recorded source hashes. They are not combined as product credit.",
+    "No root or candidate source file was edited during this independent review."
+  ],
+  "completedAt": "2026-11-23T19:20:10.071407+00:00",
+  "finalFiles": {
+    ".github/workflows/demo-tests.yml": "b8cb15567180bd73794bcd23df3b115fb47d03bac3f02fc62bbab4de2b87aee9",
+    "scripts/ocr-isolation-host-context.cjs": "1e11b567e40b9b8c21c67da1cb731f17574db44592202a780b2918ccc523eec7",
+    "scripts/observe-ocr-isolation.cjs": "55034c8fee4dff8e6f8d66f250fdd392fb061a413960699c10696d277be6a2e0",
+    "tests/ocr-isolation-diagnostics.test.cjs": "0946516748b72c0e384bc0e4cfd8356d36f7f4709bcf4a197b350307f714ed1d"
+  },
+  "finalFocusedVerification": {
+    "command": "node --test tests/ocr-isolation-diagnostics.test.cjs",
+    "total": 40,
+    "passed": 40,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 182.631231,
+    "toolChunk": "55a1b2",
+    "nativeAttempts": 0,
+    "harnessOnly": true,
+    "productPassing": 0,
+    "newOutputBoundaryCases": 11,
+    "sourceFilesMatchedFreezeBeforeAndAfter": true,
+    "logPath": "/tmp/panelreply-ocr-host-context-peer-v2-20261123.log",
+    "logSha256": "15e5efdf90ba088b2a0de537565f63bb38b586b7ba327e11b0778ac5072a2582",
+    "diffCheck": "PASS"
+  },
+  "outputBoundaryReview": {
+    "rawParentResolvedBeforeLexicalNormalization": true,
+    "canonicalRepositoryOverlapRejectedBeforeObservation": true,
+    "existingAndDanglingLeavesRejectedBeforeObservation": true,
+    "exclusiveCreation": true,
+    "heldDescriptorUsedForWrite": true,
+    "parentAndLeafIdentityRechecked": true,
+    "linkCountByteCountAndModeChecked": true,
+    "synchronizedAndClosedBeforeSuccessEmission": true,
+    "primaryErrorsPreservedWhenCloseFails": true,
+    "ambiguousPathDeletion": false,
+    "ordinaryStaticAliasAllowsRepositoryWrite": false,
+    "concurrentParentMutationUniversallyPrevented": false,
+    "supportedBoundary": "Trusted CI output directory that neither contains nor is contained by the repository. Concurrent parent mutation is detected at checkpoints, not atomically excluded.",
+    "residualFailureStates": "Creation through a raced parent can leave an empty entry. Moving a held inode during writing may fail the post-write check after bytes were written. Such failures never return completed evidence and do not delete an ambiguous pathname."
+  }
+}

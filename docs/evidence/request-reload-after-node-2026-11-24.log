@@ -1,0 +1,161 @@
+PASS intake combined navigation preserves its program title
+PASS intake callback navigation preserves its program title
+PASS panel initial network failure exposes an enabled retry that can recover
+PASS new-project quota rejection keeps the draft editable without a false version conflict
+PASS saved-project version conflict retains the draft and requires reload before saving
+PASS panel create retains its first uncertain save after a later refusal and confirms the same command
+PASS panel update preserves uncertainty across a failed reconciliation read without another revision
+PASS panel source keeps its original bytes and retry key after an uncertain write and later conflict
+PASS panel source first-attempt rejection releases the draft without inventing uncertainty
+PASS panel create rejects a missing name before changing its draft and confirms the original command on retry
+PASS panel update rejects missing notes without erasing its correction and reconciles the saved command
+PASS panel extraction rejects a response for another project before exposing its candidates
+PASS panel malformed extraction warnings cannot leave addable candidates after rendering fails
+PASS panel extraction binds both receipt and candidate source identities to the requested image
+PASS panel extraction requires the exact submitted revision without creating a false save conflict
+PASS panel extraction rejects incomplete, oversized or reviewed candidate data before draft mutation
+PASS panel extraction validates raw text, warning lists and confidence before publishing its result
+PASS panel extraction preserves valid Unicode and blank fields through explicit add and save
+PASS panel empty and ambiguous OCR results remain available for manual review without inferred values
+PASS panel project response enforces public metadata limits before adopting any fields
+PASS panel row responses preserve unknown-as-blank and reject malformed correction or review data
+PASS panel source responses reject invalid metadata and duplicate identities before replacing the draft
+PASS panel update refuses a valid-shaped receipt for another project and recovers its own saved version
+PASS panel reconciliation checks the target identity before accepting matching contents
+PASS panel reload rejects another project or a server-supplied empty draft while retaining the current project
+PASS panel upload rejects a valid-shaped receipt for another project without changing its original command
+PASS panel upload binds source identity and metadata to the project and submitted command
+PASS panel upload cannot confirm a pre-existing source as the new image even when its metadata matches
+PASS panel response accepts public limits and preserves Unicode, whitespace, blank unknown fields and review state
+PASS panel local empty draft remains explicit and can be discarded before starting another draft
+PASS panel create replay still accepts the server-assigned project after a later saved correction
+PASS panel unchanged update retries the original write when a matching readback has not advanced
+PASS panel update rejects a receipt that does not advance and can reconcile a still-later revision
+PASS panel upload requires an advanced project revision and accepts a still-later same-key receipt
+PASS panel retry clears the previous business project when the authenticated identity changes
+PASS intake retry clears the previous business request when the authenticated identity changes
+PASS dashboard retry clears old records before waiting on a different account data load
+PASS intake callback malformed parent history preserves the task draft, request and retry until a complete receipt arrives
+PASS intake request save rejects wrong identities revisions fields and malformed history before replacing its draft
+PASS intake request first-attempt refusals retain editable drafts and explicit version conflicts without uncertain retries
+PASS intake request uncertain saves retain the original payload through later refusals and confirm only current saved values
+PASS intake request unchanged drafts cannot be confirmed by a same-revision readback after an uncertain write
+PASS intake request readback rejects mismatched identities and incomplete parent fields before confirming an uncertain save
+PASS intake request differing readback preserves its draft until an explicit validated current-record reload
+PASS intake request save accepts the final writable revision and numeric extended-year chronology without weakening fresh receipt bounds
+PASS intake request in-flight receipt cannot restore private values after session expiry clears its pending draft
+PASS intake uncertain request offers explicit validated reload after a permanent retry refusal
+PASS private pages redirect to login, APIs deny anonymous access, and safe health has no secrets
+PASS login/session/logout use private cookies and revoke replayed tokens
+PASS HTTPS handlers issue Secure host-only cookies and new sign-in rotates and revokes the old session
+PASS every mutation requires an exact origin and authenticated writes require the session CSRF token
+PASS duplicate or tampered cookies fail authentication and untrusted Host/forwarded headers cannot bypass the origin
+PASS login failures are generic and persistent throttling blocks further password attempts
+PASS JSON content, bounded length, unsupported fields and invalid UTF-8 fail before saving
+PASS lead create/retry/update/profile operations preserve version and tenant boundaries
+PASS request editor consumes API normalization and confirms later opt-out state without replaying a committed update
+PASS request receipt phone normalization rejects forbidden input while preserving permitted whitespace
+PASS valid Unicode at every supported lead limit fits the bounded JSON body
+PASS API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export
+PASS preview only uses verified business facts and persists no lead until explicit save
+PASS STOP before saving persists and reset/START cannot restore a suppressed number
+PASS an opt-out without a phone is applied when contact details later become known
+PASS preview rejects overlong messages, untrusted fields and forged history roles with public errors
+PASS source files, database paths and traversal are not public assets
+PASS unexpected database errors return a generic failure without SQL, paths or private notes
+PASS startup binds only loopback with an explicit data location and rejects origin/port mismatch
+PASS admin CLI reads passwords only from stdin and creates one explicit local owner
+PASS callback local time resolves winter and summer offsets independently of the device zone
+PASS callback local time exposes both instants in the repeated fall hour
+PASS callback local time rejects the skipped spring hour without normalizing it forward
+PASS callback local time supports a half-hour clock transition
+PASS callback local time preserves quarter-hour offsets and date-boundary conversions
+PASS callback local time rejects impossible dates and unsupported zone identifiers
+PASS callback leap-day conversion retains the saved wall-clock minute
+PASS callback schedule submits the reviewed UTC instant, zone and current parent revision
+PASS callback ambiguous time cannot save until the operator chooses an occurrence
+PASS callback changing the time zone clears an earlier ambiguous occurrence selection
+PASS callback nonexistent wall-clock time never reaches the mutation API
+PASS callback lost save response retains the same idempotency key and payload for retry
+PASS callback malformed success is treated as an uncertain save instead of clearing the draft
+PASS callback a rejected retry cannot erase an earlier unknown save result
+PASS callback version rejection retains edits and requires a reload before another mutation
+PASS callback form correction remains possible after a definitive input rejection
+PASS callback opt-out blocks scheduling without hiding the saved request
+PASS callback safety hold blocks scheduling without hiding the saved request
+PASS callback closed request blocks scheduling without hiding the saved request
+PASS callback review request blocks scheduling without hiding the saved request
+PASS callback missing permission blocks scheduling without hiding the saved request
+PASS callback blocked task retains cancellation while contact actions remain disabled
+PASS callback rescheduling restores the saved occurrence in a repeated clock hour
+PASS callback completion requires a reported outcome and removes date requirements
+PASS callback completed and cancelled task cards expose no further mutation controls
+PASS callback task list rejects a record from another request
+PASS callback stale task read cannot repopulate the previous request
+PASS callback session expiration clears private task content and ignores in-flight queue results
+PASS callback saved markup remains literal text in task notes and customer names
+PASS callback queue paginates server totals and preserves the selected state filter
+PASS callback queue failure clears old cards instead of displaying them as refreshed
+PASS callback wrong-task receipt keeps the same command through a rejected retry until the matching receipt arrives
+PASS callback fresh receipts require advancement of both the parent and the selected task revision
+PASS callback current-revision receipts must confirm the requested action and scheduling fields
+PASS callback incomplete task shape cannot erase a creation draft or report a saved schedule
+PASS callback consumed parent records are checked before handing a receipt to the request renderer
+PASS callback creation replay accepts later cancellation and current opt-out without repeating the write
+PASS callback reschedule replay accepts a later completed task while retaining its original identity
+PASS callback API supports create, queue, reschedule, completion and follow-up without claiming outbound delivery
+PASS callback API creation and completion retries return current saved state without another mutation
+PASS callback client receipt validation accepts real fresh writes and advanced replays after opt-out and cancellation
+PASS callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks
+PASS callback writes require exact origin, CSRF and host before reading the mutation body
+PASS callback API cross-business identifiers cannot read, create or cancel another business task
+PASS spreadsheet product denies every scheduling route before session lookup or body consumption
+PASS callback queue rejects duplicate, unsupported and malformed query filters
+PASS callback scheduling rejects malformed, oversized and non-JSON bodies without writing partial data
+PASS largest valid escaped Unicode task notes fit the explicit request boundary
+PASS sign-out during delayed callback create body prevents the pending write
+PASS sign-out during delayed callback complete body prevents the pending write
+PASS STOP received while a callback body is arriving blocks contact with fresh parent revision
+PASS version2 record export includes saved scheduling and safe audit identifiers without internal operation data
+PASS PRODUCT-UI shared combined index template remains unchanged
+PASS PRODUCT-UI shared combined preview template remains unchanged
+PASS PRODUCT-UI shared combined panels template remains unchanged
+PASS PRODUCT-UI shared combined login template remains unchanged
+PASS PRODUCT-UI shared combined dashboard template remains unchanged
+PASS PRODUCT-UI callback index exposes only callback navigation and branding
+PASS PRODUCT-UI callback preview exposes only callback navigation and branding
+PASS PRODUCT-UI callback login exposes only callback navigation and branding
+PASS PRODUCT-UI spreadsheet panels exposes only spreadsheet navigation and branding
+PASS PRODUCT-UI spreadsheet login exposes only spreadsheet navigation and branding
+PASS PRODUCT-UI callback rejects the panels page instead of exposing another program
+PASS PRODUCT-UI callback rejects the dashboard page instead of exposing another program
+PASS PRODUCT-UI spreadsheet rejects the index page instead of exposing another program
+PASS PRODUCT-UI spreadsheet rejects the preview page instead of exposing another program
+PASS PRODUCT-UI spreadsheet rejects the dashboard page instead of exposing another program
+PASS PRODUCT-UI shared caller labels and navigation cannot become HTML
+PASS PRODUCT-UI shared rejects unknown product identifier "unknown"
+PASS PRODUCT-UI shared rejects unknown product identifier "__proto__"
+PASS PRODUCT-UI shared rejects unknown product identifier "\"><script>bad()</script>"
+PASS PRODUCT-UI shared fails closed for an unbalanced navigation region
+PASS PRODUCT-UI shared fails closed for an unknown template marker
+PASS PRODUCT-UI shared requires a product title rather than returning ambiguous branding
+PASS PRODUCT-UI callback login opens only its expected home
+PASS PRODUCT-UI spreadsheet login opens only its expected home
+PASS PRODUCT-UI shared login opens only its expected home
+PASS PRODUCT-UI callback login rejects missing product
+PASS PRODUCT-UI spreadsheet login rejects null product
+PASS PRODUCT-UI callback login rejects another product
+PASS PRODUCT-UI spreadsheet login rejects wrong local home
+PASS PRODUCT-UI spreadsheet login rejects protocol-relative home
+PASS PRODUCT-UI callback login rejects external home
+PASS PRODUCT-UI callback login rejects prototype name
+PASS PRODUCT-UI spreadsheet login rejects unapproved query
+PASS PRODUCT-UI callback rejected credentials never redirect into a program
+tests 153
+suites 0
+pass 153
+fail 0
+cancelled 0
+skipped 0
+todo 0
+duration_ms 6101.917182

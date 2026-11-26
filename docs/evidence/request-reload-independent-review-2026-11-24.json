@@ -1,0 +1,134 @@
+{
+  "format": "panelreply-request-reload-independent-review-v1",
+  "recordedAt": "2026-11-24T01:45:35.495187+00:00",
+  "reviewer": "ci_recovery",
+  "scope": "Only the unstaged reload follow-up against the staged request receipt candidate",
+  "handoff": {
+    "path": "/tmp/panelreply-request-save-reload-handoff-20261124.json",
+    "sha256": "8f628191e6ba9b0774cbbd4e09ac4026fdc96ca4479fbc0aa059e2c420ed44ef"
+  },
+  "files": [
+    {
+      "path": "docs/REQUEST_SAVE_RELOAD_2026_11_24.md",
+      "bytes": 5022,
+      "sha256": "fb1f740cc283ae9f5b14357d58a646af2c0f0f7a95e51c4e78eb4dc2574f0316",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-after-node-2026-11-24.json",
+      "bytes": 109856,
+      "sha256": "43d26b49cd913a815a6418efbd3c2ada7d9d9abc398967b3a6e5920192ad2d33",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-after-node-2026-11-24.log",
+      "bytes": 13648,
+      "sha256": "fe7e5941df414a0cf3303237cd67f285162263a9f867d872da5c77679c1370aa",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-before-node-2026-11-24.json",
+      "bytes": 32727,
+      "sha256": "1a2accd364760efe091eb67cc20f35eca5037fbcca9953b4e21620103a249e96",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-before-node-2026-11-24.log",
+      "bytes": 279,
+      "sha256": "d61a31e77427b5b303674c38e583cdfc235cdc1057959da4de112fbc0a9432ad",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-browser-collected-2026-11-24.json",
+      "bytes": 2319,
+      "sha256": "60dc315da53ee15192641cd2dbd7cf8814a9ae3491f2f5a4235b349bdac3fabc",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-counterexample-2026-11-24.json",
+      "bytes": 33136,
+      "sha256": "d82451d64e5496a5990f0477e4fb78f2d7ea3a580fb2e1de2f7d8cf4badc0057",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/request-reload-preservation-2026-11-24.json",
+      "bytes": 1803,
+      "sha256": "066136929d42d5eb42166b3d656e3a859af40d68980ced8707f51a360df74650",
+      "baselineSha256": null
+    },
+    {
+      "path": "tests/platform-client-state.test.cjs",
+      "bytes": 72376,
+      "sha256": "833a2782df9889a134d37b8811b350b2c7df577cad639f805caef7e2164a5c5d",
+      "baselineSha256": "99589ac1dd0317808ef695c931b3c1acda6269353e1c0f7c1b33f262d849ea23"
+    },
+    {
+      "path": "tests/product_browser_test.py",
+      "bytes": 50651,
+      "sha256": "cbe88cdc9d21b498b2a2f5e3933112392a76c908ba775ed8359bf08fd5072f7d",
+      "baselineSha256": "9c8c56a8117caaa46126589952838b0e473d8e1e691b95450e90bbfdd5986fe0"
+    },
+    {
+      "path": "workspace/app.js",
+      "bytes": 44509,
+      "sha256": "d6b6663f310349dffd0076b1238c33696dc3ea9f6c4989c58f2fdf289fb996e0",
+      "baselineSha256": "2f42e5df4f936956819a086a9c9c9e2829e765ee62b30b5b5335bc0ff04b2f83"
+    },
+    {
+      "path": "workspace/index.html",
+      "bytes": 22701,
+      "sha256": "0b15210893f7bb0080da73d668c6eab3bfcabf2526bf01dbefeada4743176f7a",
+      "baselineSha256": "7bd8aa73dca924c48125063d475145d0ef7f4b3a430d1c7584f354f60dc9910a"
+    }
+  ],
+  "sourceManifestSha256": "ce3559584e2ac45fea536cfd15a96ddfc9de3255103ad85497b0a16c7086dc4c",
+  "sourceFileCount": 201,
+  "allFrozenFileHashesRecheckedAfterTest": true,
+  "allFourStagedSourceBaselinesMatched": true,
+  "findings": [],
+  "checks": [
+    "Uncertainty notice uses pending command uncertainty and stays separate from version-conflict notice.",
+    "No implicit discard or GET occurs merely because the save fails, navigation is attempted, or reload confirmation is cancelled.",
+    "Reload choice captures the same pending command. Confirmation requires the captured command to remain current and begins no write.",
+    "Draft and pending command survive a held GET, rejected identity, invalid shape, lower revision, transport error and owner cancellation by unchanged validated reload path.",
+    "Only explicit owner-confirmed reload accepts the original revision. Automatic saved-value confirmation still requires a later revision and matching normalized fields.",
+    "Explicit reload labels prior command outcome unestablished and never claims that draft was saved.",
+    "Save retry continues using original body. Reload control disables during save/loading; pending or expired command guards remain.",
+    "The only runtime delta is five app lines and one HTML notice. Server/API/store, validators, original case bodies and earlier frozen evidence are unchanged relative to staged baseline."
+  ],
+  "focusedTest": {
+    "command": [
+      "node",
+      "--test",
+      "--test-reporter=spec",
+      "--test-name-pattern=^intake uncertain request offers explicit validated reload after a permanent retry refusal$",
+      "tests/platform-client-state.test.cjs"
+    ],
+    "exitCode": 0,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "stdout": "\u2714 intake uncertain request offers explicit validated reload after a permanent retry refusal (58.591349ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 179.919246\n",
+    "scope": "One synthetic state method exercising two permanent-refusal paths, cancel, malformed current-record GET, held read, duplicate reload suppression and original-revision explicit reload."
+  },
+  "collectionCorrection": {
+    "initialSourceCommand": [
+      "node",
+      "scripts/test-evidence.cjs"
+    ],
+    "initialExitCode": 1,
+    "cause": "Missing required --source argument. No source report or review record created. Corrected source-only invocation succeeded.",
+    "newTestsOnCorrection": 0
+  },
+  "browserExecutions": 0,
+  "nativeAttempts": 0,
+  "edits": false,
+  "additionalPortfolioCredit": 0,
+  "limits": [
+    "Browser journey remains unexecuted by this reviewer.",
+    "Missing or invalid current record cannot finish validated reload.",
+    "In-memory pending draft is not persisted across browser termination."
+  ]
+}

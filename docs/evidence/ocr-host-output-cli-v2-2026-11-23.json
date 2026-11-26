@@ -1,0 +1,120 @@
+{
+  "format": "panelreply-ocr-output-boundary-cli-v2",
+  "recordedAt": "2026-11-23T19:17:01.964810+00:00",
+  "sourceCommit": "2882d4f836d4694c8b445f91f52d64df943cf213",
+  "sourceManifestSha256": "aaf5c5995c0b53060c1cdd55b953a6fee4bb456fa6d494fe89f25620feb9dde5",
+  "sourceFiles": 195,
+  "negativeCases": [
+    {
+      "case": "repository_alias",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "FAIL",
+        "reason": "OUTPUT_OVERLAP",
+        "releaseCredit": false,
+        "productPassing": 0,
+        "outputState": "NOT_CREATED",
+        "outputWriteStarted": false,
+        "outputWriteVerified": false,
+        "outputDescriptorClosed": false
+      },
+      "repositoryProbeCreated": false,
+      "preObservationBoundaryRejected": true,
+      "nativeCasesExecuted": 0
+    },
+    {
+      "case": "raw_alias_parent_traversal",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "FAIL",
+        "reason": "OUTPUT_OVERLAP",
+        "releaseCredit": false,
+        "productPassing": 0,
+        "outputState": "NOT_CREATED",
+        "outputWriteStarted": false,
+        "outputWriteVerified": false,
+        "outputDescriptorClosed": false
+      },
+      "repositoryProbeCreated": false,
+      "preObservationBoundaryRejected": true,
+      "nativeCasesExecuted": 0
+    },
+    {
+      "case": "missing_parent",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "FAIL",
+        "reason": "OUTPUT_PARENT_UNAVAILABLE",
+        "releaseCredit": false,
+        "productPassing": 0,
+        "outputState": "NOT_CREATED",
+        "outputWriteStarted": false,
+        "outputWriteVerified": false,
+        "outputDescriptorClosed": false
+      },
+      "repositoryProbeCreated": false,
+      "preObservationBoundaryRejected": true,
+      "nativeCasesExecuted": 0
+    },
+    {
+      "case": "unresolvable_loop_parent",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "FAIL",
+        "reason": "OUTPUT_PARENT_UNAVAILABLE",
+        "releaseCredit": false,
+        "productPassing": 0,
+        "outputState": "NOT_CREATED",
+        "outputWriteStarted": false,
+        "outputWriteVerified": false,
+        "outputDescriptorClosed": false
+      },
+      "repositoryProbeCreated": false,
+      "preObservationBoundaryRejected": true,
+      "nativeCasesExecuted": 0
+    },
+    {
+      "case": "dangling_leaf",
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderr": {
+        "status": "FAIL",
+        "reason": "OUTPUT_ALREADY_EXISTS",
+        "releaseCredit": false,
+        "productPassing": 0,
+        "outputState": "NOT_CREATED",
+        "outputWriteStarted": false,
+        "outputWriteVerified": false,
+        "outputDescriptorClosed": false
+      },
+      "repositoryProbeCreated": false,
+      "preObservationBoundaryRejected": true,
+      "nativeCasesExecuted": 0
+    }
+  ],
+  "ordinaryOutsideBuildFailure": {
+    "trigger": "Explicit failed-build CLI input, no dependency build attempted.",
+    "exitCode": 1,
+    "status": "FAIL",
+    "nativeStatus": "NOT_RUN",
+    "verifierAttempts": 0,
+    "notRunCases": 6,
+    "stdoutExactlyMatchesFile": true,
+    "stderrBytes": 0,
+    "mode": "0600",
+    "hardLinks": 1,
+    "sourceStable": true,
+    "sourceDirty": true,
+    "existingExecutableObserved": true,
+    "file": "docs/evidence/ocr-host-output-build-failure-v2-2026-11-23.json",
+    "sha256": "848c0cab574ed690555cdc26d328414a096fb0d0e7a48a4e692d3cfa7445736d"
+  },
+  "nativeCasesExecuted": 0,
+  "newProductCredit": 0,
+  "releaseCredit": false,
+  "scope": "Owned temporary aliases and CLI preflight checks only. Negative cases returned before observation. No native verifier or namespace command ran."
+}

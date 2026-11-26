@@ -2,6 +2,9 @@ name: PanelReply regression tests
 on:
   pull_request:
     branches: [main, 'audit/**']
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/evidence/**'
   push:
     branches:
       - main
@@ -14,40 +17,686 @@ jobs:
   demo-tests:
     # Keep the OS baseline explicit when GitHub moves the latest label.
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      - name: Verify intake, private workspace, HTTP and CSP
-        env:
-          PANELREPLY_EXPECT_PUBLIC_OFFLINE: 'true'
-          WORKSPACE_HTTP_TESTS: '1'
-        run: |
-          node scripts/build-demo.cjs --check
-          node --test tests/*.test.cjs
+          node-version: '24'
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Install independent export verification tools
+        run: python -m pip install -r tests/prelaunch-requirements.txt
+      - name: Verify intake, private workspace, HTTP and CSP
+        env:
+          WORKSPACE_HTTP_TESTS: '1'
+        run: |
+          node scripts/build-demo.cjs --check
+          node scripts/run-release-node.cjs --output "${{ runner.temp }}/panelreply-release-node.json"
+      - name: Install the local OCR engine and English data
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil
+      - name: Verify actual OCR and native failure handling on synthetic images
+        run: |
+          node scripts/test-ocr-fixtures.cjs
+          node scripts/test-ocr-resource-limits.cjs
+      - name: Measure synthetic conversation integration and bounded storage workload
+        run: |
+          node scripts/evaluate-assistant.cjs
+          node scripts/prelaunch-stress.cjs
       - name: Install browser test dependency
         run: python -m pip install -r tests/browser-requirements.txt
+      - name: Independently read generated spreadsheet contents
+        run: python scripts/test-xlsx-reader.py
       - name: Install Chromium for browser checks
+        id: browser_install
         run: python -m playwright install --with-deps --only-shell chromium
-      - name: Exercise the demo through a real browser
-        run: |
-          python tests/browser_test.py
-          python tests/intake_browser_test.py
-      - name: Verify workspace accessibility and capture review images
+      - name: Verify all existing Chromium workflows with per-method evidence
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
         env:
           PANELREPLY_EMIT_PREVIEWS: '1'
-        run: python tests/ui_browser_test.py
-      - name: Verify private inbox, isolation, persistence and failure recovery
-        env:
           PANELREPLY_EMIT_WORKSPACE_PREVIEWS: '1'
-        run: python tests/workspace_browser_test.py
-      - name: Verify record export, encrypted restore and password recovery
-        env:
           PANELREPLY_EMIT_RECOVERY_PREVIEWS: '1'
-        run: python tests/workspace_recovery_browser_test.py
+          PANELREPLY_EMIT_DESIGN_PREVIEWS: '1'
+          PANELREPLY_EMIT_PLATFORM_PREVIEWS: '1'
+          PANELREPLY_EMIT_LIFECYCLE_PREVIEWS: '1'
+        run: python tests/release_platform_runner.py --suite baseline --output "${{ runner.temp }}/panelreply-release-platform.json"
+      - name: Preserve Linux Node and Chromium evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-baseline-linux-attempt-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/panelreply-release-node.json
+            ${{ runner.temp }}/panelreply-release-platform.json
+          if-no-files-found: error
+          retention-days: 30
+
+  browser-compatibility:
+    name: Private workflows (${{ matrix.browser }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    env:
+      PANELREPLY_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - &webkit_ubuntu_mirror
+        name: Use the Ubuntu archive for WebKit packages on affected Linux runners
+        if: runner.os == 'Linux' && matrix.browser == 'webkit'
+        shell: bash
+        run: |
+          mirrors=/etc/apt/apt-mirrors.txt
+          if [[ -f "$mirrors" ]] && grep -Fq 'http://us-east-2.ec2.archive.ubuntu.com/ubuntu' "$mirrors"; then
+            sudo sed -i 's|http://us-east-2\.ec2\.archive\.ubuntu\.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$mirrors"
+          fi
+      - name: Install isolated test tools and native OCR
+        run: |
+          python -m pip install -r tests/browser-requirements.txt -r tests/prelaunch-requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify marketing, private workflows, recovery and exports
+        run: python tests/release_platform_runner.py --suite private --output "${{ runner.temp }}/panelreply-release-platform.json"
+      - name: Preserve private workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-private-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-platform.json
+          if-no-files-found: error
+          retention-days: 30
+
+  ocr-benchmark:
+    name: Synthetic OCR measurements
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install benchmark tools
+        run: |
+          python -m pip install -r tests/prelaunch-requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil fonts-dejavu-core
+      - name: Generate and measure 310 unique synthetic label conditions
+        run: |
+          python tests/fixtures/panels-benchmark/generate.py "$RUNNER_TEMP/panelreply-ocr-benchmark"
+          node scripts/benchmark-ocr.cjs "$RUNNER_TEMP/panelreply-ocr-benchmark" "$RUNNER_TEMP/panelreply-ocr-results.json"
+      - name: Report the separate accuracy gate
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const r = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'panelreply-ocr-results.json')));
+          console.log(JSON.stringify({
+            format: 'panelreply-ci-ocr-evidence',
+            engine: r.engine, engineModuleSha256: r.engineModuleSha256,
+            pipelineSources: r.pipelineSources, pipelineSha256: r.pipelineSha256,
+            dependencyEvidence: r.dependencyEvidence, identityGate: r.identityGate,
+            datasetSha256: r.datasetSha256, pillowVersion: r.pillowVersion, fonts: r.fonts,
+            accuracyGate: r.accuracyGate, overall: r.overall, byCondition: r.byCondition,
+            elapsedMs: r.elapsedMs, nativeProcess: r.nativeProcess, nodeProcess: r.nodeProcess,
+            results: r.results.map(({ id, actual, exact, error, reviewViolation }) => ({ id, actual, exact, error, reviewViolation })),
+            scope: r.scope
+          }));
+          if (r.accuracyGate !== 'PASS') console.log('::warning::Synthetic OCR has nonexact cases. Measurement completion is not an accuracy pass or release approval.');
+          NODE
+
+  ocr-isolation:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 6
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: Restricted OCR worker verification
+          - os: ubuntu-26.04
+            name: Restricted OCR host compatibility (ubuntu-26.04)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install fixed worker prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil build-essential meson ninja-build pkg-config libcap-dev libselinux1-dev git ca-certificates
+      - name: Build pinned non-setuid isolation dependency
+        id: isolation_build
+        shell: bash
+        run: |
+          set -euo pipefail
+          # v0.12.0 fixes CVE-2026-87766 and removes setuid support.
+          # Build as the runner user. Do not change host namespace or LSM policy.
+          bwrap_src="$RUNNER_TEMP/panelreply-bwrap-0.12.0"
+          bwrap_commit="2a76602a8c71f36c1527cf9fc3417d9149822e0c"
+          git init --quiet "$bwrap_src"
+          git -C "$bwrap_src" remote add origin https://github.com/containers/bubblewrap.git
+          git -C "$bwrap_src" fetch --depth=1 --no-tags origin "$bwrap_commit"
+          git -C "$bwrap_src" checkout --detach FETCH_HEAD
+          test "$(git -C "$bwrap_src" rev-parse HEAD)" = "$bwrap_commit"
+          meson setup "$bwrap_src/_build" "$bwrap_src" \
+            --buildtype=release --prefix=/usr \
+            -Dselinux=enabled -Dtests=false -Dman=disabled \
+            -Dbash_completion=disabled -Dzsh_completion=disabled
+          meson compile -C "$bwrap_src/_build"
+          sudo install -o root -g root -m 0755 "$bwrap_src/_build/bwrap" /usr/bin/bwrap
+          test ! -u /usr/bin/bwrap
+          test ! -g /usr/bin/bwrap
+          /usr/bin/bwrap --version
+          sha256sum /usr/bin/bwrap
+      - name: Verify isolation or report the startup restriction
+        if: always()
+        env:
+          PANELREPLY_ISOLATION_BUILD_OUTCOME: ${{ steps.isolation_build.outcome }}
+        run: |
+          result=0
+          node scripts/observe-ocr-isolation.cjs "$RUNNER_TEMP/panelreply-ocr-isolation-${{ matrix.os }}.json" --build-outcome "$PANELREPLY_ISOLATION_BUILD_OUTCOME" || result=$?
+          if [ "$result" -eq 2 ]; then
+            echo '::warning::OCR isolation BLOCKED on this host. No fallback or privileged retry. This job is not isolation acceptance.'
+          elif [ "$result" -ne 0 ]; then
+            exit "$result"
+          fi
+      - name: Preserve host observations and native result outside product counts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocr-isolation-host-${{ matrix.os }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-ocr-isolation-${{ matrix.os }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  http-workload:
+    name: Synthetic concurrent HTTP workload
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install native OCR for bounded concurrent requests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil
+      - name: Measure HTTP clients, contention, native OCR and restart recovery
+        env:
+          PANELREPLY_HTTP_STRESS: '1'
+        run: node scripts/http-workload.cjs
+
+  public-suspension:
+    name: Required public suspension
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check the required suspended state using GET only
+        env:
+          PANELREPLY_EXPECT_PUBLIC_OFFLINE: 'true'
+        run: node --test tests/live-smoke.test.cjs
+
+  portable-release-node:
+    name: Portable release contracts (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-15-intel]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Exercise portable contracts with per-case evidence
+        run: node scripts/run-release-node.cjs --portable --output "${{ runner.temp }}/panelreply-release-node.json"
+      - name: Preserve portable Node execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-node-${{ matrix.os }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-node.json
+          if-no-files-found: error
+          retention-days: 30
+
+  windows-storage-component:
+    name: Windows private storage component
+    # Component evidence only. Neither product loads this adapter yet.
+    # Fixture selection must observe NTFS and must not assume D: is NTFS.
+    runs-on: windows-2022
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+      - name: Build the pinned Windows component and separate probe artifacts
+        id: component_build
+        run: ./scripts/build-windows-storage.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'panelreply-windows-storage-build')
+      - name: Record every component case, including unexecuted cases after build failure
+        if: always()
+        env:
+          PANELREPLY_COMPONENT_BUILD_OUTCOME: ${{ steps.component_build.outcome }}
+        run: |
+          New-Item -ItemType Directory -Path (Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence') -Force | Out-Null
+          $ComponentArguments = @('scripts/run-windows-storage.cjs',
+            '--build-directory', (Join-Path $env:RUNNER_TEMP 'panelreply-windows-storage-build'),
+            '--output', (Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence/windows-storage-component.json'))
+          if ($env:PANELREPLY_COMPONENT_BUILD_OUTCOME -ne 'success') {
+            $ComponentArguments += '--build-failed'
+          }
+          & node @ComponentArguments
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify component evidence accounting without product credit
+        if: always()
+        run: |
+          $EvidenceDirectory = Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence'
+          New-Item -ItemType Directory -Path $EvidenceDirectory -Force | Out-Null
+          & node --test tests/windows-storage-evidence.harness.cjs 2>&1 | Tee-Object -FilePath (Join-Path $EvidenceDirectory 'component-evidence-harness.log')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify portable SQLite observer evidence controls without native or product credit
+        if: always()
+        run: |
+          $EvidenceDirectory = Join-Path $env:RUNNER_TEMP 'panelreply-windows-component-evidence'
+          New-Item -ItemType Directory -Path $EvidenceDirectory -Force | Out-Null
+          # Six Linux-only process controls run locally. These 19 cases include
+          # all 13 output-boundary controls and never load a native component.
+          & node --test --test-skip-pattern='portable protocol |protocol failure |identity rejection ' tests/windows-sqlite-observation.harness.cjs 2>&1 | Tee-Object -FilePath (Join-Path $EvidenceDirectory 'sqlite-observer-output-harness.log')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Preserve component results and build provenance outside product totals
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-storage-component-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/panelreply-windows-component-evidence/*
+            ${{ runner.temp }}/panelreply-windows-storage-build/*.json
+            ${{ runner.temp }}/panelreply-windows-storage-build/configure.log
+            ${{ runner.temp }}/panelreply-windows-storage-build/build.log
+            ${{ runner.temp }}/panelreply-windows-storage-build/dependencies/SHASUMS256.txt
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/configured-toolchain.json
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/CMakeCache.txt
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/CMakeFiles/**/CMakeCXXCompiler.cmake
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/CMakeFiles/**/CMakeSystem.cmake
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/*.vcxproj
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/Release/*.node
+            ${{ runner.temp }}/panelreply-windows-storage-build/build/Release/panelreply_windows_storage_fixture.exe
+          if-no-files-found: error
+          retention-days: 30
+
+  portable-release-browsers:
+    name: Static client (${{ matrix.os }}, ${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, macos-15-intel]
+        browser: [chromium, firefox, webkit]
+        include:
+          # Chromium's existing baseline already covers all 92 static methods.
+          # The Linux private Firefox/WebKit suites already cover design_browser_test.
+          - os: ubuntu-24.04
+            browser: firefox
+            suite: portable-extra
+          - os: ubuntu-24.04
+            browser: webkit
+            suite: portable-extra
+    env:
+      PANELREPLY_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - *webkit_ubuntu_mirror
+      - name: Install the selected browser and Python test tools
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Exercise static client UI and preserve each method result
+        run: python tests/release_platform_runner.py --suite "${{ matrix.suite || 'portable' }}" --output "${{ runner.temp }}/panelreply-release-platform.json"
+      - name: Preserve static client platform evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-platform-${{ matrix.os }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-platform.json
+          if-no-files-found: error
+          retention-days: 30
+
+  branded-release-browsers:
+    name: Static client (${{ matrix.os }}, ${{ matrix.channel }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+        channel: [chrome, msedge]
+    env:
+      PANELREPLY_BROWSER: chromium
+      PANELREPLY_BROWSER_CHANNEL: ${{ matrix.channel }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install the explicitly named browser on this disposable runner
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps ${{ matrix.channel }}
+      - name: Exercise the branded browser without fallback
+        run: python tests/release_platform_runner.py --suite portable --output "${{ runner.temp }}/panelreply-release-platform.json"
+      - name: Preserve branded browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-platform-${{ matrix.os }}-${{ matrix.channel }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-platform.json
+          if-no-files-found: error
+          retention-days: 30
+
+  emulated-release-mobile:
+    name: Emulated private workflows (${{ matrix.browser }})
+    # This is Linux plus browser device emulation, never physical iOS/Android.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    env:
+      PANELREPLY_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - *webkit_ubuntu_mirror
+      - name: Install the selected emulation engine
+        id: mobile_dependencies
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Exercise touch, saved data, failures, exports and private source images
+        run: python tests/release_platform_runner.py --suite mobile --output "${{ runner.temp }}/panelreply-release-mobile.json"
+      - name: Exercise fixed callback scheduling and guards with trusted touch
+        if: ${{ !cancelled() && steps.mobile_dependencies.outcome == 'success' }}
+        run: python tests/release_platform_runner.py --suite callback-mobile --output "${{ runner.temp }}/panelreply-release-callback-mobile.json"
+      - name: Preserve emulated-device evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-mobile-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-mobile.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Preserve fixed callback emulation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-callback-mobile-linux-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-callback-mobile.json
+          if-no-files-found: error
+          retention-days: 30
+
+  separated-product-browsers:
+    name: Selected ${{ matrix.product }} program (${{ matrix.os }}, ${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        product: [callback, spreadsheet]
+        browser: [chromium, firefox, webkit]
+        include:
+          - os: macos-15-intel
+            product: callback
+            browser: chromium
+          - os: macos-15-intel
+            product: callback
+            browser: firefox
+          - os: macos-15-intel
+            product: callback
+            browser: webkit
+          - os: macos-15-intel
+            product: spreadsheet-manual
+            browser: chromium
+          - os: macos-15-intel
+            product: spreadsheet-manual
+            browser: firefox
+          - os: macos-15-intel
+            product: spreadsheet-manual
+            browser: webkit
+    env:
+      PANELREPLY_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - *webkit_ubuntu_mirror
+      - name: Install selected-product test dependencies
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Linux native OCR prerequisites
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd util-linux python3-pil
+      - name: Verify this fixed product entrypoint and its own browser workflows
+        # The runner context exists at step scope. Keep private fixture paths
+        # outside macOS's /var symlink without weakening the storage contract.
+        env:
+          TMPDIR: ${{ runner.temp }}
+          PANELREPLY_CAPTURE_DIR: ${{ runner.temp }}/panelreply-selected-product-previews
+        run: python tests/release_platform_runner.py --suite "${{ matrix.product }}" --output "${{ runner.temp }}/panelreply-selected-product.json"
+      - name: Preserve selected-product browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-selected-${{ matrix.os }}-${{ matrix.product }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-selected-product.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Preserve selected-product screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-selected-${{ matrix.os }}-${{ matrix.product }}-${{ matrix.browser }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-selected-product-previews/*.jpg
+          if-no-files-found: ignore
+          retention-days: 30
+
+  native-safari-products:
+    name: Installed Safari fixed product workflows
+    runs-on: macos-15-intel
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install the pinned native WebDriver client
+        run: python -m pip install -r tests/safari-requirements.txt
+      - name: Check native Safari evidence handling without product-test credit
+        run: python -m unittest discover -s tests -p safari_runner_test.py -v
+      - name: Exercise the installed Safari with six product journeys
+        # The standard image already enables Safari automation. No sudo,
+        # preference/TCC changes, simulator, alternate driver or browser retry.
+        env:
+          TMPDIR: ${{ runner.temp }}
+          PANELREPLY_CAPTURE_DIR: ${{ runner.temp }}/panelreply-native-safari-previews
+        run: python tests/release_safari_runner.py --output-dir "${{ runner.temp }}/panelreply-native-safari-evidence"
+      - name: Preserve actual Safari results and unexecuted cases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-native-safari-macos-15-intel-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-native-safari-evidence/*.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve native Safari screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-native-safari-macos-15-intel-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-native-safari-previews/*.png
+          if-no-files-found: ignore
+          retention-days: 30
+
+  apple-silicon-release:
+    name: Apple Silicon contracts and selected products
+    # Standard public-repository arm64 runner, never a paid -large/-xlarge label.
+    # Prior macos-26 attempts received no runner. Try the documented macos-15
+    # ARM64 image while retaining observed architecture and every test gate.
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Require actual Apple Silicon provenance
+        run: |
+          node -e "if (process.platform !== 'darwin' || process.arch !== 'arm64') throw new Error('Expected actual macOS arm64'); console.log(process.platform, process.arch, process.version)"
+          sw_vers
+      - name: Exercise portable Node contracts on arm64
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: node scripts/run-release-node.cjs --portable --output "${{ runner.temp }}/panelreply-arm-evidence/node.json"
+      - name: Install the three browser engines
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps chromium firefox webkit
+      - name: Exercise actual arm64 clients and fixed product entrypoints
+        # Continue independent suites to preserve failures and coverage. No retry
+        # or fallback engine may turn an unavailable platform into a pass.
+        shell: bash
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: |
+          result=0
+          for browser in chromium firefox webkit; do
+            for suite in portable callback spreadsheet-manual; do
+              PANELREPLY_BROWSER="$browser" PANELREPLY_CAPTURE_DIR="${{ runner.temp }}/panelreply-arm-previews/$browser/$suite" python tests/release_platform_runner.py --suite "$suite" --output "${{ runner.temp }}/panelreply-arm-evidence/$browser-$suite.json" || result=1
+            done
+          done
+          exit "$result"
+      - name: Preserve Apple Silicon source and platform evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apple-silicon-macos-15-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-arm-evidence/*.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve Apple Silicon screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-apple-silicon-macos-15-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-arm-previews/**/*.jpg
+          if-no-files-found: ignore
+          retention-days: 30
+
+  release-evidence:
+    name: Account for distinct product and platform tests
+    if: always()
+    needs: [demo-tests, browser-compatibility, portable-release-node, portable-release-browsers, branded-release-browsers, emulated-release-mobile, separated-product-browsers, apple-silicon-release, native-safari-products]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read the completed evidence from this workflow
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: ${{ runner.temp }}/panelreply-evidence-input
+      - name: Deduplicate cases and retain missing platform gates
+        run: node scripts/aggregate-test-evidence.cjs --input "${{ runner.temp }}/panelreply-evidence-input" --output "${{ runner.temp }}/panelreply-release-aggregate.json" --source "$GITHUB_SHA"
+      - name: Report the measured totals and separate release decisions
+        if: always()
+        env:
+          PANELREPLY_EVIDENCE_RESULT: ${{ runner.temp }}/panelreply-release-aggregate.json
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const file = process.env.PANELREPLY_EVIDENCE_RESULT;
+          if (!fs.existsSync(file)) throw new Error('The aggregate report was not produced.');
+          const report = JSON.parse(fs.readFileSync(file, 'utf8'));
+          if (!report.valid) throw new Error('Evidence accounting rejected this run: ' + JSON.stringify(report.errors));
+          console.log(JSON.stringify({
+            format: report.format, source: report.source,
+            product: report.product, harness: report.harness, distinctCases: report.distinctCases,
+            productScopes: report.productScopes, duplicateObservationsExcluded: report.duplicateObservationsExcluded,
+            matrix: report.matrix, requiredPlatforms: report.requiredPlatforms, milestones: report.milestones,
+            releaseDecision: report.releaseDecision
+          }));
+          const unresolved = report.requiredPlatforms.filter(item => item.kind !== 'manual' && !item.complete);
+          if (unresolved.length) throw new Error('Automated platform requirements remain unresolved: ' + unresolved.map(item => item.id).join(', '));
+          if (!report.milestones.fullGoalAchieved) console.log('::warning::The numeric result does not complete untested physical-platform or separate product release requirements.');
+          NODE
+      - name: Preserve the aggregate and counting decision
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-release-test-summary-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/panelreply-release-aggregate.json
+          if-no-files-found: error
+          retention-days: 30
 

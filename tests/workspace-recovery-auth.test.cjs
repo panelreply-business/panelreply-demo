@@ -222,7 +222,7 @@ test('recovery CLI rejects unrelated and unsupported schemas without creating wo
   fs.writeFileSync(filename, '', { mode: 0o600 });
   const db = new DatabaseSync(filename);
   db.exec("CREATE TABLE unrelated (note TEXT); INSERT INTO unrelated VALUES ('keep this record');");
-  for (const version of [0, 1, 2]) {
+  for (const version of [0, 1, 2, 3]) {
     db.exec('PRAGMA user_version=' + version);
     await assert.rejects(main(['--data-dir', base, '--username', 'owner'], Readable.from([REPLACEMENT])), RecoveryInputError);
     assert.deepEqual(db.prepare("SELECT name FROM sqlite_schema WHERE type='table'").all().map(row => row.name), ['unrelated']);

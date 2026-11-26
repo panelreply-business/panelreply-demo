@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "91c5553fbe4ac97fcfcf8991da7c0c6cca41fbf7",
+  "runId": 44656230988,
+  "runNumber": 68,
+  "jobId": 136023013772,
+  "measurement": {
+    "status": "BLOCKED",
+    "reason": "isolation_unavailable",
+    "cases": 0,
+    "engine": {
+      "available": false,
+      "engine": "tesseract",
+      "version": null,
+      "language": "eng",
+      "reason": "isolation_unavailable"
+    },
+    "diagnostic": {
+      "observedInvocations": 1,
+      "maxRecords": 3,
+      "stderrLimitPerStageBytes": 4096,
+      "records": [
+        {
+          "stage": "engine_version",
+          "exitCode": 1,
+          "signal": null,
+          "spawnErrorCode": null,
+          "closed": true,
+          "stderrBytesObserved": 61,
+          "stderr": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n",
+          "stderrBytesRetained": 61,
+          "stderrTruncated": false
+        }
+      ],
+      "classification": {
+        "kind": "worker_startup_cause_unconfirmed",
+        "confirmedExternalBlocker": false,
+        "status": "BLOCKED"
+      },
+      "scope": "Bounded stderr and exit metadata observed from the same required-mode readiness invocation. No extra command, customer input, environment dump, privileged retry or policy change."
+    },
+    "nativeDenyBehavior": "NOT TESTED",
+    "privilegedRetry": false,
+    "scope": "Required readiness failed. Only an explicit namespace-denial diagnostic establishes an external host blocker. No policy change or unconfined fallback ran."
+  }
+}

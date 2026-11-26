@@ -25,6 +25,23 @@ async function fixture(t, options = {}) {
 }
 function fails(code) { return error => error instanceof StoreError && error.code === code; }
 
+test('store retention review authenticates and reports current saved versions without mutating records', async t => {
+  let clock = 2000000000000;
+  const f = await fixture(t, { now: () => clock });
+  const created = f.store.createLead(f.alice, lead(), crypto.randomUUID()).lead;
+  const closed = f.store.updateLead(f.alice, created.id, { version: created.version, status: 'closed' });
+  const panel = f.store.createPanelProject(f.alice, { name: 'Synthetic retention project', notes: '', rows: [] }, crypto.randomUUID()).project;
+  clock += 1;
+  const input = { before: clock, limit: 50 };
+  const report = f.store.reviewRetention(f.alice, input);
+  assert.deepEqual(report.requests.records.map(row => [row.id, row.version]), [[closed.id, closed.version]]);
+  assert.deepEqual(report.projects.records.map(row => [row.id, row.version]), [[panel.id, panel.version]]);
+  assert.equal(f.store.reviewRetention(f.bob, input).requests.total, 0);
+  assert.throws(() => f.store.reviewRetention({ ...f.alice, businessId: f.bob.businessId }, input), fails('unauthorized'));
+  assert.deepEqual(f.store.getLead(f.alice, closed.id), closed);
+  assert.deepEqual(f.store.getPanelProject(f.alice, panel.id), panel);
+});
+
 test('passwords use salted scrypt and reject wrong, invalid, or malformed credentials', async () => {
   const first = await passwordHash;
   const second = await hashPassword(PASSWORD);
@@ -153,6 +170,39 @@ test('invalid profile updates leave the current business facts untouched', async
   assert.deepEqual(f.store.getProfile(f.alice), profile);
 });
 
+test('unpaired UTF-16 business names cannot create accounts or change profile and audit records', async t => {
+  const f = await fixture(t), profile = f.store.getProfile(f.alice);
+  const counts = () => {
+    const db = new DatabaseSync(f.store.filename, { readOnly: true });
+    try { return ['businesses', 'users', 'audit'].map(table => db.prepare('SELECT count(*) AS n FROM ' + table).get().n); }
+    finally { db.close(); }
+  };
+  const before = counts();
+  for (const [suffix, businessName] of [['high', 'Synthetic\ud800Electric'], ['low', 'Synthetic\udc00Electric']]) {
+    const username = 'rejected-' + suffix + '@example.test';
+    assert.throws(() => f.store.createBusinessOwner({ businessName, username, passwordHash: f.store.findUser(f.alice.username).password_hash }), { code: 'invalid_input', fields: ['businessName'] });
+    assert.equal(f.store.findUser(username), null);
+    assert.throws(() => f.store.updateProfile(f.alice, { version: profile.version, businessName, facts: profile.facts }), { code: 'invalid_input', fields: ['businessName'] });
+    assert.deepEqual(f.store.getProfile(f.alice), profile);
+    assert.deepEqual(counts(), before);
+  }
+});
+
+test('unpaired UTF-16 request text fails before transcript, revision, audit or restriction writes', async t => {
+  const f = await fixture(t), saved = f.store.createLead(f.alice, lead(), crypto.randomUUID()).lead;
+  const before = f.store.exportBusiness(f.alice);
+  for (const malformed of ['before\ud800after', 'before\udc00after']) {
+    assert.throws(() => f.store.createLead(f.alice, lead({ conversation: [{ role: 'customer', text: malformed }] }), crypto.randomUUID()), { code: 'invalid_input', fields: ['conversation'] });
+    assert.throws(() => f.store.createLead(f.alice, lead({ customerName: malformed }), crypto.randomUUID()), { code: 'invalid_input', fields: ['customerName'] });
+    assert.throws(() => f.store.updateLead(f.alice, saved.id, { version: saved.version, status: 'new', notes: malformed }), { code: 'invalid_input', fields: ['notes'] });
+    assert.deepEqual(f.store.exportBusiness(f.alice), before);
+    assert.equal(f.store.isSuppressed(f.alice, saved.phone), false);
+    assert.equal(f.store.isSafetyHeld(f.alice, saved.phone), false);
+  }
+  f.reopen();
+  assert.deepEqual(f.store.getLead(f.alice, saved.id), saved);
+});
+
 test('hazards in customer evidence create a sticky review hold and assistant text cannot set it', async t => {
   const f = await fixture(t);
   const held = f.store.createLead(f.alice, lead({ conversation: [{ role: 'customer', text: 'The outlet is sparking.' }] }), crypto.randomUUID()).lead;
@@ -163,7 +213,10 @@ test('hazards in customer evidence create a sticky review hold and assistant tex
   const reviewed = f.store.updateLead(f.alice, held.id, { version: 1, status: 'needs_review', notes: 'Awaiting a separate human resolution process.' });
   assert.equal(reviewed.safetyHold, true);
   assert.equal(reviewed.contactAllowed, false);
-  const safe = f.store.createLead(f.alice, lead({ conversation: [{ role: 'assistant', text: 'If there is smoke or sparking, seek help.' }] }), crypto.randomUUID()).lead;
+  const reused = f.store.createLead(f.alice, lead({ conversation: [{ role: 'assistant', text: 'No hazard reported.' }] }), crypto.randomUUID()).lead;
+  assert.equal(reused.safetyHold, true);
+  assert.equal(reused.contactAllowed, false);
+  const safe = f.store.createLead(f.alice, lead({ phone: '+15865550198', conversation: [{ role: 'assistant', text: 'If there is smoke or sparking, seek help.' }] }), crypto.randomUUID()).lead;
   assert.equal(safe.safetyHold, false);
   assert.equal(safe.contactAllowed, true);
 });
@@ -286,3 +339,4 @@ test('data location rejects relative, shared-permission and symbolic-link paths'
   assert.throws(() => openStore({ dataDir: link }), /symbolic/);
   assert.equal(normalizePhone('1-248-555-0123'), '+12485550123');
 });
+

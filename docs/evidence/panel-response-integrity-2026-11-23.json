@@ -1,0 +1,289 @@
+{
+  "format": "panelreply-panel-response-verification",
+  "version": 1,
+  "status": "PASS_LOCAL_CI_PENDING",
+  "baseCommit": "1b35490335203348572e938bcc30dfc0f05d93e1",
+  "baseline": "Two current root files copied and staged locally before edits. The patch is the unstaged incremental diff only.",
+  "patch": {
+    "path": "/tmp/panelreply-panel-response-incremental-20261123.patch",
+    "bytes": 33296,
+    "sha256": "16bfecc9040365b4c7231640ef1e58c203cf191883b830a7c2c436ff3505aed2"
+  },
+  "files": [
+    {
+      "file": "workspace/panels.js",
+      "baselineSha256": "138700cca6e44d4eb438d96eb4751bd6a93022935ebb369c93bfd32400f4ef2b",
+      "afterSha256": "7df806f1449b20b3dac2ce6ffad0674e6728656d9202c45d19c3441e5567564b",
+      "rootStillMatchesBaseline": true
+    },
+    {
+      "file": "tests/platform-client-state.test.cjs",
+      "baselineSha256": "2ae84dd943768516ba823d4d85f105da028805d78b3f8b32238c3e521305fd92",
+      "afterSha256": "9f5d834f5a4afbaaed86b5e481dba8ef9abf6a720a4ba51d75ba4a1b8ea7d6b0",
+      "rootStillMatchesBaseline": true
+    }
+  ],
+  "runtime": {
+    "node": "v24.22.3",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "sameTestSourceBeforeAndAfter": true,
+  "tests": {
+    "before": {
+      "log": "/tmp/panelreply-panel-response-before-20261123.log",
+      "logSha256": "f775914af381f94d1457871dc8f23074b768c3edfca7fe412646d26d74918982",
+      "totals": {
+        "tests": 26,
+        "pass": 15,
+        "fail": 11,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "durationMs": 534.449704,
+      "cases": [
+        {
+          "name": "intake combined navigation preserves its program title",
+          "status": "PASS"
+        },
+        {
+          "name": "intake callback navigation preserves its program title",
+          "status": "PASS"
+        },
+        {
+          "name": "panel initial network failure exposes an enabled retry that can recover",
+          "status": "PASS"
+        },
+        {
+          "name": "new-project quota rejection keeps the draft editable without a false version conflict",
+          "status": "PASS"
+        },
+        {
+          "name": "saved-project version conflict retains the draft and requires reload before saving",
+          "status": "PASS"
+        },
+        {
+          "name": "panel create retains its first uncertain save after a later refusal and confirms the same command",
+          "status": "PASS"
+        },
+        {
+          "name": "panel update preserves uncertainty across a failed reconciliation read without another revision",
+          "status": "PASS"
+        },
+        {
+          "name": "panel source keeps its original bytes and retry key after an uncertain write and later conflict",
+          "status": "PASS"
+        },
+        {
+          "name": "panel source first-attempt rejection releases the draft without inventing uncertainty",
+          "status": "PASS"
+        },
+        {
+          "name": "panel create rejects a missing name before changing its draft and confirms the original command on retry",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel update rejects missing notes without erasing its correction and reconciles the saved command",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel project response enforces public metadata limits before adopting any fields",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel row responses preserve unknown-as-blank and reject malformed correction or review data",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel source responses reject invalid metadata and duplicate identities before replacing the draft",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel update refuses a valid-shaped receipt for another project and recovers its own saved version",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel reconciliation checks the target identity before accepting matching contents",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel reload rejects another project or a server-supplied empty draft while retaining the current project",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel upload rejects a valid-shaped receipt for another project without changing its original command",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel upload binds source identity and metadata to the project and submitted command",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel upload cannot confirm a pre-existing source as the new image even when its metadata matches",
+          "status": "FAIL"
+        },
+        {
+          "name": "panel response accepts public limits and preserves Unicode, whitespace, blank unknown fields and review state",
+          "status": "PASS"
+        },
+        {
+          "name": "panel local empty draft remains explicit and can be discarded before starting another draft",
+          "status": "PASS"
+        },
+        {
+          "name": "panel create replay still accepts the server-assigned project after a later saved correction",
+          "status": "PASS"
+        },
+        {
+          "name": "panel retry clears the previous business project when the authenticated identity changes",
+          "status": "PASS"
+        },
+        {
+          "name": "intake retry clears the previous business request when the authenticated identity changes",
+          "status": "PASS"
+        },
+        {
+          "name": "dashboard retry clears old records before waiting on a different account data load",
+          "status": "PASS"
+        }
+      ]
+    },
+    "after": {
+      "log": "/tmp/panelreply-panel-response-after-20261123.log",
+      "logSha256": "f002d660379d34f313382cb4bfc4edbddf1cf14678506664afb014253b8eb116",
+      "totals": {
+        "tests": 26,
+        "pass": 26,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "durationMs": 758.199579,
+      "cases": [
+        {
+          "name": "intake combined navigation preserves its program title",
+          "status": "PASS"
+        },
+        {
+          "name": "intake callback navigation preserves its program title",
+          "status": "PASS"
+        },
+        {
+          "name": "panel initial network failure exposes an enabled retry that can recover",
+          "status": "PASS"
+        },
+        {
+          "name": "new-project quota rejection keeps the draft editable without a false version conflict",
+          "status": "PASS"
+        },
+        {
+          "name": "saved-project version conflict retains the draft and requires reload before saving",
+          "status": "PASS"
+        },
+        {
+          "name": "panel create retains its first uncertain save after a later refusal and confirms the same command",
+          "status": "PASS"
+        },
+        {
+          "name": "panel update preserves uncertainty across a failed reconciliation read without another revision",
+          "status": "PASS"
+        },
+        {
+          "name": "panel source keeps its original bytes and retry key after an uncertain write and later conflict",
+          "status": "PASS"
+        },
+        {
+          "name": "panel source first-attempt rejection releases the draft without inventing uncertainty",
+          "status": "PASS"
+        },
+        {
+          "name": "panel create rejects a missing name before changing its draft and confirms the original command on retry",
+          "status": "PASS"
+        },
+        {
+          "name": "panel update rejects missing notes without erasing its correction and reconciles the saved command",
+          "status": "PASS"
+        },
+        {
+          "name": "panel project response enforces public metadata limits before adopting any fields",
+          "status": "PASS"
+        },
+        {
+          "name": "panel row responses preserve unknown-as-blank and reject malformed correction or review data",
+          "status": "PASS"
+        },
+        {
+          "name": "panel source responses reject invalid metadata and duplicate identities before replacing the draft",
+          "status": "PASS"
+        },
+        {
+          "name": "panel update refuses a valid-shaped receipt for another project and recovers its own saved version",
+          "status": "PASS"
+        },
+        {
+          "name": "panel reconciliation checks the target identity before accepting matching contents",
+          "status": "PASS"
+        },
+        {
+          "name": "panel reload rejects another project or a server-supplied empty draft while retaining the current project",
+          "status": "PASS"
+        },
+        {
+          "name": "panel upload rejects a valid-shaped receipt for another project without changing its original command",
+          "status": "PASS"
+        },
+        {
+          "name": "panel upload binds source identity and metadata to the project and submitted command",
+          "status": "PASS"
+        },
+        {
+          "name": "panel upload cannot confirm a pre-existing source as the new image even when its metadata matches",
+          "status": "PASS"
+        },
+        {
+          "name": "panel response accepts public limits and preserves Unicode, whitespace, blank unknown fields and review state",
+          "status": "PASS"
+        },
+        {
+          "name": "panel local empty draft remains explicit and can be discarded before starting another draft",
+          "status": "PASS"
+        },
+        {
+          "name": "panel create replay still accepts the server-assigned project after a later saved correction",
+          "status": "PASS"
+        },
+        {
+          "name": "panel retry clears the previous business project when the authenticated identity changes",
+          "status": "PASS"
+        },
+        {
+          "name": "intake retry clears the previous business request when the authenticated identity changes",
+          "status": "PASS"
+        },
+        {
+          "name": "dashboard retry clears old records before waiting on a different account data load",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "newProductCases": 14,
+  "newCasesFailingBefore": 11,
+  "existingCasesPreserved": 12,
+  "goalCredit": "No duplicate credit from overlapping local runs. Source-bound CI remains pending.",
+  "independentReview": {
+    "agent": "callback_schedule",
+    "status": "PASS",
+    "scope": "Compared public project/source/row validation against actual API serializers and limits, Unicode, name trimming, immutable retry target IDs, source receipt membership, internal drafts and create replay semantics.",
+    "newDefects": 0,
+    "filesEdited": false,
+    "testsRerun": false
+  },
+  "limits": [
+    "Synthetic DOM state tests are not browser execution.",
+    "Upload byte-count agreement checks receipt consistency, not downloaded source byte proof.",
+    "Creation retains server-assigned identity and existing idempotent replay semantics."
+  ],
+  "preliminaryHarnessCorrection": "A preliminary upload test preserved a shared source-object reference unlike JSON response parsing. Its source and project member objects were separated before the final same-test comparison. No production change was needed for that harness defect."
+}

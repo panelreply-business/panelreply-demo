@@ -1,0 +1,205 @@
+{
+  "format": "panelreply-windows-component-local-verification-v1",
+  "startedAt": "2026-11-23T17:55:34.469Z",
+  "completedAt": "2026-11-23T17:55:35.468Z",
+  "sourceCommit": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
+  "sourceTreeSha256": "b10812901001767ac5b8de7bee31c76dfce7118d40a806065c18a03e446763eb",
+  "sourceTreeSha256After": "b10812901001767ac5b8de7bee31c76dfce7118d40a806065c18a03e446763eb",
+  "sourceChanged": false,
+  "sourceState": "Detached development candidate. Added files included in the manifest. No native Windows execution.",
+  "platform": {
+    "os": "linux",
+    "osRelease": "6.18.57",
+    "architecture": "x86_64",
+    "node": "v24.22.3",
+    "platformKey": "linux/x86_64/node24"
+  },
+  "command": "node --test --test-reporter=tap tests/windows-storage-evidence.harness.cjs",
+  "harness": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "log": "docs/evidence/windows-native-component-harness-2026-11-23.log",
+    "logSha256": "9f2c2462aafabd33a0aababe2615ac9c6b8956b94b029d45cf590ad5ce0a904e",
+    "releaseCredit": false
+  },
+  "syntax": [
+    {
+      "file": "scripts/run-windows-storage.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/windows-storage-cases.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/windows-storage-child.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/windows-storage-evidence.harness.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/windows-storage-support.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/windows-storage.windows.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "file": "workspace/native/windows-storage/load.cjs",
+      "status": "PASS",
+      "exitCode": 0
+    }
+  ],
+  "catalogMatchesDeclarations": true,
+  "catalogCheckScope": "Static declared identities only. Actual native collection and execution remain pending.",
+  "nativeBuilds": 0,
+  "nativeWindowsExecutions": 0,
+  "nativeAcceptance": "NOT_RUN",
+  "productPassing": 0,
+  "releaseCredit": false,
+  "nativeCases": [
+    {
+      "id": "WNS.private_create_roundtrip",
+      "purpose": "Private creation, independent descriptor inspection and bounded Unicode/binary readback",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.exclusive_create_preserves_existing",
+      "purpose": "Exclusive directory and file publication preserves existing identities and bytes",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.root_security_rejection",
+      "purpose": "Existing null, empty, inherited or extra-grant DACLs are rejected without repair",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.different_owner_rejection",
+      "purpose": "A token-assignable different owner is rejected without changing ownership",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.child_security_and_hardlink_rejection",
+      "purpose": "Unsafe child DACLs and multiple hard links fail before bytes are returned",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.path_and_argument_boundaries",
+      "purpose": "Path aliases, device/stream/traversal names and invalid input fail without creation",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.held_parent_rename_barriers",
+      "purpose": "Each held disposable ancestor resists rename and becomes renameable after close",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.attribute_only_reparse_countertest",
+      "purpose": "An actual attribute-only reparse attempt has a working unleased control and retained-lease check",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.existing_reparse_paths_rejected",
+      "purpose": "Existing junction roots, intermediate components and children never expose target bytes",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.concurrent_exclusive_publication",
+      "purpose": "Two real processes publish one complete file through exclusive creation",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.anonymous_io_denial",
+      "purpose": "An observed anonymous token reads its control but cannot read the private file, then restores identity",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.concurrent_writer_read_refusal",
+      "purpose": "An actual held writer prevents protected read until the writer closes",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.lease_receiver_close_and_worker_cleanup",
+      "purpose": "Invalid/closed receivers fail and worker teardown releases retained handles",
+      "testInstrumented": false,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.instrumented_relative_create_race",
+      "purpose": "A probe observes the child handle and independent directories after a coordinated reparse mutation",
+      "testInstrumented": true,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    },
+    {
+      "id": "WNS.instrumented_probe_cleanup_and_isolation",
+      "purpose": "Throwing/closing probe callbacks roll back creation and normal/probe APIs remain separate",
+      "testInstrumented": true,
+      "status": "NOT_RUN",
+      "reason": "This host is Linux. MSVC, the Windows SDK and actual Windows/NTFS behavior are not available here."
+    }
+  ],
+  "verificationSuccess": true,
+  "applicationIntegration": "DISABLED",
+  "workflowOwner": "Separate parent/platform patch",
+  "observedFileHashes": {
+    "scripts/build-windows-storage.ps1": "fec7d4c2a4a4334db4dbc3e980e8f961762b997d5a23ff60c74a238f3faf9a2e",
+    "scripts/run-windows-storage.cjs": "3abce96ab4f487549e55a1555f0de0f6ad19f421410c2cf5cf05f9ea7d14c736",
+    "tests/windows-storage-cases.cjs": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4",
+    "tests/windows-storage-child.cjs": "03073e93bfa36113a6af2c566668e1a906fc6a229309ab53e81fb677baecb16e",
+    "tests/windows-storage-evidence.harness.cjs": "8e767bc5cb192681f2dec211a6229548c482ab91946c417391fc2f2ce33aee3a",
+    "tests/windows-storage-support.cjs": "2c6c331978fa761141fb7d29e57f09c3ae0cc72f642d5a6fc5c0eb35ba48a3b9",
+    "tests/windows-storage.windows.cjs": "dd3bb0090215e807d4df9ae7ad2d29f57254d9feb23bd3db563f560a69e3836c",
+    "workspace/native/windows-storage/CMakeLists.txt": "d7c1fe48c54e79bbc26ffb446da6131116af1910263875ddb94d26d846be564e",
+    "workspace/native/windows-storage/README.md": "48c2858ee12d55b128ea6a6d3523e9ed18b1c26324f484d605d1b2165ae6f878",
+    "workspace/native/windows-storage/fixture.cc": "b56123b707ea00bfe7e4546510626905b4e1786726e6dc88aa5a9e4406adcff5",
+    "workspace/native/windows-storage/load.cjs": "33a2f9d1ddede758c8a3a5d9e1f482c30c2b2a4d8d78ed4b799c8c47b8dd7ca3",
+    "workspace/native/windows-storage/storage.cc": "63fce31b69e259603aeb08f016254b3a56cd62e89133c4b35861ef2d7edd84f8",
+    "workspace/native/windows-storage/toolchain.json": "1cef6da62d5d9146025af815991e3cb1bb8084a3fa1215df4492790030e0dcce",
+    "docs/WINDOWS_NATIVE_COMPONENT_2026_11_23.md": "c9f6244cd58ca9334486691abff137f77c8cd5b90e4e10a1be3320bf6e72e3f9",
+    "docs/WINDOWS_NATIVE_STORAGE_ASSESSMENT_2026_11_23.md": "e6821a2346c4ad34448bd2ef0f0ea137b7439809a7b44628adbb3806a711f1d7",
+    "docs/evidence/windows-native-storage-assessment-2026-11-23.json": "90899b4d3b4a8149f96d1fdfcb8dd55c5822e7f65af906bcd269421c2f779f47",
+    "docs/evidence/windows-native-component-harness-2026-11-23.log": "9f2c2462aafabd33a0aababe2615ac9c6b8956b94b029d45cf590ad5ce0a904e"
+  },
+  "nextSteps": [
+    "Build and run this source with the standalone standard Windows workflow. Preserve every native outcome and positive control.",
+    "Review the attribute-only reparse attempt, independently held directory observations and same-handle cleanup before integration.",
+    "Keep SQLite owner/sidecar/path-lifetime and restore publication boundaries open. Do not enable either private product on Windows yet."
+  ]
+}

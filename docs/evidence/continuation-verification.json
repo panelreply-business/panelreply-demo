@@ -1,0 +1,78 @@
+{
+  "format": "panelreply-continuation-verification",
+  "sourceCommit": "ca9dd8abe28a1d945b1f8c64d11a5829bf3a6e9b",
+  "sourceTree": "5c4b22d483dacfd109a0b0e96b707296d9ae10bf",
+  "run": {
+    "id": 44662687751,
+    "head": "ca9dd8abe28a1d945b1f8c64d11a5829bf3a6e9b",
+    "conclusion": "success",
+    "status": "completed",
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44662687751",
+    "updated": "2026-11-20T03:00:27Z"
+  },
+  "application": {
+    "nodeHttp": 1150,
+    "chromium": 197,
+    "firefox": 132,
+    "webkit": 132,
+    "nativeOcrResources": 17,
+    "independentWorkbookReader": 9,
+    "total": 1637,
+    "fail": 0,
+    "skipped": 0
+  },
+  "newChecks": {
+    "inMemoryRetention": 8,
+    "storeIntegration": 1,
+    "includedInApplicationTotal": true
+  },
+  "local": {
+    "applicableChecks": 702,
+    "fail": 0,
+    "skipped": 0,
+    "includesRetentionChecks": true,
+    "generatedDemoAndCsp": "PASS",
+    "diskBackedUsageBaseline": {
+      "pass": 3,
+      "fail": 14,
+      "cause": "Existing POSIX owner-only permission checks reject Windows filesystem. No permission assertion was relaxed."
+    }
+  },
+  "suspension": {
+    "pass": 2,
+    "fail": 0,
+    "policyBlocked": 3
+  },
+  "http": {
+    "clients": 12,
+    "workflowGroups": 9,
+    "responses": 516,
+    "unexpectedErrors": 0,
+    "scope": "Synthetic CI loopback. Not selected-host capacity."
+  },
+  "ocr": {
+    "exact": 277,
+    "cases": 310,
+    "errors": 0,
+    "reviewViolations": 0,
+    "accuracyGate": "FAIL",
+    "realPhotos": "NOT TESTED"
+  },
+  "isolation": {
+    "status": "BLOCKED",
+    "nativeDenyCases": 0,
+    "diagnostic": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+    "rootCause": "unconfirmed"
+  },
+  "realProviderCalls": 0,
+  "releaseDecision": "NO-GO",
+  "restrictions": {
+    "prDraft": true,
+    "mainMerged": false,
+    "publicDeployment": false,
+    "renderStateChanged": false,
+    "paidActivation": false,
+    "customerContact": false
+  },
+  "counting": "Focused evaluations, local repetitions, workload operations and OCR measurements overlap or complement the application total and are not added again."
+}

@@ -1,0 +1,189 @@
+{
+  "format": "panelreply-daily-quality-audit-v1",
+  "date": "2026-11-23",
+  "timezone": "America/Detroit",
+  "checkedAt": "2026-11-23T15:03:15.289Z",
+  "source": {
+    "repository": "panelreply-business/panelreply-demo",
+    "branch": "feature/interactive-dual-product-site",
+    "documentationHeadBeforeAudit": "96ade607b1dd90982fafa586a3633ab2dc5b9699",
+    "applicationTestHead": "ca5f0cbfbf0d23cc20e007018c13cc630fb8f42a",
+    "testedMerge": "7a9b95ac3d36ff238ef49b036457e4d00e77a972",
+    "testedTree": "8f4c704af5ead9f6a76cadd83fc6ec2fa2d5b131",
+    "sourceManifest": "823418de33d6f2d166d6aae9013f6b3baf2ca43ecd1286bed76b5e81bb218e81",
+    "main": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+    "pullRequest": 8,
+    "draft": true,
+    "merged": false,
+    "compareFromTestedCode": {
+      "aheadCommits": 3,
+      "onlyDocumentationEvidence": true,
+      "changeSet": [
+        "README.md",
+        "docs/*.md",
+        "docs/evidence/*.json"
+      ],
+      "executableTestWorkflowChanges": 0
+    }
+  },
+  "freshChecks": {
+    "git": "PASS: PR8 open/draft, branch/main refs checked, three docs/evidence commits since application source, no open issues/reviews",
+    "sourceReview": "PASS: fixed product entrypoints, other-program route allowlist, bound storage/archives and focused regression tests inspected without executable source change",
+    "render": "PASS: both services owner-suspended, autoDeploy no, PR previews off, no post-suspension deploy/event, no post-suspension application logs",
+    "directExternalGet": "NOT TESTED: both direct GET requests inaccessible through web retrieval; no status claimed from that channel",
+    "mainScheduledCI": {
+      "status": "PASS",
+      "runNumber": 79,
+      "runId": 45194906999,
+      "headBranch": "main",
+      "testedCommit": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+      "completedAt": "2026-11-23T14:33:13Z",
+      "passedNode": 291,
+      "passedChromium": 105,
+      "totalPassed": 396,
+      "skippedPublicApplication": 3,
+      "suspensionGuardsPassed": 2,
+      "suspensionGuardsIncludedInNode": true,
+      "reference": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45194906999",
+      "note": "Does NOT validate unmerged PR8"
+    },
+    "freshPRFullRegression": "BLOCKED: source checkout not mounted, local Node v22.16.0 below Node24 release runner, no authorized full matrix dispatch or verified free CI rerun; no fresh PR cases executed",
+    "codeDefects": "No newly confirmed code defect on today's read-only inspection",
+    "codeFixes": "NONE",
+    "infrastructureMutations": "NONE",
+    "deployment": "NONE",
+    "externalProviderCalls": 0
+  },
+  "recordedPRSourceEvidence": {
+    "status": "HISTORICAL_PASS_ON_IDENTICAL_EXECUTABLE_SOURCE",
+    "run": 76,
+    "runId": 44788287151,
+    "completedAt": "2026-11-20T18:15:35Z",
+    "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44788287151",
+    "productExecutions": {
+      "callback": 10351,
+      "spreadsheet": 11836,
+      "sharedCountedOnce": 2185,
+      "total": 24372
+    },
+    "distinctCases": {
+      "callback": 3321,
+      "spreadsheet": 4118,
+      "sharedCountedOnce": 1675,
+      "total": 9114,
+      "generated": 7467
+    },
+    "excluded": {
+      "duplicateObservations": 7017,
+      "harnessPasses": 237
+    },
+    "productFailures": 0,
+    "productSkips": 0,
+    "automatedPlatformRequirements": {
+      "passed": 30,
+      "total": 30
+    },
+    "requiredManualPlatformScopesNotTested": 7,
+    "selectedLinuxBrowserJourneys": {
+      "callback": 21,
+      "spreadsheet": 21
+    },
+    "note": "Recorded CI does not establish current-day execution, physical-device coverage, or release readiness"
+  },
+  "products": {
+    "callback": {
+      "testedEntrypoint": "callback-server.cjs",
+      "codeSeparation": "PASS in run76, static source unchanged",
+      "recordedProductPasses": 10351,
+      "realModel": {
+        "status": "BLOCKED",
+        "actualCalls": 0
+      },
+      "selectedHostOffsiteRecovery": "BLOCKED",
+      "physicalAndActualSafari": "NOT TESTED",
+      "humanTrial": "NO-GO",
+      "publicRelease": "NO-GO"
+    },
+    "spreadsheet": {
+      "testedEntrypoint": "spreadsheet-server.cjs",
+      "codeSeparation": "PASS in run76, static source unchanged",
+      "recordedProductPasses": 11836,
+      "syntheticOcr": {
+        "status": "FAIL",
+        "exact": 277,
+        "total": 310,
+        "nonexact": 33,
+        "nativeErrors": 0,
+        "reviewViolations": 0
+      },
+      "requiredNativeIsolation": {
+        "status": "BLOCKED",
+        "actualDenialCases": 0,
+        "reason": "bubblewrap readiness RTM_NEWADDR denied; root cause unconfirmed"
+      },
+      "representativePhotos": "NOT TESTED",
+      "actualExcel": "NOT TESTED",
+      "selectedHostOffsiteRecovery": "BLOCKED",
+      "humanTrial": "NO-GO",
+      "publicRelease": "NO-GO"
+    }
+  },
+  "shared": {
+    "separateSessionsAndTenantBoundaries": "PASS on recorded run76",
+    "productBoundEncryptedRestore": "PASS on recorded run76",
+    "currentSelectedHostAndOffsite": "BLOCKED",
+    "liveIntegrations": "BLOCKED",
+    "operatingOwnerPricingLegal": "BLOCKED",
+    "sevenRequiredPlatformScopes": [
+      "actual macOS Safari",
+      "physical iPhone Safari",
+      "physical iPad Safari",
+      "physical Android Chrome",
+      "private Windows product workflows",
+      "private macOS product workflows",
+      "Apple silicon macOS"
+    ]
+  },
+  "milestone": {
+    "activeTarget": 10000,
+    "passedCasePlatformObservations": 24372,
+    "distinctCases": 9114,
+    "fullGoalAchieved": false,
+    "eligibleForOneTimeDoubling": false,
+    "targetAfterDoubling": 20000,
+    "reason": "Seven required platform scopes remain not tested; numeric threshold alone does not complete goal"
+  },
+  "publicServices": {
+    "ai": {
+      "id": "srv-dbv6do6tlv9c73fuvar0",
+      "state": "suspended",
+      "suspender": "user",
+      "autoDeploy": "no",
+      "preview": "off",
+      "lastStateUpdated": "2026-11-20T00:28:44.514773Z"
+    },
+    "static": {
+      "id": "srv-dbu5o8tckfvc73b6fb4g",
+      "state": "suspended",
+      "suspender": "user",
+      "autoDeploy": "no",
+      "preview": "off",
+      "lastStateUpdated": "2026-11-20T00:29:45.304967Z"
+    }
+  },
+  "decision": {
+    "callback": "GO for source review/isolated synthetic evaluation; NO-GO for human/customer trial and public release",
+    "spreadsheet": "GO for source review/isolated synthetic evaluation; NO-GO for human/customer trial and public release",
+    "firstReleaseTarget": "2026-12-31",
+    "firstProductChosen": false,
+    "secondReleaseDate": null,
+    "december20Review": "Prepare two independent bounded pilot plans; no automatic activation"
+  },
+  "nextActions": [
+    "Obtain no-cost/authorized exact-source PR regression execution and preserve distinct case/platform reports",
+    "Close seven required actual/manual platform scopes with real execution evidence",
+    "Investigate OCR 33 nonexact fields without guessing and prove restricted-worker native-deny policy on appropriate approved host",
+    "Prepare approved real-model synthetic evaluation and representative photo/Excel tests",
+    "Choose supported private host, offsite destination, support, retention, recovery and cost/legal controls before separate pilot approvals"
+  ]
+}

@@ -1,0 +1,748 @@
+{
+  "format": "panelreply-test-milestones-v1",
+  "initialTarget": 10000,
+  "earlyTarget": 20000,
+  "activeTarget": 10000,
+  "firstGoalAchievedAt": null,
+  "releaseDate": "2026-12-31",
+  "deadline": "2026-12-31T00:00:00-05:00",
+  "timezone": "America/Detroit",
+  "dailyChecklistThrough": "2026-12-20",
+  "countUnit": "distinct product case + OS/runtime/browser/channel/device configuration on one tested source",
+  "sharedCases": "Report shared cases once in portfolio totals; report callback and spreadsheet-specific readiness independently.",
+  "requiredPlatforms": [
+    {
+      "id": "node-linux",
+      "kind": "node",
+      "match": {
+        "os": "linux",
+        "suite": "node-all"
+      },
+      "minimumCases": 8863
+    },
+    {
+      "id": "node-windows",
+      "kind": "node",
+      "match": {
+        "os": "windows",
+        "suite": "node-portable"
+      },
+      "minimumCases": 6938
+    },
+    {
+      "id": "node-darwin",
+      "kind": "node",
+      "match": {
+        "os": "darwin",
+        "suite": "node-portable",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 6938
+    },
+    {
+      "id": "client-linux-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 197
+    },
+    {
+      "id": "client-linux-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 197
+    },
+    {
+      "id": "client-linux-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 197
+    },
+    {
+      "id": "client-windows-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-windows-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-windows-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "architecture": "x86_64"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-linux-chrome",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-linux-msedge",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-windows-chrome",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "chromium",
+        "browserChannel": "chrome",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-windows-msedge",
+      "kind": "browser",
+      "match": {
+        "os": "windows",
+        "browserEngine": "chromium",
+        "browserChannel": "msedge",
+        "profile": "desktop"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "emulated-pixel-7-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "phone_portrait"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-pixel-7-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "phone_landscape"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-galaxy-tab-s4-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "tablet_portrait"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-galaxy-tab-s4-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "profile": "tablet_landscape"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-iphone-13-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "phone_portrait"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-iphone-13-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "phone_landscape"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-ipad-pro-11-portrait",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "tablet_portrait"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "emulated-ipad-pro-11-landscape",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "profile": "tablet_landscape"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "callback-mobile-linux-chromium-phone-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone portrait in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "phone_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-chromium-phone-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone landscape in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "phone_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-chromium-tablet-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet portrait in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "tablet_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-chromium-tablet-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet landscape in bundled chromium.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "tablet_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-phone-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone portrait in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "phone_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-phone-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated phone landscape in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "phone_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-tablet-portrait",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet portrait in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "tablet_portrait",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "callback-mobile-linux-webkit-tablet-landscape",
+      "kind": "browser",
+      "description": "Fixed callback product journeys with trusted touch on emulated tablet landscape in bundled webkit.",
+      "match": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "tablet_landscape",
+        "suite": "callback-mobile",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "actual-macos-safari",
+      "kind": "manual",
+      "match": {},
+      "minimumCases": 1,
+      "status": "NOT_TESTED"
+    },
+    {
+      "id": "physical-iphone-safari",
+      "kind": "manual",
+      "match": {},
+      "minimumCases": 1,
+      "status": "NOT_TESTED"
+    },
+    {
+      "id": "physical-ipad-safari",
+      "kind": "manual",
+      "match": {},
+      "minimumCases": 1,
+      "status": "NOT_TESTED"
+    },
+    {
+      "id": "physical-android-chrome",
+      "kind": "manual",
+      "match": {},
+      "minimumCases": 1,
+      "status": "NOT_TESTED"
+    },
+    {
+      "id": "windows-private-product-workflows",
+      "kind": "manual",
+      "match": {},
+      "minimumCases": 1,
+      "status": "NOT_TESTED"
+    },
+    {
+      "id": "macos-private-product-workflows",
+      "kind": "manual",
+      "match": {},
+      "minimumCases": 1,
+      "status": "NOT_TESTED"
+    },
+    {
+      "id": "callback-program-linux-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "callback-program-linux-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "callback-program-linux-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-program-linux-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet"
+      },
+      "minimumCases": 9
+    },
+    {
+      "id": "spreadsheet-program-linux-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet"
+      },
+      "minimumCases": 9
+    },
+    {
+      "id": "spreadsheet-program-linux-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "linux",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet"
+      },
+      "minimumCases": 9
+    },
+    {
+      "id": "apple-silicon-macos",
+      "kind": "manual",
+      "description": "Apple silicon macOS remains unverified after ARM64 CI jobs received no assigned runner. Intel results cannot close this gate.",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64"
+      }
+    },
+    {
+      "id": "callback-program-darwin-intel-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-intel-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "callback-program-darwin-intel-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-intel-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "callback-program-darwin-intel-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-intel-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "callback-program-darwin-arm64-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-arm64-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "callback-program-darwin-arm64-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-arm64-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "callback-program-darwin-arm64-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "callback"
+      },
+      "minimumCases": 15
+    },
+    {
+      "id": "spreadsheet-manual-program-darwin-arm64-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual"
+      },
+      "minimumCases": 10
+    },
+    {
+      "id": "node-darwin-arm64",
+      "kind": "node",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "suite": "node-portable"
+      },
+      "minimumCases": 6938
+    },
+    {
+      "id": "client-darwin-arm64-chromium",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "chromium",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "portable"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-arm64-firefox",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "firefox",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "portable"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "client-darwin-arm64-webkit",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "arm64",
+        "browserEngine": "webkit",
+        "browserChannel": "bundled",
+        "profile": "desktop",
+        "suite": "portable"
+      },
+      "minimumCases": 92
+    },
+    {
+      "id": "callback-program-darwin-x86_64-safari",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "safari",
+        "profile": "desktop",
+        "suite": "callback-safari",
+        "deploymentMode": "callback"
+      },
+      "minimumCases": 3
+    },
+    {
+      "id": "spreadsheet-program-darwin-x86_64-safari",
+      "kind": "browser",
+      "match": {
+        "os": "darwin",
+        "architecture": "x86_64",
+        "browserEngine": "webkit",
+        "browserChannel": "safari",
+        "profile": "desktop",
+        "suite": "spreadsheet-manual-safari",
+        "deploymentMode": "spreadsheet"
+      },
+      "minimumCases": 3
+    }
+  ],
+  "releaseDecision": "Independent for callback and spreadsheet. Numeric targets never override product release gates.",
+  "manualEvidenceRule": "Scoped browser reports, including native desktop Safari, do not certify the remaining manual acceptance gates, physical devices or private workflows on untested client OSes.",
+  "authorization": "Synthetic isolated development/tests only. No deployment, merge, paid provider, customer data/contact or Render changes."
+}

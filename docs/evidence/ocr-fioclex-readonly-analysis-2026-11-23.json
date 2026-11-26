@@ -1,0 +1,183 @@
+{
+  "format": "panelreply-ocr26-normalizer-readonly-analysis-v1",
+  "recordedAt": "2026-11-23T19:36:23.618Z",
+  "baseCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "gitTreeHash": "a2e235cf32df07f5329591c68f4e4ff84606f7c5",
+  "sourceManifestSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+  "sourceFiles": 200,
+  "sourceDirty": false,
+  "ci": {
+    "runId": 45248305894,
+    "jobId": 137950843637,
+    "commit": "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe",
+    "artifactFile": "/tmp/panelreply-run91-ocr26/panelreply-ocr-isolation-ubuntu-26.04.json",
+    "artifactBytes": 75403,
+    "artifactSha256": "7d0a3121ca72006722705201446a8779d11264a05d820825eca35608790f27fb",
+    "status": "BLOCKED",
+    "nativeStatus": "BLOCKED",
+    "nativeCases": 0,
+    "reason": "normalizer_unavailable",
+    "observedReadinessStages": [
+      {
+        "stage": "isolation_version",
+        "exitCode": 0,
+        "signal": null,
+        "spawnErrorCode": null,
+        "closed": true,
+        "stderrBytesObserved": 0,
+        "stderr": "",
+        "stderrBytesRetained": 0,
+        "stderrTruncated": false
+      },
+      {
+        "stage": "engine_version",
+        "exitCode": 0,
+        "signal": null,
+        "spawnErrorCode": null,
+        "closed": true,
+        "stderrBytesObserved": 0,
+        "stderr": "",
+        "stderrBytesRetained": 0,
+        "stderrTruncated": false
+      },
+      {
+        "stage": "engine_languages",
+        "exitCode": 0,
+        "signal": null,
+        "spawnErrorCode": null,
+        "closed": true,
+        "stderrBytesObserved": 0,
+        "stderr": "",
+        "stderrBytesRetained": 0,
+        "stderrTruncated": false
+      },
+      {
+        "stage": "normalizer_probe",
+        "exitCode": 2,
+        "signal": null,
+        "spawnErrorCode": null,
+        "closed": true,
+        "stderrBytesObserved": 94,
+        "stderr": "/usr/bin/python3: can't open file '/app/ocr-preprocess.py': [Errno 1] Operation not permitted\n",
+        "stderrBytesRetained": 94,
+        "stderrTruncated": false
+      }
+    ],
+    "oneVerifierAttempt": 1,
+    "sourceAndDependencyStable": true
+  },
+  "staticPolicy": {
+    "path": "workspace/ocr-isolation.cjs",
+    "sha256": "442ff05030c60292ced4d67389b0b8c11e0590b53553c6e72f72764823d11826",
+    "bpfBytes": 1112,
+    "bpfSha256": "7760783e3ecbc4fde6c8ff7953dfac5a9a6490c0a9c60e81bb6bcd601925cb19",
+    "decisions": [
+      {
+        "syscall": "ioctl",
+        "number": 16,
+        "return": "0x00050001"
+      },
+      {
+        "syscall": "fcntl",
+        "number": 72,
+        "return": "0x7fff0000"
+      },
+      {
+        "syscall": "openat",
+        "number": 257,
+        "return": "0x7fff0000"
+      },
+      {
+        "syscall": "socket",
+        "number": 41,
+        "return": "0x00050001"
+      },
+      {
+        "syscall": "clone",
+        "number": 56,
+        "return": "0x00050001"
+      }
+    ],
+    "allDeniedNumbersReturnEperm": 66,
+    "unsupportedArchitectureAndX32": "KILL_PROCESS",
+    "scope": "Pure JavaScript evaluation of existing BPF bytes. No filter installation, child process or namespace/native verifier execution."
+  },
+  "primarySources": [
+    {
+      "path": "/tmp/panelreply-ocr26-primary/python-3.14.4-fileutils.c",
+      "url": "https://github.com/python/cpython/blob/v3.14.4/Python/fileutils.c",
+      "addedFinalNewline": false,
+      "bytes": 88003,
+      "sha256": "7141679d2d4d1ac7faa9f17b4fa3596e042bbd4d32bbab659bb5336c24b79d95"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/python-3.14.4-main.c",
+      "url": "https://github.com/python/cpython/blob/v3.14.4/Modules/main.c",
+      "addedFinalNewline": false,
+      "bytes": 21697,
+      "sha256": "4bd276c8b0607ea94b43ebff78b9e8cd2b384442a23989c3f19ed7c87fae0c63"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/python-3.13.0-main.c",
+      "url": "https://github.com/python/cpython/blob/v3.13.0/Modules/main.c",
+      "addedFinalNewline": false,
+      "bytes": 21519,
+      "sha256": "7c0edf6471b6ff20455283b31828b22c537a583f7f3e6a9bc92ea3b92dd6403c"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/python-3.13.0-fileutils.c",
+      "url": "https://github.com/python/cpython/blob/v3.13.0/Python/fileutils.c",
+      "addedFinalNewline": false,
+      "bytes": 87999,
+      "sha256": "34a371c5d2b84bd74c2499997594ab8b4044427705fa971b7e0b2d9ef646089f"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/ubuntu26-20261116.202-readme.md",
+      "url": "https://github.com/actions/runner-images/blob/ubuntu26/20261116.202/images/ubuntu/Ubuntu2604-Readme.md",
+      "addedFinalNewline": false,
+      "bytes": 15898,
+      "sha256": "57a912f70eb971f6d88fa55efbaa926ea45acd8f051f7469cb0663ab10b85d1d"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/linux-v7.0-ioctls.h",
+      "url": "https://github.com/torvalds/linux/blob/v7.0/include/uapi/asm-generic/ioctls.h",
+      "addedFinalNewline": false,
+      "bytes": 3983,
+      "sha256": "867644cd4a20815b7d8be14902b594bb6e30a81ea159aa5c67f24212c92cbab6"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/linux-v7.0-syscall_64.tbl",
+      "url": "https://github.com/torvalds/linux/blob/v7.0/arch/x86/entry/syscalls/syscall_64.tbl",
+      "addedFinalNewline": false,
+      "bytes": 15873,
+      "sha256": "93e42d351de2002418bf499b9a538f189fd683e8ecd52b4adc8a0bbe59130455"
+    },
+    {
+      "path": "/tmp/panelreply-ocr26-primary/run91-ocr26-job.log",
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45248305894/job/137950843637",
+      "addedFinalNewline": false,
+      "bytes": 169135,
+      "sha256": "bded7cf8ff22571fad7a5468661ae10501b8149d85c23a47bf9aec123c78cbff"
+    }
+  ],
+  "findings": [
+    "Run91 Ubuntu26 passed the bubblewrap version and both Tesseract readiness stages, then Python could not open the fixed script with EPERM and exited2. No native denial case ran.",
+    "The image-version-specific GitHub runner README identifies system Python3.14.4. The artifact does not hash or print the actual interpreter, so this identifies the image documentation, not an observed binary pin.",
+    "CPython v3.14.4 main.c calls Py_fopen for the filename. Py_fopen calls set_inheritable with raise=1. Its Linux ioctl(FIOCLEX) fast path treats EPERM as an error instead of falling back to fcntl. Script-open failure is printed with exit2.",
+    "The existing x86_64 policy denies every ioctl with EPERM and allows fcntl/openat. This source path can produce the observed error even if opening the bound script itself succeeds.",
+    "CPython3.13.0 uses _Py_fopen_obj with the same set_inheritable path. This is not claimed to be a newly introduced Python3.14 behavior.",
+    "AppArmor profile-file presence and parent label do not establish the child label or the denied syscall. There is no syscall trace or child-label evidence in this artifact."
+  ],
+  "classification": "READ_ONLY_SOURCE_HYPOTHESIS_NOT_NATIVE_CAUSE_PROOF",
+  "nativeAttemptsDuringInvestigation": 0,
+  "hostChanges": 0,
+  "policyChanges": 0,
+  "productPassing": 0,
+  "releaseCredit": false,
+  "nextProposal": "Review a denial-errno compatibility change that continues rejecting ioctl without executing it, returns a fallback-recognized denial for the fixed descriptor-flag request, preserves every other syscall decision/architecture guard and all six native assertions, and receives exact-source native verification. No implementation or approval of that change is part of this analysis.",
+  "limitations": [
+    "No native syscall trace or Python binary hash from the failing job.",
+    "Ubuntu24 namespace failure remains separate.",
+    "No selected-host or production acceptance. Six native cases remain untested."
+  ]
+}

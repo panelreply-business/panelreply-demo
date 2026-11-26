@@ -1,0 +1,170 @@
+{
+  "format": "panelreply-callback-read-snapshot-evidence",
+  "version": 1,
+  "recordedOn": "2026-11-23",
+  "scope": "Isolated product-bound synthetic SQLite and callback API verification. No release or platform-wide acceptance.",
+  "baseCommit": "7a0a93aee098918de7bac251fc7eb929ffec16f3",
+  "baseIncludes": {
+    "milestone": "Previously frozen spreadsheet project read-snapshot repair, staged as the local baseline.",
+    "panelPatchSha256": "666001462dec5f04e2f7fa73edf6baa52f7b7ea55446efebf63dbbfa13a2ba73",
+    "storeSha256": "0a506c55935a63008f897ae1b56f3b64738d4490136b9648b864fd5f006c2488",
+    "panelTestSha256": "203454ad168165490e257d18a0c25c2d2c167dcc29ed3ea1ba6ac21fa2f6f70d"
+  },
+  "candidate": {
+    "sourceTreeSha256": "70614530233fbb49a32fa8d5d41797b69e4ceaf90626562cb66d65285bb22776",
+    "dirty": true,
+    "platform": {
+      "os": "linux",
+      "osRelease": "6.18.57",
+      "architecture": "x86_64",
+      "node": "v24.22.3",
+      "platformKey": "linux/x86_64/node24"
+    },
+    "modifiedProductFiles": [
+      {
+        "path": "workspace/store.cjs",
+        "sha256": "0271c1e6f8ce0017411451075d22c423c64d16f9e2bddeeef587f53c407403db"
+      },
+      {
+        "path": "tests/workspace-conversation-snapshot.test.cjs",
+        "sha256": "c193d8eaf3466e5362c7eec6ea4eff676e69d789671c8eeb8309c4fb5ac70d34"
+      }
+    ],
+    "sourceTreeSha256After": "70614530233fbb49a32fa8d5d41797b69e4ceaf90626562cb66d65285bb22776",
+    "frozenManifestMatchedAfter": true
+  },
+  "baseline": {
+    "setup": "Run the unchanged new regression file on 7a0a93a plus only the staged frozen panel read-snapshot patch, before the callback runtime delta.",
+    "storeSha256": "0a506c55935a63008f897ae1b56f3b64738d4490136b9648b864fd5f006c2488",
+    "regressionFileSha256": "c193d8eaf3466e5362c7eec6ea4eff676e69d789671c8eeb8309c4fb5ac70d34",
+    "command": "node --test --test-reporter=tap tests/workspace-conversation-snapshot.test.cjs",
+    "logFile": "/tmp/panelreply-callback-snapshot-before-final-20261123.log",
+    "logSha256": "6ae61c6633adac7849c39d571fb02235b5d7904944eaf366b870139f759d845c",
+    "tests": 8,
+    "suites": 0,
+    "pass": 3,
+    "fail": 5,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationMs": 449.508856
+  },
+  "focusedSelection": {
+    "command": "node --test --test-reporter=tap tests/workspace-conversation-snapshot.test.cjs tests/panel-read-snapshot.test.cjs",
+    "logFile": "/tmp/panelreply-callback-snapshot-after-20261123.log",
+    "logSha256": "d0b2cc2f9604850b05dcdd17ae799871ce313e59693a171774ed9234dd39791b",
+    "tests": 15,
+    "suites": 0,
+    "pass": 15,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationMs": 538.16442
+  },
+  "finalAffectedSelection": {
+    "command": "WORKSPACE_HTTP_TESTS=1 node --test --test-reporter=tap tests/workspace-conversation-snapshot.test.cjs tests/panel-read-snapshot.test.cjs tests/workspace-store.test.cjs tests/workspace-api.test.cjs tests/workspace-export.test.cjs tests/workspace-revocation.test.cjs tests/callback-tasks.test.cjs tests/callback-tasks-api.test.cjs tests/callback-task-parent-integrity.test.cjs tests/data-lifecycle.test.cjs tests/prelaunch-concurrency.test.cjs tests/panel-store.test.cjs tests/product-backup.test.cjs",
+    "logFile": "/tmp/panelreply-callback-snapshot-regression-20261123.log",
+    "logSha256": "57bbf0dd6edc15423fe3334241802c7f1f5f23494760fb367dbf2207719f3d49",
+    "tests": 275,
+    "suites": 0,
+    "pass": 275,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationMs": 26391.237612,
+    "files": [
+      "tests/workspace-conversation-snapshot.test.cjs",
+      "tests/panel-read-snapshot.test.cjs",
+      "tests/workspace-store.test.cjs",
+      "tests/workspace-api.test.cjs",
+      "tests/workspace-export.test.cjs",
+      "tests/workspace-revocation.test.cjs",
+      "tests/callback-tasks.test.cjs",
+      "tests/callback-tasks-api.test.cjs",
+      "tests/callback-task-parent-integrity.test.cjs",
+      "tests/data-lifecycle.test.cjs",
+      "tests/prelaunch-concurrency.test.cjs",
+      "tests/panel-store.test.cjs",
+      "tests/product-backup.test.cjs"
+    ]
+  },
+  "newCases": [
+    {
+      "name": "callback detail binds notes and status to the revision and audit read before a concurrent edit",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "callback detail cannot combine an earlier revision with a deleted conversation and later audit",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "callback list holds one snapshot across a safety hold while fresh task mutations remain blocked",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "callback detail keeps STOP flags with their saved revision and rejects contact mutations after STOP",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "callback list keeps later records in the same snapshot after the first record is materialized",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "name": "callback detail and list read failures release owned snapshots without writes or stale later reads",
+      "before": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "callback reads leave a caller read snapshot open across later deletion and missing-record errors",
+      "before": "PASS",
+      "after": "PASS"
+    },
+    {
+      "name": "callback business export retains its outer snapshot through nested request reads and a concurrent hold",
+      "before": "PASS",
+      "after": "PASS"
+    }
+  ],
+  "accounting": {
+    "newDistinctProductCases": 8,
+    "finalSelectionIncludesNewCases": true,
+    "precedingPanelCasesIncluded": 7,
+    "extraCreditForRepeatedFocusedRuns": 0,
+    "explanation": "The eight new callback methods and preceding seven panel methods are included in 275. The focused 15-case run overlaps and is not added again.",
+    "excludedDevelopmentRun": "An initial test fixture omitted the required status on a mutation. Corrected before the final unchanged-file baseline; that harness error is not a product failure or goal credit."
+  },
+  "defect": {
+    "readBoundary": "Request row(s), suppression/contact state, messages and audit were materialized through separate autocommit queries.",
+    "reproducedOutcomes": [
+      "Earlier status and note values/revision with the later update audit.",
+      "Earlier revision with an empty conversation and deletion audit from the next revision.",
+      "Safety hold and STOP commits mixing request revision/values with later contact or audit state.",
+      "A list mixing earlier saved records with later metadata for another record."
+    ],
+    "fix": "Share one deferred readSnapshot helper across getLead, listLeads and getPanelProject. Start and finish only an owned transaction; preserve caller read/write/export transactions."
+  },
+  "mutationControls": [
+    "A stale task or status mutation still rejects version_conflict.",
+    "A current-revision callback task after a safety hold rejects safety_review_required.",
+    "Current-revision task and contact status mutations after STOP reject contact_blocked.",
+    "Other-owner requests with the same phone remain unchanged and inaccessible through the current actor."
+  ],
+  "remainingLimits": [
+    "Complete integrated-source regression and committed-source CI remain required.",
+    "A coherent read may become stale after it returns; it is not authorization for later contact or mutation.",
+    "No filesystem pathname, Windows native storage, selected-host durability or real customer acceptance is established."
+  ],
+  "peerReview": {
+    "reviewer": "platform_coverage",
+    "result": "No concrete defect found in complete-read coverage, caller transaction ownership, contact restrictions or coordinated native SQLite tests.",
+    "readOnly": true,
+    "additionalExecutions": 0
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "recordType": "owner-approved public suspension follow-up",
+  "verifiedAt": "2026-11-20T00:31:05Z",
+  "userFacingDate": "November 19, 2026",
+  "timezone": "America/New_York",
+  "authorization": {
+    "request": "Do you approve suspending both existing Render services again?",
+    "response": "i approve",
+    "scope": "Suspend the two existing public Render services only. No approval to resume, deploy, merge, activate providers, spend money or run a public pilot."
+  },
+  "status": "PASS",
+  "defectResolved": "OPS-01",
+  "services": [
+    {
+      "name": "panelreply-ai",
+      "id": "srv-dbv6do6tlv9c73fuvar0",
+      "type": "web_service",
+      "workspaceId": "tea-dbu4qmrm8hqs73e4facg",
+      "url": "https://panelreply-ai.onrender.com/",
+      "dashboardUrl": "https://dashboard.render.com/web/srv-dbv6do6tlv9c73fuvar0",
+      "before": {
+        "suspended": "not_suspended",
+        "updatedAt": "2026-11-19T22:02:59.769174Z"
+      },
+      "after": {
+        "suspended": "suspended",
+        "suspenders": [
+          "user"
+        ],
+        "updatedAt": "2026-11-20T00:28:44.514773Z",
+        "autoDeploy": "no",
+        "autoDeployTrigger": "off",
+        "previews": "off",
+        "pullRequestPreviewsEnabled": "no",
+        "branch": "main"
+      },
+      "otherReturnedConfigurationUnchanged": true,
+      "externalCheck": {
+        "method": "GET",
+        "path": "/",
+        "status": "PASS",
+        "httpStatus": 503,
+        "ownerSuspensionMessage": true,
+        "panelReplyApplicationMarkup": false
+      }
+    },
+    {
+      "name": "panelreply-demo",
+      "id": "srv-dbu5o8tckfvc73b6fb4g",
+      "type": "static_site",
+      "workspaceId": "tea-dbu4qmrm8hqs73e4facg",
+      "url": "https://panelreply-demo.onrender.com/",
+      "dashboardUrl": "https://dashboard.render.com/static/srv-dbu5o8tckfvc73b6fb4g",
+      "before": {
+        "suspended": "not_suspended",
+        "updatedAt": "2026-11-19T22:03:10.317358Z"
+      },
+      "after": {
+        "suspended": "suspended",
+        "suspenders": [
+          "user"
+        ],
+        "updatedAt": "2026-11-20T00:29:45.304967Z",
+        "autoDeploy": "no",
+        "autoDeployTrigger": "off",
+        "previews": "off",
+        "pullRequestPreviewsEnabled": "no",
+        "branch": "main"
+      },
+      "otherReturnedConfigurationUnchanged": true,
+      "externalCheck": {
+        "method": "GET",
+        "path": "/",
+        "status": "PASS",
+        "httpStatus": 503,
+        "ownerSuspensionMessage": true,
+        "panelReplyApplicationMarkup": false
+      }
+    }
+  ],
+  "verification": {
+    "methods": [
+      "Render dashboard suspension controls",
+      "Independent read-only Render get_service after both actions",
+      "Existing unchanged GitHub GET-only public-suspension tests"
+    ],
+    "run": {
+      "number": 66,
+      "id": 44634698683,
+      "attempt": 2,
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683/attempts/2",
+      "conclusion": "success"
+    },
+    "rerun": {
+      "requestedOriginalJobId": 135950081883,
+      "newJobId": 135989918969,
+      "url": "https://github.com/panelreply-business/panelreply-demo/actions/runs/44634698683/job/135989918969",
+      "command": "PANELREPLY_EXPECT_PUBLIC_OFFLINE=true node --test tests/live-smoke.test.cjs",
+      "passed": 2,
+      "failed": 0,
+      "blocked": 3,
+      "durationMs": 527.172497,
+      "readOnlyPublicRequests": true,
+      "redirectsAllowed": false
+    },
+    "jobs": [
+      {
+        "id": 135989918969,
+        "name": "Required public suspension",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-20T00:30:20Z",
+        "completedAt": "2026-11-20T00:30:26Z",
+        "execution": "fresh suspension verification"
+      },
+      {
+        "id": 135989920414,
+        "name": "Private workflows (webkit)",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T23:06:20Z",
+        "completedAt": "2026-11-19T23:10:29Z",
+        "execution": "carried forward from attempt 1; not rerun"
+      },
+      {
+        "id": 135989921501,
+        "name": "demo-tests",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T23:06:18Z",
+        "completedAt": "2026-11-19T23:09:49Z",
+        "execution": "carried forward from attempt 1; not rerun"
+      },
+      {
+        "id": 135989964347,
+        "name": "Private workflows (firefox)",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T23:06:18Z",
+        "completedAt": "2026-11-19T23:11:00Z",
+        "execution": "carried forward from attempt 1; not rerun"
+      },
+      {
+        "id": 135989995878,
+        "name": "Synthetic OCR measurements",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T23:06:19Z",
+        "completedAt": "2026-11-19T23:08:43Z",
+        "execution": "carried forward from attempt 1; not rerun"
+      }
+    ],
+    "applicationChecks": {
+      "passed": 1096,
+      "failed": 0,
+      "freshlyRerun": false,
+      "sourceAttempt": 1,
+      "sourceCommit": "17223d6b972cc4bd3e58e9412964d237cbc0eeb9"
+    },
+    "logExcerpt": "public-suspension-2026-11-19.txt",
+    "dashboardCapture": "public-ai-suspended-2026-11-19.jpg",
+    "captureProvenance": {
+      "source": "Unmodified Render dashboard browser screenshot captured after the approved AI-service suspension",
+      "file": "public-ai-suspended-2026-11-19.jpg",
+      "sha256": "373c6c77096a94f891da91ffa92d543ba8e09fb02455cc32f148273aa95daa5f",
+      "sizePixels": [
+        1348,
+        926
+      ],
+      "staticServiceEvidence": "Dashboard status and independent Render API plus GET-only CI verification. No completed static-service screenshot is claimed."
+    }
+  },
+  "history": {
+    "originalAttempt": 1,
+    "originalConclusion": "failure",
+    "originalPublicGuardsFailed": 2,
+    "originalHttpStatus": 200,
+    "record": "prelaunch-verification.json",
+    "preserved": true
+  },
+  "source": {
+    "branch": "feature/interactive-dual-product-site",
+    "parentEvidenceCommit": "a33dfabd03351a3b6236a57a80e072cb4d43f6e9",
+    "testedCommit": "17223d6b972cc4bd3e58e9412964d237cbc0eeb9",
+    "testedTree": "f2b36ddf779e25be6de7cd496867afa53e3c6ca4",
+    "ciMergeCommit": "05a4a99ee38c6ac01c865787f734115ed2afa712",
+    "main": "c6152b38ae2e3a824e6a81199aa0d757d47a19ae",
+    "pullRequest": 8,
+    "draft": true,
+    "merged": false,
+    "applicationTestWorkflowChanges": false
+  },
+  "remaining": {
+    "releaseDecision": "NO-GO for a human pilot, live-provider activation or public release",
+    "ocrAccuracyGate": "FAIL",
+    "ocrExact": 253,
+    "ocrImages": 310,
+    "ocrNonexact": 57,
+    "actualModelQuality": "NOT TESTED",
+    "fakeScenarios": 49,
+    "meaningfulScenarioTarget": "300\u2013500; incomplete",
+    "otherGates": "Hosted private access, offsite restore, retention/deletion, monitoring delivery, OS-level OCR isolation, durable usage budgets and remaining compatibility/accessibility testing are unchanged."
+  },
+  "restrictions": {
+    "noDeployment": true,
+    "noMerge": true,
+    "noProviderActivation": true,
+    "noCustomerCommunications": true,
+    "noNewPaidServices": true,
+    "futureServiceStateChangesRequireSeparateApproval": true
+  }
+}

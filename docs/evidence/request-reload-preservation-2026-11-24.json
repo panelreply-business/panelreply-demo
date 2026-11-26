@@ -1,0 +1,47 @@
+{
+  "format": "panelreply-request-reload-preservation-v1",
+  "recordedAt": "2026-11-24T01:42:17.271373+00:00",
+  "baseline": "The staged frozen25-file request receipt candidate, manifestc57a66e3ef4c2c52800c6ccf37059f190efa42116c7fa38ddc5ae4fc583f068c",
+  "candidateSourceManifestSha256": "ce3559584e2ac45fea536cfd15a96ddfc9de3255103ad85497b0a16c7086dc4c",
+  "originalStateMethodsAndHelpersBytePreserved": true,
+  "originalStateMethods": 46,
+  "originalBrowserMethodsBytePreserved": 39,
+  "newBrowserMethods": [
+    "CallbackProductBrowserTests.test_callback_uncertain_request_reload_requires_owner_choice_and_valid_current_record"
+  ],
+  "unchanged": [
+    {
+      "path": "workspace/schedule.js",
+      "sha256": "3678a15c44102a286b9d35cd5c1e7e758c3c88019eae60f8ba0c0752e270965d",
+      "byteIdenticalToFrozenCandidate": true
+    },
+    {
+      "path": "tests/platform-client-fixture.cjs",
+      "sha256": "5e071d452627f3d1a481a0bc0be0afce03821b6918823250340e704a28b62ef4",
+      "byteIdenticalToFrozenCandidate": true
+    },
+    {
+      "path": "tests/workspace-api.test.cjs",
+      "sha256": "e87e6318f202e27dbbae571c4ae7631889d246d89a393f6b354cec9d37873ac0",
+      "byteIdenticalToFrozenCandidate": true
+    }
+  ],
+  "changedSources": [
+    {
+      "path": "workspace/app.js",
+      "sha256": "d6b6663f310349dffd0076b1238c33696dc3ea9f6c4989c58f2fdf289fb996e0"
+    },
+    {
+      "path": "workspace/index.html",
+      "sha256": "0b15210893f7bb0080da73d668c6eab3bfcabf2526bf01dbefeada4743176f7a"
+    },
+    {
+      "path": "tests/platform-client-state.test.cjs",
+      "sha256": "833a2782df9889a134d37b8811b350b2c7df577cad639f805caef7e2164a5c5d"
+    },
+    {
+      "path": "tests/product_browser_test.py",
+      "sha256": "cbe88cdc9d21b498b2a2f5e3933112392a76c908ba775ed8359bf08fd5072f7d"
+    }
+  ]
+}

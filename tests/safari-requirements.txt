@@ -1,0 +1,5 @@
+# Native Apple Safari only. The Node application adds no dependency.
+# Python release: https://github.com/SeleniumHQ/selenium/blob/selenium-4.54.0/py/CHANGES
+selenium==4.54.0
+# Same independent workbook reader as the existing prelaunch tests.
+openpyxl==3.1.5

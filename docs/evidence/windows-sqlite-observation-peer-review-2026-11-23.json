@@ -1,0 +1,40 @@
+{
+  "format": "panelreply-windows-sqlite-peer-review-v1",
+  "reviewer": "platform_coverage",
+  "recordedAt": "2026-11-23T18:38:35.461Z",
+  "worktree": "/workspace/scratch/8f544d546bb7/panelreply-windows-sqlite-observation",
+  "codeHashes": {
+    "scripts/observe-windows-sqlite.cjs": "f43c200643224140bed2d7374474daf9df4e37f8990aee8d6ce66147dfb8dce7",
+    "tests/windows-sqlite-observation-support.cjs": "89da2d3f5e080e8efd24022aaa9e8de1dd07b70b104a955764e6402f2b18cd04",
+    "tests/windows-sqlite-observer-child.cjs": "580b3cff02b9ee0932e0326350e809f7f13d674577d6f67048492c20b56fb19c",
+    "tests/windows-sqlite-observer-process.cjs": "5e2d624f08a20fdacfccb15228ee7af1b6b6842b3e2c666cc817a32b5a5b9335",
+    "tests/windows-sqlite-observation.harness.cjs": "89a841d1aa1a5728af117c67a7147b07c2a4ae965c1f012f01edba89addc4191",
+    "workspace/native/windows-storage/fixture.cc": "b839537fd56354b2559f70cb0290968d1185badf415771335aebbf57794b2635"
+  },
+  "hashesMatchedBeforeAndAfterHarness": true,
+  "review": "No remaining concrete defect found. Normal or missing exit is rejected for forced-termination observations. Completed measurements and missing phases remain explicit. Source/build and normal/helper artifact identities are checked before and after. The fixed catalog has eight scenarios. The owned ChildProcess is cleaned independently of protocol or identity rejection. No probe load, process-name sweep, ACL repair, privilege adjustment or product acceptance.",
+  "verification": {
+    "command": "node --test tests/windows-sqlite-observation.harness.cjs",
+    "execChunk": "863b18",
+    "completionChunk": "b90b1f",
+    "exitCode": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationMs": 2488.969949,
+    "scope": "Local Linux evidence/protocol harness only. The forced SQLite child termination is limited to the process created by this harness.",
+    "nativeWindowsExecutions": 0,
+    "productCredit": 0,
+    "rawShellLogSaved": false
+  },
+  "limits": [
+    "Actual Windows and native-token behavior remain unexecuted locally.",
+    "Read-only token metadata describes a primary token, not arbitrary thread impersonation.",
+    "Pinned image hashes identify executable files, not mapped pages.",
+    "Observations do not establish Windows product or storage-adapter acceptance."
+  ],
+  "editsMade": false
+}

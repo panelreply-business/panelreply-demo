@@ -1,0 +1,80 @@
+{
+  "format": "panelreply-static-sample-pointer-investigation",
+  "version": 1,
+  "status": "CAUSE_UNCONFIRMED_DIAGNOSTICS_PREPARED",
+  "baseCommit": "9264d2a3575889c6b39140554fc767caf6e6a7ad",
+  "artifactSha256": "1db5ae65439e47b716a1d6aa9643c874eca22479c2a6ee211862cc9f392a4dbe",
+  "artifactSourceCommit": "939b9aefad105a7529b9d13857118dbe9a399e15",
+  "artifactSourceTreeSha256": "2ec4c2b878e6d954df4ab0fd7b8cf04630669dca724c1bf1e174533f84cb4658",
+  "files": [
+    {
+      "file": "index.html",
+      "run86Sha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82",
+      "candidateSha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82"
+    },
+    {
+      "file": "src/demo.js",
+      "run86Sha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974",
+      "candidateSha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974"
+    },
+    {
+      "file": "tests/browser_test.py",
+      "run86Sha256": "93380a727c1a215128095457d11714064325f05036ce2abcb345eeb96bf2cbcf",
+      "candidateSha256": "7fad1ada328f8adb8030ac3663acc2d9e2d8debee44c1cba84613aa7c9d79488"
+    },
+    {
+      "file": "tests/browser_engine.py",
+      "run86Sha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5",
+      "candidateSha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5"
+    },
+    {
+      "file": "tests/release_platform_runner.py",
+      "run86Sha256": "16ead6b00d4f722bfd74a443e5e2ccf99fe4aff3d4bbc86647e3e64d38c95c7f",
+      "candidateSha256": "16ead6b00d4f722bfd74a443e5e2ccf99fe4aff3d4bbc86647e3e64d38c95c7f"
+    }
+  ],
+  "originalActionAndAssertionAstPreserved": true,
+  "portableMethodIdsUnchanged": true,
+  "portableMethods": 92,
+  "pythonSyntax": "PASS",
+  "observerJavaScriptExpressionsParsed": 3,
+  "exceptionNotesPreserveOriginalFailure": "PASS",
+  "browserExecutions": 0,
+  "newTestMethods": 0,
+  "historicalFailure": {
+    "id": "browser_test.DemoBrowserTests.test_keyboard_access_to_every_control",
+    "platformKey": "darwin/x86_64/webkit/bundled/desktop",
+    "productScope": "callback",
+    "profile": "desktop",
+    "emulated": false,
+    "emulatedDevice": null,
+    "status": "FAIL",
+    "durationMs": 9435.26,
+    "diagnostics": [
+      "Traceback (most recent call last):\n  File \"/Users/runner/work/panelreply-demo/panelreply-demo/tests/browser_test.py\", line 194, in test_keyboard_access_to_every_control\n    expect(self.page.locator(\"#title\")).to_have_text(\"Ready for callback.\")\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 22839, in to_have_text\n    self._sync(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 648, in to_have_text\n    await self._expect_impl(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 128, in _expect_impl\n    _record_soft_or_raise(\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/playwright/_impl/_assertions.py\", line 60, in _record_soft_or_raise\n    raise error\nAssertionError: Locator expected to have text 'Ready for callback.'\nActual value: Save the call. \nCall log:\n  - Expect \"to_have_text\" with timeout 5000ms\n  - waiting for locator(\"#title\")\n    13 \u00d7 locator resolved to <h2 id=\"title\">Save the call.</h2>\n       - unexpected value \"Save the call.\"\n\nAria snapshot:\n- heading \"Save the call.\" [level=2]\n"
+    ]
+  },
+  "historicalTotals": {
+    "passed": 91,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "expectedFailures": 0,
+    "unexpectedSuccesses": 0,
+    "notRun": 0,
+    "incomplete": 0
+  },
+  "goalCredit": 0,
+  "diagnosticBounds": {
+    "focusRows": 6,
+    "actionRows": 16,
+    "encodedCharacters": 4500,
+    "dropCounters": true,
+    "fieldValuesRecorded": false
+  },
+  "applicationSourceChanged": false,
+  "originalPointerActionRetained": true,
+  "originalExceptionRethrown": true,
+  "actionRetryAdded": false,
+  "browserCauseClaimed": false
+}

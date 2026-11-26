@@ -1,0 +1,58 @@
+{
+  "format": "panelreply-independent-source-review-v1",
+  "reviewer": "ocr_quality",
+  "recordedAt": "2026-11-23T19:51:04.538716+00:00",
+  "worktree": "/workspace/scratch/8f544d546bb7/panelreply-safari-actions",
+  "baseCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "status": "PASS_SOURCE_REVIEW",
+  "findings": [],
+  "files": [
+    {
+      "path": "tests/safari_product_browser_test.py",
+      "sha256": "5ee19a11ba5cbf9b11cb7f2dba7b54c60a387f8c48f678be6e52ff644d06bdc2",
+      "bytes": 55868
+    },
+    {
+      "path": "tests/release_safari_runner.py",
+      "sha256": "ad9c1ec65605c9d50c01181046ebbe4c48acb68aea011acb79d80c5c052895ee",
+      "bytes": 17587
+    },
+    {
+      "path": "tests/safari_runner_test.py",
+      "sha256": "027b0758c8060ba339f349f5d6a5271da0f7f16d922c5dad53eb800ff879ebaf",
+      "bytes": 30122
+    }
+  ],
+  "nativeMethodsBytePreserved": {
+    "SafariCallbackBrowserTests.test_contact_hold_and_keyboard_dirty_edit_guard": "9e5ee6eea0e5bf7d3d5f332f02fab5466f2ef6b24bd931c52e4274901ce625de",
+    "SafariCallbackBrowserTests.test_intake_status_persistence_and_sign_out": "fdb86646cb32ebf26445e1d387812cee8c9eb31a56bb68a58372256eef382a0d",
+    "SafariCallbackBrowserTests.test_schedule_reschedule_outcome_follow_up_and_cancel": "c1206457d4ae0cfe737c8d8be384a7867123abb7bbbd38994021068d781ed0d0",
+    "SafariSpreadsheetBrowserTests.test_bound_recovery_revokes_archived_sessions_and_credentials": "b1a67875b67a57d19d6f323891780b0cc0505346b12ad685941c85f38dae0e92",
+    "SafariSpreadsheetBrowserTests.test_file_upload_source_links_and_unavailable_ocr": "4a502b27982b03a346a9fecf39ba2a808525181442c76391f2f552d4a3eee3f3",
+    "SafariSpreadsheetBrowserTests.test_manual_corrections_persist_and_native_downloads_match": "96da5885245a3bf57406e958f9c64abac37462b05e008c4893d4e79684042843"
+  },
+  "uploadTryStatementsBytePreserved": 9,
+  "finalSelectAssertionsBytePreserved": true,
+  "reviewedBoundaries": [
+    "The helper uses native click and W3C Actions Escape to prepare focus. It requires the same active enabled select, unchanged value and selection index, and a nonoverflowed preparation trace before typing.",
+    "Preparation events are removed from selection evidence. Original exact-value, trusted-event, typed-character count and requested-value input/change assertions remain mandatory.",
+    "The six native case bodies and original upload actions and API/source assertions remain byte-identical. No JavaScript setter, focus call, event dispatch or upload retry was added.",
+    "The later upload read probe runs only after failure with a two-MiB selected-file bound and four-second deadline. It returns counts, metadata and bounded errors, not bytes or base64 content.",
+    "The probe aborts only its own reader, preserves the original exception, does not call randomUUID and cannot promote the upload outcome."
+  ],
+  "verification": {
+    "independentNativeAttempts": 0,
+    "independentHarnessRerun": false,
+    "reason": "Root is running the same frozen nineteen-case harness. Source and assertion preservation were independently checked without a duplicate run.",
+    "authorHarnessReport": "/tmp/panelreply-safari-actions-after.json",
+    "authorHarnessPassed": 19,
+    "authorHarnessFailures": 0,
+    "authorHarnessSkipped": 0,
+    "additionalGoalCredit": 0,
+    "sourceUnchanged": true
+  },
+  "limitations": [
+    "Native Safari execution remains pending. The four selection and two upload failures from run91 remain preserved.",
+    "A later diagnostic read does not identify the original exception. Observation may affect timing, and harness success is not native product evidence."
+  ]
+}

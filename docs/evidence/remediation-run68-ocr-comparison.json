@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "91c5553fbe4ac97fcfcf8991da7c0c6cca41fbf7",
+  "runId": 44656230988,
+  "runNumber": 68,
+  "jobId": 136023013605,
+  "measurement": {
+    "localDataset": "9cb1e68c4dee1a83a7a14fa1735917cba117a145cec57067e148799baf897601",
+    "ciDataset": "7067e55235fedf48d3c81653f085841c80cc6632fa012cc821371dd9066e3c2e",
+    "samePipeline": true,
+    "fontsEqual": false,
+    "sameCaseIds": true,
+    "extractionComparisonChanges": [],
+    "localExact": 277,
+    "ciExact": 277,
+    "scope": "CI regenerated the fixed scenarios with a distinct manifest. Never describe it as the identical local image set. The unchanged local before/after benchmark remains the accuracy comparison."
+  }
+}

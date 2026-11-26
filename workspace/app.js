@@ -25,6 +25,8 @@
   let leadBaseline = '';
   let profileBaseline = '';
   let leadSaving = false;
+  let pendingLeadSave = null;
+  let pendingLeadReview = null;
   let leadLoading = false;
   let profileSaving = false;
   let profileLoading = false;
@@ -38,6 +40,16 @@
   let leadConflict = false;
   let exportBusy = false;
   const exportUrls = new Set();
+  const deletion = window.PanelReplyDeletion.create({ api, onChange: updateDirty, onDeleted: deletedLead });
+  const schedule = window.PanelReplySchedule.create({ api, onChange: updateDirty, guard: guarded,
+    onLead(lead) {
+      const index = leads.findIndex(item => item.id === lead.id);
+      if (index >= 0) leads[index] = lead; else leads.unshift(lead);
+      renderLead(lead);
+    },
+    onOpenLead(id) { setView('inbox'); return selectLead(id); },
+    onReloadLead() { if (selected) return selectLead(selected.id); }
+  });
 
   class RequestError extends Error {
     constructor(status, code, message, fields) { super(message); this.status = status; this.code = code; this.fields = fields; }
@@ -52,10 +64,15 @@
 
   function clearSession() {
     expired = true;
+    deletion.expire();
+    schedule.clear();
     csrfToken = '';
     user = null;
     leads = [];
     selected = null;
+    pendingLeadSave = null;
+    pendingLeadReview = null;
+    pendingNavigation = null;
     profile = null;
     leadBaseline = '';
     profileBaseline = '';
@@ -66,19 +83,23 @@
     $('export-records').disabled = true;
     $('requests-list').replaceChildren();
     $('lead-form').reset();
+    $('lead-status').textContent = '';
     $('profile-form').reset();
     $('lead-conversation').replaceChildren();
     $('lead-audit').replaceChildren();
     $('lead-detail').hidden = true;
     $('profile-view').hidden = true;
+    $('schedule-view').hidden = true;
     window.location.replace('/login');
   }
 
   async function api(path, options = {}) {
     const method = options.method || 'GET';
     const headers = { Accept: 'application/json' };
+    if (csrfToken) headers['X-Workspace-Session'] = csrfToken;
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
     if (method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
+    if (options.key) headers['Idempotency-Key'] = options.key;
     let response;
     try {
       response = await fetch(path, { method, credentials: 'same-origin', cache: 'no-store', headers, body: options.body === undefined ? undefined : JSON.stringify(options.body) });
@@ -111,17 +132,31 @@
   }
   function leadDirty() { return Boolean(selected && leadBaseline && JSON.stringify(leadDraft()) !== leadBaseline); }
   function profileDirty() { return Boolean(profile && profileBaseline && JSON.stringify(profileDraft()) !== profileBaseline); }
-  function hasDirty() { return leadDirty() || profileDirty(); }
+  function hasDirty() { return Boolean(pendingLeadSave) || leadDirty() || profileDirty() || schedule.isDirty(); }
   function updateDirty() {
+    const deleting = deletion.isOpen();
+    const taskLocked = schedule.isBusy() || schedule.isPending();
+    const requestPending = Boolean(pendingLeadSave);
+    const deleteLocked = deleting || !selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict || taskLocked;
+    $('delete-lead').disabled = deleteLocked;
+    $('delete-conversation').disabled = deleteLocked || !selected?.conversation?.length;
+    $('lead-fields').disabled = deleting || expired || leadSaving || leadLoading || refreshingRequests || requestPending || taskLocked || schedule.isDirty();
     $('lead-dirty').hidden = !leadDirty();
     $('profile-dirty').hidden = !profileDirty();
-    $('save-lead').disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict;
-    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict;
-    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy;
+    const saveButton = $('save-lead');
+    saveButton.disabled = !selected || leadSaving || leadLoading || refreshingRequests || leadConflict || deleting || taskLocked || schedule.isDirty();
+    const saveLabel = requestPending ? 'Retry save' : 'Save changes';
+    // A field can dispatch change between pointer-down and click on Save.
+    if (saveButton.textContent !== saveLabel) saveButton.textContent = saveLabel;
+    $('lead-uncertain').hidden = expired || !pendingLeadSave?.uncertain || leadConflict;
+    $('reload-uncertain-lead').disabled = expired || !pendingLeadSave?.uncertain || leadSaving || leadLoading || refreshingRequests;
+    $('save-profile').disabled = !profile || profileSaving || profileLoading || profileConflict || deleting || requestPending;
+    $('export-records').disabled = !user || expired || loading || leadSaving || profileSaving || exportBusy || deleting || taskLocked || requestPending;
+    schedule.setLocked(deleting || expired || !user || leadSaving || leadLoading || refreshingRequests || profileSaving || exportBusy || requestPending || leadDirty() || profileDirty() || leadConflict);
   }
 
   async function exportRecords() {
-    if (!user || expired || loading || leadSaving || profileSaving || exportBusy) return;
+    if (!user || expired || loading || leadSaving || profileSaving || exportBusy || pendingLeadSave || schedule.isBusy() || schedule.isPending()) return;
     exportBusy = true;
     showError('export-error', '');
     $('export-status').textContent = 'Preparing a copy of the saved records…';
@@ -130,8 +165,8 @@
     try {
       const data = await api('/api/export');
       if (expired || !user) return;
-      if (data?.format !== 'panelreply-business-export' || data.version !== 1 || data.profile?.business?.id !== user.businessId
-        || !Array.isArray(data.leads) || typeof data.exportedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(data.exportedAt)) {
+      if (data?.format !== 'panelreply-business-export' || data.version !== 2 || data.profile?.business?.id !== user.businessId
+        || !Array.isArray(data.leads) || !Array.isArray(data.callbackTasks) || typeof data.exportedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(data.exportedAt)) {
         throw new Error('The export response was incomplete. No download was prepared. Try again.');
       }
       const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' });
@@ -162,7 +197,17 @@
 
   function guarded(action) {
     if (expired) return;
-    if (leadSaving || profileSaving) {
+    if (pendingLeadSave) {
+      showAppError(leadConflict
+        ? 'Review the saved request with Reload saved version before leaving this draft.'
+        : 'The request save is unconfirmed. Use Retry save before leaving this draft.');
+      return;
+    }
+    if (schedule.isPending()) {
+      showAppError('Confirm the pending task save with Retry task save before leaving this request.');
+      return;
+    }
+    if (leadSaving || profileSaving || deletion.isOpen() || schedule.isBusy()) {
       showAppError('A save is still in progress. Wait for its result before leaving this view.');
       return;
     }
@@ -180,16 +225,19 @@
     currentView = view;
     const inbox = view === 'inbox';
     $('inbox-view').hidden = !inbox;
-    $('profile-view').hidden = inbox;
-    $('nav-inbox').classList.toggle('active', inbox);
-    $('nav-profile').classList.toggle('active', !inbox);
-    $('nav-inbox').toggleAttribute('aria-current', inbox);
-    $('nav-profile').toggleAttribute('aria-current', !inbox);
-    if (inbox) $('nav-inbox').setAttribute('aria-current', 'page');
-    else $('nav-profile').setAttribute('aria-current', 'page');
-    $('page-title').textContent = inbox ? 'Request inbox' : 'Business profile';
-    $('page-subtitle').textContent = inbox ? 'A clear view of the work coming in.' : 'The information your customers can rely on.';
-    document.title = `${inbox ? 'Request inbox' : 'Business profile'} · PanelReply`;
+    $('profile-view').hidden = view !== 'profile';
+    $('schedule-view').hidden = view !== 'schedule';
+    for (const name of ['inbox', 'profile', 'schedule']) {
+      $(`nav-${name}`).classList.toggle('active', view === name);
+      if (view === name) $(`nav-${name}`).setAttribute('aria-current', 'page');
+      else $(`nav-${name}`).removeAttribute('aria-current');
+    }
+    const titles = { inbox: 'Request inbox', profile: 'Business profile', schedule: 'Callback queue' };
+    $('page-title').textContent = titles[view];
+    $('page-subtitle').textContent = inbox ? 'A clear view of the work coming in.' : view === 'schedule' ? 'Plan callbacks and track each follow-up.' : 'The information your customers can rely on.';
+    const programLabel = document.body?.dataset?.productId === 'callback' ? 'PanelReply Callback' : 'PanelReply';
+    document.title = `${titles[view]} · ${programLabel}`;
+    if (view === 'schedule') void schedule.openQueue();
   }
 
   function updateBusiness() {
@@ -253,7 +301,8 @@
     const activities = document.createDocumentFragment();
     for (const entry of audit.slice().reverse()) {
       const item = el('li', 'history-item');
-      const action = { 'lead.created': 'Request saved', 'lead.updated': 'Request updated', 'contact.opted_out': 'Contact opted out', 'contact.suppressed': 'Contact opted out' }[entry.action] || 'Request activity recorded';
+      const action = { 'lead.created': 'Request saved', 'lead.updated': 'Request updated', 'contact.opted_out': 'Contact opted out', 'contact.suppressed': 'Contact opted out',
+        'callback.scheduled': 'Callback task scheduled', 'callback.rescheduled': 'Callback task rescheduled', 'callback.completed': 'Callback outcome recorded', 'callback.cancelled': 'Callback task cancelled' }[entry.action] || 'Request activity recorded';
       item.append(el('p', 'history-heading', action), el('p', 'history-text', `${dateText(entry.createdAt)} · Revision ${entry.version}`));
       const fields = entry.details?.fields;
       if (entry.action === 'lead.updated' && Array.isArray(fields)) {
@@ -315,6 +364,7 @@
     $('lead-status').textContent = savedMessage;
     renderHistory(lead);
     leadBaseline = JSON.stringify(leadDraft());
+    schedule.selectLead(lead);
     renderList();
     updateDirty();
   }
@@ -328,7 +378,7 @@
     try {
       const data = await api(`/api/leads/${encodeURIComponent(id)}`);
       if (serial !== selectionSerial || expired) return;
-      if (!data?.lead?.id) throw new Error('The request details were incomplete. Please try again.');
+      if (!window.PanelReplySchedule.validLeadReceipt(data?.lead) || data.lead.id !== id) throw new Error('The request details were incomplete. Please try again.');
       renderLead(data.lead);
       const url = new URL(window.location.href);
       url.searchParams.set('lead', data.lead.id);
@@ -426,31 +476,178 @@
     }
   }
 
+  function beginLeadDeletion(kind) {
+    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || exportBusy || hasDirty() || leadConflict || schedule.isBusy() || schedule.isPending()) return;
+    const conversationOnly = kind === 'lead_conversation';
+    deletion.request({
+      kind, id: selected.id, version: selected.version,
+      url: `/api/leads/${encodeURIComponent(selected.id)}${conversationOnly ? '/conversation' : ''}`,
+      title: conversationOnly ? 'Delete conversation?' : 'Delete customer request?',
+      description: conversationOnly
+        ? 'Remove the saved conversation from this request. Request fields and contact restrictions stay in place.'
+        : 'Remove this request, its callback tasks, notes and saved conversation from the active workspace.'
+    });
+  }
+  async function deletedLead(operation) {
+    if (expired) return;
+    if (operation.kind === 'lead') {
+      leads = leads.filter(item => item.id !== operation.id);
+      selected = null; leadBaseline = ''; leadConflict = false; selectionSerial += 1;
+      schedule.selectLead(null);
+      $('lead-form').reset(); $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      $('lead-detail').hidden = true; $('request-empty').hidden = false;
+      const url = new URL(location.href); url.searchParams.delete('lead'); history.replaceState(null, '', url.pathname + url.search);
+      renderList(); $('list-status').textContent = 'Request deletion confirmed.';
+      $('request-search').focus(); updateDirty();
+      return;
+    }
+    // Clear deleted text immediately, even if the follow-up read fails.
+    if (selected?.id === operation.id) {
+      selected = null; leadBaseline = ''; $('lead-conversation').replaceChildren(); $('lead-audit').replaceChildren();
+      schedule.selectLead(null);
+      $('lead-detail').hidden = true; $('request-empty').hidden = false;
+    }
+    $('list-status').textContent = 'Conversation deletion confirmed. Loading the remaining request…';
+    await selectLead(operation.id);
+    if (!expired && selected?.id === operation.id) $('lead-status').textContent = 'Conversation deleted. Contact restrictions remain.';
+  }
+
+  function receiptPhone(value) {
+    if (typeof value !== 'string' || value.length > 40 || !value.isWellFormed()
+      || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value)) return null;
+    const input = value.trim();
+    if (!/^\+?[\d\s().-]+$/.test(input)) return null;
+    let digits = input.replace(/\D/g, '');
+    if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+    if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(digits) || (input.startsWith('+') && !input.startsWith('+1'))) return null;
+    return '+1' + digits;
+  }
+
+  function savedLeadMatches(lead, command) {
+    const limits = { customerName: 120, job: 2000, zip: 5, callbackWindow: 200, requestedWorkDate: 200, notes: 2000 };
+    for (const [key, limit] of Object.entries(limits)) {
+      const input = command.body[key];
+      if (typeof input !== 'string' || input.length > limit || !input.isWellFormed()
+        || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(input) || lead[key] !== input.trim()) return false;
+    }
+    const phone = receiptPhone(command.body.phone);
+    if (!phone || lead.phone !== phone || lead.status !== command.body.status || !/[a-z]/i.test(command.body.job)) return false;
+    // The public permission reflects the current phone suppression, including
+    // restrictions discovered while saving or after an uncertain write.
+    if (lead.contactPermission !== (lead.optedOut ? 'opted_out' : command.body.contactPermission)
+      || (command.body.contactPermission === 'opted_out' && !lead.optedOut)
+      || (command.optedOut && receiptPhone(command.phone) === phone && !lead.optedOut)
+      || (command.safetyHold && !lead.safetyHold)
+      || (lead.safetyHold && lead.status !== 'needs_review')
+      || ((lead.optedOut || lead.contactPermission !== 'requested_callback') && ['new', 'contacted'].includes(lead.status))) return false;
+    return true;
+  }
+
+  function validSavedLead(lead, command) {
+    return selected?.id === command.id && selected.createdAt === command.createdAt
+      && window.PanelReplySchedule.validLeadReceipt(lead) && lead.id === command.id && lead.createdAt === command.createdAt
+      && Date.parse(lead.updatedAt) >= Date.parse(command.updatedAt);
+  }
+
+  function acceptLeadSave(lead, message) {
+    const index = leads.findIndex(item => item.id === lead.id);
+    if (index >= 0) leads[index] = lead; else leads.unshift(lead);
+    renderLead(lead, `${message} · ${dateText(lead.updatedAt)}`);
+    pendingLeadSave = null;
+  }
+
+  async function confirmLeadValues(command) {
+    const data = await api(`/api/leads/${encodeURIComponent(command.id)}`);
+    if (expired || pendingLeadSave !== command) return;
+    if (!validSavedLead(data?.lead, command) || data.lead.version <= command.body.version) {
+      throw new Error('The saved request could not be confirmed at a later revision. Your draft is still here. Use Retry save.');
+    }
+    if (!savedLeadMatches(data.lead, command)) {
+      leadConflict = true;
+      $('lead-conflict').hidden = false;
+      showError('lead-error', 'The saved request now differs from this draft. Your previous save may have completed. Use Reload saved version to review it before making another change.');
+      return;
+    }
+    // PATCH has no idempotency receipt. This confirms current saved values,
+    // not which earlier command or writer produced them.
+    acceptLeadSave(data.lead, 'Saved values confirmed');
+  }
+
+  function closeNavigationGuard() {
+    pendingNavigation = null;
+    pendingLeadReview = null;
+    $('navigation-guard').hidden = true;
+    $('guard-title').textContent = 'You have unsaved changes';
+    $('guard-description').textContent = 'Keep editing, or discard these changes before leaving this view.';
+  }
+
+  async function reloadReviewedLead(command) {
+    if (pendingLeadSave !== command || expired || leadSaving || leadLoading) return;
+    leadLoading = true;
+    updateDirty();
+    try {
+      const data = await api(`/api/leads/${encodeURIComponent(command.id)}`);
+      if (expired || pendingLeadSave !== command) return;
+      if (!validSavedLead(data?.lead, command) || data.lead.version < command.body.version) throw new Error('The saved request details were incomplete. Your draft is still here. Try Reload saved version again.');
+      // The owner chose to discard this command after reviewing the conflict.
+      // Do not discard it until a complete current record is available.
+      acceptLeadSave(data.lead, 'Saved version loaded. Previous save outcome not established');
+    } catch (cause) {
+      if (!expired) showError('lead-error', cause.message || 'Could not load the saved request. Your draft is still here.');
+    } finally {
+      leadLoading = false;
+      if (!expired) updateDirty();
+    }
+  }
+
+  function reviewLeadReload() {
+    if (!pendingLeadSave) return guarded(() => { if (selected) selectLead(selected.id); });
+    if (!pendingLeadSave.uncertain || leadSaving || leadLoading || expired) return;
+    pendingLeadReview = pendingLeadSave;
+    pendingNavigation = null;
+    $('guard-title').textContent = 'Load the current saved request?';
+    $('guard-description').textContent = 'This discards your draft and stops retrying it. Your previous save may have completed. The saved request will load only after its details are confirmed.';
+    $('navigation-guard').hidden = false;
+    $('keep-editing').focus();
+    $('navigation-guard').scrollIntoView({ block: 'nearest' });
+  }
+
   async function saveLead(event) {
     event.preventDefault();
-    if (!selected || leadSaving || leadLoading || refreshingRequests || leadConflict || !$('lead-form').reportValidity()) return;
+    if (!selected || expired || leadSaving || leadLoading || refreshingRequests || leadConflict || deletion.isOpen() || schedule.isBusy() || schedule.isPending() || schedule.isDirty()
+      || (!pendingLeadSave && !$('lead-form').reportValidity())) return;
     leadSaving = true;
-    const id = selected.id;
-    const payload = { version: selected.version, ...leadDraft() };
+    const command = pendingLeadSave || { id: selected.id, createdAt: selected.createdAt, updatedAt: selected.updatedAt,
+      phone: selected.phone, optedOut: selected.optedOut, safetyHold: selected.safetyHold,
+      body: { version: selected.version, ...leadDraft() }, uncertain: false };
+    pendingLeadSave = command;
+    closeNavigationGuard();
     showError('lead-error', '');
     $('lead-status').textContent = 'Saving changes…';
     $('lead-fields').disabled = true;
     updateDirty();
     try {
-      const data = await api(`/api/leads/${encodeURIComponent(id)}`, { method: 'PATCH', body: payload });
-      if (expired) return;
-      if (!data?.lead?.id) throw new Error('The save response was incomplete. Reload the saved version before making another change.');
-      const index = leads.findIndex(lead => lead.id === data.lead.id);
-      if (index >= 0) leads[index] = data.lead;
-      else leads.unshift(data.lead);
-      renderLead(data.lead, `Changes saved · ${dateText(data.lead.updatedAt)}`);
+      const data = await api(`/api/leads/${encodeURIComponent(command.id)}`, { method: 'PATCH', body: command.body });
+      if (expired || pendingLeadSave !== command) return;
+      if (!validSavedLead(data?.lead, command) || data.lead.version !== command.body.version + 1
+        || data.lead.version >= Number.MAX_SAFE_INTEGER || !savedLeadMatches(data.lead, command)) {
+        throw new Error('The save response did not confirm this request and its submitted values. Your draft is still here. Use Retry save.');
+      }
+      acceptLeadSave(data.lead, 'Changes saved');
     } catch (cause) {
       if (expired) return;
       $('lead-status').textContent = '';
+      if (!cause.status || cause.status >= 500 || cause.status < 400 || cause.status === 408 || cause.status === 429) command.uncertain = true;
+      if (!command.uncertain) pendingLeadSave = null;
       showError('lead-error', cause.message || 'Could not save the changes. Your edits are still here.');
       if (cause.status === 409 && cause.code === 'version_conflict') {
-        leadConflict = true;
-        $('lead-conflict').hidden = false;
+        if (command.uncertain) {
+          try { await confirmLeadValues(command); }
+          catch (readError) { if (!expired) showError('lead-error', readError.message || 'The saved request could not be confirmed. Your draft is still here. Use Retry save.'); }
+        } else {
+          leadConflict = true;
+          $('lead-conflict').hidden = false;
+        }
       }
       markInvalid(cause, $('lead-form'), FIELD_IDS);
     } finally {
@@ -465,7 +662,7 @@
   async function saveProfile(event) {
     event.preventDefault();
     updateApprovals();
-    if (!profile || profileSaving || profileLoading || profileConflict || !$('profile-form').reportValidity()) return;
+    if (!profile || profileSaving || profileLoading || profileConflict || pendingLeadSave || !$('profile-form').reportValidity()) return;
     profileSaving = true;
     const payload = { version: profile.version, ...profileDraft() };
     showError('profile-error', '');
@@ -552,13 +749,15 @@
       const session = await api('/api/session');
       if (expired) return;
       if (!session?.user || typeof session.csrfToken !== 'string') throw new Error('Your sign-in could not be confirmed. Please reload and sign in again.');
+      if (document.body?.dataset?.productId && session.product?.id !== document.body.dataset.productId) throw new Error('The signed-in program could not be confirmed. Reload this page and sign in again.');
+      if (user && (user.id !== session.user.id || user.businessId !== session.user.businessId || csrfToken !== session.csrfToken)) { clearSession(); return; }
       user = session.user;
       csrfToken = session.csrfToken;
       $('signed-in-name').textContent = user.username || 'Workspace owner';
       const results = await Promise.allSettled([api('/api/profile'), api('/api/leads')]);
       if (expired) return;
       const messages = [];
-      if (results[0].status === 'fulfilled') renderProfile(results[0].value);
+      if (results[0].status === 'fulfilled') { renderProfile(results[0].value); if (window.location.hash === '#settings') setView('profile'); }
       else messages.push(`Business profile: ${results[0].reason.message}`);
       if (results[1].status === 'fulfilled' && Array.isArray(results[1].value.leads)) {
         leads = results[1].value.leads;
@@ -586,20 +785,31 @@
 
   buildProfileFields();
   $('nav-inbox').addEventListener('click', () => { if (currentView !== 'inbox') guarded(() => setView('inbox')); });
+  $('nav-schedule').addEventListener('click', () => { if (currentView !== 'schedule') guarded(() => setView('schedule')); });
   $('nav-profile').addEventListener('click', () => { if (currentView !== 'profile') guarded(() => setView('profile')); });
-  for (const id of ['preview-link', 'empty-preview-link', 'home-link']) $(id).addEventListener('click', event => { event.preventDefault(); guarded(() => { window.location.assign($(id).getAttribute('href')); }); });
+  for (const id of ['preview-link', 'empty-preview-link', 'home-link', 'dashboard-link', 'panels-link', 'projects-link', 'exports-link']) {
+    const link = $(id);
+    if (link) link.addEventListener('click', event => { event.preventDefault(); guarded(() => { window.location.assign(link.getAttribute('href')); }); });
+  }
   $('sign-out').addEventListener('click', () => guarded(async () => {
     $('sign-out').disabled = true;
     try { await api('/api/logout', { method: 'POST' }); if (!expired) clearSession(); }
     catch (cause) { if (!expired) { showAppError(`Could not sign out. ${cause.message}`); $('sign-out').disabled = false; } }
   }));
-  $('keep-editing').addEventListener('click', () => { pendingNavigation = null; $('navigation-guard').hidden = true; });
+  $('keep-editing').addEventListener('click', closeNavigationGuard);
   $('discard-changes').addEventListener('click', () => {
+    if (leadSaving || leadLoading || schedule.isBusy() || schedule.isPending()) return;
+    if (pendingLeadSave) {
+      if (pendingLeadReview !== pendingLeadSave) return;
+      const command = pendingLeadSave;
+      closeNavigationGuard();
+      return reloadReviewedLead(command);
+    }
     const action = pendingNavigation;
-    pendingNavigation = null;
-    $('navigation-guard').hidden = true;
+    closeNavigationGuard();
     if (selected) renderLead(selected);
     if (profile) renderProfile(profile);
+    schedule.discard();
     if (action) action();
   });
   $('request-search').addEventListener('input', renderList);
@@ -608,14 +818,18 @@
   $('refresh-requests').addEventListener('click', () => guarded(refreshRequests));
   $('export-records').addEventListener('click', exportRecords);
   $('retry-load').addEventListener('click', () => guarded(bootstrap));
+  $('delete-lead').addEventListener('click', () => beginLeadDeletion('lead'));
+  $('delete-conversation').addEventListener('click', () => beginLeadDeletion('lead_conversation'));
   $('lead-form').addEventListener('submit', saveLead);
   $('profile-form').addEventListener('submit', saveProfile);
   $('lead-form').addEventListener('input', event => { event.target.removeAttribute('aria-invalid'); $('lead-status').textContent = ''; updateDirty(); });
   $('lead-form').addEventListener('change', () => { updateAllowedStatuses(); updateDirty(); });
   $('profile-form').addEventListener('input', event => { event.target.removeAttribute('aria-invalid'); $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
   $('profile-form').addEventListener('change', () => { $('profile-status').textContent = ''; updateApprovals(); updateDirty(); });
-  $('reload-lead').addEventListener('click', () => guarded(() => { if (selected) selectLead(selected.id); }));
+  $('reload-lead').addEventListener('click', reviewLeadReload);
+  $('reload-uncertain-lead').addEventListener('click', reviewLeadReload);
   $('reload-profile').addEventListener('click', () => guarded(loadProfile));
-  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving)) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', event => { if (!expired && (hasDirty() || leadSaving || profileSaving || deletion.isPending() || schedule.isPending() || schedule.isBusy())) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
   bootstrap();
 })();

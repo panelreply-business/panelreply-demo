@@ -1,0 +1,453 @@
+{
+  "format": "panelreply-run96-resumption-v1",
+  "runUrl": "https://github.com/panelreply-business/panelreply-demo/actions/runs/45313971458",
+  "attempt": 1,
+  "head": "1fcbb4e2c092cef9573763d44d1a8a15a4fe675a",
+  "ciSource": {
+    "sourceCommit": "93da23cde9e1cc76b376ea09058bd3a248a1fe24",
+    "gitTreeHash": "1dfd9b3213fdc13a3f14fb1f72ae14ed5371980e",
+    "sourceTreeSha256": "38ade4d889cc405bd2248526c3bb5d915f54a3b3d70b85fed6db5ec011d40354",
+    "dirty": false,
+    "cleanCommittedEvidence": true
+  },
+  "provenance": "Selected CI job logs and the CI accounting job. Raw artifact replay was not performed in this session.",
+  "aggregateJobId": 138182734661,
+  "product": {
+    "total": 24954,
+    "PASS": 24952,
+    "SKIP": 0,
+    "TODO": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "RUNNING": 0,
+    "CANCELLED": 0,
+    "UNEXPECTED_SUCCESS": 0,
+    "FAIL": 0,
+    "ERROR": 2
+  },
+  "distinctCases": {
+    "total": 9409,
+    "generated": 7467,
+    "notMarkedGenerated": 1942,
+    "passingOnEveryObservedPlatform": 9407,
+    "withAnyPass": 9407,
+    "withUnresolvedOutcome": 2
+  },
+  "byProduct": {
+    "callback": {
+      "executions": {
+        "total": 10722,
+        "PASS": 10722,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "distinctCases": {
+        "total": 3506,
+        "generated": 2389,
+        "passingOnEveryObservedPlatform": 3506,
+        "withUnresolvedOutcome": 0
+      }
+    },
+    "spreadsheet": {
+      "executions": {
+        "total": 12021,
+        "PASS": 12019,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 2
+      },
+      "distinctCases": {
+        "total": 4202,
+        "generated": 3782,
+        "passingOnEveryObservedPlatform": 4200,
+        "withUnresolvedOutcome": 2
+      }
+    },
+    "shared": {
+      "executions": {
+        "total": 2211,
+        "PASS": 2211,
+        "SKIP": 0,
+        "TODO": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0,
+        "RUNNING": 0,
+        "CANCELLED": 0,
+        "UNEXPECTED_SUCCESS": 0,
+        "FAIL": 0,
+        "ERROR": 0
+      },
+      "distinctCases": {
+        "total": 1701,
+        "generated": 1296,
+        "passingOnEveryObservedPlatform": 1701,
+        "withUnresolvedOutcome": 0
+      },
+      "availableTo": [
+        "callback",
+        "spreadsheet"
+      ],
+      "counting": "Counted once in portfolio totals, not added to either app-specific bucket."
+    }
+  },
+  "harness": {
+    "total": 415,
+    "PASS": 415,
+    "SKIP": 0,
+    "TODO": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "RUNNING": 0,
+    "CANCELLED": 0,
+    "UNEXPECTED_SUCCESS": 0,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "duplicateObservationsExcluded": 7131,
+  "automatedRequirements": {
+    "PASS": 45,
+    "FAIL": 1,
+    "NOT_TESTED": 10
+  },
+  "manualRequirements": {
+    "NOT_TESTED": 7
+  },
+  "jobs": [
+    {
+      "id": 138176207398,
+      "name": "demo-tests",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207668,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207683,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207701,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207745,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207748,
+      "name": "Synthetic concurrent HTTP workload",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207763,
+      "name": "Static client (windows-2022, chrome)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207769,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207786,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207821,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207822,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207825,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207829,
+      "name": "Private workflows (firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207832,
+      "name": "Required public suspension",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207834,
+      "name": "Portable release contracts (ubuntu-24.04)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207845,
+      "name": "Portable release contracts (windows-2022)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207890,
+      "name": "Restricted OCR host compatibility (ubuntu-26.04)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207900,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207902,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207913,
+      "name": "Restricted OCR worker verification",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207919,
+      "name": "Synthetic OCR measurements",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207946,
+      "name": "Static client (macos-15-intel, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207954,
+      "name": "Windows private storage component",
+      "conclusion": "failure"
+    },
+    {
+      "id": 138176207973,
+      "name": "Apple Silicon contracts and selected products",
+      "conclusion": "cancelled"
+    },
+    {
+      "id": 138176207975,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207983,
+      "name": "Private workflows (webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176207984,
+      "name": "Static client (ubuntu-24.04, chrome)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208009,
+      "name": "Installed Safari fixed product workflows",
+      "conclusion": "failure"
+    },
+    {
+      "id": 138176208028,
+      "name": "Emulated private workflows (chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208036,
+      "name": "Static client (ubuntu-24.04, msedge)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208065,
+      "name": "Static client (ubuntu-24.04, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208080,
+      "name": "Emulated private workflows (webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208101,
+      "name": "Static client (ubuntu-24.04, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208109,
+      "name": "Static client (windows-2022, firefox)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208116,
+      "name": "Static client (windows-2022, msedge)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208138,
+      "name": "Static client (windows-2022, chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208169,
+      "name": "Static client (macos-15-intel, chromium)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208196,
+      "name": "Static client (windows-2022, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208201,
+      "name": "Static client (macos-15-intel, webkit)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138176208310,
+      "name": "Portable release contracts (macos-15-intel)",
+      "conclusion": "success"
+    },
+    {
+      "id": 138182734661,
+      "name": "Account for distinct product and platform tests",
+      "conclusion": "failure"
+    }
+  ],
+  "selectedBrowserChecks": [
+    {
+      "jobId": 138176207668,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, webkit)",
+      "runs": [
+        "Ran 11 tests in 38.073s"
+      ],
+      "matchedRegressionMethods": 1
+    },
+    {
+      "jobId": 138176207683,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, firefox)",
+      "runs": [
+        "Ran 11 tests in 64.256s"
+      ],
+      "matchedRegressionMethods": 1
+    },
+    {
+      "jobId": 138176207701,
+      "name": "Selected spreadsheet program (ubuntu-24.04, firefox)",
+      "runs": [
+        "Ran 10 tests in 15.840s"
+      ],
+      "matchedRegressionMethods": 1
+    },
+    {
+      "jobId": 138176207745,
+      "name": "Selected spreadsheet program (ubuntu-24.04, chromium)",
+      "runs": [
+        "Ran 10 tests in 13.240s"
+      ],
+      "matchedRegressionMethods": 1
+    },
+    {
+      "jobId": 138176207769,
+      "name": "Selected callback program (ubuntu-24.04, chromium)",
+      "runs": [
+        "Ran 18 tests in 30.969s"
+      ],
+      "matchedRegressionMethods": 2
+    },
+    {
+      "jobId": 138176207786,
+      "name": "Selected spreadsheet-manual program (macos-15-intel, chromium)",
+      "runs": [
+        "Ran 11 tests in 39.442s"
+      ],
+      "matchedRegressionMethods": 1
+    },
+    {
+      "jobId": 138176207821,
+      "name": "Selected callback program (macos-15-intel, webkit)",
+      "runs": [
+        "Ran 18 tests in 73.657s"
+      ],
+      "matchedRegressionMethods": 2
+    },
+    {
+      "jobId": 138176207822,
+      "name": "Selected callback program (macos-15-intel, chromium)",
+      "runs": [
+        "Ran 18 tests in 48.923s"
+      ],
+      "matchedRegressionMethods": 2
+    },
+    {
+      "jobId": 138176207825,
+      "name": "Selected callback program (ubuntu-24.04, webkit)",
+      "runs": [
+        "Ran 18 tests in 32.966s"
+      ],
+      "matchedRegressionMethods": 2
+    },
+    {
+      "jobId": 138176207900,
+      "name": "Selected spreadsheet program (ubuntu-24.04, webkit)",
+      "runs": [
+        "Ran 10 tests in 21.621s"
+      ],
+      "matchedRegressionMethods": 1
+    },
+    {
+      "jobId": 138176207902,
+      "name": "Selected callback program (ubuntu-24.04, firefox)",
+      "runs": [
+        "Ran 18 tests in 26.789s"
+      ],
+      "matchedRegressionMethods": 2
+    },
+    {
+      "jobId": 138176207975,
+      "name": "Selected callback program (macos-15-intel, firefox)",
+      "runs": [
+        "Ran 18 tests in 62.853s"
+      ],
+      "matchedRegressionMethods": 2
+    }
+  ],
+  "syntheticOcr": {
+    "exact": 289,
+    "total": 310,
+    "preservedBlank": 263,
+    "expectedBlank": 263
+  },
+  "appleSilicon": {
+    "attempt1Job": 138176207973,
+    "executedSteps": 0,
+    "attempt2Job": 138183232829
+  },
+  "release": {
+    "callback": "NO-GO",
+    "spreadsheet": "NO-GO"
+  }
+}

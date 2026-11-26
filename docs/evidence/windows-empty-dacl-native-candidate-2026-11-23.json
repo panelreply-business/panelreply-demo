@@ -1,0 +1,475 @@
+{
+  "format": "panelreply-windows-empty-dacl-native-candidate-v1",
+  "recordedAt": "2026-11-23T19:36:44.468555+00:00",
+  "baseCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+  "candidateSource": {
+    "sourceCommit": "1562c8ea0326b31f34386925ac55f44f9f9328b1",
+    "gitTreeHash": "a2e235cf32df07f5329591c68f4e4ff84606f7c5",
+    "sourceTreeSha256": "c81a7ccbeb48bfe6135eaac4bd009f284f4fc35730e9e847bf408bde19058202",
+    "dirty": true,
+    "entries": 200
+  },
+  "sourceFile": {
+    "path": "workspace/native/windows-storage/fixture.cc",
+    "baselineSha256": "63bb6e4541156e58634004190f121938fa550395c17fda55a588ab3523995084",
+    "candidateSha256": "fed3df76677eb0dbd432d88adf967f352527741f29129fcd6594fbd64a5469d6"
+  },
+  "observedBaseline": {
+    "run": 91,
+    "runId": "45248305894",
+    "reportPath": "/tmp/panelreply-run91-windows-component/panelreply-windows-component-evidence/windows-storage-component.json",
+    "reportSha256": "beafd119031c97fda2d693ac9653c9cf434504d716b2f36f3760c7340fd702dd",
+    "observationsPath": "/tmp/panelreply-run91-windows-component/panelreply-windows-component-evidence/windows-storage-component.observations.jsonl",
+    "observationsSha256": "7c1337ca5e49ba3cab60d55beacab6ac0ed9c29534068ae61f62448450dfba2e",
+    "logSha256": "6a7f56653f402913bff84faeb7a17b3a09d06624bfce5aad5055b4a984889f0f",
+    "reportedSourceCommit": "26cf9a6fe503cf11b8e1fa515bf4a67c57ef90fe",
+    "reportedSourceTreeSha256": "14b0b86f595e026f78d666674a1133d7dcde072fd7a66c9784e780e0bc1740da",
+    "sourceChanged": false,
+    "nativeRuntimeChanged": false,
+    "totals": {
+      "passed": 13,
+      "failed": 2,
+      "skipped": 0,
+      "cancelled": 0,
+      "notRun": 0,
+      "todo": 0
+    },
+    "failedCases": [
+      {
+        "id": "tests/windows-storage.windows.cjs::WNS.root_security_rejection",
+        "name": "WNS.root_security_rejection",
+        "purpose": "Existing null, empty, inherited or extra-grant DACLs are rejected without repair",
+        "file": "tests/windows-storage.windows.cjs",
+        "kind": "component",
+        "productScope": null,
+        "releaseCredit": false,
+        "platformKey": "windows/x86_64/node24",
+        "status": "FAIL",
+        "durationMs": 113.7257,
+        "diagnostic": "Command failed: D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage_fixture.exe create-dir C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\root_security_rejection\\empty empty\nNative fixture: Could not inspect fixture path (Windows 5)",
+        "testInstrumented": false,
+        "artifacts": [
+          {
+            "name": "panelreply_windows_storage.node",
+            "path": "D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage.node",
+            "bytes": 73728,
+            "sha256": "9898c2944416428b4e9fc5091d852ff1a7b35e5208e28b19d5a2b55e31a3734c",
+            "testInstrumented": false,
+            "projectSha256": "3b090078b4aa4fe473b92261d8509baf76b68138f49de493e0bbcd51b7d2c68e"
+          }
+        ],
+        "fixtureArtifact": {
+          "name": "panelreply_windows_storage_fixture.exe",
+          "path": "D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage_fixture.exe",
+          "bytes": 113152,
+          "sha256": "783112feb286220b7a7fd2415debac51c9003a206f94c5dc135bf0a8ce7e37bb",
+          "testInstrumented": false,
+          "projectSha256": "c637f0de09ed6a3eb55f817c1df7c812ad77067eafbaf5c2986991609f59b77c"
+        }
+      },
+      {
+        "id": "tests/windows-storage.windows.cjs::WNS.child_security_and_hardlink_rejection",
+        "name": "WNS.child_security_and_hardlink_rejection",
+        "purpose": "Unsafe child DACLs and multiple hard links fail before bytes are returned",
+        "file": "tests/windows-storage.windows.cjs",
+        "kind": "component",
+        "productScope": null,
+        "releaseCredit": false,
+        "platformKey": "windows/x86_64/node24",
+        "status": "FAIL",
+        "durationMs": 142.6734,
+        "diagnostic": "Command failed: D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage_fixture.exe info C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\child_security_and_hardlink_rejection\\private\\empty.bin\nNative fixture: Could not inspect fixture path (Windows 5)",
+        "testInstrumented": false,
+        "artifacts": [
+          {
+            "name": "panelreply_windows_storage.node",
+            "path": "D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage.node",
+            "bytes": 73728,
+            "sha256": "9898c2944416428b4e9fc5091d852ff1a7b35e5208e28b19d5a2b55e31a3734c",
+            "testInstrumented": false,
+            "projectSha256": "3b090078b4aa4fe473b92261d8509baf76b68138f49de493e0bbcd51b7d2c68e"
+          }
+        ],
+        "fixtureArtifact": {
+          "name": "panelreply_windows_storage_fixture.exe",
+          "path": "D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage_fixture.exe",
+          "bytes": 113152,
+          "sha256": "783112feb286220b7a7fd2415debac51c9003a206f94c5dc135bf0a8ce7e37bb",
+          "testInstrumented": false,
+          "projectSha256": "c637f0de09ed6a3eb55f817c1df7c812ad77067eafbaf5c2986991609f59b77c"
+        }
+      }
+    ],
+    "fixtureCleaned": false,
+    "infrastructureErrors": [
+      {
+        "stage": "fixture-cleanup",
+        "status": "ERROR",
+        "message": "EPERM, Permission denied: 'C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C'"
+      }
+    ],
+    "failedCaseObservations": [
+      {
+        "case": "WNS.root_security_rejection",
+        "event": "started",
+        "at": "2026-11-23T19:23:32.617Z",
+        "details": {
+          "testInstrumented": false
+        }
+      },
+      {
+        "case": "WNS.root_security_rejection",
+        "event": "unchanged-rejected-root",
+        "at": "2026-11-23T19:23:32.685Z",
+        "details": {
+          "policy": "null",
+          "before": {
+            "ownerSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "processUserSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "tokenOwnerSid": "S-1-5-32-544",
+            "sddl": "O:LAD:NO_ACCESS_CONTROL",
+            "protectedDacl": false,
+            "daclPresent": true,
+            "nullDacl": true,
+            "aceCount": null,
+            "filesystem": "NTFS",
+            "persistentAcls": true,
+            "volumeType": 3,
+            "canonicalPath": "\\\\?\\C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\root_security_rejection\\null",
+            "volumeGuidPath": "\\\\?\\Volume{00d8b0dd-7e63-4aa4-a6af-4516c4cbc3a3}\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\root_security_rejection\\null",
+            "fileId": "af6f0a00000003000000000000000000",
+            "volumeSerial": "333453060169384722",
+            "fileAttributes": 16,
+            "bytes": 0,
+            "links": 1
+          },
+          "after": {
+            "ownerSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "processUserSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "tokenOwnerSid": "S-1-5-32-544",
+            "sddl": "O:LAD:NO_ACCESS_CONTROL",
+            "protectedDacl": false,
+            "daclPresent": true,
+            "nullDacl": true,
+            "aceCount": null,
+            "filesystem": "NTFS",
+            "persistentAcls": true,
+            "volumeType": 3,
+            "canonicalPath": "\\\\?\\C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\root_security_rejection\\null",
+            "volumeGuidPath": "\\\\?\\Volume{00d8b0dd-7e63-4aa4-a6af-4516c4cbc3a3}\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\root_security_rejection\\null",
+            "fileId": "af6f0a00000003000000000000000000",
+            "volumeSerial": "333453060169384722",
+            "fileAttributes": 16,
+            "bytes": 0,
+            "links": 1
+          }
+        }
+      },
+      {
+        "case": "WNS.root_security_rejection",
+        "event": "body-failed",
+        "at": "2026-11-23T19:23:32.708Z",
+        "details": {
+          "code": null,
+          "message": "Command failed: D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage_fixture.exe create-dir C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\root_security_rejection\\empty empty\nNative fixture: Could not inspect fixture path (Windows 5)",
+          "win32Code": 5
+        }
+      },
+      {
+        "case": "WNS.root_security_rejection",
+        "event": "empty-dacl-cleanup-identity-unestablished",
+        "at": "2026-11-23T19:23:32.728Z",
+        "details": {
+          "kind": "directory",
+          "observed": {
+            "error": "Could not inspect fixture path",
+            "win32Code": 5
+          }
+        }
+      },
+      {
+        "case": "WNS.root_security_rejection",
+        "event": "empty-dacl-cleanup-failed",
+        "at": "2026-11-23T19:23:32.729Z",
+        "details": {
+          "kind": "directory",
+          "code": null,
+          "message": "Cleanup could not observe the unconfirmed fixture: Could not inspect fixture path",
+          "win32Code": 5
+        }
+      },
+      {
+        "case": "WNS.child_security_and_hardlink_rejection",
+        "event": "started",
+        "at": "2026-11-23T19:23:32.795Z",
+        "details": {
+          "testInstrumented": false
+        }
+      },
+      {
+        "case": "WNS.child_security_and_hardlink_rejection",
+        "event": "unchanged-rejected-child",
+        "at": "2026-11-23T19:23:32.868Z",
+        "details": {
+          "policy": "null",
+          "metadata": {
+            "ownerSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "processUserSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "tokenOwnerSid": "S-1-5-32-544",
+            "sddl": "O:LAD:NO_ACCESS_CONTROL",
+            "protectedDacl": false,
+            "daclPresent": true,
+            "nullDacl": true,
+            "aceCount": null,
+            "filesystem": "NTFS",
+            "persistentAcls": true,
+            "volumeType": 3,
+            "canonicalPath": "\\\\?\\C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\child_security_and_hardlink_rejection\\private\\null.bin",
+            "volumeGuidPath": "\\\\?\\Volume{00d8b0dd-7e63-4aa4-a6af-4516c4cbc3a3}\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\child_security_and_hardlink_rejection\\private\\null.bin",
+            "fileId": "b56f0a00000002000000000000000000",
+            "volumeSerial": "333453060169384722",
+            "fileAttributes": 32,
+            "bytes": 53,
+            "links": 1
+          },
+          "after": {
+            "ownerSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "processUserSid": "S-1-5-21-688113535-2331092577-2868679288-500",
+            "tokenOwnerSid": "S-1-5-32-544",
+            "sddl": "O:LAD:NO_ACCESS_CONTROL",
+            "protectedDacl": false,
+            "daclPresent": true,
+            "nullDacl": true,
+            "aceCount": null,
+            "filesystem": "NTFS",
+            "persistentAcls": true,
+            "volumeType": 3,
+            "canonicalPath": "\\\\?\\C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\child_security_and_hardlink_rejection\\private\\null.bin",
+            "volumeGuidPath": "\\\\?\\Volume{00d8b0dd-7e63-4aa4-a6af-4516c4cbc3a3}\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\child_security_and_hardlink_rejection\\private\\null.bin",
+            "fileId": "b56f0a00000002000000000000000000",
+            "volumeSerial": "333453060169384722",
+            "fileAttributes": 32,
+            "bytes": 53,
+            "links": 1
+          }
+        }
+      },
+      {
+        "case": "WNS.child_security_and_hardlink_rejection",
+        "event": "body-failed",
+        "at": "2026-11-23T19:23:32.915Z",
+        "details": {
+          "code": null,
+          "message": "Command failed: D:\\a\\_temp\\panelreply-windows-storage-build\\build\\Release\\panelreply_windows_storage_fixture.exe info C:\\Users\\runneradmin\\AppData\\Local\\Temp\\panelreply-windows-storage-FxvV8C\\child_security_and_hardlink_rejection\\private\\empty.bin\nNative fixture: Could not inspect fixture path (Windows 5)",
+          "win32Code": 5
+        }
+      },
+      {
+        "case": "WNS.child_security_and_hardlink_rejection",
+        "event": "empty-dacl-cleanup-identity-control",
+        "at": "2026-11-23T19:23:32.936Z",
+        "details": {
+          "kind": "file",
+          "result": {
+            "error": "Could not open disposable empty-DACL fixture for cleanup",
+            "win32Code": 5
+          }
+        }
+      },
+      {
+        "case": "WNS.child_security_and_hardlink_rejection",
+        "event": "empty-dacl-cleanup-failed",
+        "at": "2026-11-23T19:23:32.937Z",
+        "details": {
+          "kind": "file",
+          "code": "ERR_ASSERTION",
+          "message": "Cleanup must reject an identity mismatch before deletion.\n\n5 !== 13\n",
+          "win32Code": null
+        }
+      }
+    ],
+    "interpretation": "The OVERLAPPED CreateFile metadata candidate still failed Windows 5 before both empty-DACL product checks. It did not establish the denied access bit or a product security failure. The original run report is unchanged."
+  },
+  "candidate": {
+    "changedFiles": [
+      "workspace/native/windows-storage/fixture.cc"
+    ],
+    "openApi": "NtOpenFile",
+    "metadataRequestedAccess": [
+      {
+        "rights": [
+          "READ_CONTROL",
+          "FILE_READ_ATTRIBUTES"
+        ],
+        "mask": 131200
+      },
+      {
+        "rights": [
+          "READ_CONTROL"
+        ],
+        "mask": 131072,
+        "condition": "Only after ERROR_ACCESS_DENIED from the first exact native open"
+      }
+    ],
+    "cleanupRequestedAccess": {
+      "rights": [
+        "READ_CONTROL",
+        "FILE_READ_ATTRIBUTES",
+        "DELETE"
+      ],
+      "mask": 196736,
+      "condition": "New handle after product rejection checks, followed by all existing same-handle identity/path/type/owner/protected-empty-DACL checks before disposition"
+    },
+    "openOptions": {
+      "FILE_OPEN_REPARSE_POINT": 2097152
+    },
+    "shareAccess": [
+      "FILE_SHARE_READ",
+      "FILE_SHARE_WRITE",
+      "FILE_SHARE_DELETE"
+    ],
+    "noGenericRights": true,
+    "noSynchronize": true,
+    "noSynchronousIoOptions": true,
+    "noBackupIntent": true,
+    "noAclOrPrivilegeChanges": true,
+    "pendingBehavior": "A bounded JSON error and ExitProcess(2) before returning from the stack-backed native request. The existing 5-second parent helper timeout remains a failure boundary if process exit stalls.",
+    "nativeErrors": "Raw NTSTATUS and requested mask accompany the mapped Win32 code when the exact open fails.",
+    "identityChecks": "Missing metadata remains missing and fails unchanged native assertions. No path-derived substitute and no adoption of a later observed creation identity."
+  },
+  "preserved": {
+    "fileChecks": [
+      {
+        "path": "workspace/native/windows-storage/storage.cc",
+        "sha256": "63fce31b69e259603aeb08f016254b3a56cd62e89133c4b35861ef2d7edd84f8",
+        "unchanged": true
+      },
+      {
+        "path": "workspace/native/windows-storage/CMakeLists.txt",
+        "sha256": "d7c1fe48c54e79bbc26ffb446da6131116af1910263875ddb94d26d846be564e",
+        "unchanged": true
+      },
+      {
+        "path": "tests/windows-storage.windows.cjs",
+        "sha256": "c5c76d8c1a925b234ac9ae4586f44ad304bfc0c0953fc20fc6aa873dc9422cef",
+        "unchanged": true
+      },
+      {
+        "path": "tests/windows-storage-cases.cjs",
+        "sha256": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4",
+        "unchanged": true
+      },
+      {
+        "path": "tests/windows-storage-support.cjs",
+        "sha256": "63f7fa7226bcee63c995c7912b2671f90eafe997816eeb157db11d7da896545f",
+        "unchanged": true
+      },
+      {
+        "path": "tests/windows-storage-evidence.harness.cjs",
+        "sha256": "41f36df4af118306b46593ace2aa937f6c6052a1fdb84742ee80e377779c0b70",
+        "unchanged": true
+      },
+      {
+        "path": "scripts/build-windows-storage.ps1",
+        "sha256": "66cb61336f400b79443d53b2a430863b2738f2cf8e79f6259524ef36318ad8fd",
+        "unchanged": true
+      },
+      {
+        "path": ".github/workflows/demo-tests.yml",
+        "sha256": "b8cb15567180bd73794bcd23df3b115fb47d03bac3f02fc62bbab4de2b87aee9",
+        "unchanged": true
+      }
+    ],
+    "nativeCaseIds": [
+      "WNS.private_create_roundtrip",
+      "WNS.exclusive_create_preserves_existing",
+      "WNS.root_security_rejection",
+      "WNS.different_owner_rejection",
+      "WNS.child_security_and_hardlink_rejection",
+      "WNS.path_and_argument_boundaries",
+      "WNS.held_parent_rename_barriers",
+      "WNS.attribute_only_reparse_countertest",
+      "WNS.existing_reparse_paths_rejected",
+      "WNS.concurrent_exclusive_publication",
+      "WNS.anonymous_io_denial",
+      "WNS.concurrent_writer_read_refusal",
+      "WNS.lease_receiver_close_and_worker_cleanup",
+      "WNS.instrumented_relative_create_race",
+      "WNS.instrumented_probe_cleanup_and_isolation"
+    ],
+    "nativeCaseBodiesUnchanged": true,
+    "strictDaclRejection": "UNSAFE_DACL or NATIVE_OPEN_FAILED with Windows error 5 only",
+    "atomicFixtureJsonUnchanged": true,
+    "processTokenHelperUnchanged": true,
+    "applicationIntegrationEnabled": false
+  },
+  "portableVerification": {
+    "command": [
+      "node",
+      "--test",
+      "tests/windows-storage-evidence.harness.cjs"
+    ],
+    "nodeVersion": "v24.22.3",
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "logPath": "/tmp/panelreply-windows-empty-dacl-native-harness-20261123.log",
+    "logSha256": "fca72f6c5025c1d086f8023d75c834e284bc04da9fbc6d7c05bfcf72482683b7",
+    "log": "\u2714 native fixture failures preserve their Windows reason without converting required success to a pass (431.448226ms)\n\u2714 component accounting retains every known method and marks only missing methods NOT_RUN (1.263869ms)\n\u2714 an unexpected method cannot erase an observed failure or pass (1.279302ms)\n\u2714 duplicate methods retain their observations and cannot erase another executed failure (0.438482ms)\n\u2714 strict parser failure fallback preserves explicit native failure and unavailable capability statuses (0.373304ms)\n\u2714 native manifest requires observed SDK, compiler, dependencies and separate probe attribution (1.581988ms)\n\u2714 component output paths cannot enter source manifests or masquerade as release evidence (0.429849ms)\n\u2714 failed native build still writes all known NOT_RUN outcomes (281.454781ms)\n\u2714 unavailable native build cannot silently omit component outcomes (149.372229ms)\n\u2139 tests 9\n\u2139 suites 0\n\u2139 pass 9\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1016.317351\n",
+    "scope": "Evidence/manifest/failure-propagation controls only. These do not compile or execute C++."
+  },
+  "independentReview": {
+    "reviewer": "ci_recovery",
+    "sourceSha256": "fed3df76677eb0dbd432d88adf967f352527741f29129fcd6594fbd64a5469d6",
+    "result": "No concrete rights, path-length, handle-lifetime or assertion-bypass defect found",
+    "nativeExecution": false,
+    "compilation": false,
+    "documentedLimit": "ExitProcess can deadlock in DLL detach. The existing bounded parent invocation must retain any timeout as failure."
+  },
+  "primaryReferences": [
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntopenfile",
+      "supports": "The user-mode existing-object open accepts an explicit ACCESS_MASK, share mode, object attributes and open options."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntcreatefile",
+      "supports": "READ_CONTROL queries ownership/DACL, FILE_READ_ATTRIBUTES queries attributes, synchronous options require SYNCHRONIZE, and FILE_OPEN_REPARSE_POINT opens the final reparse object."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-getsecurityinfo",
+      "supports": "Reading owner and DACL through a handle needs READ_CONTROL. The owner can request that access."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_io_status_block",
+      "supports": "STATUS_PENDING must not be treated as final success or a completed IO_STATUS_BLOCK."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-rtlntstatustodoserror",
+      "supports": "Map the original NTSTATUS to a Win32 error while retaining the raw status in the fixture diagnostic."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileinformationbyhandle",
+      "supports": "FileDispositionInfo deletion requires DELETE access on the handle."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess",
+      "supports": "ExitProcess ends the helper and closes handles, with a documented DLL-detach deadlock limitation."
+    }
+  ],
+  "remainingLimits": [
+    "Candidate Windows compilation and all 15 native cases are pending.",
+    "The exact right or transformation responsible for the earlier CreateFile Windows 5 result has not been observed.",
+    "A native metadata open alone does not satisfy identity, type, DACL, unchanged-object or cleanup assertions.",
+    "The test fixture remains scoped to controlled local absolute paths and disposable synthetic objects. It is not the production path/ACL adapter.",
+    "No application activation, release acceptance or native pass follows from source review or portable harness results."
+  ],
+  "candidateNativeCompilation": "NOT_RUN",
+  "candidateNativeTests": "NOT_RUN",
+  "productionData": false,
+  "providerCalls": 0,
+  "hostPolicyChanges": 0,
+  "applicationRuntimeChanges": 0,
+  "additionalGoalCredit": 0,
+  "releaseCredit": false
+}

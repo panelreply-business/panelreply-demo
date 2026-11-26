@@ -1,0 +1,37 @@
+{
+  "format": "panelreply-run88-independent-root-verification-v1",
+  "verifiedAt": "2026-11-23T18:55:12.611503+00:00",
+  "sourceHead": "1322d0630d377d9fe769dc15543321cb5f5fe373",
+  "testedMerge": "528499451c016b90b2ec252a57b81aebb456abf9",
+  "sourceManifestSha256": "6b951e01bef645f9434dc6e2adac382d1f9d6d419258d2df245a857ecbb6951e",
+  "reportsVerified": 37,
+  "committedSourceEntriesIndependentlyHashed": 193,
+  "immutableCollectorAndPolicyComparedToCommit": true,
+  "aggregateEqualsCiExceptGeneratedAt": true,
+  "command": "node /tmp/panelreply-run88-immutable-tools/scripts/aggregate-test-evidence.cjs --input /tmp/panelreply-run88-evidence/reports-by-artifact-name --output /tmp/panelreply-run88-root-aggregate.json --source 528499451c016b90b2ec252a57b81aebb456abf9",
+  "files": [
+    {
+      "path": "/tmp/panelreply-run88-root-aggregate.json",
+      "bytes": 29602102,
+      "sha256": "0c677934935f85b61065b586ebf7ea9f813c0341687f11782a97d0a8d63b0096"
+    },
+    {
+      "path": "/tmp/panelreply-run88-evidence/ci-aggregate/14852621968/panelreply-release-aggregate.json",
+      "bytes": 29602102,
+      "sha256": "77cf26a54fee7d76dbfc49d9e75c26bd18101c013e9739bec30fb11ded643db6"
+    },
+    {
+      "path": "docs/evidence/callback-scheduling-run88.json",
+      "bytes": 219199,
+      "sha256": "68532f0369263385867832db4917c8ecef31440e4b2908343f96d3553484e77d"
+    },
+    {
+      "path": "docs/evidence/callback-scheduling-run88-partial-1838.json",
+      "bytes": 203092,
+      "sha256": "32b140520df9d278edc3c51b98872b70590af7d040f2ca63bfbbe2afb0a86a71"
+    }
+  ],
+  "partialPreserved": true,
+  "noNewProductExecution": true,
+  "releaseCreditFromReconciliation": false
+}

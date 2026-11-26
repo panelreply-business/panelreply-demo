@@ -67,6 +67,7 @@
   async function api(path, options = {}) {
     const method = options.method || 'GET';
     const headers = { Accept: 'application/json', ...(options.headers || {}) };
+    if (csrfToken) headers['X-Workspace-Session'] = csrfToken;
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
     if (method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
     let response;
@@ -85,6 +86,8 @@
     if (response.status !== 204 && !data) throw new RequestError(response.status, 'invalid_response', 'The workspace returned an incomplete response.');
     return data;
   }
+
+  window.addEventListener('focus', () => { if (csrfToken && !expired) api('/api/session').catch(() => {}); });
 
   function updateControls() {
     const locked = !ready || expired || saveBusy || Boolean(savedLead) || Boolean(pendingSave);
@@ -199,7 +202,7 @@
       state = result.state;
       $('customer-message').value = '';
       limitReached = state.conversation.length >= 60 || state.conversation.reduce((sum, entry) => sum + entry.text.length, 0) >= 20000;
-      $('preview-status').textContent = state.stopped ? 'Message recorded. Automated replies are stopped. This request has not been saved.' : 'Draft updated. Review the details before saving.';
+      $('preview-status').textContent = state.stopped ? 'Message recorded. Automated replies are stopped. This request has not been saved.' : result.assistance?.mode === 'unavailable' ? 'Assisted extraction did not complete. Your previous fields are unchanged. Review the fields or try again.' : 'Draft updated. Review the details before saving.';
       renderState();
     } catch (cause) {
       if (serial !== generation || expired || cause.name === 'AbortError') return;
@@ -301,11 +304,20 @@
       const session = await api('/api/session');
       if (expired) return;
       if (!session?.user || typeof session.csrfToken !== 'string') throw new Error('Your sign-in could not be confirmed. Reload and sign in again.');
+      if (document.body?.dataset?.productId && session.product?.id !== document.body.dataset.productId) throw new Error('The signed-in program could not be confirmed. Reload this page and sign in again.');
       csrfToken = session.csrfToken;
       const profile = await api('/api/profile');
       if (expired) return;
       if (!profile?.business?.name) throw new Error('Could not load your business information. Reload this page to try again.');
       $('chat-heading').textContent = profile.business.name;
+      const assistant = await api('/api/assistant');
+      if (expired) return;
+      if (!['deterministic', 'fake-provider', 'external-provider'].includes(assistant?.mode) || typeof assistant.liveEnabled !== 'boolean') throw new Error('The request assistant mode could not be confirmed. Reload the preview.');
+      $('assistant-mode-status').textContent = assistant.mode === 'fake-provider'
+        ? 'Synthetic provider test. This adapter uses prepared responses to test the AI integration. No live model receives these messages. No calls, messages, or bookings are sent.'
+        : assistant.liveEnabled
+          ? 'Provider-assisted draft. Review every extracted field. Business answers use approved information. No calls, messages, or bookings are sent.'
+          : 'Private test conversation. Answers come from your approved business information. Live AI is not connected. No calls, messages, or bookings are sent.';
       ready = true;
       renderState();
     } catch (cause) { if (!expired) error(cause.message || 'Could not open the preview. Reload this page to try again.'); }

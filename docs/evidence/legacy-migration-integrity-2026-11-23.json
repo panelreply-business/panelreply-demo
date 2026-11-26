@@ -1,0 +1,286 @@
+{
+  "format": "panelreply-legacy-migration-integrity-verification",
+  "version": 1,
+  "recordedDate": "2026-11-23",
+  "status": "PASS_LOCAL_CI_PENDING",
+  "parentBaseCommit": "1b35490335203348572e938bcc30dfc0f05d93e1",
+  "baseline": "Current root runtime files copied and staged locally before migration edits. Only the subsequent unstaged delta is delivered.",
+  "rootIntegratedManifestBeforeMigration": "88c6f0a0a1d17adc63390e11cdd3f6b0970a4c98b78d6692a69de8f2a599a9d6",
+  "sourceFiles": [
+    {
+      "file": "workspace/store.cjs",
+      "beforeSha256": "e5b27a9ff3253cabb7f455195706eaf762ba3f72e56c682ad83dd00cf0340893",
+      "afterSha256": "11fe460d5356fa9a305c16cbc5cd9a0b40b434c0860c8d2bc98cc59407fadd9e"
+    },
+    {
+      "file": "tests/migration-request-integrity.test.cjs",
+      "afterSha256": "64154c4ec86e648964e09fa4e7c7419c4d5fe7273544d0d2102c3b9fcf02c3cc"
+    }
+  ],
+  "reproducedBefore": [
+    {
+      "label": "one-second clock rollback",
+      "initialVersion": 1,
+      "migrationTime": 1795445999000,
+      "before": {
+        "schemaVersion": 2,
+        "validation": {
+          "ok": true,
+          "value": {
+            "businesses": 1,
+            "users": 1,
+            "leads": 2,
+            "messages": 0,
+            "audit": 2,
+            "optOuts": 0,
+            "panelProjects": 0,
+            "panelSources": 0
+          }
+        },
+        "lead": {
+          "version": 1,
+          "created_at": 1795446000000,
+          "updated_at": 1795446000000
+        }
+      },
+      "startup": {
+        "ok": true,
+        "value": {
+          "opened": true
+        }
+      },
+      "after": {
+        "schemaVersion": 4,
+        "validation": {
+          "ok": false,
+          "code": "invalid_database",
+          "message": "The workspace contains an invalid request record."
+        },
+        "lead": {
+          "version": "2",
+          "created_at": "1795446000000",
+          "updated_at": "1795445999000"
+        }
+      },
+      "read": {
+        "ok": true,
+        "version": 2,
+        "createdAt": "2026-11-23T15:00:00.000Z",
+        "updatedAt": "2026-11-23T14:59:59.000Z"
+      },
+      "correction": {
+        "ok": false,
+        "code": "request_metadata_invalid",
+        "message": "This request requires an operator metadata review before it can change."
+      }
+    },
+    {
+      "label": "safe terminal legacy revision",
+      "initialVersion": 9007199254740991,
+      "migrationTime": 1795446000000,
+      "before": {
+        "schemaVersion": 2,
+        "validation": {
+          "ok": true,
+          "value": {
+            "businesses": 1,
+            "users": 1,
+            "leads": 2,
+            "messages": 0,
+            "audit": 2,
+            "optOuts": 0,
+            "panelProjects": 0,
+            "panelSources": 0
+          }
+        },
+        "lead": {
+          "version": 9007199254740991,
+          "created_at": 1795446000000,
+          "updated_at": 1795446000000
+        }
+      },
+      "startup": {
+        "ok": true,
+        "value": {
+          "opened": true
+        }
+      },
+      "after": {
+        "schemaVersion": 4,
+        "validation": {
+          "ok": false,
+          "code": "invalid_database",
+          "message": "The workspace contains a record that failed validation."
+        },
+        "lead": {
+          "version": "9007199254740992",
+          "created_at": "1795446000000",
+          "updated_at": "1795446000000"
+        }
+      },
+      "read": {
+        "ok": false,
+        "code": "ERR_OUT_OF_RANGE",
+        "message": "Value is too large to be represented as a JavaScript number: 9007199254740992"
+      },
+      "correction": null
+    }
+  ],
+  "decisions": {
+    "migrationTimeValidatedBeforeDdl": true,
+    "everyAffectedRequestValidatedBeforeDdl": true,
+    "existingSchemaThreeHoldsPreserved": true,
+    "legacyHeldRowsPreserved": true,
+    "terminalUnaffectedRecordsAllowed": true,
+    "maximumNewLiveRevision": 9007199254740990,
+    "currentSchemaReopenDoesNotRepeatMigration": true,
+    "existingHistoryClampedOrReset": false,
+    "failurePreservesSchemaAndLogicalRecords": true,
+    "databaseBinaryFileIdentityClaimed": false,
+    "transactionRollbackRetained": true
+  },
+  "tests": {
+    "before": {
+      "logFile": "panelreply-migration-before-20261123.log",
+      "logSha256": "898bc08b37072d28a129de401e7aaf50ca0a6bebf3ef9d239e06f9a0e2d6a15d",
+      "totals": {
+        "tests": 8,
+        "pass": 2,
+        "fail": 6,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "durationMs": 539.046945,
+      "cases": [
+        {
+          "name": "legacy safety propagation rejects a one-second rollback before DDL or saved history changes",
+          "status": "FAIL"
+        },
+        {
+          "name": "legacy safety propagation cannot move a later saved correction backwards even after creation time",
+          "status": "FAIL"
+        },
+        {
+          "name": "legacy safety propagation rejects terminal affected revisions without invalidating their saved recovery state",
+          "status": "FAIL"
+        },
+        {
+          "name": "migration preflights every propagation target before changing earlier requests, restrictions, audit or schema",
+          "status": "FAIL"
+        },
+        {
+          "name": "valid migration permits the last live increment and retains unaffected terminal records and idempotent reopen",
+          "status": "PASS"
+        },
+        {
+          "name": "schema-three migration preserves existing sticky hold digests and terminal history without propagating twice",
+          "status": "PASS"
+        },
+        {
+          "name": "a rejected legacy migration remains backup-restorable and can propagate safely after clock recovery",
+          "status": "FAIL"
+        },
+        {
+          "name": "migration rejects unavailable clocks with controlled errors and unchanged valid legacy records",
+          "status": "FAIL"
+        }
+      ]
+    },
+    "after": {
+      "logFile": "panelreply-migration-after-20261123.log",
+      "logSha256": "c8f6449e7690caf7ea35e727fe9907a897b696285b2c818acd58ad5d8f9c9e83",
+      "totals": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "durationMs": 1041.623536,
+      "cases": [
+        {
+          "name": "legacy safety propagation rejects a one-second rollback before DDL or saved history changes",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy safety propagation cannot move a later saved correction backwards even after creation time",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy safety propagation rejects terminal affected revisions without invalidating their saved recovery state",
+          "status": "PASS"
+        },
+        {
+          "name": "migration preflights every propagation target before changing earlier requests, restrictions, audit or schema",
+          "status": "PASS"
+        },
+        {
+          "name": "valid migration permits the last live increment and retains unaffected terminal records and idempotent reopen",
+          "status": "PASS"
+        },
+        {
+          "name": "schema-three migration preserves existing sticky hold digests and terminal history without propagating twice",
+          "status": "PASS"
+        },
+        {
+          "name": "a rejected legacy migration remains backup-restorable and can propagate safely after clock recovery",
+          "status": "PASS"
+        },
+        {
+          "name": "migration rejects unavailable clocks with controlled errors and unchanged valid legacy records",
+          "status": "PASS"
+        }
+      ]
+    },
+    "existing": {
+      "logFile": "panelreply-migration-existing-20261123.log",
+      "logSha256": "fe8a6231a95f313cc2d04311ee79b66253b478b1737848d41f85a0d857e3792b",
+      "totals": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "durationMs": 948.853427,
+      "cases": [
+        {
+          "name": "schema3 migration adds scheduling while preserving all original records and schema3 read-only recovery",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy schema 2 archive remains readable and migrates transactionally with its existing held data",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "newProductCases": 8,
+  "existingMigrationCases": 2,
+  "sameTestSourceBeforeAndAfter": true,
+  "testSourceSha256": "64154c4ec86e648964e09fa4e7c7419c4d5fe7273544d0d2102c3b9fcf02c3cc",
+  "commands": {
+    "comparison": "node --test --test-reporter=tap tests/migration-request-integrity.test.cjs",
+    "existing": "node --test --test-reporter=tap --test-name-pattern=\"legacy schema 2 archive|schema3 migration adds scheduling\" tests/data-lifecycle.test.cjs tests/callback-tasks.test.cjs"
+  },
+  "independentReview": {
+    "agent": "callback_schedule",
+    "status": "PASS",
+    "sourceSha256": "11fe460d5356fa9a305c16cbc5cd9a0b40b434c0860c8d2bc98cc59407fadd9e",
+    "testSha256": "64154c4ec86e648964e09fa4e7c7419c4d5fe7273544d0d2102c3b9fcf02c3cc",
+    "filesEdited": false,
+    "testsRepeated": false,
+    "findingCount": 0
+  },
+  "goalCredit": "Only eight new product cases. Repeated local runs and independent review add no duplicate goal credit. Source-bound committed CI remains pending.",
+  "remainingLimits": [
+    "Startup may change journal mode, WAL files or connection pragmas before rejection. Evidence establishes unchanged schema/version/logical records, not binary SQLite-file identity.",
+    "A propagation target at an exhausted live revision remains blocked until an operator resolves that legacy condition. The repair preserves its existing read and recovery representation.",
+    "Already-corrupted historical records are not repaired or clamped by this change.",
+    "The exercised legacy migrations are synthetic schema-2 and schema-3 fixtures. No customer database, public deployment, production migration or release occurred.",
+    "Root integrated regression and committed platform CI still need to verify the final merged candidate."
+  ]
+}

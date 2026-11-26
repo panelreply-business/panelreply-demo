@@ -1,0 +1,2684 @@
+{
+  "format": "panelreply-request-save-node-evidence-v1",
+  "mode": "affected",
+  "root": "/workspace/scratch/8f544d546bb7/panelreply-request-save-receipts",
+  "files": [
+    "tests/platform-client-state.test.cjs",
+    "tests/workspace-api.test.cjs",
+    "tests/callback-schedule-client.test.cjs",
+    "tests/callback-tasks-api.test.cjs",
+    "tests/product-ui.test.cjs"
+  ],
+  "sourceCommit": "7fec73b7ca7fe323accaf22eb99e11d905f698b3",
+  "gitTreeHash": "e38d68884e4cb95208937d7f0a32a01a0fc75e56",
+  "dirty": true,
+  "workingTreeStatus": [
+    "M tests/platform-client-state.test.cjs",
+    " M tests/product_browser_test.py",
+    " M tests/workspace-api.test.cjs",
+    " M workspace/app.js",
+    " M workspace/schedule.js",
+    "?? tests/platform-client-fixture.cjs"
+  ],
+  "sourceManifest": [
+    {
+      "path": ".env.example",
+      "sha256": "9a0c513f779546e2b38736986743a2551de11532a0b9c4edc1b5da41f4029db8"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "c8b8ee9e85458eacee1610cfceb0b6270b26655dd9b1f2050a94733eaf95ea3d"
+    },
+    {
+      "path": ".github/workflows/demo-tests.yml",
+      "sha256": "b8cb15567180bd73794bcd23df3b115fb47d03bac3f02fc62bbab4de2b87aee9"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "8a44f4036516ee90069b07d52d7d14b7289bd648a923b772006260b30faadd6e"
+    },
+    {
+      "path": "callback-server.cjs",
+      "sha256": "7007993d24140e2cb110a9c6ad84d9ce0e65ac0815fc90d7ab49c0d784f0ef22"
+    },
+    {
+      "path": "design-preview/app.js",
+      "sha256": "708cd186fdd0373b8d9b9833235d7069a5500b0c9ff665ce8fe566c2121249a5"
+    },
+    {
+      "path": "design-preview/demo-core.js",
+      "sha256": "ea52186803e712820a1b78ec72e95f708d4c2529bbadd564d4d98c979ec7dafe"
+    },
+    {
+      "path": "design-preview/index.html",
+      "sha256": "035e9e8c839a66923c7fdb82ffb869d12b863f764070cc73e251faefd590cf87"
+    },
+    {
+      "path": "design-preview/mark-on-dark.svg",
+      "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+    },
+    {
+      "path": "design-preview/mark-on-light.svg",
+      "sha256": "790faba6500e601710b0904141fdfdbba522d383cc3624e0eb72bafef9632b20"
+    },
+    {
+      "path": "design-preview/mark.svg",
+      "sha256": "9760b5fe7ae9c17c94612cb60a58a3dbda8963270dbb1f34578a10196e3fd282"
+    },
+    {
+      "path": "design-preview/sample-label.svg",
+      "sha256": "f19e565c0d7c19421053102c1e368b361a9da6719bf251823cc569fd7c1e21e4"
+    },
+    {
+      "path": "design-preview/styles.css",
+      "sha256": "0155dbbe1f4f8f614a0173bb9712fdac1c70c77d04728f49b7cd2da61890e2d6"
+    },
+    {
+      "path": "docs/test-milestones.json",
+      "sha256": "1d44f761935bdd80d8fe1dde99add06e8e4e7d39912ce72d8f70fd65c2783216"
+    },
+    {
+      "path": "index.html",
+      "sha256": "629085f0f9f972cc7679e87a646a51bdbd1df8dba1a38de0adc548e7ed092e82"
+    },
+    {
+      "path": "robots.txt",
+      "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+    },
+    {
+      "path": "scripts/aggregate-test-evidence.cjs",
+      "sha256": "68434c118d7381304fe91a26d39f29acba257bbe64d0dae8409a0e62dba93992"
+    },
+    {
+      "path": "scripts/benchmark-ocr.cjs",
+      "sha256": "a05d1d2b40c2f068755cb07c6fc9275ce31c9fc616ff3ff79c9f9766ac24d325"
+    },
+    {
+      "path": "scripts/build-demo.cjs",
+      "sha256": "dd197c8874e4bf5093f1083043b528acf72f1df5b485ab674704674e7f1c52f8"
+    },
+    {
+      "path": "scripts/build-windows-storage.ps1",
+      "sha256": "66cb61336f400b79443d53b2a430863b2738f2cf8e79f6259524ef36318ad8fd"
+    },
+    {
+      "path": "scripts/callback-workload.cjs",
+      "sha256": "9df23dd408dbb5eb00724bd864aec42e15b72b2ddf66a17e227cca3e5b22a96b"
+    },
+    {
+      "path": "scripts/evaluate-assistant.cjs",
+      "sha256": "f018e8c5d789b2de370775b39c0b48d2d94278e6147a0514850c3418d1c84117"
+    },
+    {
+      "path": "scripts/http-workload.cjs",
+      "sha256": "3bd437d7e03be2f520886b4c97b25fe5b3f7ce70167df38bff793c174772e5d5"
+    },
+    {
+      "path": "scripts/observe-ocr-isolation.cjs",
+      "sha256": "55034c8fee4dff8e6f8d66f250fdd392fb061a413960699c10696d277be6a2e0"
+    },
+    {
+      "path": "scripts/observe-windows-sqlite.cjs",
+      "sha256": "f43c200643224140bed2d7374474daf9df4e37f8990aee8d6ce66147dfb8dce7"
+    },
+    {
+      "path": "scripts/ocr-dependency-evidence.cjs",
+      "sha256": "b6956a088c5cb8858a83841881de579d3e04fa04f718d25da755152b70f81757"
+    },
+    {
+      "path": "scripts/ocr-isolation-diagnostics.cjs",
+      "sha256": "08c9c9d454ef1c19b80639cb35a3f09a8d23f43f2b2f5382e5d194fea9480e00"
+    },
+    {
+      "path": "scripts/ocr-isolation-host-context.cjs",
+      "sha256": "1e11b567e40b9b8c21c67da1cb731f17574db44592202a780b2918ccc523eec7"
+    },
+    {
+      "path": "scripts/ocr-process-metrics.cjs",
+      "sha256": "fd9637a0b89be8f556288a71453c65d8f4dfe46b1a09e0236ed9e9f986fd8789"
+    },
+    {
+      "path": "scripts/prelaunch-stress.cjs",
+      "sha256": "316ec5cdd7fdb64ad130a3ce18fd59e8875ea9c7cce4b7b41dd06c0ef7bacc8c"
+    },
+    {
+      "path": "scripts/run-release-node.cjs",
+      "sha256": "96db3c3d1cd21e2b4a7a0dc7710d3a891f57ca710c8f299fdbcf8590db776575"
+    },
+    {
+      "path": "scripts/run-windows-storage.cjs",
+      "sha256": "3abce96ab4f487549e55a1555f0de0f6ad19f421410c2cf5cf05f9ea7d14c736"
+    },
+    {
+      "path": "scripts/test-evidence.cjs",
+      "sha256": "760e48c53578bb028a3b0909b6b50931ac3b0a05590d3bf3dd044437ec3ff387"
+    },
+    {
+      "path": "scripts/test-ocr-fixtures.cjs",
+      "sha256": "f606a742a326bafb4407725facf60a59913af06a6b78c06ed9bffb7c077f19b7"
+    },
+    {
+      "path": "scripts/test-ocr-isolation.cjs",
+      "sha256": "0a3dbb02b641ded1d068785eed745eb26bac67481d29ee4b2508cd10062031b1"
+    },
+    {
+      "path": "scripts/test-ocr-resource-limits.cjs",
+      "sha256": "89e951cff6b4f49f79e0b0c39d23b09ffc7f3a1c72b5417a3ad0ee73b3f995d4"
+    },
+    {
+      "path": "scripts/test-xlsx-reader.py",
+      "sha256": "8ef1e79dfb505203781518a992d707e4827c4be532723051a978861f3c486f3b"
+    },
+    {
+      "path": "scripts/workspace-admin.cjs",
+      "sha256": "cbbf45967c6b9302bab4ab82d4c8572b27816befcd6fc0f8150b08e304370f0a"
+    },
+    {
+      "path": "scripts/workspace-backup.cjs",
+      "sha256": "99e4beec53cd2ea3514cb8cb0bcdb469bcbb424d0f189d664ea595d7f3d80e40"
+    },
+    {
+      "path": "scripts/workspace-reset-password.cjs",
+      "sha256": "95c773fbfe4253e8e979c38a77c250704e5a6a5af7fa1c2b3562e15ceca23372"
+    },
+    {
+      "path": "server.cjs",
+      "sha256": "5b88a11280ab7086468995c6a70cf6169f643d8a035b52e9829c1294f9c08b71"
+    },
+    {
+      "path": "spreadsheet-server.cjs",
+      "sha256": "f552f097b884ce1ba77ee6afd6a0eaa34aea108dc2bf6745346bbe26abcd5a94"
+    },
+    {
+      "path": "src/business-info.js",
+      "sha256": "f1d9187d31d2e5a953614fa3824a9b54ad1683a7f0944d96943d4f643e9753a1"
+    },
+    {
+      "path": "src/demo.js",
+      "sha256": "689f81307cca01970fd0e992bb4a84aaca2746c92ada315b0e9c1c627982e974"
+    },
+    {
+      "path": "src/intake.js",
+      "sha256": "bf33576b3472b29d9375cc0ed422e279e6bf5cb9787e35fd42a66f7565358895"
+    },
+    {
+      "path": "src/questions.js",
+      "sha256": "96defee8d12af867f4d29672bb7c8a31c1cbb84a6cca5d707ba2e1ed31ec637a"
+    },
+    {
+      "path": "tests/account-invariants.test.cjs",
+      "sha256": "d7ade3aca5d02ee2a2a638570efa6dd028b1a5a8fae4910a5c3b97ce7ba11361"
+    },
+    {
+      "path": "tests/assistant-adversarial.test.cjs",
+      "sha256": "706bcc87e313133af6a4ba2900496a85bae719f44687e46bb16e879bdb5ada85"
+    },
+    {
+      "path": "tests/assistant-api.test.cjs",
+      "sha256": "5b64d383fc1ad6e454790b9c8df9351e92eba6a9aed24ecf554e9e208e827593"
+    },
+    {
+      "path": "tests/assistant-evaluation.test.cjs",
+      "sha256": "e4216a886fa585bbea7ed3adb1d055578bac2bee7f62504a50812f3a1988149f"
+    },
+    {
+      "path": "tests/assistant-provider.test.cjs",
+      "sha256": "d319fda86badbf14f5ea5b259e383a157db391fe79ba7610051698229c44c398"
+    },
+    {
+      "path": "tests/assistant-usage.test.cjs",
+      "sha256": "4558bc4c0ae8256e0bb4c107fa028a0c4fac3a179a5c26addc83dbbc5cbacc28"
+    },
+    {
+      "path": "tests/assistant_browser_test.py",
+      "sha256": "c8d1c289c6b06d38838000e8159d4f80cf0cee3d40a8a98b29010f8524f254fd"
+    },
+    {
+      "path": "tests/browser-requirements.txt",
+      "sha256": "cfa2186c0470feac813f1ac67c71e54a53021ec949026946255874958d245e82"
+    },
+    {
+      "path": "tests/browser_engine.py",
+      "sha256": "b9575a88cc76e3728bfde492a614e392b56823a38aea30416a00f0ed6b45cba5"
+    },
+    {
+      "path": "tests/browser_test.py",
+      "sha256": "7fad1ada328f8adb8030ac3663acc2d9e2d8debee44c1cba84613aa7c9d79488"
+    },
+    {
+      "path": "tests/callback-schedule-client.test.cjs",
+      "sha256": "ed7b7c3e24c8473e6293504428240c603cc1cdba2a7f7c8695291a687efc0c67"
+    },
+    {
+      "path": "tests/callback-task-parent-integrity.test.cjs",
+      "sha256": "f2183fae8996d981694ab3b6d4a12660c8f5dbfe12a06e050aa3ee6e645c0c3b"
+    },
+    {
+      "path": "tests/callback-task-resources.test.cjs",
+      "sha256": "24203d1f9b393df6a5fdd3824647854d26e76fcb264a4437596077acd704cf47"
+    },
+    {
+      "path": "tests/callback-tasks-api.test.cjs",
+      "sha256": "783441512b5881b56c358d9ff49e5b31878d4b7ad780160a7987250522e96dd7"
+    },
+    {
+      "path": "tests/callback-tasks.test.cjs",
+      "sha256": "c98ea78481ef46ace298e2a24be34ed06ba2bc286b3b49835939e524125328de"
+    },
+    {
+      "path": "tests/callback_mobile_browser_test.py",
+      "sha256": "29101852c987eb96e6da4faaed32c742644fc0d02ca0e0f13e2d05b28158711e"
+    },
+    {
+      "path": "tests/data-lifecycle.test.cjs",
+      "sha256": "60cd78b78b597955b3b9dfbc9d77c044be7e2a51a587ddc3d3a057ffca18220c"
+    },
+    {
+      "path": "tests/deletion-client-review.test.cjs",
+      "sha256": "54d241e05fbc071bf3d6cd363dbbf97bd87137d05a858cd06b7a44af7cb8d33b"
+    },
+    {
+      "path": "tests/demo.test.cjs",
+      "sha256": "a18839cc242acc94865de602b5a627e9c3b010206ecc8f6fd8bafd9a62dd2b11"
+    },
+    {
+      "path": "tests/design-preview.test.cjs",
+      "sha256": "6e27175539d9ec2ae7ccc86e82bff771413417b7bfa4f2ef4605c6f96eea3f8a"
+    },
+    {
+      "path": "tests/design_browser_test.py",
+      "sha256": "174f1279dcd853bb3abee0842ed73b4da5b4dc2ae10f57e78f0eef759cb1376f"
+    },
+    {
+      "path": "tests/fixtures/assistant/corpus.json",
+      "sha256": "7cf62e652dbf9d059ab13a3c8b94a50655a11913412dbbb65ea43c895c4b5e22"
+    },
+    {
+      "path": "tests/fixtures/assistant/remediation-corpus.json",
+      "sha256": "a397bc55d927b231eb5a4f4122d64d87c9cff77085b96e36f20c584e044dec47"
+    },
+    {
+      "path": "tests/fixtures/fake-assistant-server.cjs",
+      "sha256": "bf9d3ffe96b4cd3dacfda24cbb95f74376215cc40bb91b49a36dc31af47555d0"
+    },
+    {
+      "path": "tests/fixtures/panels-benchmark/generate.py",
+      "sha256": "8a514a230e1864c5fbfd89e92bf5734a47e782226546130210e14a1a5cce0446"
+    },
+    {
+      "path": "tests/fixtures/panels/blank.png",
+      "sha256": "f0f703c91e3ebd1b2b6e36e248ef975bfdcadf79874e2dc01f5d18e6ff808d65"
+    },
+    {
+      "path": "tests/fixtures/panels/complete.jpg",
+      "sha256": "dc5a70009e1ffb39a72b52aa57ba53b0e2f9800896e4771906f6d97042b2de93"
+    },
+    {
+      "path": "tests/fixtures/panels/complete.png",
+      "sha256": "2244272b8541f205097364a2b5f4bddbe508da36a21ae0888e96a7d46085dc18"
+    },
+    {
+      "path": "tests/fixtures/panels/conflicting-parts.png",
+      "sha256": "f7a2abb5abaaee64f97c55bcf087c9d235afeb78efbef1e20665bb29ad5f3375"
+    },
+    {
+      "path": "tests/fixtures/panels/generate.py",
+      "sha256": "63f5b9ac99fb03ae33a510fdc980f0d743f331dd727e9996a9d954a25b7445c9"
+    },
+    {
+      "path": "tests/fixtures/panels/manifest.json",
+      "sha256": "df089f76f59a22abccd9904c6f4988abeaecb6d016c52a9930ab635ce3db5608"
+    },
+    {
+      "path": "tests/fixtures/panels/missing-manufacturer.png",
+      "sha256": "d9bba9861d3deebdff4f538fdbfd065ec2050ce37e73c5e9b4910fa1ef515964"
+    },
+    {
+      "path": "tests/fixtures/panels/unlabelled.png",
+      "sha256": "420326aad796fd00d5a1bf6ee679616eab8b1f1678e5040f112d880579f8ebd2"
+    },
+    {
+      "path": "tests/fixtures/release-api-matrix.cjs",
+      "sha256": "8c729270d45cf05074bb71228349227358b95080c9047dd45fe136ca860032b4"
+    },
+    {
+      "path": "tests/fixtures/xlsx-projects.cjs",
+      "sha256": "02671d7d22a639a9526dc69b1f697cf4a6a632c609f5897fa0eac90dad195c63"
+    },
+    {
+      "path": "tests/helpers/callback-capacity-fixture.cjs",
+      "sha256": "a5a05af78e533279f2ad37170e4378626761bf84a8fcf8b1f60d9e79bc7f7dac"
+    },
+    {
+      "path": "tests/helpers/callback-workload-server.cjs",
+      "sha256": "f57609f05c61580ead7dc2d297e9a1c7a243bb0767cd907fba61fa98a8f46e8b"
+    },
+    {
+      "path": "tests/helpers/concurrent-store.cjs",
+      "sha256": "fcb8e2d14a36cffc50280ffff309b9e1814ea80b146c0a32019a4a625536ab8c"
+    },
+    {
+      "path": "tests/helpers/fake-assistant.cjs",
+      "sha256": "4fd9688487fb4a550a7f5ee91241cab30cb4fbca15d95760987c95628dbe9fe1"
+    },
+    {
+      "path": "tests/helpers/http-workload-worker.cjs",
+      "sha256": "e23ab077993e70f55ef83400b8132b51b56f98a24604908afebab244e7c95fd6"
+    },
+    {
+      "path": "tests/helpers/lifecycle-worker.cjs",
+      "sha256": "65691db014882661747842c78c12ba89b299c27cec76b4da7042a01f61c38852"
+    },
+    {
+      "path": "tests/helpers/release-xlsx-reader.py",
+      "sha256": "b6f828b71309f9de45a56a459fa96fa56b28749303cdb5b84eeb45b495d579c8"
+    },
+    {
+      "path": "tests/helpers/usage-worker.cjs",
+      "sha256": "57855a14e0afc84d98582d6ba19ad447c5e377f98688e3425b25601d5a5d8b78"
+    },
+    {
+      "path": "tests/intake.test.cjs",
+      "sha256": "9a72732fda70299db244b234ded86038ebc1652351d042c5dd72c27381290d59"
+    },
+    {
+      "path": "tests/intake_browser_test.py",
+      "sha256": "75bce2172ec53c70b3a5022cdb2034aec18533d7a589ac620b05845b5ad4db9e"
+    },
+    {
+      "path": "tests/lifecycle-api.test.cjs",
+      "sha256": "f10ab6b25f465e0ce8b68f23ed421c83ed839eea8c0f0a3f2267b831a8f717f7"
+    },
+    {
+      "path": "tests/lifecycle_browser_test.py",
+      "sha256": "cb0da6df66fe8fb7b07fd518209b94639f46a273ef6e807571b8fab69c614489"
+    },
+    {
+      "path": "tests/live-smoke.test.cjs",
+      "sha256": "b6f11d3e4f3dbfca8c284f67c613830e3aebc5ccf6ca4a712997b4d9772afd3f"
+    },
+    {
+      "path": "tests/macos_product_browser_test.py",
+      "sha256": "05dd5e9e30e7141886d96849b3bdfdca060df498277f2f2d8b7f59e9658af50f"
+    },
+    {
+      "path": "tests/migration-request-integrity.test.cjs",
+      "sha256": "64154c4ec86e648964e09fa4e7c7419c4d5fe7273544d0d2102c3b9fcf02c3cc"
+    },
+    {
+      "path": "tests/ocr-benchmark.test.cjs",
+      "sha256": "0a32b2fb16a85b107a75a460dbe74fd5015ca98f4677a55426f4b4008d900146"
+    },
+    {
+      "path": "tests/ocr-dependency-evidence.test.cjs",
+      "sha256": "f1b3f7f67799589da251911a9af83e361c1728f7be1841bf28a34bd6de018ce2"
+    },
+    {
+      "path": "tests/ocr-isolation-diagnostics.test.cjs",
+      "sha256": "0946516748b72c0e384bc0e4cfd8356d36f7f4709bcf4a197b350307f714ed1d"
+    },
+    {
+      "path": "tests/ocr-isolation.test.cjs",
+      "sha256": "e7f6abc192ce85a2d09998b91503a656650fd587bfefc0786ca930bc3acd125d"
+    },
+    {
+      "path": "tests/ocr-path-boundary.test.cjs",
+      "sha256": "4c9defc0e1a2115774f8c71aca6435725124744d7638c1518d3255e516f709a1"
+    },
+    {
+      "path": "tests/ocr.test.cjs",
+      "sha256": "9e02c9a8a71459cd0c5737f7c0f130cba4f36926613b5167aedee8952b3fd726"
+    },
+    {
+      "path": "tests/panel-api.test.cjs",
+      "sha256": "8e8055cfadd4d4cbc1dbc4ce5d5c2f21f18423cb61876384ed2dc05e47ece310"
+    },
+    {
+      "path": "tests/panel-mutation-recovery.test.cjs",
+      "sha256": "fded811d14bdccc4a81c6c062adf597f0795a0006ed4ff086932fc923983a2f0"
+    },
+    {
+      "path": "tests/panel-read-snapshot.test.cjs",
+      "sha256": "203454ad168165490e257d18a0c25c2d2c167dcc29ed3ea1ba6ac21fa2f6f70d"
+    },
+    {
+      "path": "tests/panel-store.test.cjs",
+      "sha256": "ebb80df565a9ff3846e760fe814403f75487d975b3c7e650a110886b3ef7b139"
+    },
+    {
+      "path": "tests/panel-xlsx.test.cjs",
+      "sha256": "90c7f1096c25d1c41690cf084192fd0018a2f3ba64a622c5b8ef01efbace0143"
+    },
+    {
+      "path": "tests/panel_browser_test.py",
+      "sha256": "af5ad48980b501b4a4adaaa03964dc26f12953fd8002739d5459b00af931a3cf"
+    },
+    {
+      "path": "tests/platform-client-fixture.cjs",
+      "sha256": "5e071d452627f3d1a481a0bc0be0afce03821b6918823250340e704a28b62ef4"
+    },
+    {
+      "path": "tests/platform-client-state.test.cjs",
+      "sha256": "99589ac1dd0317808ef695c931b3c1acda6269353e1c0f7c1b33f262d849ea23"
+    },
+    {
+      "path": "tests/platform_visual_browser_test.py",
+      "sha256": "22f3ab35929bdc072223bb664dada30311566ff763b5b65f653cca5d8c319639"
+    },
+    {
+      "path": "tests/prelaunch-concurrency.test.cjs",
+      "sha256": "e7b95be6ca08bdb02e02f0397e24fe11f662d1caf3debeb714fba8d4ffc7ec83"
+    },
+    {
+      "path": "tests/prelaunch-requirements.txt",
+      "sha256": "1b10a90ffd4411fa0fa250fc18fe206264df027453cb3f27b20414992bf3bd57"
+    },
+    {
+      "path": "tests/product-backup.test.cjs",
+      "sha256": "fb100876cad6e5aee275bd16a0afc6d8cd84e694613a14be73bedcbf8cf88114"
+    },
+    {
+      "path": "tests/product-boundaries.test.cjs",
+      "sha256": "653b26afd4db28951daa00a8d418a0bb8afb61cf95b9f2a8ed7c752f54c1774f"
+    },
+    {
+      "path": "tests/product-config.test.cjs",
+      "sha256": "8c1bb45ee976073bca936a094ec182b19edfa96cbcde400ed93645cc9e4f96e5"
+    },
+    {
+      "path": "tests/product-ui.test.cjs",
+      "sha256": "6d0db0ea3fe41bd873bd5db68963c214bd45cd26e3794f3af8cee9916dd7e9b0"
+    },
+    {
+      "path": "tests/product_browser_test.py",
+      "sha256": "9c8c56a8117caaa46126589952838b0e473d8e1e691b95450e90bbfdd5986fe0"
+    },
+    {
+      "path": "tests/questions.test.cjs",
+      "sha256": "949f917c506ec4b027113697802ffe143988ab03e23ee254bb6a241df1e6897c"
+    },
+    {
+      "path": "tests/release-api-matrix.test.cjs",
+      "sha256": "726ae18c83b7623d87091601bd340848614490e917844e6db77eb536e236594b"
+    },
+    {
+      "path": "tests/release-assistant-matrix.test.cjs",
+      "sha256": "2a39ec5242c2a1339b385cb7e28c0abbcf0a16c8dab052b92b76c9a500177808"
+    },
+    {
+      "path": "tests/release-deletion-model.test.cjs",
+      "sha256": "faf08d80e804a87a2a32c1b48bef325315802f93a104003c56d3a14b590bb15f"
+    },
+    {
+      "path": "tests/release-evidence.test.cjs",
+      "sha256": "8a1ecdcfcee5cdd1e26aa0acdf755c15848e948b1e7ba006e6e23e934a7f982d"
+    },
+    {
+      "path": "tests/release-export-matrix.test.cjs",
+      "sha256": "6b1cec655128f5d71467be5f8c15059248097313666567b065622a5db9ae03c5"
+    },
+    {
+      "path": "tests/release-name-grounding.test.cjs",
+      "sha256": "3b236166ef2ae58102b5aeec63ead501f4621e861ad069146fc15a6dc098691b"
+    },
+    {
+      "path": "tests/release_mobile_browser_test.py",
+      "sha256": "1bcb2b6f1357d4681379a5d40ee5866afdd3f2c67a2fb7d7d418a17e86c6c9b8"
+    },
+    {
+      "path": "tests/release_platform_runner.py",
+      "sha256": "72563097acc7c6ace692ab9fc6956dc7eced058968946fe3fc452aadb01c677d"
+    },
+    {
+      "path": "tests/release_safari_runner.py",
+      "sha256": "badc8ef077a604ff3f782d29658f829c61c78aa1667cebfffd1b0b7e6d19a6d5"
+    },
+    {
+      "path": "tests/remediation-adversarial.test.cjs",
+      "sha256": "4f90f9efe510e5b2f5ece015a3ccdef048f8a3ea69cc24836d04792756270f91"
+    },
+    {
+      "path": "tests/remediation-review.test.cjs",
+      "sha256": "5bf239eb25a792e6eaba5bfd199f2d2cc89bf225111e08df502eb627fcb6b1b2"
+    },
+    {
+      "path": "tests/retention-review.test.cjs",
+      "sha256": "8bf0d5fc95f2a592065ca69b31def36cfbd8ad0ab9f042cb42923dd33ad3c01d"
+    },
+    {
+      "path": "tests/safari-requirements.txt",
+      "sha256": "febe858a250d0beef7dc8c5f45773a28c5b0b86bf778854fcf9ab8413492ad0c"
+    },
+    {
+      "path": "tests/safari_product_browser_test.py",
+      "sha256": "73f37cb55a1ac52fa82881b0a5bf5b2242e12b3ae7c1b75a3cdc320d74374f7a"
+    },
+    {
+      "path": "tests/safari_runner_test.py",
+      "sha256": "25874e9c7768a3087dd268ce6933995d7115644c0a248bd1cc6d5e391f0dbc45"
+    },
+    {
+      "path": "tests/server-http.test.cjs",
+      "sha256": "270bc063c9b7203089264155bb0bf2295609ea9e780d6ce5b8a65d1960efa2e9"
+    },
+    {
+      "path": "tests/server.test.cjs",
+      "sha256": "9ed981af6c05c6743f8aaa4fe86f5469d057bdb94db27914b56ddf8491fdd4f4"
+    },
+    {
+      "path": "tests/ui_browser_test.py",
+      "sha256": "43e6c427bbcfd5b33787ef7045276f94e2dd859c26b43e00adc07045af3711d3"
+    },
+    {
+      "path": "tests/windows-sqlite-observation-support.cjs",
+      "sha256": "89da2d3f5e080e8efd24022aaa9e8de1dd07b70b104a955764e6402f2b18cd04"
+    },
+    {
+      "path": "tests/windows-sqlite-observation.harness.cjs",
+      "sha256": "89a841d1aa1a5728af117c67a7147b07c2a4ae965c1f012f01edba89addc4191"
+    },
+    {
+      "path": "tests/windows-sqlite-observer-child.cjs",
+      "sha256": "580b3cff02b9ee0932e0326350e809f7f13d674577d6f67048492c20b56fb19c"
+    },
+    {
+      "path": "tests/windows-sqlite-observer-process.cjs",
+      "sha256": "5e2d624f08a20fdacfccb15228ee7af1b6b6842b3e2c666cc817a32b5a5b9335"
+    },
+    {
+      "path": "tests/windows-storage-cases.cjs",
+      "sha256": "f70d254ae8fdf7cc19c17ab2a6e2e1e07ae01a762a92ac87871c76c21a7d07d4"
+    },
+    {
+      "path": "tests/windows-storage-child.cjs",
+      "sha256": "03073e93bfa36113a6af2c566668e1a906fc6a229309ab53e81fb677baecb16e"
+    },
+    {
+      "path": "tests/windows-storage-evidence.harness.cjs",
+      "sha256": "41f36df4af118306b46593ace2aa937f6c6052a1fdb84742ee80e377779c0b70"
+    },
+    {
+      "path": "tests/windows-storage-support.cjs",
+      "sha256": "63f7fa7226bcee63c995c7912b2671f90eafe997816eeb157db11d7da896545f"
+    },
+    {
+      "path": "tests/windows-storage.windows.cjs",
+      "sha256": "c5c76d8c1a925b234ac9ae4586f44ad304bfc0c0953fc20fc6aa873dc9422cef"
+    },
+    {
+      "path": "tests/workspace-api.test.cjs",
+      "sha256": "bd8582bf0e0b71d392f78abed2edadfeae7811147316088cb45337d7c0eebd9f"
+    },
+    {
+      "path": "tests/workspace-assistant.test.cjs",
+      "sha256": "4c1c50646faba3a4a9ced0ce841788c4156d8ce9add2372911ccdd10f1b6c6f1"
+    },
+    {
+      "path": "tests/workspace-backup.test.cjs",
+      "sha256": "5c79e37fc4af34800c33b847472eb48545467c1ecf2fa629541a25ff1da1fdd3"
+    },
+    {
+      "path": "tests/workspace-conversation-snapshot.test.cjs",
+      "sha256": "c193d8eaf3466e5362c7eec6ea4eff676e69d789671c8eeb8309c4fb5ac70d34"
+    },
+    {
+      "path": "tests/workspace-conversation.test.cjs",
+      "sha256": "403314e9600f5001a14ec347fe2a982ba36b2bf2786019130cc9557ed7bebdf8"
+    },
+    {
+      "path": "tests/workspace-export.test.cjs",
+      "sha256": "a4b43f56bde86e3221c8aedd990372f6a71084a19726ea3211267d58d9598abd"
+    },
+    {
+      "path": "tests/workspace-file-safety.test.cjs",
+      "sha256": "b8fcdc2bbe6d58bb65dc0eed4d281c7814ad873fd16b8efb23a116c69ba03cbe"
+    },
+    {
+      "path": "tests/workspace-http.test.cjs",
+      "sha256": "40bbb53eba37b13a83c88ed4e43075b90e28fd0dba6648447b0656092eaab1a1"
+    },
+    {
+      "path": "tests/workspace-recovery-auth.test.cjs",
+      "sha256": "4f1b17f263e67fc733f9fe5327687c2d665905771531a72f3f51a5d887ffc811"
+    },
+    {
+      "path": "tests/workspace-revocation.test.cjs",
+      "sha256": "749c3c194fd715624ff8688351fd3363467fdc852eca46c6d95827de13569515"
+    },
+    {
+      "path": "tests/workspace-store.test.cjs",
+      "sha256": "755e14fa50796fc7893e0a4704e36cb93b3907a88280129aa7ad4c1eb91d2c2b"
+    },
+    {
+      "path": "tests/workspace_browser_test.py",
+      "sha256": "4ddf7eb6c28ce6410664b6cbd30f127d887ece8f68a9f7f263e301a9a53c8cac"
+    },
+    {
+      "path": "tests/workspace_recovery_browser_test.py",
+      "sha256": "84d2d55be9cbbad1081fc7dc6ffd57896980ee89c0455e828bc80c11a5b17256"
+    },
+    {
+      "path": "tests/xlsx_browser_test.py",
+      "sha256": "4afba86c2653bf7b3c2ec0b4d9cd0695e87f1954558a46848ce0cbd9f086d984"
+    },
+    {
+      "path": "workspace-server.cjs",
+      "sha256": "2060fd95df666c9e71da44b3863f074df0997f8776362ff704ddb160edd01707"
+    },
+    {
+      "path": "workspace/api.cjs",
+      "sha256": "b01e70c9bb360d95b4bebc0dacee6ccde7bb4c5f462fd7ad65feec60d0c9205e"
+    },
+    {
+      "path": "workspace/app.js",
+      "sha256": "8c6fce3469f57a90572316fcd6f3fb4607da50030085a51e5a4cb6af0d6bf9b6"
+    },
+    {
+      "path": "workspace/assistant-config.cjs",
+      "sha256": "fd982824e867685ca34a4f6e0aca65dd1afeed292dfd2a53f25c3d255cf49b69"
+    },
+    {
+      "path": "workspace/assistant-provider.cjs",
+      "sha256": "f6304a1496d6fdf3f961ce5de451d32ab5a0cbad64d59209ca7ad3554dfd0fc0"
+    },
+    {
+      "path": "workspace/assistant.cjs",
+      "sha256": "b7d5cdcd8372a79a3ddd622fdb623d85d30cb97988623955cdea117ef5b1e0f5"
+    },
+    {
+      "path": "workspace/auth.cjs",
+      "sha256": "a9619dbd1231feec4a7f18b1e976dba3da2c83b61f8bdb2dd92420f2a90884c5"
+    },
+    {
+      "path": "workspace/backup.cjs",
+      "sha256": "4a691dc0467c8e7919e4e8bd53b2984b1f492454c822209fee370eb6cdd6b6b1"
+    },
+    {
+      "path": "workspace/callback-tasks.cjs",
+      "sha256": "bbf522a2034f4b6bda80aab64d0e37596cdb8665d5bc6dbb5c51def4013ce7ff"
+    },
+    {
+      "path": "workspace/conversation.cjs",
+      "sha256": "edbf75aec1764aa77b905c93aa8d6912baaf420c2cfdf2d0bc565ca6c306b390"
+    },
+    {
+      "path": "workspace/dashboard.html",
+      "sha256": "d4b2d33efa7c8ac6143b005ac3f82c6784e5c4a9eaeca3d4bacc642598c582f2"
+    },
+    {
+      "path": "workspace/dashboard.js",
+      "sha256": "6dc659c482c5279f40b109bd415ea59cbd1ecadb0fcd5bfb067d53921ba139b4"
+    },
+    {
+      "path": "workspace/deletion.js",
+      "sha256": "0b15e7b7d9387c8e9ed62005b13933e1c6a5703a3c06e773bed40ac14acf0fc3"
+    },
+    {
+      "path": "workspace/file-safety.cjs",
+      "sha256": "d615cb12bbd6ed666800824a5cf07bbaccb41fb37a07303d61bde87a8e6e5bad"
+    },
+    {
+      "path": "workspace/index.html",
+      "sha256": "7bd8aa73dca924c48125063d475145d0ef7f4b3a430d1c7584f354f60dc9910a"
+    },
+    {
+      "path": "workspace/lifecycle.cjs",
+      "sha256": "7bf6a4339d89bbd8f61c03f129f4f600456219af442540ec356d206cf9bd0c80"
+    },
+    {
+      "path": "workspace/login.html",
+      "sha256": "0cbe93901a23a571b7d1ac021462273aa951b4c6b420691ec2e8257143e91029"
+    },
+    {
+      "path": "workspace/login.js",
+      "sha256": "7756811688ab7c5d19f3abc0652fea6c895d7f81938005ff75b906a777aa0dec"
+    },
+    {
+      "path": "workspace/native/windows-storage/CMakeLists.txt",
+      "sha256": "d7c1fe48c54e79bbc26ffb446da6131116af1910263875ddb94d26d846be564e"
+    },
+    {
+      "path": "workspace/native/windows-storage/README.md",
+      "sha256": "48c2858ee12d55b128ea6a6d3523e9ed18b1c26324f484d605d1b2165ae6f878"
+    },
+    {
+      "path": "workspace/native/windows-storage/fixture.cc",
+      "sha256": "63bb6e4541156e58634004190f121938fa550395c17fda55a588ab3523995084"
+    },
+    {
+      "path": "workspace/native/windows-storage/load.cjs",
+      "sha256": "33a2f9d1ddede758c8a3a5d9e1f482c30c2b2a4d8d78ed4b799c8c47b8dd7ca3"
+    },
+    {
+      "path": "workspace/native/windows-storage/storage.cc",
+      "sha256": "63fce31b69e259603aeb08f016254b3a56cd62e89133c4b35861ef2d7edd84f8"
+    },
+    {
+      "path": "workspace/native/windows-storage/toolchain.json",
+      "sha256": "1cef6da62d5d9146025af815991e3cb1bb8084a3fa1215df4492790030e0dcce"
+    },
+    {
+      "path": "workspace/ocr-isolation.cjs",
+      "sha256": "442ff05030c60292ced4d67389b0b8c11e0590b53553c6e72f72764823d11826"
+    },
+    {
+      "path": "workspace/ocr-preprocess.py",
+      "sha256": "4ef3ac4dd3ed9fef4466a0eee94bce45de032f4a2ea48365409ee3b7b1cc6014"
+    },
+    {
+      "path": "workspace/ocr.cjs",
+      "sha256": "978cba95cf353d7416fab70dc00cf2113a499c27feee9ec5c2ff500929a4b2d9"
+    },
+    {
+      "path": "workspace/panels.cjs",
+      "sha256": "7d42d6b28232e1d636d1b755a5b5d28d15b7086bca5065018fc88f206f91472b"
+    },
+    {
+      "path": "workspace/panels.html",
+      "sha256": "5899e9bba17bfaf45e5409931e0857a9aa9ab8ed001b81890e880ae9bb1fdef6"
+    },
+    {
+      "path": "workspace/panels.js",
+      "sha256": "b8d24d020e8dd4a26533751d5c933cac75a3774333f27983b6f06d177b5e62c9"
+    },
+    {
+      "path": "workspace/platform.css",
+      "sha256": "e78212681c97f647e7958947a946b7552f1bcfb71f15b490cc2f78d708a45c49"
+    },
+    {
+      "path": "workspace/preview.html",
+      "sha256": "0bd1a6617845ab02ade2a9ce1cd786755ab93401884ad0a3c5e69d2b082a90cd"
+    },
+    {
+      "path": "workspace/preview.js",
+      "sha256": "17dd4784b569170a96dc46b5f696bac19c0d73f39484da16837855112f5b3149"
+    },
+    {
+      "path": "workspace/product-ui.cjs",
+      "sha256": "a63ae23a7240d5f5c443959521ef818f5e50d9298c82bfc955a2f713f2387c0d"
+    },
+    {
+      "path": "workspace/products.cjs",
+      "sha256": "37a060f801eb00149dc639c86427cfdf091ae6121a80420f7501e58172c6a1cf"
+    },
+    {
+      "path": "workspace/retention.cjs",
+      "sha256": "ddb8ce61b70fa61ac19c143bc99d69b16af085506e48a8f84a4f65418d28f6d4"
+    },
+    {
+      "path": "workspace/schedule.js",
+      "sha256": "3678a15c44102a286b9d35cd5c1e7e758c3c88019eae60f8ba0c0752e270965d"
+    },
+    {
+      "path": "workspace/store.cjs",
+      "sha256": "0271c1e6f8ce0017411451075d22c423c64d16f9e2bddeeef587f53c407403db"
+    },
+    {
+      "path": "workspace/styles.css",
+      "sha256": "f285c96afb73440a933010e0b668f9e315c6622de6d30568182d87cf54730b99"
+    },
+    {
+      "path": "workspace/usage.cjs",
+      "sha256": "6a0e1e60fd6e3318e590e0786f5bbedf2975ed0e3e6f21a3a2cadb1dd2b4bee2"
+    },
+    {
+      "path": "workspace/xlsx.cjs",
+      "sha256": "51027a82df044bf444fe31965bbd39118fdaa6ed306022c7d3fadef083b4c217"
+    }
+  ],
+  "sourceTreeSha256": "8cd4d4a3dfb904fee265631df6947de34cc6a34cd4ae35dd2be75c7f0d9c7883",
+  "platform": {
+    "os": "linux",
+    "osRelease": "6.18.57",
+    "architecture": "x86_64",
+    "node": "v24.22.3",
+    "platformKey": "linux/x86_64/node24"
+  },
+  "startedAt": "2026-11-24T01:23:45.198Z",
+  "completedAt": "2026-11-24T01:23:51.303Z",
+  "sourceTreeSha256After": "8cd4d4a3dfb904fee265631df6947de34cc6a34cd4ae35dd2be75c7f0d9c7883",
+  "sourceChanged": false,
+  "tests": [
+    {
+      "id": "tests/platform-client-state.test.cjs::intake combined navigation preserves its program title",
+      "name": "intake combined navigation preserves its program title",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 48.758983,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake callback navigation preserves its program title",
+      "name": "intake callback navigation preserves its program title",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.778908,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel initial network failure exposes an enabled retry that can recover",
+      "name": "panel initial network failure exposes an enabled retry that can recover",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 11.584998,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::new-project quota rejection keeps the draft editable without a false version conflict",
+      "name": "new-project quota rejection keeps the draft editable without a false version conflict",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.931871,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::saved-project version conflict retains the draft and requires reload before saving",
+      "name": "saved-project version conflict retains the draft and requires reload before saving",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 11.384104,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel create retains its first uncertain save after a later refusal and confirms the same command",
+      "name": "panel create retains its first uncertain save after a later refusal and confirms the same command",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.350342,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel update preserves uncertainty across a failed reconciliation read without another revision",
+      "name": "panel update preserves uncertainty across a failed reconciliation read without another revision",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.417664,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel source keeps its original bytes and retry key after an uncertain write and later conflict",
+      "name": "panel source keeps its original bytes and retry key after an uncertain write and later conflict",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.501513,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel source first-attempt rejection releases the draft without inventing uncertainty",
+      "name": "panel source first-attempt rejection releases the draft without inventing uncertainty",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.618909,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel create rejects a missing name before changing its draft and confirms the original command on retry",
+      "name": "panel create rejects a missing name before changing its draft and confirms the original command on retry",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.526955,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel update rejects missing notes without erasing its correction and reconciles the saved command",
+      "name": "panel update rejects missing notes without erasing its correction and reconciles the saved command",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.316275,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel extraction rejects a response for another project before exposing its candidates",
+      "name": "panel extraction rejects a response for another project before exposing its candidates",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 22.416216,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel malformed extraction warnings cannot leave addable candidates after rendering fails",
+      "name": "panel malformed extraction warnings cannot leave addable candidates after rendering fails",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 16.427125,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel extraction binds both receipt and candidate source identities to the requested image",
+      "name": "panel extraction binds both receipt and candidate source identities to the requested image",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 16.9661,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel extraction requires the exact submitted revision without creating a false save conflict",
+      "name": "panel extraction requires the exact submitted revision without creating a false save conflict",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 35.417046,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel extraction rejects incomplete, oversized or reviewed candidate data before draft mutation",
+      "name": "panel extraction rejects incomplete, oversized or reviewed candidate data before draft mutation",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 75.304187,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel extraction validates raw text, warning lists and confidence before publishing its result",
+      "name": "panel extraction validates raw text, warning lists and confidence before publishing its result",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 77.836843,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel extraction preserves valid Unicode and blank fields through explicit add and save",
+      "name": "panel extraction preserves valid Unicode and blank fields through explicit add and save",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 21.668746,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel empty and ambiguous OCR results remain available for manual review without inferred values",
+      "name": "panel empty and ambiguous OCR results remain available for manual review without inferred values",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 11.137101,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel project response enforces public metadata limits before adopting any fields",
+      "name": "panel project response enforces public metadata limits before adopting any fields",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 40.347176,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel row responses preserve unknown-as-blank and reject malformed correction or review data",
+      "name": "panel row responses preserve unknown-as-blank and reject malformed correction or review data",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 88.676028,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel source responses reject invalid metadata and duplicate identities before replacing the draft",
+      "name": "panel source responses reject invalid metadata and duplicate identities before replacing the draft",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 75.445541,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel update refuses a valid-shaped receipt for another project and recovers its own saved version",
+      "name": "panel update refuses a valid-shaped receipt for another project and recovers its own saved version",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 31.162509,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel reconciliation checks the target identity before accepting matching contents",
+      "name": "panel reconciliation checks the target identity before accepting matching contents",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.071217,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel reload rejects another project or a server-supplied empty draft while retaining the current project",
+      "name": "panel reload rejects another project or a server-supplied empty draft while retaining the current project",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 13.637604,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel upload rejects a valid-shaped receipt for another project without changing its original command",
+      "name": "panel upload rejects a valid-shaped receipt for another project without changing its original command",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.717805,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel upload binds source identity and metadata to the project and submitted command",
+      "name": "panel upload binds source identity and metadata to the project and submitted command",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 16.379944,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel upload cannot confirm a pre-existing source as the new image even when its metadata matches",
+      "name": "panel upload cannot confirm a pre-existing source as the new image even when its metadata matches",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.550171,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel response accepts public limits and preserves Unicode, whitespace, blank unknown fields and review state",
+      "name": "panel response accepts public limits and preserves Unicode, whitespace, blank unknown fields and review state",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 266.211108,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel local empty draft remains explicit and can be discarded before starting another draft",
+      "name": "panel local empty draft remains explicit and can be discarded before starting another draft",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.292911,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel create replay still accepts the server-assigned project after a later saved correction",
+      "name": "panel create replay still accepts the server-assigned project after a later saved correction",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.904821,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel unchanged update retries the original write when a matching readback has not advanced",
+      "name": "panel unchanged update retries the original write when a matching readback has not advanced",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 27.398174,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel update rejects a receipt that does not advance and can reconcile a still-later revision",
+      "name": "panel update rejects a receipt that does not advance and can reconcile a still-later revision",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 6.509669,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel upload requires an advanced project revision and accepts a still-later same-key receipt",
+      "name": "panel upload requires an advanced project revision and accepts a still-later same-key receipt",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 7.398695,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::panel retry clears the previous business project when the authenticated identity changes",
+      "name": "panel retry clears the previous business project when the authenticated identity changes",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.532925,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake retry clears the previous business request when the authenticated identity changes",
+      "name": "intake retry clears the previous business request when the authenticated identity changes",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.671701,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::dashboard retry clears old records before waiting on a different account data load",
+      "name": "dashboard retry clears old records before waiting on a different account data load",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.82229,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake callback malformed parent history preserves the task draft, request and retry until a complete receipt arrives",
+      "name": "intake callback malformed parent history preserves the task draft, request and retry until a complete receipt arrives",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 15.129402,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request save rejects wrong identities revisions fields and malformed history before replacing its draft",
+      "name": "intake request save rejects wrong identities revisions fields and malformed history before replacing its draft",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 54.6627,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request first-attempt refusals retain editable drafts and explicit version conflicts without uncertain retries",
+      "name": "intake request first-attempt refusals retain editable drafts and explicit version conflicts without uncertain retries",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 13.952567,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request uncertain saves retain the original payload through later refusals and confirm only current saved values",
+      "name": "intake request uncertain saves retain the original payload through later refusals and confirm only current saved values",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 21.320805,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request unchanged drafts cannot be confirmed by a same-revision readback after an uncertain write",
+      "name": "intake request unchanged drafts cannot be confirmed by a same-revision readback after an uncertain write",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.428597,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request readback rejects mismatched identities and incomplete parent fields before confirming an uncertain save",
+      "name": "intake request readback rejects mismatched identities and incomplete parent fields before confirming an uncertain save",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 20.435346,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request differing readback preserves its draft until an explicit validated current-record reload",
+      "name": "intake request differing readback preserves its draft until an explicit validated current-record reload",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 19.269482,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request save accepts the final writable revision and numeric extended-year chronology without weakening fresh receipt bounds",
+      "name": "intake request save accepts the final writable revision and numeric extended-year chronology without weakening fresh receipt bounds",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.652045,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/platform-client-state.test.cjs::intake request in-flight receipt cannot restore private values after session expiry clears its pending draft",
+      "name": "intake request in-flight receipt cannot restore private values after session expiry clears its pending draft",
+      "file": "tests/platform-client-state.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.865526,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::private pages redirect to login, APIs deny anonymous access, and safe health has no secrets",
+      "name": "private pages redirect to login, APIs deny anonymous access, and safe health has no secrets",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 317.18749,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::login/session/logout use private cookies and revoke replayed tokens",
+      "name": "login/session/logout use private cookies and revoke replayed tokens",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 283.198144,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::HTTPS handlers issue Secure host-only cookies and new sign-in rotates and revokes the old session",
+      "name": "HTTPS handlers issue Secure host-only cookies and new sign-in rotates and revokes the old session",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 551.813381,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::every mutation requires an exact origin and authenticated writes require the session CSRF token",
+      "name": "every mutation requires an exact origin and authenticated writes require the session CSRF token",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 488.922637,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::duplicate or tampered cookies fail authentication and untrusted Host/forwarded headers cannot bypass the origin",
+      "name": "duplicate or tampered cookies fail authentication and untrusted Host/forwarded headers cannot bypass the origin",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 231.330847,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::login failures are generic and persistent throttling blocks further password attempts",
+      "name": "login failures are generic and persistent throttling blocks further password attempts",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1354.330067,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::JSON content, bounded length, unsupported fields and invalid UTF-8 fail before saving",
+      "name": "JSON content, bounded length, unsupported fields and invalid UTF-8 fail before saving",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 226.595419,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::lead create/retry/update/profile operations preserve version and tenant boundaries",
+      "name": "lead create/retry/update/profile operations preserve version and tenant boundaries",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 438.404815,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::request editor consumes API normalization and confirms later opt-out state without replaying a committed update",
+      "name": "request editor consumes API normalization and confirms later opt-out state without replaying a committed update",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 238.966358,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::valid Unicode at every supported lead limit fits the bounded JSON body",
+      "name": "valid Unicode at every supported lead limit fits the bounded JSON body",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 228.50338,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export",
+      "name": "API rejects escaped unpaired UTF-16 without writes and preserves paired Unicode through export",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 255.541221,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::preview only uses verified business facts and persists no lead until explicit save",
+      "name": "preview only uses verified business facts and persists no lead until explicit save",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 244.993465,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::STOP before saving persists and reset/START cannot restore a suppressed number",
+      "name": "STOP before saving persists and reset/START cannot restore a suppressed number",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 209.661954,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::an opt-out without a phone is applied when contact details later become known",
+      "name": "an opt-out without a phone is applied when contact details later become known",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 204.334133,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::preview rejects overlong messages, untrusted fields and forged history roles with public errors",
+      "name": "preview rejects overlong messages, untrusted fields and forged history roles with public errors",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 249.711342,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::source files, database paths and traversal are not public assets",
+      "name": "source files, database paths and traversal are not public assets",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 8.373116,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::unexpected database errors return a generic failure without SQL, paths or private notes",
+      "name": "unexpected database errors return a generic failure without SQL, paths or private notes",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 201.708101,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::startup binds only loopback with an explicit data location and rejects origin/port mismatch",
+      "name": "startup binds only loopback with an explicit data location and rejects origin/port mismatch",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.153956,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/workspace-api.test.cjs::admin CLI reads passwords only from stdin and creates one explicit local owner",
+      "name": "admin CLI reads passwords only from stdin and creates one explicit local owner",
+      "file": "tests/workspace-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 207.385319,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time resolves winter and summer offsets independently of the device zone",
+      "name": "callback local time resolves winter and summer offsets independently of the device zone",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 18.180987,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time exposes both instants in the repeated fall hour",
+      "name": "callback local time exposes both instants in the repeated fall hour",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.99847,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time rejects the skipped spring hour without normalizing it forward",
+      "name": "callback local time rejects the skipped spring hour without normalizing it forward",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.886601,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time supports a half-hour clock transition",
+      "name": "callback local time supports a half-hour clock transition",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.838661,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time preserves quarter-hour offsets and date-boundary conversions",
+      "name": "callback local time preserves quarter-hour offsets and date-boundary conversions",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.176061,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback local time rejects impossible dates and unsupported zone identifiers",
+      "name": "callback local time rejects impossible dates and unsupported zone identifiers",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.643235,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback leap-day conversion retains the saved wall-clock minute",
+      "name": "callback leap-day conversion retains the saved wall-clock minute",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.719568,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback schedule submits the reviewed UTC instant, zone and current parent revision",
+      "name": "callback schedule submits the reviewed UTC instant, zone and current parent revision",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 25.021967,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback ambiguous time cannot save until the operator chooses an occurrence",
+      "name": "callback ambiguous time cannot save until the operator chooses an occurrence",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.769535,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback changing the time zone clears an earlier ambiguous occurrence selection",
+      "name": "callback changing the time zone clears an earlier ambiguous occurrence selection",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 16.251279,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback nonexistent wall-clock time never reaches the mutation API",
+      "name": "callback nonexistent wall-clock time never reaches the mutation API",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.322907,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback lost save response retains the same idempotency key and payload for retry",
+      "name": "callback lost save response retains the same idempotency key and payload for retry",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 13.309239,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback malformed success is treated as an uncertain save instead of clearing the draft",
+      "name": "callback malformed success is treated as an uncertain save instead of clearing the draft",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 9.813802,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback a rejected retry cannot erase an earlier unknown save result",
+      "name": "callback a rejected retry cannot erase an earlier unknown save result",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.761959,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback version rejection retains edits and requires a reload before another mutation",
+      "name": "callback version rejection retains edits and requires a reload before another mutation",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.134761,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback form correction remains possible after a definitive input rejection",
+      "name": "callback form correction remains possible after a definitive input rejection",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.232439,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback opt-out blocks scheduling without hiding the saved request",
+      "name": "callback opt-out blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.859257,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback safety hold blocks scheduling without hiding the saved request",
+      "name": "callback safety hold blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.13633,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback closed request blocks scheduling without hiding the saved request",
+      "name": "callback closed request blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.18183,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback review request blocks scheduling without hiding the saved request",
+      "name": "callback review request blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.080857,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback missing permission blocks scheduling without hiding the saved request",
+      "name": "callback missing permission blocks scheduling without hiding the saved request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.152786,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback blocked task retains cancellation while contact actions remain disabled",
+      "name": "callback blocked task retains cancellation while contact actions remain disabled",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.344506,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback rescheduling restores the saved occurrence in a repeated clock hour",
+      "name": "callback rescheduling restores the saved occurrence in a repeated clock hour",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.992423,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback completion requires a reported outcome and removes date requirements",
+      "name": "callback completion requires a reported outcome and removes date requirements",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.315411,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback completed and cancelled task cards expose no further mutation controls",
+      "name": "callback completed and cancelled task cards expose no further mutation controls",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.662214,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback task list rejects a record from another request",
+      "name": "callback task list rejects a record from another request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.05812,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback stale task read cannot repopulate the previous request",
+      "name": "callback stale task read cannot repopulate the previous request",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.357035,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback session expiration clears private task content and ignores in-flight queue results",
+      "name": "callback session expiration clears private task content and ignores in-flight queue results",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.150622,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback saved markup remains literal text in task notes and customer names",
+      "name": "callback saved markup remains literal text in task notes and customer names",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.459555,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback queue paginates server totals and preserves the selected state filter",
+      "name": "callback queue paginates server totals and preserves the selected state filter",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.015448,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback queue failure clears old cards instead of displaying them as refreshed",
+      "name": "callback queue failure clears old cards instead of displaying them as refreshed",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.812181,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback wrong-task receipt keeps the same command through a rejected retry until the matching receipt arrives",
+      "name": "callback wrong-task receipt keeps the same command through a rejected retry until the matching receipt arrives",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.550708,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback fresh receipts require advancement of both the parent and the selected task revision",
+      "name": "callback fresh receipts require advancement of both the parent and the selected task revision",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.124936,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback current-revision receipts must confirm the requested action and scheduling fields",
+      "name": "callback current-revision receipts must confirm the requested action and scheduling fields",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.27602,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback incomplete task shape cannot erase a creation draft or report a saved schedule",
+      "name": "callback incomplete task shape cannot erase a creation draft or report a saved schedule",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.967438,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback consumed parent records are checked before handing a receipt to the request renderer",
+      "name": "callback consumed parent records are checked before handing a receipt to the request renderer",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 5.450944,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback creation replay accepts later cancellation and current opt-out without repeating the write",
+      "name": "callback creation replay accepts later cancellation and current opt-out without repeating the write",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 3.620776,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-schedule-client.test.cjs::callback reschedule replay accepts a later completed task while retaining its original identity",
+      "name": "callback reschedule replay accepts a later completed task while retaining its original identity",
+      "file": "tests/callback-schedule-client.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.804145,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API supports create, queue, reschedule, completion and follow-up without claiming outbound delivery",
+      "name": "callback API supports create, queue, reschedule, completion and follow-up without claiming outbound delivery",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 473.619806,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API creation and completion retries return current saved state without another mutation",
+      "name": "callback API creation and completion retries return current saved state without another mutation",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 246.362562,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback client receipt validation accepts real fresh writes and advanced replays after opt-out and cancellation",
+      "name": "callback client receipt validation accepts real fresh writes and advanced replays after opt-out and cancellation",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 260.726465,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks",
+      "name": "callback API anonymous, forged cookie and stale pinned session cannot read queues or create tasks",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 213.459503,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback writes require exact origin, CSRF and host before reading the mutation body",
+      "name": "callback writes require exact origin, CSRF and host before reading the mutation body",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 216.949427,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback API cross-business identifiers cannot read, create or cancel another business task",
+      "name": "callback API cross-business identifiers cannot read, create or cancel another business task",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 420.177487,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::spreadsheet product denies every scheduling route before session lookup or body consumption",
+      "name": "spreadsheet product denies every scheduling route before session lookup or body consumption",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 4.503683,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback queue rejects duplicate, unsupported and malformed query filters",
+      "name": "callback queue rejects duplicate, unsupported and malformed query filters",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 218.72022,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::callback scheduling rejects malformed, oversized and non-JSON bodies without writing partial data",
+      "name": "callback scheduling rejects malformed, oversized and non-JSON bodies without writing partial data",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 232.049694,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::largest valid escaped Unicode task notes fit the explicit request boundary",
+      "name": "largest valid escaped Unicode task notes fit the explicit request boundary",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 208.185635,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::sign-out during delayed callback create body prevents the pending write",
+      "name": "sign-out during delayed callback create body prevents the pending write",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 241.872424,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::sign-out during delayed callback complete body prevents the pending write",
+      "name": "sign-out during delayed callback complete body prevents the pending write",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 247.219247,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::STOP received while a callback body is arriving blocks contact with fresh parent revision",
+      "name": "STOP received while a callback body is arriving blocks contact with fresh parent revision",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 231.051184,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/callback-tasks-api.test.cjs::version2 record export includes saved scheduling and safe audit identifiers without internal operation data",
+      "name": "version2 record export includes saved scheduling and safe audit identifiers without internal operation data",
+      "file": "tests/callback-tasks-api.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 439.671656,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared combined index template remains unchanged",
+      "name": "PRODUCT-UI shared combined index template remains unchanged",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.190651,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared combined preview template remains unchanged",
+      "name": "PRODUCT-UI shared combined preview template remains unchanged",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.20476,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared combined panels template remains unchanged",
+      "name": "PRODUCT-UI shared combined panels template remains unchanged",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.143187,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared combined login template remains unchanged",
+      "name": "PRODUCT-UI shared combined login template remains unchanged",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.109646,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared combined dashboard template remains unchanged",
+      "name": "PRODUCT-UI shared combined dashboard template remains unchanged",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.143387,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback index exposes only callback navigation and branding",
+      "name": "PRODUCT-UI callback index exposes only callback navigation and branding",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.861977,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback preview exposes only callback navigation and branding",
+      "name": "PRODUCT-UI callback preview exposes only callback navigation and branding",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.385744,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback login exposes only callback navigation and branding",
+      "name": "PRODUCT-UI callback login exposes only callback navigation and branding",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.345723,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet panels exposes only spreadsheet navigation and branding",
+      "name": "PRODUCT-UI spreadsheet panels exposes only spreadsheet navigation and branding",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.693739,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet login exposes only spreadsheet navigation and branding",
+      "name": "PRODUCT-UI spreadsheet login exposes only spreadsheet navigation and branding",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.314707,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback rejects the panels page instead of exposing another program",
+      "name": "PRODUCT-UI callback rejects the panels page instead of exposing another program",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.403601,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback rejects the dashboard page instead of exposing another program",
+      "name": "PRODUCT-UI callback rejects the dashboard page instead of exposing another program",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.159121,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet rejects the index page instead of exposing another program",
+      "name": "PRODUCT-UI spreadsheet rejects the index page instead of exposing another program",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.111439,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet rejects the preview page instead of exposing another program",
+      "name": "PRODUCT-UI spreadsheet rejects the preview page instead of exposing another program",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.072941,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet rejects the dashboard page instead of exposing another program",
+      "name": "PRODUCT-UI spreadsheet rejects the dashboard page instead of exposing another program",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.104107,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared caller labels and navigation cannot become HTML",
+      "name": "PRODUCT-UI shared caller labels and navigation cannot become HTML",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 1.459408,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared rejects unknown product identifier \"unknown\"",
+      "name": "PRODUCT-UI shared rejects unknown product identifier \"unknown\"",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.153352,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared rejects unknown product identifier \"__proto__\"",
+      "name": "PRODUCT-UI shared rejects unknown product identifier \"__proto__\"",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.065539,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared rejects unknown product identifier \"\\\"><script>bad()</script>\"",
+      "name": "PRODUCT-UI shared rejects unknown product identifier \"\\\"><script>bad()</script>\"",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.05337,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared fails closed for an unbalanced navigation region",
+      "name": "PRODUCT-UI shared fails closed for an unbalanced navigation region",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.159291,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared fails closed for an unknown template marker",
+      "name": "PRODUCT-UI shared fails closed for an unknown template marker",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.160042,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared requires a product title rather than returning ambiguous branding",
+      "name": "PRODUCT-UI shared requires a product title rather than returning ambiguous branding",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.173092,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback login opens only its expected home",
+      "name": "PRODUCT-UI callback login opens only its expected home",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 2.188151,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet login opens only its expected home",
+      "name": "PRODUCT-UI spreadsheet login opens only its expected home",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.550232,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI shared login opens only its expected home",
+      "name": "PRODUCT-UI shared login opens only its expected home",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.749754,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "shared",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback login rejects missing product",
+      "name": "PRODUCT-UI callback login rejects missing product",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.885449,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet login rejects null product",
+      "name": "PRODUCT-UI spreadsheet login rejects null product",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.502209,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback login rejects another product",
+      "name": "PRODUCT-UI callback login rejects another product",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.676683,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet login rejects wrong local home",
+      "name": "PRODUCT-UI spreadsheet login rejects wrong local home",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.532956,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet login rejects protocol-relative home",
+      "name": "PRODUCT-UI spreadsheet login rejects protocol-relative home",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.534618,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback login rejects external home",
+      "name": "PRODUCT-UI callback login rejects external home",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.60785,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback login rejects prototype name",
+      "name": "PRODUCT-UI callback login rejects prototype name",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.650884,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI spreadsheet login rejects unapproved query",
+      "name": "PRODUCT-UI spreadsheet login rejects unapproved query",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.678176,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "spreadsheet",
+      "kind": "product"
+    },
+    {
+      "id": "tests/product-ui.test.cjs::PRODUCT-UI callback rejected credentials never redirect into a program",
+      "name": "PRODUCT-UI callback rejected credentials never redirect into a program",
+      "file": "tests/product-ui.test.cjs",
+      "platformKey": "linux/x86_64/node24",
+      "status": "PASS",
+      "durationMs": 0.698426,
+      "generated": false,
+      "caseFamily": null,
+      "productScope": "callback",
+      "kind": "product"
+    }
+  ],
+  "totals": {
+    "passed": 151,
+    "failed": 0,
+    "skipped": 0,
+    "todo": 0,
+    "cancelled": 0,
+    "harnessPassed": 0
+  },
+  "infrastructureErrors": [],
+  "runnerSummary": {
+    "success": true,
+    "counts": {
+      "tests": 151,
+      "failed": 0,
+      "passed": 151,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "topLevel": 151,
+      "suites": 0
+    },
+    "duration_ms": 6077.968864
+  },
+  "summarySuccess": true,
+  "nativeAttempts": 0,
+  "browserExecutions": 0,
+  "providerCalls": 0,
+  "additionalGoalCredit": 0,
+  "scope": "Affected existing and new Node client, actual SQLite/API and product boundary checks. Browser/native claims are separate."
+}
