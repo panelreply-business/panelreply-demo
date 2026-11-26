@@ -360,7 +360,7 @@
     } catch (cause) {
       if (expired) return;
       $('project-save-status').textContent = '';
-      const rejected = cause.status >= 400 && cause.status < 500;
+      const rejected = cause.status >= 400 && cause.status < 500 && cause.status !== 408 && cause.status !== 429;
       // A later refusal cannot establish whether an earlier request committed.
       // Keep its frozen command and editing lock until its result is confirmed.
       if (!rejected) operation.uncertain = true;
@@ -508,7 +508,7 @@
       $('source-status').textContent = 'Source image saved. Extract text or enter the parts manually.';
     } catch (cause) {
       if (!expired) {
-        const rejected = cause.status >= 400 && cause.status < 500;
+        const rejected = cause.status >= 400 && cause.status < 500 && cause.status !== 408 && cause.status !== 429;
         if (!rejected) operation.uncertain = true;
         if (rejected && !operation.uncertain) pendingUpload = null;
         if (!pendingUpload && cause.status === 409 && cause.code === 'version_conflict' && project?.id) conflict = true;

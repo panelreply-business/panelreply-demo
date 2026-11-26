@@ -1322,3 +1322,132 @@ test('intake uncertain request offers explicit validated reload after a permanen
   }
 });
 
+test('panel create retains an ambiguous HTTP 408 result through a later refusal and replays the original command', async () => {
+  const page = client('panels.js', { productId: 'spreadsheet' });
+  await settle();
+  await page.element('new-project').emit('click');
+  page.element('project-name').value = 'Synthetic uncertain creation';
+  let attempts = 0, committed;
+  page.state.respond = (url, request) => {
+    if (url !== '/api/panel-projects' || request.method !== 'POST') return;
+    attempts += 1;
+    if (attempts === 1) {
+      committed = { ...structuredClone(savedProject), ...JSON.parse(request.body) };
+      return panelReply(408, { error: { code: 'synthetic_ambiguous', message: 'Synthetic ambiguous response after commit' } });
+    }
+    if (attempts === 2) return panelReply(403, { error: { code: 'forbidden', message: 'Synthetic refusal on retry' } });
+    return panelReply(200, { project: committed });
+  };
+  await page.element('project-form').emit('submit');
+  assertPanelSaveLocked(page);
+  await page.element('retry-project-save').emit('click');
+  assertPanelSaveLocked(page);
+  assert.match(page.element('project-error').textContent, /Synthetic refusal/);
+  await page.element('retry-project-save').emit('click');
+  assert.equal(page.element('project-retry').hidden, true);
+  assert.match(page.element('project-save-status').textContent, /Project saved/);
+  const writes = page.calls.filter(call => call.path === '/api/panel-projects' && call.method === 'POST');
+  assert.equal(writes.length, 3);
+  assert.ok(writes[0].headers['Idempotency-Key']);
+  assert.equal(new Set(writes.map(call => call.headers['Idempotency-Key'])).size, 1);
+  assert.equal(new Set(writes.map(call => call.body)).size, 1);
+  assert.equal(page.element('project-name').value, committed.name);
+});
+
+test('panel source retains an ambiguous HTTP 408 result through a later refusal and replays the original bytes', async () => {
+  const page = client('panels.js', { project: true, productId: 'spreadsheet' });
+  await settle();
+  await selectSyntheticSource(page);
+  let attempts = 0, committed;
+  page.state.respond = (url, request) => {
+    if (url !== '/api/panel-projects/' + PROJECT_ID + '/sources' || request.method !== 'POST') return;
+    attempts += 1;
+    if (attempts === 1) {
+      const body = JSON.parse(request.body);
+      const source = { id: '33333333-3333-4333-8333-333333333333', name: body.name, mime: body.mime,
+        bytes: Buffer.from(body.dataBase64, 'base64').length, width: 20, height: 20, createdAt: TIME };
+      committed = { source, project: { ...structuredClone(savedProject), sources: [source], version: 2 } };
+      return panelReply(408, { error: { code: 'synthetic_ambiguous', message: 'Synthetic ambiguous response after commit' } });
+    }
+    if (attempts === 2) return panelReply(409, { error: { code: 'version_conflict', message: 'Synthetic retry conflict' } });
+    return panelReply(200, committed);
+  };
+  await page.element('upload-source').emit('click');
+  assertPanelSaveLocked(page, { upload: true });
+  await page.element('upload-source').emit('click');
+  assertPanelSaveLocked(page, { upload: true });
+  await page.element('upload-source').emit('click');
+  assert.match(page.element('source-status').textContent, /Source image saved/);
+  assert.equal(page.element('project-version').textContent, 'Version 2');
+  const writes = page.calls.filter(call => call.path.endsWith('/sources') && call.method === 'POST');
+  assert.equal(writes.length, 3);
+  assert.ok(writes[0].headers['Idempotency-Key']);
+  assert.equal(new Set(writes.map(call => call.headers['Idempotency-Key'])).size, 1);
+  assert.equal(new Set(writes.map(call => call.body)).size, 1);
+  assert.equal(page.element('source-list').children.length, 1);
+});
+
+test('panel create retains an ambiguous HTTP 429 result through a later refusal and replays the original command', async () => {
+  const page = client('panels.js', { productId: 'spreadsheet' });
+  await settle();
+  await page.element('new-project').emit('click');
+  page.element('project-name').value = 'Synthetic uncertain creation';
+  let attempts = 0, committed;
+  page.state.respond = (url, request) => {
+    if (url !== '/api/panel-projects' || request.method !== 'POST') return;
+    attempts += 1;
+    if (attempts === 1) {
+      committed = { ...structuredClone(savedProject), ...JSON.parse(request.body) };
+      return panelReply(429, { error: { code: 'synthetic_ambiguous', message: 'Synthetic ambiguous response after commit' } });
+    }
+    if (attempts === 2) return panelReply(403, { error: { code: 'forbidden', message: 'Synthetic refusal on retry' } });
+    return panelReply(200, { project: committed });
+  };
+  await page.element('project-form').emit('submit');
+  assertPanelSaveLocked(page);
+  await page.element('retry-project-save').emit('click');
+  assertPanelSaveLocked(page);
+  assert.match(page.element('project-error').textContent, /Synthetic refusal/);
+  await page.element('retry-project-save').emit('click');
+  assert.equal(page.element('project-retry').hidden, true);
+  assert.match(page.element('project-save-status').textContent, /Project saved/);
+  const writes = page.calls.filter(call => call.path === '/api/panel-projects' && call.method === 'POST');
+  assert.equal(writes.length, 3);
+  assert.ok(writes[0].headers['Idempotency-Key']);
+  assert.equal(new Set(writes.map(call => call.headers['Idempotency-Key'])).size, 1);
+  assert.equal(new Set(writes.map(call => call.body)).size, 1);
+  assert.equal(page.element('project-name').value, committed.name);
+});
+
+test('panel source retains an ambiguous HTTP 429 result through a later refusal and replays the original bytes', async () => {
+  const page = client('panels.js', { project: true, productId: 'spreadsheet' });
+  await settle();
+  await selectSyntheticSource(page);
+  let attempts = 0, committed;
+  page.state.respond = (url, request) => {
+    if (url !== '/api/panel-projects/' + PROJECT_ID + '/sources' || request.method !== 'POST') return;
+    attempts += 1;
+    if (attempts === 1) {
+      const body = JSON.parse(request.body);
+      const source = { id: '33333333-3333-4333-8333-333333333333', name: body.name, mime: body.mime,
+        bytes: Buffer.from(body.dataBase64, 'base64').length, width: 20, height: 20, createdAt: TIME };
+      committed = { source, project: { ...structuredClone(savedProject), sources: [source], version: 2 } };
+      return panelReply(429, { error: { code: 'synthetic_ambiguous', message: 'Synthetic ambiguous response after commit' } });
+    }
+    if (attempts === 2) return panelReply(409, { error: { code: 'version_conflict', message: 'Synthetic retry conflict' } });
+    return panelReply(200, committed);
+  };
+  await page.element('upload-source').emit('click');
+  assertPanelSaveLocked(page, { upload: true });
+  await page.element('upload-source').emit('click');
+  assertPanelSaveLocked(page, { upload: true });
+  await page.element('upload-source').emit('click');
+  assert.match(page.element('source-status').textContent, /Source image saved/);
+  assert.equal(page.element('project-version').textContent, 'Version 2');
+  const writes = page.calls.filter(call => call.path.endsWith('/sources') && call.method === 'POST');
+  assert.equal(writes.length, 3);
+  assert.ok(writes[0].headers['Idempotency-Key']);
+  assert.equal(new Set(writes.map(call => call.headers['Idempotency-Key'])).size, 1);
+  assert.equal(new Set(writes.map(call => call.body)).size, 1);
+  assert.equal(page.element('source-list').children.length, 1);
+});

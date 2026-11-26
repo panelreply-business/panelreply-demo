@@ -1,0 +1,180 @@
+{
+  "date": "2026-11-26",
+  "timezone": "America/Detroit",
+  "runId": 45421164049,
+  "attempt": 2,
+  "completedAt": "2026-11-25T10:18:44-05:00",
+  "priorHead": "1b75407e6a76a3769f6f832ca4cd33ade76db74d",
+  "testedHead": "7497a314b6844feb51a2df44be385f26106d804b",
+  "testedMerge": "d61371623c718e0e8118eb41be4ab48b1267a861",
+  "testedTree": "573ced02f53da1cabaf28d7609f4caa03cbf29b8",
+  "manifest": "38ade4d889cc405bd2248526c3bb5d915f54a3b3d70b85fed6db5ec011d40354",
+  "cleanCommittedEvidence": true,
+  "jobCount": 41,
+  "artifactCount": 49,
+  "arm": {
+    "job": 139298507952,
+    "status": "cancelled",
+    "steps": 0,
+    "runner": "",
+    "completedAt": "2026-11-25T10:18:14-05:00"
+  },
+  "aggregate": {
+    "job": 139308590385,
+    "artifact": 15036277212,
+    "sha256": "50105757c3789c16c1cc9918e209c876a16c95038a125f99947fbe600255f245",
+    "pass": 24951,
+    "error": 3,
+    "fail": 0,
+    "distinct": 9409,
+    "generated": 7467,
+    "callbackPass": 10721,
+    "spreadsheetPass": 12019,
+    "sharedPass": 2211,
+    "excludedHarness": 415,
+    "excludedDuplicates": 7131,
+    "automated": {
+      "pass": 44,
+      "fail": 2,
+      "notTested": 10
+    },
+    "manualNotTested": 7
+  },
+  "local": {
+    "fullExecution": "BLOCKED",
+    "node": "22.16.0",
+    "reason": "missing prior worktree and DNS unavailable",
+    "directGET": "BLOCKED"
+  },
+  "profile": {
+    "blob": "3d3f7a332a79f80bc70c6c9ce3ee7d4471e1cd53",
+    "scope": "extracted exact saveProfile, renderProfile, profileDraft and FACTS with stubs",
+    "input": {
+      "revision": 5,
+      "editedName": "Edited contractor",
+      "approvedServices": "Approved electrical repairs"
+    },
+    "response": {
+      "business": {
+        "name": "Synthetic contractor"
+      },
+      "facts": {},
+      "version": 5
+    },
+    "observed": {
+      "name": "Synthetic contractor",
+      "services": "",
+      "approved": false,
+      "revision": 5,
+      "dirty": false,
+      "status": "Business profile saved. Approved answers are ready in the customer preview."
+    },
+    "status": "FAIL",
+    "repair": "OPEN"
+  },
+  "spreadsheet": {
+    "blob": "3048e7ce1bbdfc6bc37e1c03a7107ba88b05057e",
+    "scope": "exact extracted saveProject, uploadSource, unresolved and updateControls; synthetic API, DOM, file read, receipt validation and setProject stubs",
+    "old": "const rejected = cause.status >= 400 && cause.status < 500;",
+    "replacement": "const rejected = cause.status >= 400 && cause.status < 500 && cause.status !== 408 && cause.status !== 429;",
+    "results": [
+      {
+        "kind": "create",
+        "status": 408,
+        "baselinePending": false,
+        "candidatePending": true,
+        "candidateUncertain": true,
+        "candidateLocked": true,
+        "candidateSameCommandThroughLater403AndSuccess": true,
+        "expected": true
+      },
+      {
+        "kind": "create",
+        "status": 429,
+        "baselinePending": false,
+        "candidatePending": true,
+        "candidateUncertain": true,
+        "candidateLocked": true,
+        "candidateSameCommandThroughLater403AndSuccess": true,
+        "expected": true
+      },
+      {
+        "kind": "create",
+        "status": 403,
+        "baselinePending": false,
+        "candidatePending": false,
+        "candidateUncertain": false,
+        "candidateLocked": false,
+        "candidateSameCommandThroughLater403AndSuccess": false,
+        "expected": true
+      },
+      {
+        "kind": "create",
+        "status": 500,
+        "baselinePending": true,
+        "candidatePending": true,
+        "candidateUncertain": true,
+        "candidateLocked": true,
+        "candidateSameCommandThroughLater403AndSuccess": true,
+        "expected": true
+      },
+      {
+        "kind": "upload",
+        "status": 408,
+        "baselinePending": false,
+        "candidatePending": true,
+        "candidateUncertain": true,
+        "candidateLocked": true,
+        "candidateSameCommandThroughLater403AndSuccess": true,
+        "expected": true
+      },
+      {
+        "kind": "upload",
+        "status": 429,
+        "baselinePending": false,
+        "candidatePending": true,
+        "candidateUncertain": true,
+        "candidateLocked": true,
+        "candidateSameCommandThroughLater403AndSuccess": true,
+        "expected": true
+      },
+      {
+        "kind": "upload",
+        "status": 403,
+        "baselinePending": false,
+        "candidatePending": false,
+        "candidateUncertain": false,
+        "candidateLocked": false,
+        "candidateSameCommandThroughLater403AndSuccess": false,
+        "expected": true
+      },
+      {
+        "kind": "upload",
+        "status": 500,
+        "baselinePending": true,
+        "candidatePending": true,
+        "candidateUncertain": true,
+        "candidateLocked": true,
+        "candidateSameCommandThroughLater403AndSuccess": true,
+        "expected": true
+      }
+    ],
+    "newRepositoryTests": 4,
+    "fullIntegration": "NOT TESTED",
+    "productCountCredit": 0
+  },
+  "public": {
+    "renderOwnerSuspended": [
+      "srv-dbv6do6tlv9c73fuvar0",
+      "srv-dbu5o8tckfvc73b6fb4g"
+    ],
+    "autoDeploy": "off",
+    "previews": "off"
+  },
+  "target": 10000,
+  "firstGoalAchievedAt": null,
+  "decisions": {
+    "callback": "NO-GO",
+    "spreadsheet": "NO-GO"
+  }
+}
